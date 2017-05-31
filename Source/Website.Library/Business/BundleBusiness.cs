@@ -34,9 +34,12 @@ namespace Website.Library.Business
             BundleData scriptBundle = new BundleData(FolderEnum.BaseScriptBundle);
             scriptBundle.Include(FolderEnum.BaseScriptFolder, new List<string>
             {
+                "jquery.hoverIntent.min.js",
+                "dnn.jquery.js",
                 "bootstrap.min.js",
                 "jquery-ui.js",
-                "jquery-control.js"
+                "jquery-control.js",
+                "jquery.cookie.js"
             });
             Bundles.Add(scriptBundle);
         }

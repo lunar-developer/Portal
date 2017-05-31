@@ -1,5 +1,6 @@
 ﻿var gloModule = window.gloModule || "";
 var gloMaxLength = 1000;
+var gloPostBackInterval;
 
 $(document).ready(function()
 {
@@ -26,9 +27,10 @@ function initialize()
             hideLoading();
             cleanUpAutoComplete();
         });
-        addPostbackTrigger(function()
+        addPostBackTrigger(function()
         {
             showLoading();
+            waitPostBackComplete();
         });
     });
 }
@@ -67,13 +69,26 @@ function addEndRequest(fn)
     });
 }
 
-function addPostbackTrigger(fn)
+function addPostBackTrigger(fn)
 {
     var array = Sys.WebForms.PageRequestManager.getInstance()._postBackControlClientIDs;
     for (var i = 0; i < array.length; i++)
     {
         $("#" + array[i]).click(fn);
     }
+}
+
+function waitPostBackComplete()
+{
+    gloPostBackInterval = setInterval(function()
+    {
+        if ($.cookie("PostBackComplete"))
+        {
+            clearInterval(gloPostBackInterval);
+            $.removeCookie("PostBackComplete", { path: "/" });
+            hideLoading();
+        }
+    }, 1000);
 }
 
 function alertMessage(message, title, buttonText, callback)

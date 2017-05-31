@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DotNetNuke.Common;
@@ -65,9 +66,11 @@ namespace Website.Library.Global
             return $@"
                 alertMessage(
                     '{(isUseResource ? GetResource(message) : message)}',
-			        '{(string.IsNullOrWhiteSpace(title)
-                        ? GetSharedResource("System.Text")
-                        : (isUseResource ? GetResource(title) : title))}',
+			        '{
+                        (string.IsNullOrWhiteSpace(title)
+                            ? GetSharedResource("System.Text")
+                            : (isUseResource ? GetResource(title) : title))
+                    }',
                     '{GetSharedResource("Ok.Text")}',
                     {callback});";
         }
@@ -102,7 +105,8 @@ namespace Website.Library.Global
             return $"$('body').append('{form}'); $('#{id}').submit().remove();";
         }
 
-        protected string GetWindowOpenScript(string url, Dictionary<string, string> dictionary, bool isOpenNewTab = true)
+        protected string GetWindowOpenScript(string url, Dictionary<string, string> dictionary,
+            bool isOpenNewTab = true)
         {
             string parameters = dictionary.Count == 0
                 ? string.Empty
@@ -115,15 +119,17 @@ namespace Website.Library.Global
         {
             byte[] bytes = FunctionBase.ExportToExcel(dtSource);
             Response.Clear();
+            Response.AddHeader("Set-Cookie", "CookieName=CookieValue; path=/;");
+            Response.SetCookie(new HttpCookie("PostBackComplete") { Value = "true", HttpOnly = false });
             Response.ContentType = "application/octet-stream";
-            Response.AddHeader("content-disposition", $"attachment; filename={fileName}.xls");
             Response.BinaryWrite(bytes);
             Response.Flush();
             Response.Close();
             Response.End();
         }
 
-        protected string EditUrl(string controlKey, int width, int height, bool isReload, string keyName = "", string keyValue = "",
+        protected string EditUrl(string controlKey, int width, int height, bool isReload, string keyName = "",
+            string keyValue = "",
             string closingUrl = null, params string[] additionalParameters)
         {
             string moduleIdParam = $"mid={ModuleId}";
@@ -154,7 +160,8 @@ namespace Website.Library.Global
                 + GetPopUpMaximumScript();
         }
 
-        protected string EditUrl(string url, int width, int height, bool isReload, Dictionary<string, string> dictionary,
+        protected string EditUrl(string url, int width, int height, bool isReload,
+            Dictionary<string, string> dictionary,
             string closingUrl = null)
         {
             List<string> list = new List<string>();

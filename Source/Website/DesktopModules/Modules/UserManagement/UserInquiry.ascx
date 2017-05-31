@@ -11,10 +11,6 @@
         <asp:PostBackTrigger ControlID="btnExport" />
     </Triggers>
     <ContentTemplate>
-        <div class="c-content-title-1 clearfix c-margin-b-20 c-title-md">
-            <h3 class="c-font-bold c-font-uppercase">QUẢN TRỊ NGƯỜI DÙNG</h3>
-            <div class="c-bg-blue c-line-left"></div>
-        </div>
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-2 control-label">
