@@ -1,0 +1,393 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="lblAddress01.Help" xml:space="preserve">
+    <value>Địa chỉ dòng thứ 1</value>
+  </data>
+  <data name="lblAddress01.SubText" xml:space="preserve">
+    <value>Address 1 (Company)</value>
+  </data>
+  <data name="lblAddress01.Text" xml:space="preserve">
+    <value>Địa chỉ dòng thứ 1</value>
+  </data>
+  <data name="lblAddress02.Help" xml:space="preserve">
+    <value>Địa chỉ dòng thứ 2</value>
+  </data>
+  <data name="lblAddress02.SubText" xml:space="preserve">
+    <value>Address 2 (Company)</value>
+  </data>
+  <data name="lblAddress02.Text" xml:space="preserve">
+    <value>Địa chỉ dòng thứ 2</value>
+  </data>
+  <data name="lblAddress3.Help" xml:space="preserve">
+    <value>Phường/ Xã</value>
+  </data>
+  <data name="lblAddress3.SubText" xml:space="preserve">
+    <value>Address 3 (Company)</value>
+  </data>
+  <data name="lblAddress3.Text" xml:space="preserve">
+    <value>Phường/ Xã</value>
+  </data>
+  <data name="lblBizRegNo.Help" xml:space="preserve">
+    <value>Mã số thuế</value>
+  </data>
+  <data name="lblBizRegNo.SubText" xml:space="preserve">
+    <value>Biz Reg No</value>
+  </data>
+  <data name="lblBizRegNo.Text" xml:space="preserve">
+    <value>Mã số thuế</value>
+  </data>
+  <data name="lblCity.Help" xml:space="preserve">
+    <value>Quận/ Huyện</value>
+  </data>
+  <data name="lblCity.SubText" xml:space="preserve">
+    <value>City (Company)</value>
+  </data>
+  <data name="lblCity.Text" xml:space="preserve">
+    <value>Quận/ Huyện</value>
+  </data>
+  <data name="lblContractType.Help" xml:space="preserve">
+    <value>Tình trạng làm việc</value>
+  </data>
+  <data name="lblContractType.SubText" xml:space="preserve">
+    <value>Contract Type (Main)</value>
+  </data>
+  <data name="lblContractType.Text" xml:space="preserve">
+    <value>Tình trạng làm việc</value>
+  </data>
+  <data name="lblCorpName.Help" xml:space="preserve">
+    <value>Tên doanh nghiệp (Employer Name/ Address Name (Company))</value>
+  </data>
+  <data name="lblCorpName.SubText" xml:space="preserve">
+    <value>Employer/ Addr Name (Company)</value>
+  </data>
+  <data name="lblCorpName.Text" xml:space="preserve">
+    <value>Tên doanh nghiệp</value>
+  </data>
+  <data name="lblCorpStatus.Help" xml:space="preserve">
+    <value>Qui mô doanh nghiệp</value>
+  </data>
+  <data name="lblCorpStatus.SubText" xml:space="preserve">
+    <value>Corp Status</value>
+  </data>
+  <data name="lblCorpStatus.Text" xml:space="preserve">
+    <value>Qui mô doanh nghiệp</value>
+  </data>
+  <data name="lblCountry.Help" xml:space="preserve">
+    <value>Quốc gia</value>
+  </data>
+  <data name="lblCountry.SubText" xml:space="preserve">
+    <value>Country (Company)</value>
+  </data>
+  <data name="lblCountry.Text" xml:space="preserve">
+    <value>Quốc gia</value>
+  </data>
+  <data name="lblCustCat.Help" xml:space="preserve">
+    <value>Nghề nghiệp</value>
+  </data>
+  <data name="lblCustCat.SubText" xml:space="preserve">
+    <value>Cust Cat (Main)</value>
+  </data>
+  <data name="lblCustCat.Text" xml:space="preserve">
+    <value>Nghề nghiệp</value>
+  </data>
+  <data name="lblCustEntityType.Help" xml:space="preserve">
+    <value>Loại hình doanh nghiệp</value>
+  </data>
+  <data name="lblCustEntityType.SubText" xml:space="preserve">
+    <value>Cust Entity Type</value>
+  </data>
+  <data name="lblCustEntityType.Text" xml:space="preserve">
+    <value>Loại hình doanh nghiệp</value>
+  </data>
+  <data name="lblCustomerTitle.Help" xml:space="preserve">
+    <value>Chức danh</value>
+  </data>
+  <data name="lblCustomerTitle.SubText" xml:space="preserve">
+    <value>Customer Title (Main)</value>
+  </data>
+  <data name="lblCustomerTitle.Text" xml:space="preserve">
+    <value>Chức danh</value>
+  </data>
+  <data name="lblDepartment.Help" xml:space="preserve">
+    <value>Phòng ban</value>
+  </data>
+  <data name="lblDepartment.SubText" xml:space="preserve">
+    <value>Department Name (main)</value>
+  </data>
+  <data name="lblDepartment.Text" xml:space="preserve">
+    <value>Phòng ban</value>
+  </data>
+  <data name="lblEducation.Help" xml:space="preserve">
+    <value>Trình độ học vấn</value>
+  </data>
+  <data name="lblEducation.SubText" xml:space="preserve">
+    <value>Education (main)</value>
+  </data>
+  <data name="lblEducation.Text" xml:space="preserve">
+    <value>Trình độ học vấn</value>
+  </data>
+  <data name="lblHaveCreditCard.Help" xml:space="preserve">
+    <value>Đã có thẻ tín dụng ngân hàng khác</value>
+  </data>
+  <data name="lblHaveCreditCard.SubText" xml:space="preserve">
+    <value>Have Credit Card</value>
+  </data>
+  <data name="lblHaveCreditCard.Text" xml:space="preserve">
+    <value>Đã có thẻ tín dụng ngân hàng khác</value>
+  </data>
+  <data name="lblHomeOwnerShip.Help" xml:space="preserve">
+    <value>Hình thức sở hữu nhà</value>
+  </data>
+  <data name="lblHomeOwnerShip.SubText" xml:space="preserve">
+    <value>Home Owner Ship</value>
+  </data>
+  <data name="lblHomeOwnerShip.Text" xml:space="preserve">
+    <value>Hình thức sở hữu nhà</value>
+  </data>
+  <data name="lblMonth.Text" xml:space="preserve">
+    <value>Tháng</value>
+  </data>
+  <data name="lblNetIncome.Help" xml:space="preserve">
+    <value>Thu nhập</value>
+  </data>
+  <data name="lblNetIncome.SubText" xml:space="preserve">
+    <value>Net income (Main)</value>
+  </data>
+  <data name="lblNetIncome.Text" xml:space="preserve">
+    <value>Thu nhập</value>
+  </data>
+  <data name="lblNoOfBank.SubText" xml:space="preserve">
+    <value>No Of Bank</value>
+  </data>
+  <data name="lblNoOfBank.Text" xml:space="preserve">
+    <value>Số lượng</value>
+  </data>
+  <data name="lblNumberOfStaffCorp.Help" xml:space="preserve">
+    <value>Số lượng nhân viên</value>
+  </data>
+  <data name="lblNumberOfStaffCorp.SubText" xml:space="preserve">
+    <value>Number of Staff Corparate</value>
+  </data>
+  <data name="lblNumberOfStaffCorp.Text" xml:space="preserve">
+    <value>Số lượng nhân viên</value>
+  </data>
+  <data name="lblNumOfDependents.Help" xml:space="preserve">
+    <value>Số người chu cấp</value>
+  </data>
+  <data name="lblNumOfDependents.SubText" xml:space="preserve">
+    <value>Num Of Dependents</value>
+  </data>
+  <data name="lblNumOfDependents.Text" xml:space="preserve">
+    <value>Số người chu cấp</value>
+  </data>
+  <data name="lblPhone.Help" xml:space="preserve">
+    <value>Điện thoai</value>
+  </data>
+  <data name="lblPhone.SubText" xml:space="preserve">
+    <value>Phone 1 (Company)</value>
+  </data>
+  <data name="lblPhone.Text" xml:space="preserve">
+    <value>Điện thoai</value>
+  </data>
+  <data name="lblPosition.Help" xml:space="preserve">
+    <value>Chức vụ</value>
+  </data>
+  <data name="lblPosition.SubText" xml:space="preserve">
+    <value>Position (Main)</value>
+  </data>
+  <data name="lblPosition.Text" xml:space="preserve">
+    <value>Chức vụ</value>
+  </data>
+  <data name="lblRemarks.Help" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="lblRemarks.SubText" xml:space="preserve">
+    <value>Remarks (Company)</value>
+  </data>
+  <data name="lblRemarks.Text" xml:space="preserve">
+    <value>Ghi chú</value>
+  </data>
+  <data name="lblSecretPhrase.Help" xml:space="preserve">
+    <value>Thông tin xác thực KH</value>
+  </data>
+  <data name="lblSecretPhrase.SubText" xml:space="preserve">
+    <value>Secret Phrase</value>
+  </data>
+  <data name="lblSecretPhrase.Text" xml:space="preserve">
+    <value>Thông tin xác thực KH</value>
+  </data>
+  <data name="lblSIC.Help" xml:space="preserve">
+    <value>Lĩnh vực hoạt động</value>
+  </data>
+  <data name="lblSIC.SubText" xml:space="preserve">
+    <value>SIC</value>
+  </data>
+  <data name="lblSIC.Text" xml:space="preserve">
+    <value>Lĩnh vực hoạt động</value>
+  </data>
+  <data name="lblStaffIDNumber.Help" xml:space="preserve">
+    <value>Mã số nhân viên</value>
+  </data>
+  <data name="lblStaffIDNumber.SubText" xml:space="preserve">
+    <value>Staff ID</value>
+  </data>
+  <data name="lblStaffIDNumber.Text" xml:space="preserve">
+    <value>MSNV</value>
+  </data>
+  <data name="lblState.Help" xml:space="preserve">
+    <value>Tỉnh/ Thành</value>
+  </data>
+  <data name="lblState.SubText" xml:space="preserve">
+    <value>State (Company)</value>
+  </data>
+  <data name="lblState.Text" xml:space="preserve">
+    <value>Tỉnh/ Thành</value>
+  </data>
+  <data name="lblTotalExpense.Help" xml:space="preserve">
+    <value>Tổng chi phí</value>
+  </data>
+  <data name="lblTotalExpense.SubText" xml:space="preserve">
+    <value>Total Expense (Main)</value>
+  </data>
+  <data name="lblTotalExpense.Text" xml:space="preserve">
+    <value>Tổng chi phí</value>
+  </data>
+  <data name="lblVietBankStaff.Help" xml:space="preserve">
+    <value>Nhân viên VietBank</value>
+  </data>
+  <data name="lblVietBankStaff.SubText" xml:space="preserve">
+    <value>Staff</value>
+  </data>
+  <data name="lblVietBankStaff.Text" xml:space="preserve">
+    <value>Nhân viên VietBank</value>
+  </data>
+  <data name="lblWorkPeriod.Help" xml:space="preserve">
+    <value>Thời gian công tác</value>
+  </data>
+  <data name="lblWorkPeriod.SubText" xml:space="preserve">
+    <value>Work Period (Main)</value>
+  </data>
+  <data name="lblWorkPeriod.Text" xml:space="preserve">
+    <value>Thời gian công tác</value>
+  </data>
+  <data name="lblYear.Text" xml:space="preserve">
+    <value>Năm</value>
+  </data>
+</root>

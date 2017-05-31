@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A573178E-F590-46FC-87CA-0F976AAD7A68}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Modules.UserManagement</RootNamespace>
+    <AssemblyName>Modules.UserManagement</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DotNetNuke, Version=8.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\library\DotNetNuke.dll</HintPath>
+    </Reference>
+    <Reference Include="LunarSoft.SqlServerConnector, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b5cabe615762e631, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\LunarSoft.SqlServerConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\RoleTemplateBusiness.cs" />
+    <Compile Include="Business\RoleGroupBusiness.cs" />
+    <Compile Include="Business\BranchBusiness.cs" />
+    <Compile Include="Business\UserCacheBusiness.cs" />
+    <Compile Include="Business\BranchCacheBusiness.cs" />
+    <Compile Include="Business\UserBusiness.cs" />
+    <Compile Include="DataAccess\RoleTemplateProvider.cs" />
+    <Compile Include="DataAccess\RoleGroupProvider.cs" />
+    <Compile Include="DataAccess\BranchProvider.cs" />
+    <Compile Include="DataAccess\UserProvider.cs" />
+    <Compile Include="Database\BranchPositionRoleTable.cs" />
+    <Compile Include="Database\BranchPositionTable.cs" />
+    <Compile Include="Database\RoleTemplateTable.cs" />
+    <Compile Include="Database\RoleGroupTable.cs" />
+    <Compile Include="Database\BranchTable.cs" />
+    <Compile Include="Database\UserTable.cs" />
+    <Compile Include="DataTransfer\BranchData.cs" />
+    <Compile Include="DataTransfer\BranchPositionData.cs" />
+    <Compile Include="DataTransfer\BranchPositionRoleData.cs" />
+    <Compile Include="DataTransfer\BranchRoleGroupData.cs" />
+    <Compile Include="DataTransfer\UserData.cs" />
+    <Compile Include="Enum\ConfigEnum.cs" />
+    <Compile Include="Enum\FolderEnum.cs" />
+    <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\TemplateEnum.cs" />
+    <Compile Include="Global\UserManagementModuleBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\LDAPService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Website.Library\Website.Library.csproj">
+      <Project>{dcd19eca-8265-45e8-81e0-02705b776097}</Project>
+      <Name>Website.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

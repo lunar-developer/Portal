@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8"
+              http-equiv="Content-Type" />
+        <meta content="width=device-width"
+              name="viewport" />
+        <title>@SiteName</title>
+
+        <style type="text/css">
+            html, body
+            {
+                margin: 0;
+                padding: 0;
+                font-family: Helvetica, Arial, sans-serif;
+                color: #747474;
+                background: #fff;
+            }
+
+            h1
+            {
+                font-weight: normal;
+                text-align: center;
+                margin-top: 10px;
+                color: #3a3f45;
+            }
+
+            img
+            {
+                width: 100%;
+            }
+
+            a
+            {
+                color: #5893dd;
+            }
+            b
+            {
+                color: #3a3f45;
+            }
+
+            p
+            {
+                text-align: justify;
+                line-height: 30px;
+            }
+
+            .container
+            {
+                width: 980px;
+            }
+
+            .content
+            {
+                min-height: 300px;
+                padding: 15px;
+            }
+
+            .header
+            {
+                border-bottom: 1px solid #d8d8d8;
+                width: 100%;
+                height: 40px;
+                padding: 0 10px 10px;
+                box-sizing: border-box;
+            }
+
+            .footer
+            {
+                width: 100%;
+            }
+
+            .highlight
+            {
+                border: 1px solid #b3b3b3;
+                background: #fffeea;
+                width: 300px;
+                padding: 10px;
+                margin-top: 40px;
+            }
+
+            .highlight table tr, .highlight table td
+            {
+                padding: 10px;
+                color: #656565;
+            }
+        </style>
+
+    </head>
+
+    <body>
+            <table class="container" align="center">
+                <tr>
+                    <td>
+                        <img alt=""
+                             src="cid:@Envelope" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="header">
+                        <img alt="Logo" src="cid:@Logo" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="content">
+                        <h1>Welcome to @SiteName</h1>
+                        <p>
+                            Xin chào <b>@DisplayName</b>, thông tin tài khoản của bạn vừa mới được tạo.
+                            Vui lòng lưu trữ lại thông tin bên dưới để sử dụng cho lần đăng nhập kế tiếp.
+                        </p>
+                        <p></p>
+                        <table class="highlight" align="center">
+                            <tr>
+                                <td>Tên đăng nhập:</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>@UserName</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Mật khẩu:</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>@Password</b>
+                                </td>
+                            </tr>
+                        </table>
+                        <p>
+                            Click vào <a href="@Link">đây</a> để tiến hành đăng nhập ngay.
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="footer">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        <img alt=""
+                             src="cid:@Envelope" />
+                    </td>
+                </tr>
+            </table>
+    </body>
+</html>

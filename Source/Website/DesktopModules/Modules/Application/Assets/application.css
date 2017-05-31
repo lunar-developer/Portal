@@ -1,0 +1,14 @@
+﻿.menu-bar {
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    padding: 10px;
+}
+    .menu-bar .menu-bar-container {
+        padding: 0 10px 10px 10px;
+        background: #fff;
+        text-align: center;
+    }

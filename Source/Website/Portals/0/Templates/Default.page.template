@@ -1,0 +1,14 @@
+<portal version="3.0">
+  <description>Default page template with empty module</description>
+  <tabs>
+    <tab>
+      <panes>
+        <pane>
+          <name>ContentPane</name>
+          <modules></modules>
+        </pane>
+      </panes>
+    </tab>
+  </tabs>
+</portal>
+

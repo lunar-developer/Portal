@@ -1,0 +1,12 @@
+﻿.animate {}
+.customin {}
+.customout {}
+.c-block {}
+.randomrotateout {}
+.c-border-grey-1-5 {}
+.dnnTabs {}
+.dnnPanels {}
+.tparrows.circle, .tparrows.circle:hover
+{
+    background-image: url("../images/white.png");
+}

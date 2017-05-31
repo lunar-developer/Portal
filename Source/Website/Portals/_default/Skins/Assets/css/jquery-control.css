@@ -1,0 +1,81 @@
+﻿.ui-draggable, .ui-droppable
+{
+    -ms-background-position: top;
+    background-position: top;
+}
+
+.custom-combobox
+{
+    position: relative;
+    display: inline-block;
+}
+
+.custom-combobox-toggle
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+}
+
+.custom-combobox-input
+{
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.combobox-button
+{
+    cursor: pointer;
+}
+
+.ui-autocomplete
+{
+    border: 1px solid #c5c5c5;
+    background: #ffffff none repeat scroll 0 0;
+    color: #333333;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute !important;
+    z-index: 99999;
+}
+
+.ui-helper-hidden-accessible
+{
+    display: none;
+}
+
+.ui-menu .ui-menu-item
+{
+    cursor: pointer;
+    list-style: none;
+    margin: 0;
+}
+
+.ui-menu .ui-menu-item-wrapper
+{
+    padding: 3px 1em 3px 0.4em;
+    position: relative;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover
+{
+    background: #5e9cd1;
+    color: #fff;
+}
+
+.ui-menu-item div
+{
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ui-state-disabled
+{
+    color: #939393;
+}
+li.ui-menu-item div.ui-menu-item-wrapper {
+    padding: 7px 10px;
+}

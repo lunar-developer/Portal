@@ -1,0 +1,76 @@
+[*>NODE-TOP]
+
+    [>NODE-TOP]
+        <li class = "[?SELECTED]c-active[?ELSE][?BREADCRUMB]c-active[/?][/?][?NODE][?KEYWORDS] c-menu-type-classic[/?][/?]">
+			[?ENABLED]
+				<a href = "[=URL]" class = "c-link [?NODE]dropdown-toggle[/?]">
+					[=TEXT]
+					[?NODE]<span class = "c-arrow c-toggler"></span>[/?]
+				</a>
+			[?ELSE]
+				<a href="javascript:;" class = "c-link [?NODE]dropdown-toggle[/?]">
+					[=TEXT]
+					[?NODE]<span class = "c-arrow c-toggler"></span>[/?]
+				</a>
+			[/?]
+			[?NODE]
+				[?KEYWORDS]
+					<ul class = "c-menu-type-classic c-pull-left dropdown-menu">
+						[*>NODE]
+					</ul>
+				[?ELSE]
+					<div class = "dropdown-menu c-menu-type-mega c-menu-type-fullwidth" style = "min-width: auto">
+                        <div class = "row">
+							[*>NODE-MEGA]
+						</div>
+					</div>
+				[/?]
+			[/?]
+        </li>
+    [/>]
+
+	[>NODE]
+        <li class = "[?SELECTED]c-active[?ELSE][?BREADCRUMB]c-active[/?][/?][?NODE] dropdown-submenu[/?]">
+        [?ENABLED]
+            <a href="[=URL]">
+				[=TEXT]
+				[?NODE]<span class = "c-arrow c-toggler"></span>[/?]
+			</a>
+        [?ELSE]
+            <a href="javascript:;">
+				[=TEXT]
+				[?NODE]<span class = "c-arrow c-toggler"></span>[/?]
+			</a>
+        [/?]
+        [?NODE]
+            <ul class = "c-pull-left dropdown-menu">
+				[*>NODE]
+            </ul>
+        [/?]
+        </li>
+    [/>]
+
+	[>NODE-MEGA]
+        <div class = "col-md-3">
+            <ul class = "c-menu-type-inline dropdown-menu">
+				<li>
+                    <h3>[=TEXT]</h3>
+                </li>
+				[*>NODE-ITEM]
+			</ul>
+		</div>
+    [/>]
+
+	[>NODE-ITEM]
+		<li>
+            [?ENABLED]
+				<a href="[=URL]">
+					[=TEXT]
+				</a>
+			[?ELSE]
+				<a href="javascript:;">
+					[=TEXT]
+				</a>
+			[/?]
+        </li>
+	[/>]

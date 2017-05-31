@@ -1,0 +1,430 @@
+﻿body > form #ControlBar_ControlPanel
+{
+    z-index: 10001 !important;
+}
+
+body > form > .rcbSlide
+{
+    z-index: 10002 !important;
+}
+
+#ControlBar
+{
+    height: 54px;
+}
+
+#ControlBar a
+{
+    font-family: "Roboto Condensed", sans-serif !important;
+    font-size: 14px !important;
+}
+
+#ControlBar dl,
+.subNav.advanced dl ul li,
+#ControlNav > li > a,
+#ControlBar_CustomMenuItems > li > a,
+#ControlActionMenu > li > a,
+#ControlEditPageMenu > li > a
+{
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+#ControlBar .dnnCheckbox
+{
+    margin-top: 0;
+}
+
+#ControlBar span.dnnCheckbox > .mark, span.dnnCheckbox > .mark, span.dnnRadiobutton > .mark
+{
+    background-color: transparent;
+    padding: 0;
+}
+
+.dnnBoxLabel
+{
+    font-size: inherit !important;
+}
+
+.control-label .dnnLabel
+{
+    margin-top: -2px;
+    margin-right: 0;
+    padding-right: 10px;
+    width: 100%;
+}
+
+.control-label .dnnLabel label
+{
+    font-size: 16px;
+    color: #3f444a;
+}
+
+.control-label .dnnLabel a.dnnFormHelp
+{
+    right: -15px;
+}
+
+.control-label .dnnHelpText
+{
+    font-size: 14px;
+}
+
+.rgHeader
+{
+    font-size: 16px;
+    font-weight: bold !important;
+}
+
+.rgMasterTable td
+{
+    font-size: 16px;
+}
+
+.RadGrid_Default .rgRow
+{
+    background: #fff none repeat scroll 0 0;
+}
+
+.RadGrid_Default .rgAltRow
+{
+    background: #eef1f5 none repeat scroll 0 0;
+}
+
+.RadGrid_Default .rgRow:hover, .RadGrid_Default .rgAltRow:hover
+{
+    background-color: #cce8ff;
+}
+
+.RadGrid_Default .rgRow:hover td, .RadGrid_Default .rgAltRow:hover td
+{
+    border-color: #cce8ff;
+}
+
+.RadGrid_Default .rgRow.rgSelectedRow, .RadGrid_Default .rgAltRow.rgSelectedRow
+{
+    background-color: #cce8ff;
+    color: #333333 !important;
+}
+
+.dnnFormMessage
+{
+    background: transparent no-repeat scroll 0.875rem 0.5625rem !important;
+    border: 0 !important;
+    -ms-border-radius: 0.25rem !important;
+    border-radius: 0.25rem !important;
+    color: #fff !important;
+    padding: 0.9375rem !important;
+    max-width: 100%;
+    text-indent: 40px;
+}
+
+.dnnFormSuccess
+{
+    background-color: #a2cb3c !important;
+    background-image: url("../images/success.png") !important;
+}
+
+.dnnFormInfo
+{
+    background-color: #8ab9d6 !important;
+    background-image: url("../images/info.png") !important;
+}
+
+.dnnFormWarning
+{
+    background-color: #f6ca2f !important;
+    background-image: url("../images/warning.png") !important;
+}
+
+.dnnFormValidationSummary
+{
+    background-color: #f28675 !important;
+    background-image: url("../images/error.png") !important;
+}
+
+.dnnPanelLoading
+{
+    display: none;
+    position: fixed;
+    z-index: 10001;
+}
+
+.dnnPanelLoading .dnnLoading
+{
+    display: block !important;
+    width: 100px;
+    height: 100px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -75px;
+    margin-left: -50px;
+    background: none;
+    font-size: 100px;
+    color: #fff;
+}
+
+.dnnLoading
+{
+    background-color: transparent;
+}
+
+.dnnTabs.ui-widget-content
+{
+    min-height: 300px;
+}
+
+h2.dnnFormSectionHead a
+{
+    -ms-background-position: 99% 50% !important;
+    background-position: 99% 50% !important;
+    font-weight: bold;
+}
+
+.LoginPanel
+{
+    padding-right: 0;
+    width: 100%;
+}
+
+.dnnLoginActions .dnnActions
+{
+    padding-top: 0;
+}
+
+ul#ControlBar_Module_ModulePosition li
+{
+    height: auto;
+}
+
+#ControlBar_conrolbar_logo
+{
+    display: none;
+}
+
+
+
+/* File Management */
+
+#dnnModuleDigitalAssetsLeftPane
+{
+    width: 350px;
+    background: none;
+}
+
+.dnnModuleDigitalAssetsLeftPaneContents
+{
+    top: 10px;
+}
+
+#dnnModuleDigitalAssetsContentPane
+{
+    margin-left: 350px;
+}
+
+.dnnModuledigitalAssetsTreeView
+{
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+}
+
+.dnnModuledigitalAssetsTreeView .rtImg
+{
+    margin-right: 5px;
+}
+
+#dnnModuleDigitalAssetsBreadcrumb
+{
+    width: 100%;
+}
+
+#dnnModuleDigitalAssetsBreadcrumb li, #dnnModuleDigitalAssetsBreadcrumb li a
+{
+    font-size: 16px;
+    font-weight: bold;
+    text-transform: uppercase;
+    max-width: inherit;
+}
+
+#dnnModuleDigitalAssetsSearchBox
+{
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #d0d7de;
+    border-radius: 0;
+    box-shadow: none;
+    font-weight: 300;
+    padding: 4px 12px 6px 12px;
+    height: 34px;
+    outline: medium none;
+    margin-top: 40px;
+    z-index: 100;
+}
+
+.dnnModuleDigitalAssetsGrid thead tr
+{
+    border: 0 !important;
+}
+
+.dnnModuleDigitalAssetsGrid thead > tr > th:nth-child(4)
+{
+    border-right: 0 !important;
+}
+
+.dnnModuleDigitalAssetsGrid td
+{
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px !important;
+}
+
+#dnnModuleDigitalAssetsSelectionToolbar, #dnnModuleDigitalAssetsListViewToolbar, #dnnModuleDigitalAssetsListContainer, .dnnModuleDigitalAssetsGrid > table > thead > tr
+{
+    background: none;
+    font-size: 14px !important;
+}
+
+#dnnModuleDigitalAssetsSelectionToolbar
+{
+    border-right: 0;
+    height: 40px;
+    padding: 15px 0 15px 0;
+}
+
+#dnnModuleDigitalAssetsListViewToolbar
+{
+    height: 35px;
+    padding-bottom: 6px;
+}
+
+.dnnModuleDigitalAssetItemNameTemplate
+{
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 14px;
+}
+
+.dnnModuleDigitalAssetItemNameTemplate img
+{
+    margin-right: 10px;
+}
+
+#dnnModuleDigitalAssetsListContainer
+{
+    font-size: 14px !important;
+    border-right: 0 !important;
+}
+
+.dnnModuleDigitalAssetsBackground
+{
+    background: none !important;
+    border: 1px solid #000000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#dnnModuleDigitalAssetsMainToolbarTitle
+{
+    border-left: 1px solid #cdcdcd;
+}
+
+#dnnModuleDigitalAssetsMainToolbarTitle
+{
+    padding-top: 10px;
+}
+
+.title-currentFolder
+{
+    display: none !important;
+}
+
+#dnnModuleDigitalAssetsSearchBox:focus
+{
+    border-color: #5893dd;
+}
+
+#dnnModuleDigitalAssetsSearchBox > input.searchInput
+{
+    background: none;
+}
+
+#dnnModuleDigitalAssetsSearchBox > a.searchButton
+{
+    top: 4px;
+}
+
+.readonly #dnnModuleDigitalAssetsMainToolbarTitle .title-actions
+{
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.readonly #DigitalAssetsUploadFilesBtnId,
+.readonly #DigitalAssetsCreateFolderBtnId,
+.readonly #DigitalAssetsManageFolderTypesBtnId
+{
+    display: none !important;
+    visibility: hidden !important;
+}
+
+.RadAjax
+{
+    display: none;
+}
+
+.RadComboBox_Default .rcbInput
+{
+    min-width: 35px !important;
+}
+
+.dnnLoginService input[type="text"], .dnnLoginService input[type="password"]
+{
+    width: 240px;
+    min-width: 240px;
+}
+
+.dnnFormPopup
+{
+    min-width: 300px;
+}
+
+.RadPicker_Default .riTextBox
+{
+    background: #fff none repeat scroll 0 0;
+    border-radius: 0;
+    border-color: #d0d7de;
+    box-shadow: none;
+    font-weight: 300;
+    outline: medium none;
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+.RadPicker_Default .riTextBox:focus
+{
+    border-color: #5893dd;
+}
+
+
+@media (max-width: 768px)
+{
+    .dnnLoginService
+    {
+        width: 250px;
+        margin: 0 auto;
+    }
+}
+
+.ControlBar_ModuleList li span
+{
+    word-wrap: break-word;
+}
+
+.RadListBox_Default .rlbText, .RadListBox_Default .rlbItem, .RadListBox_Default .rlbEmptyMessage
+{
+    font-family: "Roboto Condensed" !important;
+    font-size: 14px !important;
+    padding: 10px 5px !important;
+}
+
+.RadListBox_Default .rlbGroup .rlbHovered
+{
+    background-color: #cce8ff !important;
+}
