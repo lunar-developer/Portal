@@ -4,6 +4,11 @@ using Modules.UserManagement.Database;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
+using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Users;
+using DotNetNuke.Security.Roles;
+using DotNetNuke.Services.Social.Notifications;
 using Website.Library.Global;
 
 namespace DesktopModules.Modules.Help
@@ -16,6 +21,27 @@ namespace DesktopModules.Modules.Help
             {
                 RegisterConfirmDialog(btnConfirm, "Are you sure?");
             }
+
+            //var portalId =
+            //    PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
+            //Notification notification = new Notification
+            //{
+            //    Subject = "Test",
+            //    Body = "Your Message",
+            //    From = UserInfo.Email,
+            //    SenderUserID = UserInfo.UserID,
+            //    NotificationTypeID = 1
+            //};
+            //try
+            //{
+            //    List<UserInfo> users = new List<UserInfo> { UserController.GetUserById(portalId, UserInfo.UserID) };
+            //    NotificationsController.Instance.SendNotification(notification, portalId, new List<RoleInfo>(), users);
+            //    ShowMessage("Send notification success!", ModuleMessage.ModuleMessageType.GreenSuccess);
+            //}
+            //catch(Exception ex)
+            //{
+            //    ShowMessage(ex.Message);
+            //}
         }
 
         protected void Export(object sender, EventArgs e)

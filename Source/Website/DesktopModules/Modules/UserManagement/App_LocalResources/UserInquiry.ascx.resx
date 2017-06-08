@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BranchName.Header" xml:space="preserve">
+  <data name="BranchID.Header" xml:space="preserve">
     <value>Chi Nhánh</value>
   </data>
   <data name="DisplayName.Header" xml:space="preserve">
@@ -132,7 +132,7 @@
   <data name="MobileNumber.Header" xml:space="preserve">
     <value>Số điện thoại</value>
   </data>
-  <data name="Remark.Header" xml:space="preserve">
+  <data name="Authorised.Header" xml:space="preserve">
     <value>Tình Trạng</value>
   </data>
   <data name="UserName.Header" xml:space="preserve">
@@ -149,5 +149,11 @@
   </data>
   <data name="lblBranch.Text" xml:space="preserve">
     <value>Chi Nhánh</value>
+  </data>
+  <data name="Mobile.Header" xml:space="preserve">
+    <value>Số di động</value>
+  </data>
+  <data name="PhoneExtension.Header" xml:space="preserve">
+    <value>Extension</value>
   </data>
 </root>

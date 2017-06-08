@@ -13,6 +13,7 @@ using Modules.UserManagement.DataAccess;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
+using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
 using ConfigEnum = Website.Library.Enum.ConfigEnum;
@@ -62,9 +63,9 @@ namespace Modules.UserManagement.Business
             return new UserProvider().GetUserLog(userID);
         }
 
-        public static DataTable SearchUser(Dictionary<string, string> dictionary)
+        public static DataTable SearchUser(Dictionary<string, SQLParameterData> parameterdiDictionary)
         {
-            return new UserProvider().SearchUser(dictionary);
+            return new UserProvider().SearchUser(parameterdiDictionary);
         }
 
         public static DataSet LoadUser(string userID, string viewUserID)

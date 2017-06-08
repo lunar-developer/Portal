@@ -85,7 +85,9 @@ namespace DesktopModules.Modules.ModuleManagement
             {
                 string value = definition.ModuleDefID.ToString();
                 string text = $"{value} - {definition.DefinitionName}";
-                ddlDefinition.Items.Add(new ListItem(text, value));
+                ListItem item = new ListItem(text, value);
+                item.Attributes.Add("DefinitionName", definition.DefinitionName);
+                ddlDefinition.Items.Add(item);
             }
         }
 
@@ -102,6 +104,12 @@ namespace DesktopModules.Modules.ModuleManagement
             {
                 TabID = tabID,
                 ModuleDefID = int.Parse(ddlDefinition.SelectedValue),
+                ModuleTitle = ddlDefinition.SelectedItem.Attributes["DefinitionName"],
+                CacheMethod = string.Empty,
+                DisplayPrint = false,
+                InheritViewPermissions = true,
+                IsShareable = true,
+                IsShareableViewOnly = true,
                 PaneName = "ContentPane"
             };
             int result = ModuleController.Instance.AddModule(module);

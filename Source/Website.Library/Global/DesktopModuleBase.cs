@@ -122,6 +122,7 @@ namespace Website.Library.Global
             Response.AddHeader("Set-Cookie", "CookieName=CookieValue; path=/;");
             Response.SetCookie(new HttpCookie("PostBackComplete") { Value = "true", HttpOnly = false });
             Response.ContentType = "application/octet-stream";
+            Response.AddHeader("content-disposition", $"attachment; filename={fileName}.xls");
             Response.BinaryWrite(bytes);
             Response.Flush();
             Response.Close();

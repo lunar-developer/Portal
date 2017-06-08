@@ -6,7 +6,7 @@
 <html <asp:literal id="attributeList" runat="server" ViewStateMode="Disabled"></asp:literal>>
 <head id="Head" runat="server" ViewStateMode="Disabled">
     <asp:PlaceHolder runat="server" ID="metaPanel"></asp:PlaceHolder>
-    <title />
+    <title></title>
     <meta id="MetaRefresh" runat="Server" http-equiv="Refresh" name="Refresh" Visible="False" />
     <meta id="MetaDescription" runat="Server" name="DESCRIPTION" Visible="False"/>
     <meta id="MetaKeywords" runat="Server" name="KEYWORDS" Visible="False"/>

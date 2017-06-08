@@ -2,7 +2,7 @@
 
 namespace Modules.Controls
 {
-    public sealed class PickList : DropDownList
+    public class PickList : DropDownList
     {
         protected override object SaveViewState()
         {

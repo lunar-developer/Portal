@@ -327,7 +327,7 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                 }
                 else
                 {
-                    authenticated = (loginStatus != UserLoginStatus.LOGIN_FAILURE);
+                    authenticated = loginStatus != UserLoginStatus.LOGIN_FAILURE;
                 }
 
                 if (loginStatus != UserLoginStatus.LOGIN_FAILURE &&

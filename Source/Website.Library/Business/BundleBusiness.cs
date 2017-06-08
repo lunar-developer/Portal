@@ -36,6 +36,8 @@ namespace Website.Library.Business
             {
                 "jquery.hoverIntent.min.js",
                 "dnn.jquery.js",
+                "dnn.js",
+                "dnn.servicesframework.js",
                 "bootstrap.min.js",
                 "jquery-ui.js",
                 "jquery-control.js",

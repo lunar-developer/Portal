@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="UserInquiry.ascx.cs" Inherits="DesktopModules.Modules.UserManagement.UserInquiry" %>
 <%@ Import Namespace="Modules.UserManagement.Database" %>
+<%@ Import Namespace="Modules.UserManagement.Business" %>
 <%@ Register Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
@@ -72,21 +73,20 @@
             </div>
             <br />
             <div class="form-group">
-                <div class="col-sm-12">
+                <div class="col-sm-12 table-responsive">
                     <control:Grid AllowPaging="true"
-                                 AutoGenerateColumns="false"
-                                 CssClass="dnnGrid"
-                                 EnableViewState="true"
-                                 ID="gridData"
-                                 OnPageIndexChanged="OnPageIndexChanging"
-                                 OnPageSizeChanged="OnPageSizeChanging"
-                                 PageSize="10"
-                                 runat="server"
-                                 Visible="false">
-                        <MasterTableView>
+                                  AutoGenerateColumns="false"
+                                  CssClass="dnnGrid"
+                                  EnableViewState="true"
+                                  ID="gridData"
+                                  OnPageIndexChanged="OnPageIndexChanging"
+                                  OnPageSizeChanged="OnPageSizeChanging"
+                                  runat="server"
+                                  Visible="false">
+                        <MasterTableView TableLayout="Fixed">
                             <Columns>
                                 <dnn:DnnGridTemplateColumn HeaderText="UserName">
-                                    <HeaderStyle Width="20%" />
+                                    <HeaderStyle Width="30%" />
                                     <ItemTemplate>
                                         <asp:LinkButton CommandArgument="<%#Eval(UserTable.UserID).ToString() %>"
                                                         CssClass="c-edit-link c-theme-color"
@@ -100,12 +100,23 @@
                                                         HeaderText="DisplayName">
                                     <HeaderStyle Width="30%" />
                                 </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="BranchName"
-                                                        HeaderText="BranchName">
-                                    <HeaderStyle Width="30%" />
+                                <dnn:DnnGridBoundColumn DataField="Mobile"
+                                                        HeaderText="Mobile">
+                                    <HeaderStyle Width="20%" />
                                 </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="Remark"
-                                                        HeaderText="Remark">
+                                <dnn:DnnGridBoundColumn DataField="PhoneExtension"
+                                                        HeaderText="PhoneExtension">
+                                    <HeaderStyle Width="20%" />
+                                </dnn:DnnGridBoundColumn>
+                                <dnn:DnnGridTemplateColumn DataField="BranchID"
+                                                        HeaderText="BranchID">
+                                    <HeaderStyle Width="30%" />
+                                    <ItemTemplate>
+                                        <%#BranchBusiness.GetBranchName(Eval(BranchTable.BranchID).ToString()) %>
+                                    </ItemTemplate>
+                                </dnn:DnnGridTemplateColumn>
+                                <dnn:DnnGridBoundColumn DataField="Authorised"
+                                                        HeaderText="Authorised">
                                     <HeaderStyle Width="20%" />
                                 </dnn:DnnGridBoundColumn>
                             </Columns>

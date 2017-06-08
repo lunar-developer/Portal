@@ -165,4 +165,36 @@
             this.element.show();
         }
     });
+
+    $.prototype.calendar = function () {
+        $.each($(this), function () {
+            var control = $(this);
+            var container = $("<div class='calendar-container'></div>");
+            var icon = $("<i class='fa fa-calendar calendar-icon'></i>");
+            var input = $("<input class='calendar-input form-control c-theme' type='textbox' />");
+
+            // Render
+            control.wrap(container);
+            input.insertBefore(control);
+            icon.insertBefore(control);
+
+            // Attach Events
+            var currentDate = moment();
+            input.daterangepicker(
+                {
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    startDate: currentDate,
+                    locale: {
+                        format: "DD/MM/YYYY"
+                    }
+                }, function (date) {
+                    control.val(date.format("YYYYMMDD"));
+                });
+            icon.click(function () {
+                input.click();
+            });
+            control.val(currentDate.format("YYYYMMDD")).hide();
+        });
+    };
 });

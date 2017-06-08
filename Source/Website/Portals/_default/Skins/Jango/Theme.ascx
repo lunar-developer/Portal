@@ -2,6 +2,7 @@
 
 <%@ Register Src="~/DesktopModules/DDRMenu/Menu.ascx" TagName="Menu" TagPrefix="dnn" %>
 <%@ Register Src="~/Admin/Skins/Copyright.ascx" TagName="CopyRight" TagPrefix="dnn" %>
+<%@ Register Src="~/admin/Skins/Toast.ascx" TagPrefix="dnn" TagName="Toast" %>
 
 <%@ Import Namespace="Website.Library.Enum" %>
 
@@ -326,5 +327,6 @@
 <div class="c-layout-go2top">
     <i class="fa fa-angle-up"></i>
 </div>
-
+<dnn:Toast ID="Toast"
+           runat="server" />
 </body>

@@ -14,11 +14,10 @@
                 <div class="col-md-5 col-sm-6">
                     <control:Combobox autocomplete="off"
                                       AutoPostBack="True"
-                                      CssClass="form-control"
+                                      CssClass="form-control c-theme"
                                       ID="ddlBranch"
                                       OnSelectedIndexChanged="LoadPermission"
-                                      runat="server">
-                    </control:Combobox>
+                                      runat="server" />
                 </div>
                 <div class="col-md-3 col-sm-0"></div>
             </div>

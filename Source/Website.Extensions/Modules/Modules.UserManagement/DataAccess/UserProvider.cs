@@ -3,6 +3,7 @@ using System.Data;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Website.Library.DataAccess;
+using Website.Library.DataTransfer;
 
 namespace Modules.UserManagement.DataAccess
 {
@@ -31,14 +32,13 @@ namespace Modules.UserManagement.DataAccess
             return dtResult;
         }
 
-        public DataTable SearchUser(Dictionary<string, string> dictionary)
+        public DataTable SearchUser(Dictionary<string, SQLParameterData> parameterdiDictionary)
         {
-            DataTable dtResult;
-            foreach (KeyValuePair<string, string> pair in dictionary)
+            foreach (KeyValuePair<string, SQLParameterData> pair in parameterdiDictionary)
             {
-                Connector.AddParameter(pair.Key, SqlDbType.VarChar, pair.Value);
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
-            Connector.ExecuteProcedure("UM_SearchUser", out dtResult);
+            Connector.ExecuteProcedure("UM_SP_SearchUser", out DataTable dtResult);
             return dtResult;
         }
 

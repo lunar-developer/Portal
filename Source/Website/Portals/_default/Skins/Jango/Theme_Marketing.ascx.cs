@@ -2,7 +2,7 @@
 
 namespace Portals._default.Skins.Jango
 {
-    public partial class Theme : JangoSkinBase
+    public partial class ThemeMarketing : JangoSkinBase
     {
     }
 }

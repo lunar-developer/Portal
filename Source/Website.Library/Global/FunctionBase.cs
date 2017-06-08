@@ -107,12 +107,13 @@ namespace Website.Library.Global
             return date;
         }
 
-        public static string GetConfiguration(string key)
+
+        public static string GetConfiguration(string key, string defaultValue = "")
         {
-            return ConfigurationManager.AppSettings[key] ?? string.Empty;
+            return ConfigurationManager.AppSettings[key] ?? defaultValue;
         }
 
-        public static string GetAbsoluteUrl(string absoluteUrl)
+        public static string GetAbsoluteUrl(string absoluteUrl = "")
         {
             return (HttpContext.Current.Request.ApplicationPath + absoluteUrl.Replace("~", string.Empty))
                 .Replace("//", "/");

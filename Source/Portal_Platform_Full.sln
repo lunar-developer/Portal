@@ -249,7 +249,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{5467AF
 		DNN Platform\Website\Config\SolutionsExplorer.opml.config = DNN Platform\Website\Config\SolutionsExplorer.opml.config
 	EndProjectSection
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Website", "http://localhost/Website", "{E8C63350-1281-4DF6-90DF-A061224ACB12}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Portal", "http://localhost/Portal", "{E8C63350-1281-4DF6-90DF-A061224ACB12}"
 	ProjectSection(WebsiteProperties) = preProject
 		SccProjectName = ""
 		SccAuxPath = ""
@@ -258,21 +258,21 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Website", "http://localhost
 		UseIISExpress = "false"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
 		ProjectReferences = "{7d46674b-e01c-4107-bd39-22af70a836ff}|Modules.GoldenRoster.dll;{6B29ADED-7B56-4484-BEA5-C0E09079535B}|DotNetNuke.dll;{3B64E72E-63CC-4A90-ADFF-4B919EF17239}|ClientDependency.Core.dll;{CA056730-5759-41F8-A6C1-420F9C0C63E7}|CountryListBox.dll;{3CD5F6B8-8360-4862-80B6-F402892DB7DD}|DotNetNuke.Instrumentation.dll;{9F2F4076-D434-448F-9CBB-7BF7A9766AB1}|DotNetNuke.Services.Syndication.dll;{04F77171-0634-46E0-A95E-D7477C88712E}|dotnetnuke.log4net.dll;{DCD19ECA-8265-45E8-81E0-02705B776097}|Website.Library.dll;{9e5d633b-08ea-4381-a4da-9696a298c555}|Modules.Cache.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/Website"
-		Debug.AspNetCompiler.PhysicalPath = "Website\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Website\"
+		Debug.AspNetCompiler.VirtualPath = "/Portal"
+		Debug.AspNetCompiler.PhysicalPath = "Portal\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Portal\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/Website"
-		Release.AspNetCompiler.PhysicalPath = "Website\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Website\"
+		Release.AspNetCompiler.VirtualPath = "/Portal"
+		Release.AspNetCompiler.PhysicalPath = "Portal\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Portal\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		SlnRelativePath = "Website\"
+		SlnRelativePath = "Portal\"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website.UnitTest", "Website.UnitTest\Website.UnitTest.csproj", "{C8580EAD-FFAB-4D73-B5CC-C57DB866E957}"

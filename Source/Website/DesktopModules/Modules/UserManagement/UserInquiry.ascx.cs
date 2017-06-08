@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
+using Website.Library.DataTransfer;
 
 namespace DesktopModules.Modules.UserManagement
 {
@@ -23,10 +24,6 @@ namespace DesktopModules.Modules.UserManagement
                 AutoWire();
                 BindData();
             }
-            catch (Exception exception)
-            {
-                ShowException(exception);
-            }
             finally
             {
                 SetPermission();
@@ -38,6 +35,7 @@ namespace DesktopModules.Modules.UserManagement
             hidUserName.Value = txtUserName.Text.Trim();
             hidBranchID.Value = ddlBranch.SelectedValue;
             hidAuthorised.Value = ddlAuthorised.SelectedValue;
+            gridData.Visible = true;
             BindGrid();
         }
 
@@ -80,14 +78,11 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            ddlBranch.Items.Add(new ListItem("TẤT CẢ", "-2"));
-            BindBranchData(ddlBranch);
-            ddlBranch.SelectedIndex = 0;
+            BindBranchData(ddlBranch, false, true);
         }
 
         private void BindGrid(int pageIndex = 0)
         {
-            gridData.Visible = true;
             gridData.CurrentPageIndex = pageIndex;
             gridData.DataSource = GetData();
             gridData.DataBind();
@@ -95,12 +90,12 @@ namespace DesktopModules.Modules.UserManagement
 
         private DataTable GetData()
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
+            Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserName, hidUserName.Value },
-                { UserTable.BranchID, hidBranchID.Value },
-                { UserTable.Authorised, hidAuthorised.Value },
-                { UserTable.UserID, UserInfo.UserID.ToString() }
+                { UserTable.UserName, new SQLParameterData(hidUserName.Value, SqlDbType.VarChar) },
+                { UserTable.BranchID, new SQLParameterData(hidBranchID.Value, SqlDbType.Int) },
+                { UserTable.Authorised, new SQLParameterData(hidAuthorised.Value, SqlDbType.Int) },
+                { UserTable.UserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) }
             };
             return UserBusiness.SearchUser(dictionary);
         }

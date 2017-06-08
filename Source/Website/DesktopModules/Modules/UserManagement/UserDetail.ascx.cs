@@ -208,9 +208,10 @@ namespace DesktopModules.Modules.UserManagement
             string branchValue = CacheBase.Receive<UserData>(userID)?.BranchID;
             if (!string.IsNullOrWhiteSpace(branchValue) && !string.IsNullOrWhiteSpace(user[UserTable.Title].ToString()))
             {
-                int positionCode = int.Parse(user[UserTable.Title].ToString());
+              //  int positionCode = int.Parse(user[UserTable.Title].ToString());
                 int branchID = int.Parse(branchValue);
-                txtTitle.Text = new BranchProvider().GetUserPosition(branchID, positionCode);
+             //   txtTitle.Text = new BranchProvider().GetUserPosition(branchID, positionCode);
+                txtTitle.Text = user[UserTable.Title].ToString();
             }
             else
             {
@@ -270,7 +271,9 @@ namespace DesktopModules.Modules.UserManagement
             {
                 int branchIDSelected = int.Parse(GetRoleBranch());
                 BranchProvider branchProvider = new BranchProvider();
-                List<BranchRoleGroupData> branchRoleGroupList = branchProvider.GetListBranchRoleGroup(branchIDSelected);
+                List<BranchRoleGroupData> branchRoleGroupList = new List<BranchRoleGroupData>();
+                    
+                    //branchProvider.GetListBranchRoleGroup(branchIDSelected);
                 foreach (var branchRoleGroup in branchRoleGroupList)
                 {
                     int branchID = int.Parse(branchRoleGroup.BranchID);

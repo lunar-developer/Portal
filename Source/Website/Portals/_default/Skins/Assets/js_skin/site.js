@@ -74,7 +74,12 @@ function addPostBackTrigger(fn)
     var array = Sys.WebForms.PageRequestManager.getInstance()._postBackControlClientIDs;
     for (var i = 0; i < array.length; i++)
     {
-        $("#" + array[i]).click(fn);
+        var $control = $("#" + array[i]);
+        if ($control.attr("option-loading") === "false")
+        {
+            continue;
+        }
+        $control.click(fn);
     }
 }
 

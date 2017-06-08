@@ -2,7 +2,7 @@
 <%@ Register TagPrefix="dnn" Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls"%>
 
 <asp:UpdatePanel runat="server">
-    <Triggers >
+    <Triggers>
         <asp:PostBackTrigger ControlID="cmdLogin" />
     </Triggers>
     <ContentTemplate>
@@ -16,6 +16,7 @@
                 <div class="col-sm-7">
                     <asp:textbox CssClass="form-control c-theme"
                                  id="txtUsername"
+                                 placeholder="Email Address"
                                  runat="server" />
                 </div>
             </div>
@@ -30,6 +31,7 @@
                 <div class="col-sm-7">
                     <asp:textbox CssClass="form-control c-theme"
                                  id="txtPassword"
+                                 placeholder="Password"
                                  runat="server"
                                  textmode="Password" />
                 </div>
@@ -84,6 +86,7 @@
                                Visible="False" />
                     <asp:LinkButton cssclass="btn btn-primary"
                                     id="cmdLogin"
+                                    option-loading="false"
                                     resourcekey="cmdLogin"
                                     runat="server"
                                     text="Login" />
@@ -125,47 +128,41 @@
 
 <script type="text/javascript">
     /*globals jQuery, window, Sys */
-    (function($, Sys)
+    (function($)
     {
-        function setUpLogin()
-        {
-            var actionLinks = getJQueryControl("cmdLogin");
-            actionLinks.click(function()
-            {
-                if ($(this).hasClass("dnnDisabledAction"))
-                {
-                    return false;
-                }
-
-                actionLinks.addClass("dnnDisabledAction");
-            });
-        }
-
         $(document).ready(function()
         {
-            $('.dnnLoginService').on('keydown',
+            $('.dnnLoginService').on("keydown",
                 function(e)
                 {
                     if (e.keyCode === 13)
                     {
-                        var $loginButton = getJQueryControl("cmdLogin");
-                        if ($loginButton.hasClass("dnnDisabledAction"))
-                        {
-                            return false;
-                        }
-
-                        $loginButton.addClass("dnnDisabledAction");
-                        eval($loginButton.attr('href'));
+                        processOnLoginClick();
                         e.preventDefault();
                         return false;
                     }
+                    return true;
                 });
-
-            setUpLogin();
-            Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function()
-            {
-                setUpLogin();
-            });
+            getJQueryControl("cmdLogin").click(processOnLoginClick);
         });
     }(jQuery, window.Sys));
+
+
+    function processOnLoginClick()
+    {
+        if (validateInputArray(["txtUsername", "txtPassword"]) === false)
+        {
+            return false;
+        }
+
+        var $loginButton = getJQueryControl("cmdLogin");
+        if ($loginButton.hasClass("dnnDisabledAction"))
+        {
+            return false;
+        }
+
+        $loginButton.addClass("dnnDisabledAction");
+        eval($loginButton.attr("href"));
+        return true;
+    }
 </script>
