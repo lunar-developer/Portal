@@ -11,6 +11,7 @@ using Modules.UserManagement.Global;
 using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
+using Website.Library.Global;
 
 namespace DesktopModules.Modules.UserManagement
 {
@@ -27,9 +28,11 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
+            List<string> listExclude = new List<string> { "-1" };
             ListItem item = new ListItem("Chưa chọn", "-2");
             item.Attributes.Add("disabled", "disabled");
-            BindBranchData(ddlBranch, false, false, item);
+            BindBranchData(ddlBranch, listExclude, item);
+
             btnSave.Visible = IsAdministrator();
             btnDelete.Visible = false;
             RegisterConfirmDialog(btnDelete, "Bạn có chắc muốn xóa thông tin này?");
@@ -44,6 +47,8 @@ namespace DesktopModules.Modules.UserManagement
             tbRemark.Text = string.Empty;
             ddlBranch.SelectedIndex = 0;
             ddlIsDisable.SelectedIndex = 0;
+            lblModifyDateTime.Text = string.Empty;
+            lblModifyUserID.Text = string.Empty;
             hidTemplateID.Value = "0";
         }
 
@@ -71,7 +76,7 @@ namespace DesktopModules.Modules.UserManagement
             }
 
             ddlBranch.Enabled = false;
-            btnDelete.Visible = true;
+            btnDelete.Visible = IsAdministrator();
             hidTemplateID.Value = templateID;
             SetData(dsResult.Tables[0].Rows[0]);
 
@@ -89,9 +94,11 @@ namespace DesktopModules.Modules.UserManagement
             tbTemplateName.Text = row[RoleTemplateTable.TemplateName].ToString();
             tbRemark.Text = row[BaseTable.Remark].ToString();
             ddlIsDisable.SelectedValue = bool.Parse(row[BaseTable.IsDisable].ToString()) ? "1" : "0";
+            lblModifyDateTime.Text = FunctionBase.FormatDate(row[BaseTable.ModifyDateTime].ToString());
+            lblModifyUserID.Text = FunctionBase.FormatUserID(row[BaseTable.ModifyUserID].ToString());
         }
 
-        private void RenderRoleGroup(DataTable roleGroupTable, List<int> listRoleID)
+        private void RenderRoleGroup(DataTable roleGroupTable, ICollection<int> listRoleID)
         {
             StringBuilder html = new StringBuilder();
             foreach (DataRow row in roleGroupTable.Rows)
@@ -103,44 +110,25 @@ namespace DesktopModules.Modules.UserManagement
             DivRoles.InnerHtml = html.ToString();
         }
 
-        private string RenderRole(string roleGroupID, string roleGroupName, List<int> listRoleID)
+        private static string RenderRole(string roleGroupID, string roleGroupName, ICollection<int> listRoleID)
         {
-            RoleController roleController = new RoleController();
-            StringBuilder html = new StringBuilder();
-            html.Append("<div class='form-group'>");
-            html.Append("<div class='col-sm-12'>");
-            html.Append("<h2 class='dnnFormSectionHead'>");
-            html.Append($"<a href='#'>{roleGroupName}</a>");
-            html.Append("</h2>");
-            html.Append("<fieldset>");
-            html.Append("<table class='table c-margin-t-10'>");
-            html.Append("<colgroup>");
-            html.Append("<col width='10%' />");
-            html.Append("<col width='10%' />");
-            html.Append("<col width='25%' />");
-            html.Append("<col width='55%' />");
-            html.Append("</colgroup>");
-            html.Append("<thead>");
-            html.Append("<tr>");
-            html.Append("<th class='text-center'>");
-            html.Append("<div class='c-checkbox text-center has-info'>");
-            html.Append(
-                $"<input type='checkbox' id='RoleGroup{roleGroupID}' autocomplete='off' onclick='toggleGroup(this, {roleGroupID})' />");
-            html.Append($"<label for='RoleGroup{roleGroupID}'>");
-            html.Append("<span class='inc'></span>");
-            html.Append("<span class='check'></span>");
-            html.Append("<span class='box'></span>");
-            html.Append("</label>");
-            html.Append("</div>");
-            html.Append("</th>");
-            html.Append("<th>Hiện hữu</th>");
-            html.Append("<th>Quyền</th>");
-            html.Append("<th>Diễn Giải</th>");
-            html.Append("</tr>");
-            html.Append("</thead>");
-            html.Append("<tbody>");
+            string checkBoxGroup = $@"
+                <div class='c-checkbox text-center has-info'>
+                    <input  type='checkbox' 
+                            id='RoleGroup{roleGroupID}'
+                            autocomplete='off'
+                            onclick='toggleGroup(this, {roleGroupID})' />
+                    <label for='RoleGroup{roleGroupID}'>
+                        <span class='inc'></span>
+                        <span class='check'></span>
+                        <span class='box'></span>
+                    </label>
+                </div>";
+
 
             int i = -1;
+            RoleController roleController = new RoleController();
+            StringBuilder content = new StringBuilder();
             foreach (RoleInfo role in roleController.GetRolesByGroup(0, int.Parse(roleGroupID)))
             {
                 i++;
@@ -148,39 +136,45 @@ namespace DesktopModules.Modules.UserManagement
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
                 bool isHasRole = listRoleID.Contains(role.RoleID);
                 string grantImage = isHasRole
-                    ? $"<img src='{Request.ApplicationPath}/images/grant.gif' />".Replace(@"//", @"/")
+                    ? $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />"
                     : string.Empty;
 
-                html.Append($"<tr class='{cssRow}'>");
-                html.Append("<td class='text-center'>");
-                html.Append("<div class='c-checkbox text-center has-info'>");
-                html.Append(
-                    $"<input name='Roles' type='checkbox' {(isHasRole ? "checked='checked'" : string.Empty)} value='{role.RoleID}' class='c-check' id='{elementID}' group='{roleGroupID}' autocomplete='off'>");
-                html.Append($"<label for='{elementID}'>");
-                html.Append("<span class='inc'></span>");
-                html.Append("<span class='check'></span>");
-                html.Append("<span class='box'></span>");
-                html.Append("</label>");
-                html.Append("</div>");
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append(grantImage);
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append($"<label for='{elementID}'>{role.RoleName}</label>");
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append($"<label for='{elementID}'>{role.Description}</label>");
-                html.Append("</td>");
-                html.Append("</tr>");
+                string checkBoxControl = $@"
+                    <div class='c-checkbox text-center has-info'>
+                        <input  name='Roles'
+                                type='checkbox'
+                                {(isHasRole ? "checked='checked'" : string.Empty)}
+                                value='{role.RoleID}'
+                                class='c-check'
+                                id='{elementID}'
+                                group='{roleGroupID}'
+                                autocomplete='off'>
+                        <label for='{elementID}'>
+                            <span class='inc'></span>
+                            <span class='check'></span>
+                            <span class='box'></span>
+                        </label>
+                    </div>";
+
+                content.Append($@"
+                    <tr class='{cssRow}'>
+                        <td class='text-center'>
+                            {checkBoxControl}
+                        </td>
+                        <td>
+                            {grantImage}
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.RoleName}</label>
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.Description}</label>
+                        </td>
+                    </tr>");
             }
-            html.Append("</tbody>");
-            html.Append("</table>");
-            html.Append("</fieldset>");
-            html.Append("</div>");
-            html.Append("</div>");
-            return html.ToString();
+            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
         }
+
 
         protected void Update(object sender, EventArgs e)
         {
@@ -229,7 +223,14 @@ namespace DesktopModules.Modules.UserManagement
         protected void ProcessOnChangeBranch(object sender, EventArgs e)
         {
             DataTable roleGroupTable = BranchBusiness.GetBranchPermission(ddlBranch.SelectedValue);
-            RenderRoleGroup(roleGroupTable, new List<int>());
+            if (roleGroupTable.Rows.Count == 0)
+            {
+                DivRoles.InnerHtml = "Không tìm thấy thông tin cấu hình phân quyền của chi nhánh.";
+            }
+            else
+            {
+                RenderRoleGroup(roleGroupTable, new List<int>());
+            }
         }
     }
 }

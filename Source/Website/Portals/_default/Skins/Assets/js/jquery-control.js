@@ -59,7 +59,12 @@
 
             this._on(this.input, {
                 autocompleteselect: function(event, ui)
-                {                    
+                {
+                    if (ui.item.option.value === this.element.val())
+                    {
+                        return;
+                    }
+
                     ui.item.option.selected = true;
                     this._trigger("select", event, {
                         item: ui.item.option

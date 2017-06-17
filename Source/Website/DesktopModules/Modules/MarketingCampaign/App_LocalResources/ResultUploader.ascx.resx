@@ -121,6 +121,6 @@
     <value>Chọn file để tải lên hệ thống. Yêu cầu định dạng CSV</value>
   </data>
   <data name="lblFileBrowser.Text" xml:space="preserve">
-    <value>Browse File (CSV)</value>
+    <value>Browse File (CSV, Excel)</value>
   </data>
 </root>

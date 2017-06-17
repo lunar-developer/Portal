@@ -1084,55 +1084,80 @@ Sincerely,
   <data name="//Admin//Taxonomy.String" xml:space="preserve">
     <value>Taxonomy</value>
   </data>
-  <data name="//Home.String" xml:space="preserve">
-    <value>Trang chủ</value>
-  </data>
+    
+    
+    <data name="//Home.String" xml:space="preserve">
+        <value>Trang Chủ</value>
+    </data>
+        <data name="//Home//Event01.String" xml:space="preserve">
+            <value>Quán Quân Huy Động</value>
+        </data>
+            <data name="//Home//Event01//Ranking.String" xml:space="preserve">
+                <value>Kết Quả Xếp Hạng</value>
+            </data>
+            <data name="//Home//Event01//Rules.String" xml:space="preserve">
+                <value>Thể Lệ</value>
+            </data>
+            <data name="//Home//Event01//QuestionAndAnwser.String" xml:space="preserve">
+                <value>Q&amp;A</value>
+            </data>
+            <data name="//Home//Event01//News.String" xml:space="preserve">
+                <value>Tin Tức</value>
+            </data>
+        <data name="//Home//Event02.String" xml:space="preserve">
+            <value>Thách thức Huy Động</value>
+        </data>
+        <data name="//Home//Event03.String" xml:space="preserve">
+            <value>Chương trình Định Hướng</value>
+        </data>
+        <data name="//Home//Promotion.String" xml:space="preserve">
+            <value>Chương Trình Khuyến Mãi</value>
+        </data>
+            <data name="//Home//Promotion//Event01.String" xml:space="preserve">
+                <value>Chuyển Tiền Du Học Không Lo Về Phí</value>
+            </data>
+    
+    <data name="//Information.String" xml:space="preserve">
+        <value>Thông Tin</value>
+    </data>
+        <data name="//Information//Contacts.String" xml:space="preserve">
+            <value>Danh Bạ</value>
+        </data>
+        <data name="//Information//Documents.String" xml:space="preserve">
+            <value>Văn bản</value>
+        </data>
 
-  <data name="//News.String" xml:space="preserve">
-    <value>Tin tức</value>
-  </data>
-  
-  <data name="//News//Event01.String" xml:space="preserve">
-    <value>Quán Quân Huy Động</value>
-  </data>
-  <data name="//News//Event01//Ranking.String" xml:space="preserve">
-    <value>Kết Quả Xếp Hạng</value>
-  </data>
-  <data name="//News//Event01//Rules.String" xml:space="preserve">
-    <value>Thể Lệ</value>
-  </data>
-  <data name="//News//Event01//QuestionAndAnwser.String" xml:space="preserve">
-    <value>Q&amp;A</value>
-  </data>
-  <data name="//News//Event01//News.String" xml:space="preserve">
-    <value>Tin Tức</value>
-  </data>
+    <data name="//Application.String" xml:space="preserve">
+        <value>Hồ Sơ Thẻ</value>
+    </data>
 
-  <data name="//News//Event02.String" xml:space="preserve">
-    <value>Thách thức Huy Động</value>
-  </data>
-  <data name="//News//Event03.String" xml:space="preserve">
-    <value>Chương trình Định Hướng</value>
-  </data>
-  <data name="//News//Promotion.String" xml:space="preserve">
-    <value>Chương Trình Khuyến Mãi</value>
-  </data>
-  <data name="//News//Promotion//Event01.String" xml:space="preserve">
-    <value>Chuyển Tiền Du Học Không Lo Về Phí</value>
-  </data>
-  <data name="//Documents.String" xml:space="preserve">
-    <value>Văn bản</value>
-  </data>
+    <data name="//Business.String" xml:space="preserve">
+        <value>Nghiệp Vụ</value>
+    </data>
+        <data name="//Business//Marketing.String" xml:space="preserve">
+            <value>Ấn Phẩm Quảng Cáo</value>
+        </data>
+        <data name="//Business//Marketing//FileManagement.String" xml:space="preserve">
+            <value>Quản Lý Văn Bản</value>
+        </data>
+        <data name="//Business//Marketing//UploadEvent01Result.String" xml:space="preserve">
+            <value>Upload Kết Quả Quán Quân</value>
+        </data>
+        <data name="//Business//Marketing//SurveyBuilder.String" xml:space="preserve">
+            <value>Quản Lý Survey</value>
+        </data>
+    
+        <data name="//Business//Disbursement.String" xml:space="preserve">
+            <value>Giải Ngân</value>
+        </data>
+    
+    <data name="//Management.String" xml:space="preserve">
+        <value>Quản Trị</value>
+    </data>
+
   
-  <data name="//Business.String" xml:space="preserve">
-    <value>Nghiệp Vụ</value>
-  </data>
-  <data name="//Business//Marketing.String" xml:space="preserve">
-    <value>Ấn Phẩm Quảng Cáo</value>
-  </data>
-  <data name="//Business//Disbursement.String" xml:space="preserve">
-    <value>Giải Ngân</value>
-  </data>
+  
+  
 
 
   <data name="//Host//ConfigurationManager.String" xml:space="preserve">

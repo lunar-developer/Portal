@@ -55,16 +55,11 @@
     <Compile Include="DataAccess\RoleGroupProvider.cs" />
     <Compile Include="DataAccess\BranchProvider.cs" />
     <Compile Include="DataAccess\UserProvider.cs" />
-    <Compile Include="Database\BranchPositionRoleTable.cs" />
-    <Compile Include="Database\BranchPositionTable.cs" />
     <Compile Include="Database\RoleTemplateTable.cs" />
     <Compile Include="Database\RoleGroupTable.cs" />
     <Compile Include="Database\BranchTable.cs" />
     <Compile Include="Database\UserTable.cs" />
     <Compile Include="DataTransfer\BranchData.cs" />
-    <Compile Include="DataTransfer\BranchPositionData.cs" />
-    <Compile Include="DataTransfer\BranchPositionRoleData.cs" />
-    <Compile Include="DataTransfer\BranchRoleGroupData.cs" />
     <Compile Include="DataTransfer\UserData.cs" />
     <Compile Include="Enum\ConfigEnum.cs" />
     <Compile Include="Enum\FolderEnum.cs" />

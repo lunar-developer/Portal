@@ -91,15 +91,18 @@ namespace Website.Library.Global
             return ";$('.dnnToggleMax').click();";
         }
 
-        protected string GetAutoPostScript(string url, Dictionary<string, string> dictionary, bool isOpenNewTab = true)
+        protected string GetAutoPostScript(string url, Dictionary<string, string> dictionary = null, bool isOpenNewTab = true)
         {
             string id = Guid.NewGuid().ToString(PatternEnum.GuidDigits);
             StringBuilder form = new StringBuilder();
             form.Append(
                 $"<form id=\"{id}\" action=\"{url}\" method=\"post\" target=\"{(isOpenNewTab ? "_blank" : "_self")}\">");
-            foreach (KeyValuePair<string, string> pair in dictionary)
+            if (dictionary != null)
             {
-                form.Append($"<input type=\"hidden\" name=\"{pair.Key}\" value=\"{pair.Value}\" />");
+                foreach (KeyValuePair<string, string> pair in dictionary)
+                {
+                    form.Append($"<input type=\"hidden\" name=\"{pair.Key}\" value=\"{pair.Value}\" />");
+                }
             }
             form.Append("</form>");
             return $"$('body').append('{form}'); $('#{id}').submit().remove();";
@@ -108,9 +111,9 @@ namespace Website.Library.Global
         protected string GetWindowOpenScript(string url, Dictionary<string, string> dictionary,
             bool isOpenNewTab = true)
         {
-            string parameters = dictionary.Count == 0
+            string parameters = dictionary == null || dictionary.Count == 0
                 ? string.Empty
-                : "?" + string.Join("&", dictionary.Select(pair => $"{pair.Key}={pair.Value}").ToArray());
+                : "?" + string.Join("&", dictionary.Select(pair => $"{pair.Key}={pair.Value}"));
             return $"window.open(\"{url}{parameters}\", \"{(isOpenNewTab ? "_blank" : "_self")}\")";
         }
 

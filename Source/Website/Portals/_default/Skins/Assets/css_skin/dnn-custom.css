@@ -428,3 +428,8 @@ ul#ControlBar_Module_ModulePosition li
 {
     background-color: #cce8ff !important;
 }
+.ui-dialog-content
+{
+    text-align: justify;
+    line-height: 30px;
+}

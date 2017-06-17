@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.Global;
@@ -20,7 +21,8 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            BindBranchData(ddlBranch);
+            List<string> listExclude = new List<string> { "-1" };
+            BindBranchData(ddlBranch, listExclude);
         }
 
         protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)

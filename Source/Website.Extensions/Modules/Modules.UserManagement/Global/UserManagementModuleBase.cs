@@ -1,6 +1,6 @@
-﻿using System.Web.UI.WebControls;
+﻿using System.Collections.Generic;
+using System.Web.UI.WebControls;
 using Modules.UserManagement.Business;
-using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
 using Website.Library.Global;
@@ -9,25 +9,39 @@ namespace Modules.UserManagement.Global
 {
     public class UserManagementModuleBase : DesktopModuleBase
     {
-        private static string DetailUrl;
-        private static readonly string LDAPEmail = FunctionBase.GetConfiguration(ConfigEnum.LDAPEmail);
+        public static readonly string UserDetailUrl =
+            FunctionBase.GetTabUrl(FunctionBase.GetConfiguration(ConfigEnum.EditUrl));
+        public static readonly string LDAPEmail = FunctionBase.GetConfiguration(ConfigEnum.LDAPEmail);
 
-
-        protected void BindBranchData(
-            DropDownList dropDownList,
-            bool isUseBranchCode = false,
-            bool isUseOptionAll = false,
-            params ListItem[] additionalItems)
+        protected void BindBranchData(DropDownList dropDownList)
         {
-            BindBranchData(dropDownList, UserInfo.UserID.ToString(), isUseBranchCode, isUseOptionAll, additionalItems);
+            BindBranchData(dropDownList, UserInfo.UserID.ToString());
         }
 
-        public static void BindBranchData(
-            DropDownList dropDownList,
-            string userID,
-            bool isUseBranchCode = false,
-            bool isUseOptionAll = false,
-            params ListItem[] additionalItems)
+        public static void BindBranchData(DropDownList dropDownList, string userID)
+        {
+            BindBranchData(dropDownList, userID, false);
+        }
+
+        public static void BindBranchData(DropDownList dropDownList, string userID, bool isUseBranchCode)
+        {
+            BindBranchData(dropDownList, userID, isUseBranchCode, false);
+        }
+
+        public static void BindBranchData(DropDownList dropDownList, string userID, bool isUseBranchCode,
+            bool isUseOptionAll)
+        {
+            BindBranchData(dropDownList, userID, isUseBranchCode, isUseOptionAll, new List<string>());
+        }
+
+        public static void BindBranchData(DropDownList dropDownList, string userID, bool isUseBranchCode,
+            bool isUseOptionAll, List<string> listExclude)
+        {
+            BindBranchData(dropDownList, userID, isUseBranchCode, isUseOptionAll, listExclude, null);
+        }
+
+        public static void BindBranchData(DropDownList dropDownList, string userID, bool isUseBranchCode,
+            bool isUseOptionAll, List<string> listExclude, params ListItem[] additionalItems)
         {
             if (isUseOptionAll)
             {
@@ -39,26 +53,21 @@ namespace Modules.UserManagement.Global
             }
             foreach (BranchData branch in UserBusiness.GetUserBranch(userID))
             {
-                dropDownList.Items.Add(CreateListItem(branch, isUseBranchCode));
-            }
-        }
+                if (isUseBranchCode)
+                {
+                    if (listExclude.Contains(branch.BranchCode))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (listExclude.Contains(branch.BranchID))
+                    {
+                        continue;
+                    }
+                }
 
-        public static void BindAllBranchData(
-            DropDownList dropDownList,
-            bool isUseBranchCode = false,
-            bool isUseOptionAll = false,
-            params ListItem[] additionalItems)
-        {
-            if (isUseOptionAll)
-            {
-                dropDownList.Items.Add(CreateListAllItem());
-            }
-            if (additionalItems != null)
-            {
-                dropDownList.Items.AddRange(additionalItems);
-            }
-            foreach (BranchData branch in CacheBase.Receive<BranchData>())
-            {
                 dropDownList.Items.Add(CreateListItem(branch, isUseBranchCode));
             }
         }
@@ -84,21 +93,85 @@ namespace Modules.UserManagement.Global
             return item;
         }
 
-
-        
-
-
-        
-        protected string GetEditUrl()
+        protected void BindBranchData(DropDownList dropDownList, List<string> listExclude)
         {
-            return DetailUrl ??
-                (DetailUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_EditUrl")) ?? string.Empty);
+            BindBranchData(dropDownList, UserInfo.UserID.ToString(), false, false, listExclude);
         }
 
+        protected void BindBranchData(DropDownList dropDownList, List<string> listExclude,
+            params ListItem[] additionalItems)
+        {
+            BindBranchData(dropDownList, UserInfo.UserID.ToString(), listExclude, additionalItems);
+        }
+
+        public static void BindBranchData(DropDownList dropDownList, string userID, List<string> listExclude,
+            params ListItem[] additionalItems)
+        {
+            BindBranchData(dropDownList, userID, false, false, listExclude, additionalItems);
+        }
+
+        public static void BindAllBranchData(DropDownList dropDownList)
+        {
+            BindAllBranchData(dropDownList, false);
+        }
+
+        public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode)
+        {
+            BindAllBranchData(dropDownList, false, false);
+        }
+
+        public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll)
+        {
+            BindAllBranchData(dropDownList, false, false, new List<string>());
+        }
+
+        public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll,
+            List<string> listExclude)
+        {
+            BindAllBranchData(dropDownList, false, false, new List<string>(), null);
+        }
+
+        public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll,
+            List<string> listExclude, params ListItem[] additionalItems)
+        {
+            if (isUseOptionAll)
+            {
+                dropDownList.Items.Add(CreateListAllItem());
+            }
+            if (additionalItems != null)
+            {
+                dropDownList.Items.AddRange(additionalItems);
+            }
+            foreach (BranchData branch in CacheBase.Receive<BranchData>())
+            {
+                if (isUseBranchCode)
+                {
+                    if (listExclude.Contains(branch.BranchCode))
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (listExclude.Contains(branch.BranchID))
+                    {
+                        continue;
+                    }
+                }
+
+                dropDownList.Items.Add(CreateListItem(branch, isUseBranchCode));
+            }
+        }
+        
 
         protected bool IsAdministrator()
         {
-            return IsInRole(RoleEnum.UserManagementAdministrator);
+            return IsInRole(RoleEnum.Administrator) || IsSuperAdministrator();
+        }
+
+        protected bool IsSuperAdministrator()
+        {
+            return UserInfo.IsSuperUser;
         }
 
         protected bool IsOwner(string userID)
@@ -106,21 +179,52 @@ namespace Modules.UserManagement.Global
             return userID == UserInfo.UserID.ToString();
         }
 
-        public static string FormatBranchCode(string value)
+        public static string FormatBranchCode(string branchCode)
         {
-            BranchData branch = CacheBase.Find<BranchData>(BranchTable.BranchCode, value.Trim());
-            return branch == null ? value : $"{branch.BranchCode} - {branch.BranchName}";
+            return BranchBusiness.GetBranchNameByBranchCode(branchCode);
         }
 
-        public static string FormatBranchID(string value)
+        public static string FormatBranchID(string branchID)
         {
-            BranchData branch = CacheBase.Receive<BranchData>(value);
-            return branch == null ? value : $"{branch.BranchCode} - {branch.BranchName}";
+            return BranchBusiness.GetBranchName(branchID);
         }
 
         public static bool IsLDAPEmail(string value)
         {
             return value.ToLower().EndsWith(LDAPEmail);
         }
+
+
+        protected static string RoleHtml = @"
+            <div class='form-group'>
+                <div class='col-sm-12'>
+                    <h2 class='dnnFormSectionHead'>
+                        <a href='#'>{0}</a>
+                    </h2>
+                    <fieldset>
+                        <table class='table c-margin-t-10'>
+                            <colgroup>
+                                <col width='10%' />
+                                <col width='10%' />
+                                <col width='25%' />
+                                <col width='55%' />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th class='text-center'>
+                                        {1}
+                                    </th>
+                                    <th>Hiện hữu</th>
+                                    <th>Quyền</th>
+                                    <th>Diễn Giải</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {2}
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>";
     }
 }

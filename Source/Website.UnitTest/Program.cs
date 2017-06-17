@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Modules.UserManagement.Business;
@@ -21,95 +23,11 @@ namespace Website.UnitTest
         {
             try
             {
-                BranchData data = BranchBusiness.GetAllBranchInfo()[0];
-                Console.WriteLine(data.BranchID);
-                return;
-
-                List<string> listaa = new List<string>
+                Dictionary<string, string> dictionary = null;
+                foreach (KeyValuePair<string, string> keyValuePair in dictionary)
                 {
-                    "1", "2", "3", "4", "5", "6", "7"
-                };
-                Parallel.ForEach(
-                    listaa,
-                    new ParallelOptions
-                    {
-                        MaxDegreeOfParallelism = 5
-
-                    }, messageData =>
-                    {
-                        if (messageData == "1")
-                        {
-                            System.Threading.Thread.Sleep(10000);
-                            Console.WriteLine("sleep");
-                        }
-                        Console.WriteLine(messageData);
-                    });
-                Console.WriteLine("outside");
-                return;
-
-
-                Type type1 = Type.GetType("Modules.UserManagement.DataTransfer.BranchData, Modules.UserManagement");
-                if (type1 == null)
-                {
-                    return;
+                    Console.WriteLine(keyValuePair.Value);
                 }
-
-                CacheBase.Inject(new BranchCacheBusiness<BranchData>());
-                var list = CacheBase.Receive<BranchData>();
-                Console.WriteLine(list.Count);
-
-                MethodInfo method = typeof(CacheBase).GetMethod("Receive", new Type[0]).MakeGenericMethod(type1);
-                List<object> listdata = ((IEnumerable<object>) method.Invoke(null, new object[0])).ToList();
-
-                Console.WriteLine(listdata.Count);
-                return;
-
-                CacheBase.Inject(new BranchCacheBusiness<BranchData>());
-
-                BranchData branch = CacheBase.Receive<BranchData>("1");
-                Console.WriteLine(branch?.BranchID);
-
-                string assemblyName = "Modules.UserManagement";
-                string cacheName = "Modules.UserManagement.DataTransfer.BranchData";
-                
-
-               //Dictionary<string, string> dictionary = new Dictionary<string, string>
-               //{
-               //    { "BranchID", "1000" }
-               //};
-               // Type type = Type.GetType($"{cacheName}, {assemblyName}");
-               // if (type == null) return;
-               // object data = Activator.CreateInstance(type);
-               // foreach (KeyValuePair<string, string> pair in dictionary)
-               // {
-               //     type.GetField(pair.Key)?.SetValue(data, pair.Value);
-               // }
-               // string cacheid = "1";
-               // MethodInfo method = typeof(CacheBase).GetMethod("Remove").MakeGenericMethod(type);
-               // method.Invoke(null, new[] { cacheid });
-
-               // branch = CacheBase.Receive<BranchData>("1");
-               // Console.WriteLine(branch?.BranchID);
-
-                //Console.WriteLine(type.FullName);
-                //Console.WriteLine("***\r\n Begin program - no logging\r\n");
-                ////IRepository<Customer> customerRepository =
-                ////  new Repository<Customer>();
-                ////IRepository<Customer> customerRepository =
-                ////    new LoggerRepository<Customer>(new Repository<Customer>());
-                //IRepository<Customer> customerRepository =
-                //    RepositoryFactory.Create<Customer>();
-                //var customer = new Customer
-                //{
-                //    Id = 1,
-                //    Name = "Customer 1",
-                //    Address = "Address 1"
-                //};
-                //customerRepository.Add(customer);
-                //customerRepository.Update(customer);
-                //customerRepository.Delete(customer);
-                //Console.WriteLine("\r\nEnd program - no logging\r\n***");
-                //Console.ReadLine();
             }
             catch (Exception exception)
             {

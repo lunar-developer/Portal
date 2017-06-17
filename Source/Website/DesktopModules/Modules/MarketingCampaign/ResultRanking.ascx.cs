@@ -8,6 +8,7 @@ using Modules.MarketingCampaign.DataTransfer;
 using Modules.MarketingCampaign.Enum;
 using Website.Library.Global;
 using System.Collections.Generic;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace DesktopModules.Modules.MarketingCampaign
 {
@@ -33,10 +34,10 @@ namespace DesktopModules.Modules.MarketingCampaign
             <table class=""table c-margin-t-10"">
                 <colgroup>
                     <col width=""10%"" />
+                    <col width=""10%"" />
                     <col width=""20%"" />
                     <col width=""20%"" />
-                    <col width=""20%"" />
-                    <col width=""20%"" />
+                    <col width=""30%"" />
                     <col width=""10%"" />
                 </colgroup>
                 <thead>

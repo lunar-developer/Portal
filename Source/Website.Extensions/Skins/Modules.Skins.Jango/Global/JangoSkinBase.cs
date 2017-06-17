@@ -108,7 +108,7 @@ namespace Modules.Skins.Jango.Global
             {
                 string profileUrl =
                     TabController.Instance.GetTabByName("User Information", PortalSettings.PortalId).FullUrl
-                    + $"?UserID={UserController.Instance.GetCurrentUserInfo().UserID}";
+                    + $"/UserID/{UserController.Instance.GetCurrentUserInfo().UserID}";
                 string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
 
                 return $@"

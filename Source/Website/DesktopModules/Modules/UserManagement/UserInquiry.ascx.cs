@@ -4,7 +4,6 @@ using Modules.UserManagement.Global;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using Website.Library.DataTransfer;
 
@@ -41,24 +40,13 @@ namespace DesktopModules.Modules.UserManagement
 
         protected void AddUser(object sender, EventArgs e)
         {
-            string script = GetWindowOpenScript(GetEditUrl(), new Dictionary<string, string>());
+            string script = GetWindowOpenScript(UserDetailUrl, new Dictionary<string, string>());
             RegisterScript(script);
         }
 
-        protected void EditUser(object sender, EventArgs e)
+        protected string GetEditUrl(string userID)
         {
-            LinkButton button = sender as LinkButton;
-            if (button == null)
-            {
-                return;
-            }
-
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
-            {
-                { UserTable.UserID, button.CommandArgument }
-            };
-            string script = GetWindowOpenScript(GetEditUrl(), dictionary);
-            RegisterScript(script);
+            return $"{UserDetailUrl}/{UserTable.UserID}/{userID}";
         }
 
         protected void ExportUser(object sender, EventArgs e)
@@ -78,7 +66,7 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            BindBranchData(ddlBranch, false, true);
+            BindBranchData(ddlBranch, UserInfo.UserID.ToString(), false, true);
         }
 
         private void BindGrid(int pageIndex = 0)

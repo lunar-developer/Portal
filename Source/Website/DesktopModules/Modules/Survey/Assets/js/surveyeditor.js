@@ -215,7 +215,7 @@
                 var defaultStrings = {
                     //survey templates
                     survey: {
-                        dropQuestion: "Please drop a question here.",
+                        dropQuestion: "Please choose the question type in control box.",
                         copy: "Copy",
                         addToToolbox: "Add to toolbox",
                         deletePanel: "Delete Panel",
@@ -2376,7 +2376,7 @@
                         }
                         return index + info.elIndex;
                     };
-                    DragDropTargetElement.prototype.canMove = function(destInfo) {
+                    DragDropTargetElement.prototype.canMove = function (destInfo) {
                         if (this.target.isPanel && destInfo.element) {
                             if (this.target == destInfo.element || this.target.containsElement(destInfo.element))
                                 return false;
@@ -2522,7 +2522,7 @@
                     return DragDropTargetElement;
                 }());
 
-                var DragDropHelper = (function() {
+                var DragDropHelper = (function () {
                     function DragDropHelper(data, onModifiedCallback, scrollableElName) {
                         if (scrollableElName === void 0) {
                             scrollableElName = null;
@@ -2546,14 +2546,16 @@
                         enumerable: true,
                         configurable: true
                     });
-                    DragDropHelper.prototype.startDragQuestion = function(event, element) {
-                        var json = new __WEBPACK_IMPORTED_MODULE_0_survey_knockout__["JsonObject"]().toJsonObject(element);
-                        json["type"] = element.getType();
-                        this.prepareData(event, element.name, json);
-                        this.ddTarget.source = element;
+                    DragDropHelper.prototype.startDragQuestion = function (event, element) {
+                        return false;
+                        //var json = new __WEBPACK_IMPORTED_MODULE_0_survey_knockout__["JsonObject"]().toJsonObject(element);
+                        //json["type"] = element.getType();
+                        //this.prepareData(event, element.name, json);
+                        //this.ddTarget.source = element;
                     };
-                    DragDropHelper.prototype.startDragToolboxItem = function(event, elementName, elementJson) {
-                        this.prepareData(event, elementName, elementJson);
+                    DragDropHelper.prototype.startDragToolboxItem = function (event, elementName, elementJson) {
+                        return false;
+                        //this.prepareData(event, elementName, elementJson);
                     };
                     DragDropHelper.prototype.isSurveyDragging = function(event) {
                         if (!event)
@@ -2561,7 +2563,7 @@
                         var data = this.getData(event).text;
                         return data && data.indexOf(DragDropHelper.dataStart) == 0;
                     };
-                    DragDropHelper.prototype.doDragDropOver = function(event, element, isEdge) {
+                    DragDropHelper.prototype.doDragDropOver = function (event, element, isEdge) {
                         if (isEdge === void 0) {
                             isEdge = false;
                         }
@@ -2584,7 +2586,7 @@
                         this.isScrollStop = true;
                         this.clearData();
                     };
-                    DragDropHelper.prototype.doDrop = function(event) {
+                    DragDropHelper.prototype.doDrop = function (event) {
                         if (event.stopPropagation) {
                             event.stopPropagation();
                         }
@@ -4956,7 +4958,7 @@
                         this.clickToolboxItem = function(item) {
                             self.doClickToolboxItem(item.json);
                         };
-                        this.dragEnd = function(item, e) {
+                        this.dragEnd = function (item, e) {
                             self.dragDropHelper.end();
                         };
                         this.doUndoClick = function() {

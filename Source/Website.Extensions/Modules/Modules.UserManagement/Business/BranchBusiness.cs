@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using Modules.UserManagement.DataAccess;
+using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Website.Library.DataTransfer;
 using Website.Library.Global;
@@ -24,6 +25,11 @@ namespace Modules.UserManagement.Business
             return new BranchProvider().GetBranchPermission(branchID);
         }
 
+        public static DataSet GetBranchPermissionAndTemplate(string branchID)
+        {
+            return new BranchProvider().GetBranchPermissionAndTemplate(branchID);
+        }
+
         public static bool UpdateBranchPermission(Dictionary<string, SQLParameterData> parametediDictionary)
         {
             return new BranchProvider().UpdateBranchPermission(parametediDictionary);
@@ -35,6 +41,14 @@ namespace Modules.UserManagement.Business
             BranchData branchInfo = CacheBase.Receive<BranchData>(branchID);
             return branchInfo == null
                 ? branchID
+                : GetBranchName(branchInfo);
+        }
+
+        public static string GetBranchNameByBranchCode(string branchCode)
+        {
+            BranchData branchInfo = CacheBase.Find<BranchData>(BranchTable.BranchCode, branchCode.Trim());
+            return branchInfo == null
+                ? branchCode
                 : GetBranchName(branchInfo);
         }
 

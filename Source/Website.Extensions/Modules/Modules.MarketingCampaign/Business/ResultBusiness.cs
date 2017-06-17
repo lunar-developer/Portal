@@ -19,9 +19,7 @@ namespace Modules.MarketingCampaign.Business
 
         public static bool InsertResult(List<ResultData> listResult, out string message)
         {
-            DataTable dtResult = new ResultProvider().InsertResult(listResult);
-            message = dtResult.Rows[0][1].ToString();
-            return dtResult.Rows[0][0].ToString() == "1";
+            return new ResultProvider().InsertResult(listResult, out message);
         }
     }
 }

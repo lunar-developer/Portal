@@ -127,7 +127,7 @@ function alertMessage(message, title, buttonText, callback)
     }
 }
 
-function confirmMessage(jquery, message, title, yesText, noText)
+function confirmMessage(jquery, message, title, yesText, noText, callbackTrue, callbackFalse)
 {
     if (typeof title === "undefined" || title === "")
     {
@@ -155,7 +155,9 @@ function confirmMessage(jquery, message, title, yesText, noText)
         buttonYesClass: "btn btn-primary",
         buttonNoClass: "btn btn-default",
         draggable: true,
-        isButton: isButton
+        isButton: isButton,
+        callbackTrue: callbackTrue,
+        callbackFalse: callbackFalse
     });
 }
 
@@ -502,4 +504,9 @@ function cleanUpAutoComplete()
             this.remove();
         }
     });
+}
+
+function collapseAllPanels()
+{
+    $(".dnnPanels fieldset").css("display", "none");
 }

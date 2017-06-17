@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using Modules.UserManagement.DataAccess;
-using Modules.UserManagement.DataTransfer;
 using Website.Library.DataTransfer;
 
 namespace Modules.UserManagement.Business

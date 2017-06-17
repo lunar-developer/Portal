@@ -30,7 +30,8 @@ namespace DesktopModules.Modules.UserManagement
         {
             ListItem item = new ListItem("Vui lòng chọn Chi Nhánh", string.Empty);
             item.Attributes.Add("disabled", "disabled");
-            BindAllBranchData(ddlBranch, false, false, item);
+            List<string> listExclude = new List<string> { "-1" };
+            BindAllBranchData(ddlBranch, false, false, listExclude, item);
 
             btnUpdate.Visible = btnRefresh.Visible = false;
             RegisterConfirmDialog(btnUpdate, "Bạn có chắc muốn cập nhật thay đổi?");

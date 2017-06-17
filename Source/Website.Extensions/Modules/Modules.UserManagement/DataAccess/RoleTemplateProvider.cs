@@ -15,7 +15,7 @@ namespace Modules.UserManagement.DataAccess
             return result;
         }
 
-        public DataSet GetRoleTemplateDetail(string templateID, bool isGetRoleOnly = false)
+        public DataSet GetRoleTemplateDetail(string templateID)
         {
             Connector.AddParameter(RoleTemplateTable.TemplateID, SqlDbType.Int, templateID);
             Connector.ExecuteProcedure("dbo.UM_SP_GetRoleTemplateDetail", out DataSet result);

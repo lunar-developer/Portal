@@ -8,12 +8,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
-using Modules.UserManagement.DataAccess;
-using Modules.UserManagement.DataTransfer;
-using ServiceStack;
 using Telerik.Web.UI;
+using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
 
@@ -21,8 +20,10 @@ namespace DesktopModules.Modules.UserManagement
 {
     public partial class UserDetail : UserManagementModuleBase
     {
-        #region PAGE EVENTS
+        private List<int> ListUserRoles;
 
+
+        #region PAGE EVENTS
         protected override void OnLoad(EventArgs e)
         {
             if (IsPostBack)
@@ -30,15 +31,9 @@ namespace DesktopModules.Modules.UserManagement
                 return;
             }
 
+            // Initialize Page
             AutoWire();
             BindData();
-
-            // Show success message when receive post authorised request
-            string authorised = Request.Params[UserTable.Authorised];
-            if (string.IsNullOrWhiteSpace(authorised) == false)
-            {
-                ShowMessage("Cập nhật thông tin Tài khoản thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
-            }
 
             // Add or Edit User
             string userID = Request.QueryString[UserTable.UserID];
@@ -51,11 +46,9 @@ namespace DesktopModules.Modules.UserManagement
                 LoadUser(userID);
             }
         }
-
         #endregion
 
         #region GRID EVENTS
-
         protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
         {
             BindGrid(null, e.NewPageIndex);
@@ -65,11 +58,21 @@ namespace DesktopModules.Modules.UserManagement
         {
             BindGrid(null);
         }
+        #endregion
 
+        #region COMBOBOX EVENTS
+        protected void ProcessOnBranchChanged(object sender, EventArgs e)
+        {
+            if (DivRoles.Visible == false)
+            {
+                return;
+            }
+
+            LoadRoles();
+        }
         #endregion
 
         #region BUTTON EVENTS
-
         protected void SaveProfile(object sender, EventArgs e)
         {
             bool isInsertMode = int.Parse(hidUserID.Value) == 0;
@@ -82,9 +85,10 @@ namespace DesktopModules.Modules.UserManagement
                     txtUserName.Focus();
                     return;
                 }
-                if (email.EndsWith(FunctionBase.GetConfiguration("UM_LDAPEmail")))
+                if (email.EndsWith(LDAPEmail))
                 {
-                    ShowMessage(@"Nếu bạn là <b>nhân viên của VietBank</b> vui lòng liên hệ phòng nhân sự để được tạo tài khoản.
+                    ShowMessage(
+                        @"Nếu bạn là <b>nhân viên của VietBank</b> vui lòng liên hệ phòng nhân sự để được tạo tài khoản.
                         Chức năng Thêm mới chỉ áp dụng cho <b>Cộng tác viên</b>.");
                     txtUserName.Focus();
                     return;
@@ -93,23 +97,20 @@ namespace DesktopModules.Modules.UserManagement
 
             // Process Insert|Update
             string message;
-            Dictionary<string, string> dictionary = GetData();
+            Dictionary<string, SQLParameterData> dictionary = GetData();
             int userID = isInsertMode
                 ? UserBusiness.CreateUser(dictionary, out message)
                 : UserBusiness.UpdateProfile(dictionary, out message);
 
-            if (userID == 0)
+            if (userID <= 0)
             {
                 ShowMessage(message, ModuleMessage.ModuleMessageType.RedError);
             }
-            else if(isInsertMode)
+            else if (isInsertMode)
             {
-                dictionary = new Dictionary<string, string>
-                {
-                    { UserTable.Authorised, "1" }
-                };
-                string url = $"{GetEditUrl()}?{UserTable.UserID}={userID}";
-                RegisterScript(GetAutoPostScript(url, dictionary, false));
+                Session[UserTable.Authorised] = "1";
+                string url = $"{UserDetailUrl}/{UserTable.UserID}/{userID}";
+                RegisterScript(GetWindowOpenScript(url, null, false));
             }
             else
             {
@@ -120,32 +121,34 @@ namespace DesktopModules.Modules.UserManagement
 
         protected void UpdateRole(object sender, EventArgs e)
         {
-            Dictionary<string,string> dictionary = new Dictionary<string, string>
+            Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserID, hidUserID.Value },
-                { "Roles", Request.Params["Roles"] },
-                { UserTable.Remark, txtRoleRemark.Text.Trim() },
-                { UserTable.ModifyUserID, UserInfo.UserID.ToString() },
-                { UserTable.ModifyDateTime, DateTime.Now.ToString(PatternEnum.DateTime) }
+                { UserTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
+                { "Roles", new SQLParameterData(Request.Params["Roles"], SqlDbType.VarChar) },
+                { UserTable.Remark, new SQLParameterData(txtRoleRemark.Text.Trim(), SqlDbType.NVarChar) },
+                { UserTable.ModifyUserID, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
+                {
+                    UserTable.ModifyDateTime,
+                    new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
+                }
             };
 
-            string message;
-            if (UserBusiness.UpdateRole(dictionary, txtUserName.Text.Trim(), out message))
+            if (UserBusiness.UpdateRole(dictionary, txtUserName.Text.Trim()))
             {
                 ShowMessage("Cập nhật thông tin Tài khoản thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
                 LoadUser(hidUserID.Value);
             }
             else
             {
-                ShowMessage(message, ModuleMessage.ModuleMessageType.RedError);
+                ShowMessage("Cập nhật thông tin Tài khoản thất bại.", ModuleMessage.ModuleMessageType.RedError);
             }
         }
 
         protected void UpdatePassword(object sender, EventArgs e)
         {
-            string password = txtNewPassword.Text.Trim();
+            string newPassword = txtNewPassword.Text.Trim();
             string message;
-            if (password != txtConfirmPassword.Text.Trim())
+            if (newPassword != txtConfirmPassword.Text.Trim())
             {
                 message = GetSharedResource("PasswordMismatch");
                 ShowMessage(message);
@@ -153,9 +156,10 @@ namespace DesktopModules.Modules.UserManagement
             }
 
             // Process update password
+            string oldPassword = txtOldPassword.Text.Trim();
             UserInfo user = UserController.GetUserById(PortalId, int.Parse(hidUserID.Value));
             PasswordUpdateStatus status;
-            if (UserBusiness.UpdatePassword(user, password, UserInfo.UserID, out status))
+            if (UserBusiness.UpdatePassword(user, oldPassword, newPassword, UserInfo.UserID, out status))
             {
                 ShowMessage("Cập nhật thông tin Tài khoản thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
                 LoadUser(hidUserID.Value);
@@ -166,7 +170,6 @@ namespace DesktopModules.Modules.UserManagement
                 ShowMessage(message);
             }
         }
-
         #endregion
 
         private void CreateNewUser()
@@ -192,251 +195,258 @@ namespace DesktopModules.Modules.UserManagement
                 DivUserInformation.Visible = false;
                 return;
             }
+            if (Session[UserTable.Authorised] != null && Session[UserTable.Authorised].ToString() == "1")
+            {
+                Session.Remove(UserTable.Authorised);
+                ShowMessage("Lưu thông tin Tài khoản thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
 
-            // Reset all fields
             ResetData();
 
             // Load User Information
-            DataRow user = dsResult.Tables[0].Rows[0];
-            txtUserName.Text = user[UserTable.UserName].ToString();
-            txtUserID.Text = user[UserTable.UserID].ToString();
-            txtDisplayName.Text = user[UserTable.DisplayName].ToString();
-            ddlGender.SelectedValue = user[UserTable.Gender].ToString();
-            txtMobile.Text = user[UserTable.Mobile].ToString();
-            txtPhoneExtension.Text = user[UserTable.PhoneExtension].ToString();
-            txtStaffID.Text = user[UserTable.StaffID].ToString();
-            string branchValue = CacheBase.Receive<UserData>(userID)?.BranchID;
-            if (!string.IsNullOrWhiteSpace(branchValue) && !string.IsNullOrWhiteSpace(user[UserTable.Title].ToString()))
-            {
-              //  int positionCode = int.Parse(user[UserTable.Title].ToString());
-                int branchID = int.Parse(branchValue);
-             //   txtTitle.Text = new BranchProvider().GetUserPosition(branchID, positionCode);
-                txtTitle.Text = user[UserTable.Title].ToString();
-            }
-            else
-            {
-                txtTitle.Text = @"N/A";
-            }
-            ddlTitle.SelectedValue = user[UserTable.Title].ToString();
-            ddlBranch.SelectedValue = user[UserTable.BranchID].ToString();
-            txtLineManager.Text = user[UserTable.LineManager].ToString();
-            txtAuthorised.Text = user[UserTable.Authorised].ToString();
-            DateTime date = DateTime.Parse(user[UserTable.LastLoginDate].ToString());
-            txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
-            hidIsAccountLDAP.Value = bool.Parse(user[UserTable.IsAccountLDAP].ToString()) ? "1" : "0";
-            hidUserID.Value = userID;
+            SetData(dsResult.Tables[0].Rows[0]);
             SetPermission();
-
             LoadRoles();
             LoadHistory(dsResult.Tables[1]);
         }
 
         private void SetPermission()
         {
-            bool isEditMode = int.Parse(hidUserID.Value) > 0;
+            int userID;
+            bool isEditMode = int.TryParse(hidUserID.Value, out userID) && userID > 0;
             bool isOwner = isEditMode && IsOwner(hidUserID.Value);
             bool isRoleEdit = IsAdministrator() || isOwner;
             bool isAccountNormal = hidIsAccountLDAP.Value == "0";
 
-            txtUserName.Enabled = ddlBranch.Enabled = isEditMode == false;
-            DivProfileRemark.Visible = DivRoleRemark.Visible = IsAdministrator();
-
+            txtUserName.Enabled = isEditMode == false;
+            ddlBranch.Enabled = isEditMode == false || IsSuperAdministrator();
+            DivProfileRemark.Visible = IsAdministrator() && isOwner == false;
             btnSaveProfile.Text = isEditMode ? "Cập Nhật" : "Đồng Ý";
             btnSaveProfile.Visible = isRoleEdit;
 
             DivTabRole.Visible = DivTabRoleContent.Visible = isEditMode;
-            btnUpdateRole.Visible = IsAdministrator();
+            DivRoleTemplate.Visible = IsSuperAdministrator();
+            DivRoleRemark.Visible = IsSuperAdministrator();
+            btnUpdateRole.Visible = IsSuperAdministrator();
 
             DivTabPassword.Visible = DivTabPasswordContent.Visible = isEditMode && isAccountNormal;
+            DivOldPassword.Visible = isOwner;
             btnUpdatePassword.Visible = isRoleEdit && isAccountNormal;
 
             DivTabHistory.Visible = DivTabHistoryContent.Visible = isEditMode;
         }
 
-        private List<string> GetRoleList()
+        private void LoadRoles()
         {
-            if (string.IsNullOrWhiteSpace(ddlBranch.SelectedValue) || ddlBranch.SelectedValue.Equals("-1")) return null;
-            if (string.IsNullOrWhiteSpace(ddlTitle.SelectedValue) || ddlTitle.SelectedValue.Equals("-1")) return null;
-            int branchID = int.Parse(ddlBranch.SelectedValue);
-            int positionCode = int.Parse(ddlTitle.SelectedValue);
-            List<BranchPositionRoleData> roleList = new BranchProvider().GetListBranchPositionRole(branchID, positionCode);
-            return roleList.Select(item => item.RoleID).ToList();
-        }
-        
-        private void LoadRoles(List<string> list = null)
-        {
-            bool isEnable = IsAdministrator();
+            // QUERY BRANCH PERMISSION & ROLE TEMPLATE
+            DataSet dsResult = BranchBusiness.GetBranchPermissionAndTemplate(ddlBranch.SelectedValue);
+            DataTable dtRoleGroups = dsResult.Tables[0];
+            DataTable dtRoleTemplates = dsResult.Tables[1];
+
+
+            // BIND ROLE GROUPS & ROLES
+            bool isEnable = IsSuperAdministrator();
             StringBuilder html = new StringBuilder();
-            if (!string.IsNullOrWhiteSpace(GetRoleBranch()) && !GetRoleBranch().Equals("-1"))
+            UserInfo user = UserController.Instance.GetUserById(PortalId, int.Parse(hidUserID.Value));
+            List<string> listUserRoles = user.Roles.ToList();
+            ListUserRoles = new List<int>();
+
+            // Role Groups base on Branch Permission
+            foreach (DataRow row in dtRoleGroups.Rows)
             {
-                int branchIDSelected = int.Parse(GetRoleBranch());
-                BranchProvider branchProvider = new BranchProvider();
-                List<BranchRoleGroupData> branchRoleGroupList = new List<BranchRoleGroupData>();
-                    
-                    //branchProvider.GetListBranchRoleGroup(branchIDSelected);
-                foreach (var branchRoleGroup in branchRoleGroupList)
-                {
-                    int branchID = int.Parse(branchRoleGroup.BranchID);
-                    int roleGroupID = int.Parse(branchRoleGroup.RoleGroupID);
-                    string roleGroupName = RoleController.GetRoleGroup(PortalId, branchID).RoleGroupName;
-                    bool isEdit = !string.IsNullOrWhiteSpace(branchRoleGroup.IsReadOnly) ?
-                                                !bool.Parse(branchRoleGroup.IsReadOnly) : isEnable;
-                    html.Append(RenderRole(roleGroupID, roleGroupName, isEdit, list));
-                }
+                string roleGroupID = row[RoleGroupTable.RoleGroupID].ToString();
+                string roleGroupName = row[RoleGroupTable.RoleGroupName].ToString();
+                html.Append(RenderRole(int.Parse(roleGroupID), roleGroupName, isEnable, listUserRoles));
             }
-            
-            html.Append(RenderRole(-1, "System", false));
+
+            // Role Group System
+            html.Append(RenderRole(-1, "System - Hệ Thống", false, listUserRoles));
+
+            // Role Group Other
+            if (listUserRoles.Count > 0)
+            {
+                html.Append(RenderOtherRoles(-2, "Other - Khác", isEnable, listUserRoles));
+            }
+            hidListUserRoles.Value = string.Join(",", ListUserRoles);
             DivRoles.InnerHtml = html.ToString();
 
-            
+
+            // BIND ROLE TEMPLATE
+            LoadRoleTemplate(dtRoleTemplates);
         }
 
-        private string RenderRole(int roleGroupID, string roleGroupName, bool isEnable, List<string> list = null)
+        private void LoadRoleTemplate(DataTable dtRoleTemplates)
         {
-            RoleController roleController = new RoleController();
-            StringBuilder html = new StringBuilder();
-            html.Append("<div class='form-group'>");
-            html.Append("<div class='col-sm-12'>");
-            html.Append("<h2 class='dnnFormSectionHead'>");
-            html.Append($"<a href='#'>{roleGroupName}</a>");
-            html.Append("</h2>");
-            html.Append("<fieldset>");
-            html.Append("<table class='table c-margin-t-10'>");
-            html.Append("<colgroup>");
-            html.Append("<col width='10%' />");
-            html.Append("<col width='10%' />");
-            html.Append("<col width='25%' />");
-            html.Append("<col width='55%' />");
-            html.Append("</colgroup>");
-            html.Append("<thead>");
-            html.Append("<tr>");
-            html.Append("<th class='text-center'>");
+            ddlTemplate.Items.Clear();
+            foreach (DataRow row in dtRoleTemplates.Rows)
+            {
+                string text = row[RoleTemplateTable.TemplateName].ToString();
+                string value = row["Roles"].ToString();
+                ddlTemplate.Items.Add(new ListItem(text, value));
+            }
+        }
+
+        private string RenderRole(int roleGroupID, string roleGroupName, bool isEnable,
+            ICollection<string> listUserRoles)
+        {
+            string checkBoxGroup = "&nbsp;";
             if (isEnable)
             {
-                html.Append("<div class='c-checkbox text-center has-info'>");
-                html.Append(
-                    $"<input type='checkbox' id='RoleGroup{roleGroupID}' autocomplete='off' onclick='toggleGroup(this, {roleGroupID})' />");
-                html.Append($"<label for='RoleGroup{roleGroupID}'>");
-                html.Append("<span class='inc'></span>");
-                html.Append("<span class='check'></span>");
-                html.Append("<span class='box'></span>");
-                html.Append("</label>");
-                html.Append("</div>");
+                checkBoxGroup = $@"
+                    <div class='c-checkbox text-center has-info'>
+                        <input  type='checkbox' 
+                                id='RoleGroup{roleGroupID}'
+                                autocomplete='off'
+                                onclick='toggleGroup(this, {roleGroupID})' />
+                        <label for='RoleGroup{roleGroupID}'>
+                            <span class='inc'></span>
+                            <span class='check'></span>
+                            <span class='box'></span>
+                        </label>
+                    </div>";
             }
-            else
-            {
-                html.Append("&nbsp;");
-            }
-            html.Append("</th>");
-            html.Append("<th>Hiện hữu</th>");
-            html.Append("<th>Quyền</th>");
-            html.Append("<th>Diễn Giải</th>");
-            html.Append("</tr>");
-            html.Append("</thead>");
-            html.Append("<tbody>");
-            list = (string.IsNullOrWhiteSpace(txtTitle.Text) || txtTitle.Text.Equals(@"N/A")) && (list == null || list.IsNullOrEmpty())
-                ? GetRoleList()
-                : list;
+
             int i = -1;
+            RoleController roleController = new RoleController();
+            StringBuilder content = new StringBuilder();
             foreach (RoleInfo role in roleController.GetRolesByGroup(0, roleGroupID))
             {
                 i++;
                 string elementID = $"Role{role.RoleID}";
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
-                bool isHasRole = list == null || list.IsNullOrEmpty() ?
-                    IsInRole(role.RoleName, int.Parse(hidUserID.Value)) : list.Contains(role.RoleID.ToString());
-                string grantImage = IsInRole(role.RoleName, int.Parse(hidUserID.Value))
-                    ? $"<img src='{Request.ApplicationPath}/images/grant.gif' />".Replace(@"//",@"/")
+                bool isHasRole = IsInRole(role.RoleName, int.Parse(hidUserID.Value));
+                string grantImage = isHasRole
+                    ? $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />"
                     : string.Empty;
+                if (isHasRole)
+                {
+                    listUserRoles.Remove(role.RoleName);
+                    ListUserRoles.Add(role.RoleID);
+                }
 
-                html.Append($"<tr class='{cssRow}'>");
-                html.Append("<td class='text-center'>");
+                string checkBoxControl = "&nbsp;";
                 if (isEnable)
                 {
-                    html.Append("<div class='c-checkbox text-center has-info'>");
-                    html.Append(
-                        $"<input name='Roles' type='checkbox' {(isHasRole ? "checked='checked'" : string.Empty)} value='{role.RoleID}' class='c-check' id='{elementID}' group='{roleGroupID}' autocomplete='off'>");
-                    html.Append($"<label for='{elementID}'>");
-                    html.Append("<span class='inc'></span>");
-                    html.Append("<span class='check'></span>");
-                    html.Append("<span class='box'></span>");
-                    html.Append("</label>");
-                    html.Append("</div>");
+                    checkBoxControl = $@"
+                        <div class='c-checkbox text-center has-info'>
+                            <input  name='Roles'
+                                    type='checkbox'
+                                    {(isHasRole ? "checked='checked'" : string.Empty)}
+                                    value='{role.RoleID}'
+                                    class='c-check'
+                                    id='{elementID}'
+                                    group='{roleGroupID}'
+                                    autocomplete='off'>
+                            <label for='{elementID}'>
+                                <span class='inc'></span>
+                                <span class='check'></span>
+                                <span class='box'></span>
+                            </label>
+                        </div>";
                 }
-                else
-                {
-                    html.Append("&nbsp;");
-                }
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append(grantImage);
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append($"<label for='{elementID}'>{role.RoleName}</label>");
-                html.Append("</td>");
-                html.Append("<td>");
-                html.Append($"<label for='{elementID}'>{role.Description}</label>");
-                html.Append("</td>");
-                html.Append("</tr>");
+                content.Append($@"
+                    <tr class='{cssRow}'>
+                        <td class='text-center'>
+                            {checkBoxControl}
+                        </td>
+                        <td>
+                            {grantImage}
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.RoleName}</label>
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.Description}</label>
+                        </td>
+                    </tr>");
             }
-            html.Append("</tbody>");
-            html.Append("</table>");
-            html.Append("</fieldset>");
-            html.Append("</div>");
-            html.Append("</div>");
-            return html.ToString();
+            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+        }
+
+        private string RenderOtherRoles(int roleGroupID, string roleGroupName, bool isEnable,
+            IEnumerable<string> listUserRoles)
+        {
+            string checkBoxGroup = "&nbsp;";
+            if (isEnable)
+            {
+                checkBoxGroup = $@"
+                    <div class='c-checkbox text-center has-info'>
+                        <input  type='checkbox' 
+                                id='RoleGroup{roleGroupID}'
+                                autocomplete='off'
+                                onclick='toggleGroup(this, {roleGroupID})' />
+                        <label for='RoleGroup{roleGroupID}'>
+                            <span class='inc'></span>
+                            <span class='check'></span>
+                            <span class='box'></span>
+                        </label>
+                    </div>";
+            }
+
+
+            int i = -1;
+            RoleController roleController = new RoleController();
+            StringBuilder content = new StringBuilder();
+            foreach (string roleName in listUserRoles)
+            {
+                i++;
+                RoleInfo role = roleController.GetRoleByName(PortalId, roleName);
+                string elementID = $"Role{role.RoleID}";
+                string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
+                string grantImage = $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />";
+
+                string checkBoxControl = "&nbsp;";
+                if (isEnable)
+                {
+                    checkBoxControl = $@"
+                        <div class='c-checkbox text-center has-info'>
+                            <input  name='Roles'
+                                    type='checkbox'
+                                    checked='checked'
+                                    value='{role.RoleID}'
+                                    class='c-check'
+                                    id='{elementID}'
+                                    group='{roleGroupID}'
+                                    autocomplete='off'>
+                            <label for='{elementID}'>
+                                <span class='inc'></span>
+                                <span class='check'></span>
+                                <span class='box'></span>
+                            </label>
+                        </div>";
+                }
+                content.Append($@"
+                    <tr class='{cssRow}'>
+                        <td class='text-center'>
+                            {checkBoxControl}
+                        </td>
+                        <td>
+                            {grantImage}
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.RoleName}</label>
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.Description}</label>
+                        </td>
+                    </tr>");
+            }
+            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
         }
 
         private void LoadHistory(DataTable dtUserLog)
         {
+            gridData.Visible = true;
             BindGrid(dtUserLog);
         }
 
         private void BindData()
         {
             BindBranchData(ddlBranch);
-            if (IsLogInBranch())
-            {
-                ddlBranch.Enabled = false;
-            }
-            LoadPosition(GetRoleBranch());
-        }
-        private bool IsLogInBranch()
-        {
-            string userBranchID = CacheBase.Receive<UserData>(UserInfo.UserID.ToString())?.BranchID;
-            return ddlBranch.Items.Count == 1 && ddlBranch.SelectedValue.Equals(userBranchID);
         }
 
-        private string GetRoleBranch()
-        {
-            string branchValue = IsLogInBranch()
-                ? CacheBase.Receive<UserData>(UserInfo.UserID.ToString())?.BranchID
-                : ddlBranch.SelectedValue;
-            if (!string.IsNullOrWhiteSpace(branchValue))
-            {
-                return branchValue;
-            }
-            return string.Empty;
-        }
-        protected void LoadRoleDefault(object sender, EventArgs e)
-        {
-            LoadRoles(GetRoleList());
-        }
-
-        private void LoadPosition(string branchID)
-        {
-            if (!string.IsNullOrWhiteSpace(branchID) && !branchID.Equals("-1"))
-            {
-                //BindBranchPositionData(ddlTitle, branchID);
-            }
-        }
-        protected void ChangeBranchValue(object sender, EventArgs e)
-        {
-            LoadPosition(ddlBranch.SelectedValue);
-        }
         private void BindGrid(DataTable dtUserLog, int pageIndex = 0)
         {
-            gridData.Visible = true;
             gridData.CurrentPageIndex = pageIndex;
             gridData.DataSource = dtUserLog ?? GetLogData();
             gridData.DataBind();
@@ -450,33 +460,67 @@ namespace DesktopModules.Modules.UserManagement
         private void ResetData()
         {
             txtUserName.Text = string.Empty;
+            txtUserID.Text = string.Empty;
             txtDisplayName.Text = string.Empty;
             ddlGender.SelectedIndex = -1;
-            txtMobile.Text = txtPhoneExtension.Text = string.Empty;
+            txtMobile.Text = string.Empty;
+            txtPhoneExtension.Text = string.Empty;
+            txtStaffID.Text = string.Empty;
             ddlTitle.SelectedIndex = -1;
             ddlBranch.SelectedIndex = -1;
-            txtRemark.Text = txtRoleRemark.Text = string.Empty;
-            hidIsAccountLDAP.Value = "0";
+            txtLineManager.Text = string.Empty;
+            txtAuthorised.Text = string.Empty;
+            txtLastLoginDate.Text = string.Empty;
 
-            txtNewPassword.Text = txtConfirmPassword.Text = string.Empty;
+            hidUserID.Value = "0";
+            hidIsAccountLDAP.Value = "0";
+            hidListUserRoles.Value = string.Empty;
+
+            txtRemark.Text = string.Empty;
+            txtRoleRemark.Text = string.Empty;
+            txtOldPassword.Text = string.Empty;
+            txtNewPassword.Text = string.Empty;
+            txtConfirmPassword.Text = string.Empty;
         }
 
-        private Dictionary<string, string> GetData()
+        private void SetData(DataRow data)
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
+            txtUserName.Text = data[UserTable.UserName].ToString().Trim();
+            txtUserID.Text = data[UserTable.UserID].ToString();
+            txtDisplayName.Text = data[UserTable.DisplayName].ToString().Trim();
+            ddlGender.SelectedValue = data[UserTable.Gender].ToString();
+            txtMobile.Text = data[UserTable.Mobile].ToString().Trim();
+            txtPhoneExtension.Text = data[UserTable.PhoneExtension].ToString().Trim();
+            txtStaffID.Text = data[UserTable.StaffID].ToString().Trim();
+            ddlTitle.SelectedValue = data[UserTable.Title].ToString();
+            ddlBranch.SelectedValue = data[UserTable.BranchID].ToString();
+            txtLineManager.Text = data[UserTable.LineManager].ToString();
+            txtAuthorised.Text = data[UserTable.Authorised].ToString();
+            DateTime date = DateTime.Parse(data[UserTable.LastLoginDate].ToString());
+            txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
+            hidIsAccountLDAP.Value = bool.Parse(data[UserTable.IsAccountLDAP].ToString()) ? "1" : "0";
+            hidUserID.Value = txtUserID.Text;
+        }
+
+        private Dictionary<string, SQLParameterData> GetData()
+        {
+            Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserID, hidUserID.Value },
-                { UserTable.UserName, txtUserName.Text.Trim() },
-                { UserTable.DisplayName, txtDisplayName.Text.Trim() },
-                { UserTable.Gender, ddlGender.SelectedValue },
-                { UserTable.Mobile, txtMobile.Text.Trim() },
-                { UserTable.PhoneExtension, txtPhoneExtension.Text.Trim() },
-                { UserTable.StaffID, txtStaffID.Text.Trim() },
-                { UserTable.Title, ddlTitle.SelectedValue },
-                { UserTable.BranchID, ddlBranch.SelectedValue },
-                { UserTable.Remark, txtRemark.Text.Trim() },
-                { UserTable.ModifyUserID, UserInfo.UserID.ToString() },
-                { UserTable.ModifyDateTime, DateTime.Now.ToString(PatternEnum.DateTime) }
+                { UserTable.UserName, new SQLParameterData(txtUserName.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
+                { UserTable.DisplayName, new SQLParameterData(txtDisplayName.Text.Trim(), SqlDbType.NVarChar) },
+                { UserTable.Gender, new SQLParameterData(ddlGender.SelectedValue, SqlDbType.VarChar) },
+                { UserTable.Mobile, new SQLParameterData(txtMobile.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.PhoneExtension, new SQLParameterData(txtPhoneExtension.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.StaffID, new SQLParameterData(txtStaffID.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.Title, new SQLParameterData(ddlTitle.SelectedValue, SqlDbType.NVarChar) },
+                { UserTable.BranchID, new SQLParameterData(ddlBranch.SelectedValue, SqlDbType.Int) },
+                { UserTable.Remark, new SQLParameterData(txtRemark.Text.Trim(), SqlDbType.NVarChar) },
+                { UserTable.ModifyUserID, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
+                {
+                    UserTable.ModifyDateTime,
+                    new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
+                }
             };
             return dictionary;
         }

@@ -177,10 +177,10 @@
   <data name="lblStaffID.Text" xml:space="preserve">
     <value>Mã nhân viên</value>
   </data>
-  <data name="lblStatus.Help" xml:space="preserve">
+  <data name="lblAuthorised.Help" xml:space="preserve">
     <value>Tình trạng người dùng</value>
   </data>
-  <data name="lblStatus.Text" xml:space="preserve">
+  <data name="lblAuthorised.Text" xml:space="preserve">
     <value>Tình trạng</value>
   </data>
   <data name="lblTitle.Help" xml:space="preserve">
@@ -205,7 +205,7 @@
     <value>Hành động</value>
   </data>
   <data name="ModifyDateTime.Header" xml:space="preserve">
-    <value>Thời gian cập nhật</value>
+    <value>Ngày cập nhật</value>
   </data>
   <data name="ModifyUserID.Header" xml:space="preserve">
     <value>Người cập nhật</value>
@@ -230,5 +230,11 @@
   </data>
   <data name="lblTitle1.Text" xml:space="preserve">
     <value>Chức danh</value>
+  </data>
+  <data name="lblOldPassword.Help" xml:space="preserve">
+    <value>Mật khẩu cũ</value>
+  </data>
+  <data name="lblOldPassword.Text" xml:space="preserve">
+    <value>Mật khẩu cũ</value>
   </data>
 </root>

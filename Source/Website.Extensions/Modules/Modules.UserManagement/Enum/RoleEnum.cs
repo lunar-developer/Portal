@@ -2,6 +2,6 @@
 {
     internal static class RoleEnum
     {
-        public const string UserManagementAdministrator = "UM_Administrator";
+        public const string Administrator = "UM_Administrator";
     }
 }

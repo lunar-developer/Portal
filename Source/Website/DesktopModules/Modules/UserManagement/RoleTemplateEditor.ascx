@@ -17,67 +17,102 @@
                         <a href="#">THÔNG TIN CHỨC DANH</a>
                     </h2>
                     <fieldset>
-                        <div class="form-group">
-                            <div class="col-md-2 control-label">
-                                <control:Label HelpText="Vị trí công việc"
-                                               IsRequire="True"
-                                               runat="server"
-                                               Text="Chức Danh"
-                                               ViewStateMode="Disabled" />
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="col-md-4 control-label">
+                                    <control:Label HelpText="Vị trí công việc"
+                                                   IsRequire="True"
+                                                   runat="server"
+                                                   Text="Chức Danh"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-md-8">
+                                    <asp:TextBox CssClass="form-control c-theme"
+                                                 ID="tbTemplateName"
+                                                 placeholder="Chức Danh"
+                                                 runat="server" />
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <asp:TextBox CssClass="form-control c-theme"
-                                             ID="tbTemplateName"
-                                             placeholder="Chức Danh"
-                                             runat="server" />
+                            <div class="form-group">
+                                <div class="col-md-4 control-label">
+                                    <control:Label HelpText="Chi Nhánh"
+                                                   runat="server"
+                                                   Text="Chi Nhánh"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-md-8">
+                                    <control:Combobox autocomplete="off"
+                                                      AutoPostBack="True"
+                                                      CssClass="form-control c-theme"
+                                                      ID="ddlBranch"
+                                                      OnSelectedIndexChanged="ProcessOnChangeBranch"
+                                                      runat="server" />
+                                </div>
                             </div>
-                            <div class="col-md-2 control-label">
-                                <control:Label HelpText="Chi Nhánh"
-                                               runat="server"
-                                               Text="Chi Nhánh"
-                                               ViewStateMode="Disabled" />
-                            </div>
-                            <div class="col-md-4">
-                                <control:Combobox autocomplete="off"
-                                                  AutoPostBack="True"
-                                                  CssClass="form-control c-theme"
-                                                  ID="ddlBranch"
-                                                  OnSelectedIndexChanged="ProcessOnChangeBranch"
-                                                  runat="server" />
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">
+                                    <control:Label HelpText="Ghi chú"
+                                                   runat="server"
+                                                   Text="Ghi chú"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-sm-8">
+                                    <asp:TextBox CssClass="form-control c-theme"
+                                                 Height="100"
+                                                 ID="tbRemark"
+                                                 runat="server"
+                                                 TextMode="MultiLine">
+                                    </asp:TextBox>
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-sm-2 control-label">
-                                <control:Label runat="server"
-                                               Text="Ghi chú"
-                                               ViewStateMode="Disabled" />
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">
+                                    <control:Label HelpText="Ngày cập nhật gần nhất"
+                                                   runat="server"
+                                                   Text="Ngày cập nhật"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-sm-8 control-value">
+                                    <asp:Label ID="lblModifyDateTime"
+                                               runat="server" />
+                                </div>
                             </div>
-                            <div class="col-sm-4">
-                                <asp:TextBox CssClass="form-control c-theme"
-                                             Height="70"
-                                             ID="tbRemark"
-                                             runat="server"
-                                             TextMode="MultiLine">
-                                </asp:TextBox>
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">
+                                    <control:Label HelpText="User cập nhật gần nhất"
+                                                   runat="server"
+                                                   Text="User cập nhật"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-sm-8 control-value">
+                                    <asp:Label ID="lblModifyUserID"
+                                               runat="server" />
+                                </div>
                             </div>
-                            <div class="col-sm-2 control-label">
-                                <control:Label HelpText="Dùng trong trường hợp tạm khóa Chức danh này"
-                                               runat="server"
-                                               Text="Disabled"
-                                               ViewStateMode="Disabled" />
-                            </div>
-                            <div class="col-sm-4">
-                                <asp:DropDownList autocomplete="off"
-                                                  CssClass="form-control c-theme"
-                                                  ID="ddlIsDisable"
-                                                  runat="server">
-                                    <asp:ListItem Value="0">No</asp:ListItem>
-                                    <asp:ListItem Value="1">Yes</asp:ListItem>
-                                </asp:DropDownList>
+                            <div class="form-group">
+                                <div class="col-sm-4 control-label">
+                                    <control:Label HelpText="Dùng trong trường hợp tạm khóa Chức danh này"
+                                                   runat="server"
+                                                   Text="Disabled"
+                                                   ViewStateMode="Disabled" />
+                                </div>
+                                <div class="col-sm-8">
+                                    <asp:DropDownList autocomplete="off"
+                                                      CssClass="form-control c-theme"
+                                                      ID="ddlIsDisable"
+                                                      runat="server">
+                                        <asp:ListItem Value="0">No</asp:ListItem>
+                                        <asp:ListItem Value="1">Yes</asp:ListItem>
+                                    </asp:DropDownList>
+                                </div>
                             </div>
                         </div>
                     </fieldset>
                 </div>
+
+
                 <div class="dnnPanels">
                     <h2 class="dnnFormSectionHead">
                         <a href="#">THÔNG TIN PHÂN QUYỀN</a>

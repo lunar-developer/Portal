@@ -83,7 +83,7 @@ namespace Modules.Application.Global
 
         protected void BindBranchData(DropDownList dropDownList, bool isHasOptionAll = false, params ListItem[] additionalItems)
         {
-            UserManagementModuleBase.BindBranchData(dropDownList, UserInfo.UserID.ToString(), true, isHasOptionAll, additionalItems);
+            UserManagementModuleBase.BindBranchData(dropDownList, UserInfo.UserID.ToString(), true, isHasOptionAll, new List<string>(), additionalItems);
         }
 
         protected static void BindPolicyData(DropDownList dropDownList, params ListItem[] additionalItems)

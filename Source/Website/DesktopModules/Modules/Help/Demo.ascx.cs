@@ -48,13 +48,13 @@ namespace DesktopModules.Modules.Help
         {
             try
             {
-                Dictionary<string, string> dictionary = new Dictionary<string, string>
-                {
-                    { UserTable.UserName, "lunar.developer@gmail.com" },
-                    { UserTable.UserID, UserInfo.UserID.ToString() }
-                };
-                DataTable dtResult = UserBusiness.SearchUser(dictionary);
-                ExportToExcel(dtResult, "Demo");    // File name only
+                //Dictionary<string, string> dictionary = new Dictionary<string, string>
+                //{
+                //    { UserTable.UserName, "lunar.developer@gmail.com" },
+                //    { UserTable.UserID, UserInfo.UserID.ToString() }
+                //};
+                //DataTable dtResult = UserBusiness.SearchUser(dictionary);
+                //ExportToExcel(dtResult, "Demo");    // File name only
             }
             catch (Exception exception)
             {
@@ -79,17 +79,17 @@ namespace DesktopModules.Modules.Help
 	    {
             try
             {
-                Dictionary<string, string> dictionary = new Dictionary<string, string>
-                {
-                    { UserTable.UserName, "lunar.developer@gmail.com" },
-                    { UserTable.UserID, UserInfo.UserID.ToString() }
-                };
-                DataTable dtResult = UserBusiness.SearchUser(dictionary);
-                System.Threading.Thread.Sleep(2000);
-                tbUserName.Text = dtResult.Rows[0][UserTable.UserName].ToString();
-                tbDisplayName.Text = dtResult.Rows[0][UserTable.DisplayName].ToString();
-                tbBiography.Text = dtResult.Rows[0][UserTable.UserID].ToString();
-                chkState.Checked = true;
+                //Dictionary<string, string> dictionary = new Dictionary<string, string>
+                //{
+                //    { UserTable.UserName, "lunar.developer@gmail.com" },
+                //    { UserTable.UserID, UserInfo.UserID.ToString() }
+                //};
+                //DataTable dtResult = UserBusiness.SearchUser(dictionary);
+                //System.Threading.Thread.Sleep(2000);
+                //tbUserName.Text = dtResult.Rows[0][UserTable.UserName].ToString();
+                //tbDisplayName.Text = dtResult.Rows[0][UserTable.DisplayName].ToString();
+                //tbBiography.Text = dtResult.Rows[0][UserTable.UserID].ToString();
+                //chkState.Checked = true;
             }
             catch (Exception exception)
             {

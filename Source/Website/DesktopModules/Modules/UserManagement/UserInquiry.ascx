@@ -88,12 +88,11 @@
                                 <dnn:DnnGridTemplateColumn HeaderText="UserName">
                                     <HeaderStyle Width="30%" />
                                     <ItemTemplate>
-                                        <asp:LinkButton CommandArgument="<%#Eval(UserTable.UserID).ToString() %>"
-                                                        CssClass="c-edit-link c-theme-color"
-                                                        OnClick="EditUser"
-                                                        runat="server">
+                                        <a class="c-edit-link c-theme-color"
+                                           href="<%#GetEditUrl(Eval(UserTable.UserID).ToString()) %>"
+                                           target="_blank">
                                             <%#Eval(UserTable.UserName).ToString() %>
-                                        </asp:LinkButton>
+                                        </a>
                                     </ItemTemplate>
                                 </dnn:DnnGridTemplateColumn>
                                 <dnn:DnnGridBoundColumn DataField="DisplayName"
@@ -109,7 +108,7 @@
                                     <HeaderStyle Width="20%" />
                                 </dnn:DnnGridBoundColumn>
                                 <dnn:DnnGridTemplateColumn DataField="BranchID"
-                                                        HeaderText="BranchID">
+                                                           HeaderText="BranchID">
                                     <HeaderStyle Width="30%" />
                                     <ItemTemplate>
                                         <%#BranchBusiness.GetBranchName(Eval(BranchTable.BranchID).ToString()) %>

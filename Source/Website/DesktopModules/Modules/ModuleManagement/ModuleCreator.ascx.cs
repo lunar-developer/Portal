@@ -103,6 +103,7 @@ namespace DesktopModules.Modules.ModuleManagement
             ModuleInfo module = new ModuleInfo
             {
                 TabID = tabID,
+                PortalID = PortalId,
                 ModuleDefID = int.Parse(ddlDefinition.SelectedValue),
                 ModuleTitle = ddlDefinition.SelectedItem.Attributes["DefinitionName"],
                 CacheMethod = string.Empty,

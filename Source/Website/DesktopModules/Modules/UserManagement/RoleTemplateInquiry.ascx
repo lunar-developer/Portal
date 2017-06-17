@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="RoleTemplateInquiry.ascx.cs" Inherits="DesktopModules.Modules.UserManagement.RoleTemplateInquiry" %>
 <%@ Import Namespace="Website.Library.Database" %>
 <%@ Import Namespace="Modules.UserManagement.Database" %>
+<%@ Import Namespace="Website.Library.Global" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
@@ -49,7 +50,7 @@
                     <MasterTableView>
                         <Columns>
                             <telerik:GridTemplateColumn HeaderText="Chức danh">
-                                <HeaderStyle Width="40%" />
+                                <HeaderStyle Width="30%" />
                                 <ItemTemplate>
                                     <%#GetEditLink(
                                            Eval(RoleTemplateTable.TemplateID).ToString(),
@@ -58,8 +59,14 @@
                             </telerik:GridTemplateColumn>
                             <telerik:GridBoundColumn DataField="Remark"
                                                      HeaderText="Ghi chú">
-                                <HeaderStyle Width="40%" />
+                                <HeaderStyle Width="30%" />
                             </telerik:GridBoundColumn>
+                            <telerik:GridTemplateColumn HeaderText="Ngày cập nhật">
+                                <HeaderStyle Width="20%" />
+                                <ItemTemplate>
+                                    <%#FunctionBase.FormatDate(Eval(BaseTable.ModifyDateTime).ToString()) %>
+                                </ItemTemplate>
+                            </telerik:GridTemplateColumn>
                             <telerik:GridTemplateColumn HeaderText="Disable">
                                 <HeaderStyle Width="20%" />
                                 <ItemTemplate>

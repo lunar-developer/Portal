@@ -1,6 +1,4 @@
-﻿<?xml version="1.0"
-      encoding="utf-8" ?>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
 
 ***********************************************************************************************
@@ -12,118 +10,114 @@ Copyright (C) Microsoft Corporation. All rights reserved.
 
 ***********************************************************************************************
 -->
-<Project ToolsVersion="4.0"
-         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProductVersion>10.0.30319</ProductVersion>
-        <SchemaVersion>2.0</SchemaVersion>
-        <ProjectGuid>{974010b8-9a04-4618-af3d-af7d230f692d}</ProjectGuid>
-        <SourceWebPhysicalPath>$(MSBuildThisFileDirectory)</SourceWebPhysicalPath>
-        <SourceWebVirtualPath>/Website</SourceWebVirtualPath>
-        <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-        <SourceWebProject>http://localhost/Portal</SourceWebProject>
-        <SourceWebMetabasePath>/LM/W3SVC/1/ROOT/Portal</SourceWebMetabasePath>
-    </PropertyGroup>
-    <PropertyGroup>
-        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-        <!-- for VS2010 we need to use 10.5 but for VS2012+ we should use VisualStudioVersion -->
-        <WebPublishTargetsVersion Condition=" '$(WebPublishTargetsVersion)' =='' and '$(VisualStudioVersion)' == 10.0 ">10.5</WebPublishTargetsVersion>
-        <WebPublishTargetsVersion Condition=" '$(WebPublishTargetsVersion)'=='' ">$(VisualStudioVersion)</WebPublishTargetsVersion>
-        <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(WebPublishTargetsVersion)</VSToolsPath>
-        <_WebPublishTargetsPath Condition=" '$(_WebPublishTargetsPath)'=='' ">$(VSToolsPath)</_WebPublishTargetsPath>
-        <AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">1.0.0.0</AssemblyFileVersion>
-        <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">1.0.0.0</AssemblyVersion>
-    </PropertyGroup>
-    <ItemGroup>
-        <AssemblyAttributes Include="AssemblyFileVersion">
-            <Value>$(AssemblyFileVersion)</Value>
-        </AssemblyAttributes>
-        <AssemblyAttributes Include="AssemblyVersion">
-            <Value>$(AssemblyVersion)</Value>
-        </AssemblyAttributes>
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.Application\Modules.Application.csproj">
-            <Project>{045302FC-989D-4BB1-B40C-EA323D50E402}</Project>
-            <Name>Modules.Application</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.Disbursement\Modules.Disbursement.csproj">
-            <Project>{E13F4555-04AC-420E-9AD5-5226E717A235}</Project>
-            <Name>Modules.Disbursement</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.DynamicReport\Modules.DynamicReport.csproj">
-            <Project>{A137A424-D80F-4A71-AFAF-0DE60262730B}</Project>
-            <Name>Modules.DynamicReport</Name>
-        </ProjectReference>
-        <ProjectReference
-            Include="..\Website.Extensions\Modules\Modules.MarketingCampaign\Modules.MarketingCampaign.csproj">
-            <Project>{F5F8127F-C2E0-4DA5-991E-C7AC1899074A}</Project>
-            <Name>Modules.MarketingCampaign</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.MasterData\Modules.MasterData.csproj">
-            <Project>{1204F24D-DADC-45CF-A54F-563F3B216484}</Project>
-            <Name>Modules.MasterData</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.Survey\Modules.Survey.csproj">
-            <Project>{086353B8-5407-4054-B9D2-630FB338AAF6}</Project>
-            <Name>Modules.Survey</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.UserManagement\Modules.UserManagement.csproj">
-            <Project>{A573178E-F590-46FC-87CA-0F976AAD7A68}</Project>
-            <Name>Modules.UserManagement</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Modules\Modules.VSaleKit\Modules.VSaleKit.csproj">
-            <Project>{2FF8AE30-ABB4-4714-BA8E-F23289E94917}</Project>
-            <Name>Modules.VSaleKit</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Share\Modules.Cache\Modules.Cache.csproj">
-            <Project>{9E5D633B-08EA-4381-A4DA-9696A298C555}</Project>
-            <Name>Modules.Cache</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Share\Modules.Controls\Modules.Controls.csproj">
-            <Project>{CD8B4AC8-E6C0-4E65-8E94-E68842C5A233}</Project>
-            <Name>Modules.Controls</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Extensions\Skins\Modules.Skins.Jango\Modules.Skins.Jango.csproj">
-            <Project>{1BAAFC5A-786A-4B8B-9C15-114BFBB13784}</Project>
-            <Name>Modules.Skins.Jango</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\Website.Library\Website.Library.csproj">
-            <Project>{DCD19ECA-8265-45E8-81E0-02705B776097}</Project>
-            <Name>Website.Library</Name>
-        </ProjectReference>
-    </ItemGroup>
-    <Import Project="$(_WebPublishTargetsPath)\Web\Microsoft.WebSite.Publishing.targets" />
-
-    <PropertyGroup>
-        <PackagePath Condition=" '$(PackagePath)'=='' ">website</PackagePath>
-        <EnableAddReplaceToUpdatePacakgePath Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='' ">true</EnableAddReplaceToUpdatePacakgePath>
-        <PackageDependsOn>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.30319</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{974010b8-9a04-4618-af3d-af7d230f692d}</ProjectGuid>
+    <SourceWebPhysicalPath>$(MSBuildThisFileDirectory)</SourceWebPhysicalPath>
+    <SourceWebVirtualPath>/Website</SourceWebVirtualPath>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <SourceWebProject>http://localhost:8080</SourceWebProject>
+    <SourceWebMetabasePath>/LM/W3SVC/2/ROOT</SourceWebMetabasePath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <!-- for VS2010 we need to use 10.5 but for VS2012+ we should use VisualStudioVersion -->
+    <WebPublishTargetsVersion Condition=" '$(WebPublishTargetsVersion)' =='' and '$(VisualStudioVersion)' == 10.0 ">10.5</WebPublishTargetsVersion>
+    <WebPublishTargetsVersion Condition=" '$(WebPublishTargetsVersion)'=='' ">$(VisualStudioVersion)</WebPublishTargetsVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(WebPublishTargetsVersion)</VSToolsPath>
+    <_WebPublishTargetsPath Condition=" '$(_WebPublishTargetsPath)'=='' ">$(VSToolsPath)</_WebPublishTargetsPath>
+    <AssemblyFileVersion Condition="'$(AssemblyFileVersion)' == ''">1.0.0.0</AssemblyFileVersion>
+    <AssemblyVersion Condition="'$(AssemblyVersion)' == ''">1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttributes Include="AssemblyFileVersion">
+      <Value>$(AssemblyFileVersion)</Value>
+    </AssemblyAttributes>
+    <AssemblyAttributes Include="AssemblyVersion">
+      <Value>$(AssemblyVersion)</Value>
+    </AssemblyAttributes>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.Application\Modules.Application.csproj">
+      <Project>{045302FC-989D-4BB1-B40C-EA323D50E402}</Project>
+      <Name>Modules.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.Disbursement\Modules.Disbursement.csproj">
+      <Project>{E13F4555-04AC-420E-9AD5-5226E717A235}</Project>
+      <Name>Modules.Disbursement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.DynamicReport\Modules.DynamicReport.csproj">
+      <Project>{A137A424-D80F-4A71-AFAF-0DE60262730B}</Project>
+      <Name>Modules.DynamicReport</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.EmployeeManagement\Modules.EmployeeManagement.csproj">
+      <Project>{D0698063-C92D-4377-99D9-12ED48A7F22C}</Project>
+      <Name>Modules.EmployeeManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.MarketingCampaign\Modules.MarketingCampaign.csproj">
+      <Project>{F5F8127F-C2E0-4DA5-991E-C7AC1899074A}</Project>
+      <Name>Modules.MarketingCampaign</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.MasterData\Modules.MasterData.csproj">
+      <Project>{1204F24D-DADC-45CF-A54F-563F3B216484}</Project>
+      <Name>Modules.MasterData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.Survey\Modules.Survey.csproj">
+      <Project>{086353B8-5407-4054-B9D2-630FB338AAF6}</Project>
+      <Name>Modules.Survey</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.UserManagement\Modules.UserManagement.csproj">
+      <Project>{A573178E-F590-46FC-87CA-0F976AAD7A68}</Project>
+      <Name>Modules.UserManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Modules\Modules.VSaleKit\Modules.VSaleKit.csproj">
+      <Project>{2FF8AE30-ABB4-4714-BA8E-F23289E94917}</Project>
+      <Name>Modules.VSaleKit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Share\Modules.Cache\Modules.Cache.csproj">
+      <Project>{9E5D633B-08EA-4381-A4DA-9696A298C555}</Project>
+      <Name>Modules.Cache</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Share\Modules.Controls\Modules.Controls.csproj">
+      <Project>{CD8B4AC8-E6C0-4E65-8E94-E68842C5A233}</Project>
+      <Name>Modules.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Extensions\Skins\Modules.Skins.Jango\Modules.Skins.Jango.csproj">
+      <Project>{1BAAFC5A-786A-4B8B-9C15-114BFBB13784}</Project>
+      <Name>Modules.Skins.Jango</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Website.Library\Website.Library.csproj">
+      <Project>{DCD19ECA-8265-45E8-81E0-02705B776097}</Project>
+      <Name>Website.Library</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(_WebPublishTargetsPath)\Web\Microsoft.WebSite.Publishing.targets" />
+  <PropertyGroup>
+    <PackagePath Condition=" '$(PackagePath)'=='' ">website</PackagePath>
+    <EnableAddReplaceToUpdatePacakgePath Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='' ">true</EnableAddReplaceToUpdatePacakgePath>
+    <PackageDependsOn>
             $(PackageDependsOn);
             AddReplaceRuleForAppPath;
         </PackageDependsOn>
+  </PropertyGroup>
+  <Target Name="AddReplaceRuleForAppPath" Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='true' ">
+    <PropertyGroup>
+      <_PkgPathFull>$([System.IO.Path]::GetFullPath($(WPPAllFilesInSingleFolder)))</_PkgPathFull>
     </PropertyGroup>
-
-    <Target Name="AddReplaceRuleForAppPath"
-            Condition=" '$(EnableAddReplaceToUpdatePacakgePath)'=='true' ">
-        <PropertyGroup>
-            <_PkgPathFull>$([System.IO.Path]::GetFullPath($(WPPAllFilesInSingleFolder)))</_PkgPathFull>
-        </PropertyGroup>
-
-        <!-- escape the text into a regex -->
-        <EscapeTextForRegularExpressions Text="$(_PkgPathFull)">
-            <Output TaskParameter="Result"
-                    PropertyName="_PkgPathRegex" />
-        </EscapeTextForRegularExpressions>
-
-        <!-- add the replace rule to update the path -->
-        <ItemGroup>
-            <MsDeployReplaceRules Include="replaceFullPath">
-                <Match>$(_PkgPathRegex)</Match>
-                <Replace>$(PackagePath)</Replace>
-            </MsDeployReplaceRules>
-        </ItemGroup>
-    </Target>
+    <!-- escape the text into a regex -->
+    <EscapeTextForRegularExpressions Text="$(_PkgPathFull)">
+      <Output TaskParameter="Result" PropertyName="_PkgPathRegex" />
+    </EscapeTextForRegularExpressions>
+    <!-- add the replace rule to update the path -->
+    <ItemGroup>
+      <MsDeployReplaceRules Include="replaceFullPath">
+        <Match>$(_PkgPathRegex)</Match>
+        <Replace>$(PackagePath)</Replace>
+      </MsDeployReplaceRules>
+    </ItemGroup>
+  </Target>
 </Project>

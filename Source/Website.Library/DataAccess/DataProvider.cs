@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-using System.Configuration;
-using System.Data;
+﻿using System.Configuration;
 using LunarSoft.Library.Sql;
 using Website.Library.Enum;
 

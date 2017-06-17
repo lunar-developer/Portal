@@ -11,16 +11,14 @@ namespace Modules.UserManagement.DataAccess
     {
         public List<UserData> GetUserExtension()
         {
-            List<UserData> list;
-            Connector.ExecuteProcedure<UserData, List<UserData>>("UM_GetUserExtension", out list);
+            Connector.ExecuteProcedure<UserData, List<UserData>>("UM_SP_GetUserExtension", out List<UserData> list);
             return list;
         }
 
         public UserData GetUserExtension(string userID)
         {
-            UserData user;
             Connector.AddParameter(UserTable.UserID, SqlDbType.Int, userID);
-            Connector.ExecuteProcedure("UM_GetUserExtension", out user);
+            Connector.ExecuteProcedure("UM_SP_GetUserExtension", out UserData user);
             return user;
         }
 
@@ -28,7 +26,7 @@ namespace Modules.UserManagement.DataAccess
         {
             DataTable dtResult;
             Connector.AddParameter(UserTable.UserID, SqlDbType.VarChar, userID);
-            Connector.ExecuteProcedure("UM_GetUserLog", out dtResult);
+            Connector.ExecuteProcedure("UM_SP_GetUserLog", out dtResult);
             return dtResult;
         }
 
@@ -47,44 +45,37 @@ namespace Modules.UserManagement.DataAccess
             DataSet dsResult;
             Connector.AddParameter(UserTable.UserID, SqlDbType.VarChar, userID);
             Connector.AddParameter("ViewUserID", SqlDbType.VarChar, viewUserID);
-            Connector.ExecuteProcedure("UM_LoadUser", out dsResult);
+            Connector.ExecuteProcedure("UM_SP_LoadUser", out dsResult);
             return dsResult;
         }
 
-        public int UpdateProfile(Dictionary<string, string> dictionary, out string message)
+        public int UpdateProfile(Dictionary<string, SQLParameterData> dictionary)
         {
-            DataTable dtResult;
-            foreach (KeyValuePair<string, string> pair in dictionary)
+            foreach (KeyValuePair<string, SQLParameterData> pair in dictionary)
             {
-                Connector.AddParameter(pair.Key, SqlDbType.NVarChar, pair.Value);
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
-            Connector.ExecuteProcedure("dbo.UM_UpdateProfile", out dtResult);
-
-            message = dtResult.Rows[0][1].ToString();
-            return int.Parse(dtResult.Rows[0][0].ToString());
+            Connector.ExecuteProcedure("dbo.UM_SP_UpdateProfile", out string result);
+            return int.Parse(result);
         }
 
-        public bool UpdateRole(Dictionary<string, string> dictionary, out string message)
+        public bool UpdateRole(Dictionary<string, SQLParameterData> dictionary)
         {
-            DataTable dtResult;
-            foreach (KeyValuePair<string, string> pair in dictionary)
+            foreach (KeyValuePair<string, SQLParameterData> pair in dictionary)
             {
-                Connector.AddParameter(pair.Key, SqlDbType.NVarChar, pair.Value);
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
-            Connector.ExecuteProcedure("dbo.UM_UpdateRole", out dtResult);
-
-            message = dtResult.Rows[0][1].ToString();
-            return dtResult.Rows[0][0].ToString() != "0";
+            Connector.ExecuteProcedure("dbo.UM_SP_UpdateRole", out string result);
+            return int.Parse(result) > 0;
         }
 
-        public bool InsertUserLog(Dictionary<string, string> dictionary)
+        public bool InsertUserLog(Dictionary<string, SQLParameterData> dictionary)
         {
-            string result;
-            foreach (KeyValuePair<string, string> pair in dictionary)
+            foreach (KeyValuePair<string, SQLParameterData> pair in dictionary)
             {
-                Connector.AddParameter(pair.Key, SqlDbType.NVarChar, pair.Value);
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
-            Connector.ExecuteProcedure("dbo.UM_InsertUserLog", out result);
+            Connector.ExecuteProcedure("dbo.UM_SP_InsertUserLog", out string result);
             return result == "1";
         }
     }

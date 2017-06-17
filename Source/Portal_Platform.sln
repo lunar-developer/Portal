@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Portal", "http://localhost/Portal", "{E8C63350-1281-4DF6-90DF-A061224ACB12}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "http://localhost:8080", "http://localhost:8080", "{E8C63350-1281-4DF6-90DF-A061224ACB12}"
 	ProjectSection(WebsiteProperties) = preProject
 		SccProjectName = ""
 		SccAuxPath = ""
@@ -10,17 +10,17 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Portal", "http://localhost/
 		SccProvider = ""
 		UseIISExpress = "false"
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.6"
-		ProjectReferences = "{dcd19eca-8265-45e8-81e0-02705b776097}|Website.Library.dll;{9e5d633b-08ea-4381-a4da-9696a298c555}|Modules.Cache.dll;{a573178e-f590-46fc-87ca-0f976aad7a68}|Modules.UserManagement.dll;{1BAAFC5A-786A-4B8B-9C15-114BFBB13784}|Modules.Skins.Jango.dll;{f5f8127f-c2e0-4da5-991e-c7ac1899074a}|Modules.MarketingCampaign.dll;{2ff8ae30-abb4-4714-ba8e-f23289e94917}|Modules.VSaleKit.dll;{045302FC-989D-4BB1-B40C-EA323D50E402}|Modules.Application.dll;{cd8b4ac8-e6c0-4e65-8e94-e68842c5a233}|Modules.Controls.dll;{1204f24d-dadc-45cf-a54f-563f3b216484}|Modules.MasterData.dll;{e13f4555-04ac-420e-9ad5-5226e717a235}|Modules.Disbursement.dll;{086353b8-5407-4054-b9d2-630fb338aaf6}|Modules.Survey.dll;{a137a424-d80f-4a71-afaf-0de60262730b}|Modules.DynamicReport.dll;"
-		Debug.AspNetCompiler.VirtualPath = "/Portal"
+		ProjectReferences = "{dcd19eca-8265-45e8-81e0-02705b776097}|Website.Library.dll;{9e5d633b-08ea-4381-a4da-9696a298c555}|Modules.Cache.dll;{a573178e-f590-46fc-87ca-0f976aad7a68}|Modules.UserManagement.dll;{1BAAFC5A-786A-4B8B-9C15-114BFBB13784}|Modules.Skins.Jango.dll;{f5f8127f-c2e0-4da5-991e-c7ac1899074a}|Modules.MarketingCampaign.dll;{2ff8ae30-abb4-4714-ba8e-f23289e94917}|Modules.VSaleKit.dll;{045302FC-989D-4BB1-B40C-EA323D50E402}|Modules.Application.dll;{cd8b4ac8-e6c0-4e65-8e94-e68842c5a233}|Modules.Controls.dll;{1204f24d-dadc-45cf-a54f-563f3b216484}|Modules.MasterData.dll;{e13f4555-04ac-420e-9ad5-5226e717a235}|Modules.Disbursement.dll;{086353b8-5407-4054-b9d2-630fb338aaf6}|Modules.Survey.dll;{a137a424-d80f-4a71-afaf-0de60262730b}|Modules.DynamicReport.dll;{d0698063-c92d-4377-99d9-12ed48a7f22c}|Modules.EmployeeManagement.dll;"
+		Debug.AspNetCompiler.VirtualPath = "/PrecompiledWeb"
 		Debug.AspNetCompiler.PhysicalPath = "Website\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\Portal\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/Portal"
+		Release.AspNetCompiler.VirtualPath = "/PrecompiledWeb"
 		Release.AspNetCompiler.PhysicalPath = "Website\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\Portal\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
@@ -61,6 +61,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.Survey", "Website.Extensions\Modules\Modules.Survey\Modules.Survey.csproj", "{086353B8-5407-4054-B9D2-630FB338AAF6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.DynamicReport", "Website.Extensions\Modules\Modules.DynamicReport\Modules.DynamicReport.csproj", "{A137A424-D80F-4A71-AFAF-0DE60262730B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Modules.EmployeeManagement", "Website.Extensions\Modules\Modules.EmployeeManagement\Modules.EmployeeManagement.csproj", "{D0698063-C92D-4377-99D9-12ED48A7F22C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -240,6 +242,18 @@ Global
 		{A137A424-D80F-4A71-AFAF-0DE60262730B}.Release|x64.Build.0 = Release|Any CPU
 		{A137A424-D80F-4A71-AFAF-0DE60262730B}.Release|x86.ActiveCfg = Release|Any CPU
 		{A137A424-D80F-4A71-AFAF-0DE60262730B}.Release|x86.Build.0 = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|x64.Build.0 = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|x64.ActiveCfg = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|x64.Build.0 = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|x86.ActiveCfg = Release|Any CPU
+		{D0698063-C92D-4377-99D9-12ED48A7F22C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -259,5 +273,6 @@ Global
 		{F5F8127F-C2E0-4DA5-991E-C7AC1899074A} = {974EEA40-FAF6-4C7E-A57D-E39340FB365B}
 		{086353B8-5407-4054-B9D2-630FB338AAF6} = {974EEA40-FAF6-4C7E-A57D-E39340FB365B}
 		{A137A424-D80F-4A71-AFAF-0DE60262730B} = {974EEA40-FAF6-4C7E-A57D-E39340FB365B}
+		{D0698063-C92D-4377-99D9-12ED48A7F22C} = {974EEA40-FAF6-4C7E-A57D-E39340FB365B}
 	EndGlobalSection
 EndGlobal
