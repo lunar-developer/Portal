@@ -47,24 +47,22 @@ namespace Website.Library.Global
 
         public static string FormatDate(string value)
         {
-            DateTime date;
             bool isDateFormat = value.Length == PatternEnum.Date.Length;
             return DateTime.TryParseExact(value, isDateFormat ? PatternEnum.Date : PatternEnum.DateTime,
-                CultureInfo.InvariantCulture, DateTimeStyles.None, out date)
+                CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date)
                 ? date.ToString(isDateFormat ? PatternEnum.DateDisplay : PatternEnum.DateTimeDisplay)
-                : value;
+                : string.Empty;
         }
 
         public static string FormatUserID(string value)
         {
-            int userId;
-            if (int.TryParse(value, out userId) == false || userId <= 0)
+            if (int.TryParse(value, out int userId) == false || userId <= 0)
             {
-                return value;
+                return string.Empty;
             }
 
             UserInfo userInfo = new UserController().GetUser(0, userId);
-            return userInfo == null ? value : $"{userInfo.DisplayName} ({userInfo.Username})";
+            return userInfo == null ? string.Empty : $"{userInfo.DisplayName} ({userInfo.Username})";
         }
 
         public static string FormatUserName(string value)

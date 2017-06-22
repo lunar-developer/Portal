@@ -9,7 +9,9 @@
         public const string ToDate = "ToDate";
         public const string Remark = "Remark";
         public const string IsDisable = "IsDisable";
+        public const string CreateUserID = "CreateUserID";
         public const string ModifyUserID = "ModifyUserID";
+        public const string CreateDateTime = "CreateDateTime";
         public const string ModifyDateTime = "ModifyDateTime";
     }
 }

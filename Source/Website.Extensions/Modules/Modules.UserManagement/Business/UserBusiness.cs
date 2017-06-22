@@ -101,9 +101,15 @@ namespace Modules.UserManagement.Business
 
         public static int UpdateProfile(Dictionary<string, SQLParameterData> dictionary, out string message)
         {
-            int result = new UserProvider().UpdateProfile(dictionary);
-            message = result == -1 ? "Không thể lưu thông tin Profile của User." : string.Empty;
-            return result;
+            int userID = new UserProvider().UpdateProfile(dictionary);
+            message = userID == -1 ? "Không thể lưu thông tin Profile của User." : string.Empty;
+
+            if (userID > 0)
+            {
+                // Reload cache
+                CacheBase.Reload<UserData>(userID.ToString());
+            }
+            return userID;
         }
 
         public static bool UpdateRole(Dictionary<string, SQLParameterData> dictionary, string userName)
@@ -157,7 +163,7 @@ namespace Modules.UserManagement.Business
                 Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
                 {
                     { UserTable.UserID, new SQLParameterData(userInfo.UserID, SqlDbType.Int) },
-                    { UserTable.LogAction, new SQLParameterData("Cập Nhật Mật Khẩu", SqlDbType.NVarChar) },
+                    { UserTable.LogAction, new SQLParameterData("CẬP NHẬT MẬT KHẨU", SqlDbType.NVarChar) },
                     { UserTable.LogDetail, new SQLParameterData(string.Empty, SqlDbType.NVarChar) },
                     { UserTable.Remark, new SQLParameterData(string.Empty, SqlDbType.NVarChar) },
                     { UserTable.ModifyUserID, new SQLParameterData(actionUser, SqlDbType.Int) },
@@ -171,6 +177,17 @@ namespace Modules.UserManagement.Business
             }
 
             updateStatus = result ? PasswordUpdateStatus.Success : PasswordUpdateStatus.PasswordResetFailed;
+            return result;
+        }
+
+        public static bool ConfirmBranch(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            bool result = new UserProvider().ConfirmBranch(parameterDictionary);
+            if (result)
+            {
+                // Reload cache
+                CacheBase.Reload<UserData>(parameterDictionary[UserTable.UserID].ParameterValue.ToString());
+            }
             return result;
         }
 
@@ -274,6 +291,18 @@ namespace Modules.UserManagement.Business
         public static bool IsUserOfBranch(string userID, string branchCode)
         {
             return GetUserBranch(userID).Any(item => item.BranchCode == branchCode);
+        }
+
+        public static List<UserData> GetUsersInBranch(int branchID)
+        {
+            BranchData branch = CacheBase.Receive<BranchData>(branchID.ToString());
+            return CacheBase.Receive<UserData>().Where(item => item.BranchID == branch.BranchID).ToList();
+        }
+
+        public static List<UserData> GetUsersInBranch(string branchCode)
+        {
+            BranchData branch = CacheBase.Find<BranchData>(BranchTable.BranchCode, branchCode);
+            return CacheBase.Receive<UserData>().Where(item => item.BranchID == branch.BranchID).ToList();
         }
     }
 }

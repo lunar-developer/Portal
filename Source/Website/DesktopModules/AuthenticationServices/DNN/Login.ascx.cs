@@ -331,6 +331,7 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                 }
 
                 if (loginStatus != UserLoginStatus.LOGIN_FAILURE &&
+                    loginStatus != UserLoginStatus.LOGIN_USERLOCKEDOUT &&
                     PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false))
                 {
                     //make sure internal username matches current e-mail address

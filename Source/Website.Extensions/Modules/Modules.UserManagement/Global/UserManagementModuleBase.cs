@@ -11,6 +11,13 @@ namespace Modules.UserManagement.Global
     {
         public static readonly string UserDetailUrl =
             FunctionBase.GetTabUrl(FunctionBase.GetConfiguration(ConfigEnum.EditUrl));
+        public static readonly string UserRequestUrl =
+            FunctionBase.GetTabUrl(FunctionBase.GetConfiguration(ConfigEnum.EditRequestUrl));
+        public static readonly string BranchConfirmationUrl =
+            FunctionBase.GetTabUrl(FunctionBase.GetConfiguration(ConfigEnum.BranchConfirmationUrl));
+        public static readonly string ManageRequestUrl =
+            FunctionBase.GetTabUrl(FunctionBase.GetConfiguration(ConfigEnum.ManageRequestUrl));
+
         public static readonly string LDAPEmail = FunctionBase.GetConfiguration(ConfigEnum.LDAPEmail);
 
         protected void BindBranchData(DropDownList dropDownList)

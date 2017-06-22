@@ -63,6 +63,7 @@ namespace DesktopModules.Modules.UserManagement
         #region COMBOBOX EVENTS
         protected void ProcessOnBranchChanged(object sender, EventArgs e)
         {
+            txtLineManager.Text = BranchBusiness.GetManagerName(ddlBranch.SelectedValue);
             if (DivRoles.Visible == false)
             {
                 return;
@@ -101,12 +102,14 @@ namespace DesktopModules.Modules.UserManagement
             int userID = isInsertMode
                 ? UserBusiness.CreateUser(dictionary, out message)
                 : UserBusiness.UpdateProfile(dictionary, out message);
-
             if (userID <= 0)
             {
                 ShowMessage(message, ModuleMessage.ModuleMessageType.RedError);
+                return;
             }
-            else if (isInsertMode)
+
+            // Show result
+            if (isInsertMode)
             {
                 Session[UserTable.Authorised] = "1";
                 string url = $"{UserDetailUrl}/{UserTable.UserID}/{userID}";
@@ -215,19 +218,21 @@ namespace DesktopModules.Modules.UserManagement
             int userID;
             bool isEditMode = int.TryParse(hidUserID.Value, out userID) && userID > 0;
             bool isOwner = isEditMode && IsOwner(hidUserID.Value);
-            bool isRoleEdit = IsAdministrator() || isOwner;
+            bool isAdministrator = IsAdministrator();
+            bool isRoleEdit = isAdministrator || isOwner;
             bool isAccountNormal = hidIsAccountLDAP.Value == "0";
 
             txtUserName.Enabled = isEditMode == false;
             ddlBranch.Enabled = isEditMode == false || IsSuperAdministrator();
-            DivProfileRemark.Visible = IsAdministrator() && isOwner == false;
+            DivProfileRemark.Visible = isAdministrator && isOwner == false;
             btnSaveProfile.Text = isEditMode ? "Cập Nhật" : "Đồng Ý";
             btnSaveProfile.Visible = isRoleEdit;
 
             DivTabRole.Visible = DivTabRoleContent.Visible = isEditMode;
-            DivRoleTemplate.Visible = IsSuperAdministrator();
-            DivRoleRemark.Visible = IsSuperAdministrator();
-            btnUpdateRole.Visible = IsSuperAdministrator();
+            DivRoleTemplate.Visible = isAdministrator;
+            DivRoleRemark.Visible = isAdministrator;
+            btnUpdateRole.Visible = isAdministrator;
+            btnRequest.Visible = isRoleEdit;
 
             DivTabPassword.Visible = DivTabPasswordContent.Visible = isEditMode && isAccountNormal;
             DivOldPassword.Visible = isOwner;
@@ -245,7 +250,7 @@ namespace DesktopModules.Modules.UserManagement
 
 
             // BIND ROLE GROUPS & ROLES
-            bool isEnable = IsSuperAdministrator();
+            bool isEnable = IsAdministrator();
             StringBuilder html = new StringBuilder();
             UserInfo user = UserController.Instance.GetUserById(PortalId, int.Parse(hidUserID.Value));
             List<string> listUserRoles = user.Roles.ToList();
@@ -260,7 +265,7 @@ namespace DesktopModules.Modules.UserManagement
             }
 
             // Role Group System
-            html.Append(RenderRole(-1, "System - Hệ Thống", false, listUserRoles));
+            html.Append(RenderRole(-1, "System - Hệ Thống", IsSuperAdministrator(), listUserRoles));
 
             // Role Group Other
             if (listUserRoles.Count > 0)
@@ -344,6 +349,14 @@ namespace DesktopModules.Modules.UserManagement
                             </label>
                         </div>";
                 }
+                else if (isHasRole && roleGroupID == -1) // Role Group System
+                {
+                    checkBoxControl = $@"
+                        <input  type='hidden'
+                                name='Roles'
+                                value='{role.RoleID}'/>";
+                }
+
                 content.Append($@"
                     <tr class='{cssRow}'>
                         <td class='text-center'>
@@ -442,7 +455,9 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            BindBranchData(ddlBranch);
+            ListItem item = new ListItem("Chưa chọn", "-2");
+            item.Attributes.Add("disabled", "disabled");
+            BindBranchData(ddlBranch, new List<string> { "-1" }, item);
         }
 
         private void BindGrid(DataTable dtUserLog, int pageIndex = 0)
@@ -494,11 +509,14 @@ namespace DesktopModules.Modules.UserManagement
             txtStaffID.Text = data[UserTable.StaffID].ToString().Trim();
             ddlTitle.SelectedValue = data[UserTable.Title].ToString();
             ddlBranch.SelectedValue = data[UserTable.BranchID].ToString();
-            txtLineManager.Text = data[UserTable.LineManager].ToString();
+            txtLineManager.Text = BranchBusiness.GetManagerName(ddlBranch.SelectedValue);
             txtAuthorised.Text = data[UserTable.Authorised].ToString();
             DateTime date = DateTime.Parse(data[UserTable.LastLoginDate].ToString());
             txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
-            hidIsAccountLDAP.Value = bool.Parse(data[UserTable.IsAccountLDAP].ToString()) ? "1" : "0";
+
+            bool isAccountLDAP;
+            bool.TryParse(data[UserTable.IsAccountLDAP].ToString(), out isAccountLDAP);
+            hidIsAccountLDAP.Value = isAccountLDAP ? "1" : "0";
             hidUserID.Value = txtUserID.Text;
         }
 
@@ -523,6 +541,28 @@ namespace DesktopModules.Modules.UserManagement
                 }
             };
             return dictionary;
+        }
+
+        protected void CreateNewRequest(object sender, EventArgs e)
+        {
+            string url = $"{UserRequestUrl}/{UserTable.UserID}/{hidUserID.Value}";
+            string script = GetWindowOpenScript(url, null);
+            RegisterScript(script);
+        }
+
+        protected string RenderLogDetail(string requestID)
+        {
+            int userRequestID;
+            if (int.TryParse(requestID, out userRequestID) == false || userRequestID <= 0)
+            {
+                return string.Empty;
+            }
+
+            string url = $"{UserRequestUrl}/{UserRequestTable.UserRequestID}/{requestID}";
+            return $@"
+                <a href='{url}' target ='_blank'>
+                    <i class='fa fa-eye'></i>
+                </a>";
         }
     }
 }

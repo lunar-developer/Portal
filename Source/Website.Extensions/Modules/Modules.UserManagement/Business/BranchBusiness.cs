@@ -35,6 +35,11 @@ namespace Modules.UserManagement.Business
             return new BranchProvider().UpdateBranchPermission(parametediDictionary);
         }
 
+        public static DataTable GetBranchManager(string branchID = null)
+        {
+            return new BranchProvider().GetBranchManager(branchID);
+        }
+
 
         public static string GetBranchName(string branchID)
         {
@@ -57,6 +62,24 @@ namespace Modules.UserManagement.Business
             return string.IsNullOrWhiteSpace(branchInfo.BranchCode)
                 ? branchInfo.BranchName
                 : $"{branchInfo.BranchCode} - {branchInfo.BranchName}";
+        }
+
+        public static UserData GetUserManager(string branchID)
+        {
+            BranchManagerData cacheData = CacheBase.Receive<BranchManagerData>(branchID);
+            if (cacheData == null || cacheData.ListManager.Count == 0)
+            {
+                return null;
+            }
+
+            string userID = cacheData.ListManager[0];
+            return CacheBase.Receive<UserData>(userID);
+        }
+
+        public static string GetManagerName(string branchID)
+        {
+            UserData manager = GetUserManager(branchID);
+            return manager == null ? string.Empty : FunctionBase.FormatUserID(manager.UserID);
         }
     }
 }

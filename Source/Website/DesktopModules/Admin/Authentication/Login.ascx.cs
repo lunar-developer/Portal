@@ -53,7 +53,10 @@ using DotNetNuke.Services.Messaging.Data;
 using DotNetNuke.UI.Skins.Controls;
 using DotNetNuke.UI.UserControls;
 using DotNetNuke.UI.WebControls;
-
+using Modules.UserManagement.Business;
+using Modules.UserManagement.Global;
+using Website.Library.Global;
+using UserData = Modules.UserManagement.DataTransfer.UserData;
 #endregion
 
 namespace DotNetNuke.Modules.Admin.Authentication
@@ -840,6 +843,13 @@ namespace DotNetNuke.Modules.Admin.Authentication
 
 					//redirect browser
 			        var redirectUrl = RedirectURL;
+
+				    //redirect to Branch Confirm page if user has not register branch information
+				    UserData userData = CacheBase.Receive< UserData>(objUser.UserID.ToString());
+				    if (userData != null && userData.BranchID == "-1")
+				    {
+				        redirectUrl = UserManagementModuleBase.BranchConfirmationUrl;
+				    }
 
                     //Clear the cookie
                     HttpContext.Current.Response.Cookies.Set(new HttpCookie("returnurl", "")

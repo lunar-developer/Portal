@@ -78,5 +78,15 @@ namespace Modules.UserManagement.DataAccess
             Connector.ExecuteProcedure("dbo.UM_SP_InsertUserLog", out string result);
             return result == "1";
         }
+
+        public bool ConfirmBranch(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
+            {
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
+            }
+            Connector.ExecuteProcedure("dbo.UM_SP_ConfirmBranch", out string result);
+            return result == "1";
+        }
     }
 }

@@ -161,6 +161,43 @@ function confirmMessage(jquery, message, title, yesText, noText, callbackTrue, c
     });
 }
 
+function registerConfirm(option)
+{
+    var title = option.title;
+    var yesText = option.yesText;
+    var noText = option.noText;
+    var jquery = option.jquery;
+
+    if (typeof title === "undefined" || title === "") {
+        title = "Xác nhận";
+    }
+    if (typeof yesText === "undefined" || yesText === "") {
+        yesText = "Đồng ý";
+    }
+    if (typeof noText === "undefined" || noText === "") {
+        noText = "Hủy";
+    }
+
+    // Clean all click handler
+    $(jquery).unbind("click");
+
+    var tagName = $(jquery).prop("tagName") + "";
+    var isButton = tagName.toLowerCase() === "input";
+    $(jquery).dnnConfirm({
+        title: title,
+        text: option.message,
+        yesText: yesText,
+        noText: noText,
+        buttonYesClass: "btn btn-primary",
+        buttonNoClass: "btn btn-default",
+        draggable: true,
+        isButton: isButton,
+        callbackTrue: option.callbackTrue,
+        callbackFalse: option.callbackFalse,
+        onBeforeOpen: option.onBeforeOpen
+    });
+}
+
 function getClientID(id)
 {
     return gloModule + id;
@@ -506,7 +543,13 @@ function cleanUpAutoComplete()
     });
 }
 
-function collapseAllPanels()
+function collapseAllPanels(container)
 {
-    $(".dnnPanels fieldset").css("display", "none");
+    container = container || "";
+    $(".dnnPanels " + container + " fieldset").css("display", "none");
+}
+
+function rollToTop()
+{
+    $(".c-layout-go2top i").click();
 }

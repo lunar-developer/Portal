@@ -106,20 +106,27 @@ namespace Modules.Skins.Jango.Global
         {
             if (Request.IsAuthenticated)
             {
+                UserInfo userInfo = UserController.Instance.GetCurrentUserInfo();
                 string profileUrl =
                     TabController.Instance.GetTabByName("User Information", PortalSettings.PortalId).FullUrl
-                    + $"/UserID/{UserController.Instance.GetCurrentUserInfo().UserID}";
+                    + $"/UserID/{userInfo.UserID}";
                 string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
+                string requestUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_ManageRequestUrl"));
 
                 return $@"
                     <li class=' c-menu-type-classic'>
                         <a class='c-link dropdown-toggle' href='javascript:;'>
-                            <i class=""fa fa-user""></i>&nbsp;My Account<span class='c-arrow c-toggler'></span>
+                            <i class=""fa fa-user""></i>&nbsp;{userInfo.DisplayName}<span class='c-arrow c-toggler'></span>
                         </a>
                         <ul class='c-menu-type-classic c-pull-left dropdown-menu'>
                             <li>
                                 <a href='{profileUrl}'>
 				                    Account Information
+			                    </a>
+                            </li>
+<li>
+                                <a href='{requestUrl}'>
+				                    My Request
 			                    </a>
                             </li>
                             <li>

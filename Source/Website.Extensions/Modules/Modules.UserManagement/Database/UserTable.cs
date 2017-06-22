@@ -13,7 +13,6 @@
         public const string Mobile = "Mobile";
         public const string PhoneExtension = "PhoneExtension";
         public const string IsAccountLDAP = "IsAccountLDAP";
-        public const string LineManager = "LineManager";
         public const string LastLoginDate = "LastLoginDate";
         public const string Authorised = "Authorised";
         public const string LogAction = "LogAction";

@@ -52,5 +52,15 @@ namespace Modules.UserManagement.DataAccess
             Connector.ExecuteProcedure("dbo.UM_SP_UpdateBranchPermission", out string result);
             return result == "1";
         }
+
+        public DataTable GetBranchManager(string branchID = null)
+        {
+            if (string.IsNullOrWhiteSpace(branchID) == false)
+            {
+                Connector.AddParameter("BranchID", SqlDbType.Int, branchID);
+            }
+            Connector.ExecuteProcedure("dbo.UM_SP_GetBranchManager", out DataTable userID);
+            return userID;
+        }
     }
 }

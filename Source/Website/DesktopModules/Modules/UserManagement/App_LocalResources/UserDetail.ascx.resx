@@ -237,4 +237,7 @@
   <data name="lblOldPassword.Text" xml:space="preserve">
     <value>Mật khẩu cũ</value>
   </data>
+  <data name="ViewDetail.Header" xml:space="preserve">
+    <value>#</value>
+  </data>
 </root>

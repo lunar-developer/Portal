@@ -90,6 +90,13 @@
             if (defaultAction || opts.isButton) {
                 $dnnDialog = $("<div class='dnnDialog'></div>").html(opts.text).dialog(opts);
                 $this.click(function (e, isTrigger) {
+                    if (typeof (opts.onBeforeOpen) === "function"
+                        && opts.onBeforeOpen() !== true)
+                    {
+                        e.preventDefault();
+                        return false;
+                    }
+
                     if (isTrigger) {
                         return true;
                     }

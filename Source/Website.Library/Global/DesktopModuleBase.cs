@@ -235,6 +235,7 @@ namespace Website.Library.Global
                 ModuleMessage moduleMessage =
                     Skin.GetModuleMessageControl(string.Empty, message, messageType, string.Empty);
                 phMessage.Controls.Add(moduleMessage);
+                RegisterScript("rollToTop()");
             }
         }
 

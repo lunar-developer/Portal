@@ -17,8 +17,9 @@ namespace Modules.Cache.Business
             BundleBusiness.Initialize();
 
             // Caches
-            CacheBase.Inject(new BranchCacheBusiness<BranchData>());
             CacheBase.Inject(new UserCacheBusiness<UserData>());
+            CacheBase.Inject(new BranchCacheBusiness<BranchData>());
+            CacheBase.Inject(new BranchManagerCacheBusiness<BranchManagerData>());
 
             CacheBase.Inject(new ApplicationTypeCacheBusiness<ApplicationTypeData>());
             CacheBase.Inject(new IdentityTypeCacheBusiness<IdentityTypeData>());
