@@ -12,7 +12,9 @@ using DotNetNuke.Common.Internal;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Users;
 using DotNetNuke.Services.Localization;
+using DotNetNuke.Services.Social.Notifications;
 using DotNetNuke.UI.Skins;
 using DotNetNuke.UI.Skins.Controls;
 using Website.Library.Enum;
@@ -288,6 +290,18 @@ namespace Website.Library.Global
         protected string GetCloseScript()
         {
             return "$(parent.document).find('button.ui-button:visible').click();";
+        }
+
+
+        protected void SendNotification(string subject, string body, int toUserID)
+        {
+            UserInfo toUser = UserController.Instance.GetUserById(PortalId, toUserID);
+            FunctionBase.SendNotification(subject, body, UserInfo, toUser);
+        }
+
+        protected void SendNotification(string subject, string body, UserInfo toUser)
+        {
+            FunctionBase.SendNotification(subject, body, UserInfo, toUser);
         }
     }
 }

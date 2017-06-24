@@ -62,7 +62,8 @@ namespace DotNetNuke.Modules.Admin.Authentication
 				}
 				var objPortalSecurity = new PortalSecurity();
 				objPortalSecurity.SignOut();
-			}
+			    Session.Abandon();
+            }
 			catch (Exception exc)	//Page failed to load
 			{
 				Exceptions.ProcessPageLoadException(exc);

@@ -40,6 +40,7 @@ namespace DesktopModules.Modules.UserManagement
 
         protected void ProcessOnBranchChanged(object sender, EventArgs eventArgs)
         {
+            ResetData();
             UserData userManager = BranchBusiness.GetUserManager(ddlBranch.SelectedValue);
             if (userManager == null)
             {
@@ -74,6 +75,14 @@ namespace DesktopModules.Modules.UserManagement
                 string url = TabController.Instance.GetTab(PortalSettings.HomeTabId, PortalId).FullUrl;
                 Response.Redirect(url);
             }
+        }
+
+        private void ResetData()
+        {
+            lblManagerName.Text = string.Empty;
+            lblManagerEmail.Text = string.Empty;
+            lblManagerMobile.Text = string.Empty;
+            lblManagerPhoneExtension.Text = string.Empty;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
+using Modules.UserManagement.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
 using ConfigEnum = Modules.UserManagement.Enum.ConfigEnum;
@@ -28,6 +29,11 @@ namespace Modules.UserManagement.Service
                     UserInfo userInfo = UserController.GetUserByName(0, userName);
                     if (userInfo != null)
                     {
+                        if (CacheBase.Receive<UserData>(userInfo.UserID.ToString()) == null)
+                        {
+                            CacheBase.Reload<UserData>(userInfo.UserID.ToString());
+                        }
+
                         status = UserLoginStatus.LOGIN_SUCCESS;
                     }
                     return userInfo;

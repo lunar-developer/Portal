@@ -8,9 +8,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using ClosedXML.Excel;
+using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Instrumentation;
+using DotNetNuke.Services.Social.Notifications;
 using ServiceStack.Text;
 using Website.Library.Enum;
 
@@ -348,5 +350,40 @@ namespace Website.Library.Global
                     return string.Empty;
             }
         }
+
+
+
+        public static UserInfo GetUserByUserID(int userID)
+        {
+            return UserController.GetUserById(PortalSettings.Current.PortalId, userID);
+        }
+
+        public static UserInfo GetUserByUserName(string userName)
+        {
+            return UserController.GetUserByName(PortalSettings.Current.PortalId, userName);
+        }
+
+        #region SEND NOTIFICATION
+        public static void SendNotification(string subject, string body, int fromUserID, string toUserName)
+        {
+            UserInfo fromUser = GetUserByUserID(fromUserID);
+            UserInfo toUser = GetUserByUserName(toUserName);
+            SendNotification(subject, body, fromUser, toUser);
+        }
+
+        public static void SendNotification(string subject, string body, UserInfo fromUser, UserInfo toUser)
+        {
+            Notification notification = new Notification
+            {
+                Subject = subject,
+                Body = body,
+                From = fromUser.Email,
+                SenderUserID = fromUser.UserID,
+                NotificationTypeID = 1
+            };
+            NotificationsController.Instance.SendNotification(
+                notification, PortalSettings.Current.PortalId, null, new List<UserInfo> { toUser });
+        }
+        #endregion
     }
 }
