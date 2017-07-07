@@ -36,7 +36,7 @@ namespace DesktopModules.Modules.Disbursement
             RegisterConfirmDialog(btnDelete, "Bạn có chắc muốn xóa yêu cầu này?");
             RegisterButton(btnSubmit, DisbursementStatusEnum.Submited);
             RegisterButton(btnRevise, DisbursementStatusEnum.Revised);
-            RegisterButton(btnPreapprove, DisbursementStatusEnum.Preapproved);
+            //RegisterButton(btnPreapprove, DisbursementStatusEnum.Preapproved);
             RegisterButton(btnApprove, DisbursementStatusEnum.Approved);
             RegisterButton(btnReject, DisbursementStatusEnum.Rejected);
 
@@ -66,7 +66,8 @@ namespace DesktopModules.Modules.Disbursement
             tbDisbursementPurpose.Text = string.Empty;
 
             tbLoanMethod.Text = string.Empty;
-            tbCollectAmount.Text = string.Empty;
+            tbInterestRate.Text = string.Empty;
+            tbLoanExpire.SelectedDate = DateTime.Now;
 
             hidDisbursementID.Value = string.Empty;
             tbRemark.Text = string.Empty;
@@ -105,6 +106,12 @@ namespace DesktopModules.Modules.Disbursement
                     return;
                 }
 
+                bool isViolate = "Y".Equals(data[DisbursementTable.ViolateFlag].ToString());
+                if (isViolate) {
+                    string msg = "Yêu cầu giải ngân này vi phạm: " + data[DisbursementTable.ViolateMsg].ToString();
+                    ShowAlertDialog(msg);
+                }
+
 
                 BindData(data);
                 BindLogData(dsResult.Tables[1]);
@@ -141,7 +148,10 @@ namespace DesktopModules.Modules.Disbursement
             ddlDisbursementMethod.SelectedValue = data[DisbursementTable.DisbursementMethod].ToString();
             tbDisbursementPurpose.Text = data[DisbursementTable.DisbursementPurpose].ToString();
             tbLoanMethod.Text = data[DisbursementTable.LoanMethod].ToString();
-            tbCollectAmount.Text = FunctionBase.FormatDecimal(data[DisbursementTable.CollectAmount].ToString());
+            tbLoanExpire.SelectedDate = FunctionBase.GetDate(data[DisbursementTable.LoanExpire].ToString());
+            tbInterestRate.Text = decimal.Parse(data[DisbursementTable.InterestRate].ToString()).ToString("0.00");// FunctionBase.FormatDecimal(data[DisbursementTable.InterestRate].ToString());
+            ddlCustomerType.SelectedValue = data[DisbursementTable.CustomerType].ToString();
+            ddlNote.SelectedValue = data[DisbursementTable.Note].ToString();
         }
 
         private const string TableLog = @"
@@ -201,7 +211,7 @@ namespace DesktopModules.Modules.Disbursement
             }
 
             btnCreate.Visible = btnUpdate.Visible = btnDelete.Visible = false;
-            btnSubmit.Visible = btnRevise.Visible = btnPreapprove.Visible = btnApprove.Visible = false;
+            btnSubmit.Visible = btnRevise.Visible = /*btnPreapprove.Visible = */btnApprove.Visible = false;
             btnRequestCancel.Visible = btnRequestApprove.Visible = btnCancel.Visible = false;
             btnReject.Visible = false;
 
@@ -227,20 +237,20 @@ namespace DesktopModules.Modules.Disbursement
                         break;
 
                     case DisbursementStatusEnum.Submited:
-                        btnRequestCancel.Visible = isRoleInput;
+                        //btnRequestCancel.Visible = isRoleInput;
                         btnUpdate.Visible = isRoleRevise;
                         btnRevise.Visible = isRoleRevise;
                         btnReject.Visible = isRoleRevise;
                         break;
 
+                    //case DisbursementStatusEnum.Revised:
+                        //btnRequestCancel.Visible = isRoleInput;
+                        //btnPreapprove.Visible = isRolePreapprove;
+                        //btnReject.Visible = isRolePreapprove;
+                        //break;
                     case DisbursementStatusEnum.Revised:
-                        btnRequestCancel.Visible = isRoleInput;
-                        btnPreapprove.Visible = isRolePreapprove;
-                        btnReject.Visible = isRolePreapprove;
-                        break;
-
                     case DisbursementStatusEnum.Preapproved:
-                        btnRequestCancel.Visible = isRoleInput;
+                        //btnRequestCancel.Visible = isRoleInput;
                         btnApprove.Visible = isRoleApprove;
                         btnReject.Visible = isRoleApprove;
                         break;
@@ -305,16 +315,18 @@ namespace DesktopModules.Modules.Disbursement
             {
                 CustomerID = tbIdentifier.Text.Trim(),
                 CustomerName = tbCustomerName.Text.Trim(),
-                BranchID = userData.BranchID,
-                DisbursementStatus = DisbursementStatusEnum.New,
+                //BranchID = userData.BranchID,
                 Amount = tbAmount.Text.Trim().Replace(",", string.Empty),
                 CurrencyCode = ddlCurrencyCode.SelectedValue,
                 DisbursementDate = tbDisbursementDate.SelectedDate?.ToString(PatternEnum.Date),
                 DisbursementMethod = ddlDisbursementMethod.SelectedValue,
                 LoanMethod = tbLoanMethod.Text.Trim(),
-                CollectAmount =
-                    FunctionBase.GetCoalesceString(tbCollectAmount.Text.Trim().Replace(",", string.Empty), "0"),
-                DisbursementPurpose = tbDisbursementPurpose.Text.Trim()
+                Remark = tbRemark.Text.Trim(),
+                InterestRate = FunctionBase.GetCoalesceString(tbInterestRate.Text.Trim().Replace(",", string.Empty), "0"),
+                CustomerType = ddlCustomerType.SelectedValue.ToString(),
+                LoanExpire = tbLoanExpire.SelectedDate?.ToString(PatternEnum.Date),
+                DisbursementPurpose = tbDisbursementPurpose.Text.Trim(),
+                Note = ddlNote.SelectedValue.ToString()
             };
             if (hidDisbursementID.Value == string.Empty)
             {

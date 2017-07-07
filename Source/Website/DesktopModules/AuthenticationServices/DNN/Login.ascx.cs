@@ -313,6 +313,10 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                 }
 
                 string password = txtPassword.Text.Trim();
+                if (userName.Contains("@") == false)
+                {
+                    userName += UserManagementModuleBase.LDAPEmail;
+                }
                 bool isLDAPAccount = UserManagementModuleBase.IsLDAPEmail(userName);
                 UserInfo objUser = isLDAPAccount
                     ? new LDAPService().Authenticate(userName, password, out loginStatus)

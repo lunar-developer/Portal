@@ -38,13 +38,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Library\LunarSoft.SqlServerConnector.dll</HintPath>
     </Reference>
+    <Reference Include="QRCoder">
+      <HintPath>..\..\..\..\Library\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\EmployeeBusiness.cs" />
+    <Compile Include="Database\EmployeeImageTable.cs" />
     <Compile Include="Enum\ImportColumnEnum.cs" />
     <Compile Include="Enum\MessageDefinitionEnum.cs" />
     <Compile Include="Global\EmployeeManagementModuleBase.cs">
@@ -57,10 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Website.Library\Website.Library.csproj">
-      <Project>{DCD19ECA-8265-45E8-81E0-02705B776097}</Project>
+      <Project>{dcd19eca-8265-45e8-81e0-02705b776097}</Project>
       <Name>Website.Library</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,9 +6,9 @@ namespace Modules.Application.Business
 {
     public static class ApplicationFieldBusiness
     {
-        public static List<ApplicationFieldData> GetAllField()
+        public static List<ApplicationFieldData> GetAllFields()
         {
-            return new ApplicationFieldProvider().GetAllField();
+            return new ApplicationFieldProvider().GetAllFields();
         }
 
         public static ApplicationFieldData GetField(string fieldName)

@@ -5,6 +5,7 @@
 <%@ Register src="./Controls/SectionCustomerInfo.ascx" TagPrefix="app" TagName="SectionCustomerInfo" %>
 <%@ Register src="./Controls/SectionContactInfo.ascx" TagPrefix="app" TagName="SectionContactInfo" %>
 <%@ Register src="./Controls/SectionHistoryInfo.ascx" TagPrefix="app" TagName="SectionHistoryInfo" %>
+<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
 <dnn:DnnJsInclude FilePath="~/DesktopModules/Modules/Application/Assets/application.js"
                   ForceBundle="True"
@@ -20,17 +21,19 @@
                  UpdateMode="Conditional">
     <ContentTemplate>
         <div class="form-horizontal">
+            
+
             <div class="form-group">
-                <asp:PlaceHolder ID="phMessage"
-                                 runat="server" />
+                <asp:PlaceHolder ID="phMessage" runat="server" />
             </div>
+            
 
             <div class="dnnPanels"
                  clientidmode="Static"
                  id="ApplicationInfo"
                  runat="server">
                 <h2 class="dnnFormSectionHead">
-                    <a href="#">THÔNG TIN HỒ SƠ</a>
+                    <a href="#" tabindex="0">THÔNG TIN HỒ SƠ</a>
                 </h2>
                 <fieldset>
                     <asp:UpdatePanel runat="server"
@@ -43,11 +46,12 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
+            
 
             <div class="c-margin-t-30 dnnPanels"
                  id="CustomerInfo">
                 <h2 class="dnnFormSectionHead">
-                    <a href="#">THÔNG TIN CHỦ THẺ CHÍNH</a>
+                    <a href="#" tabindex="0">THÔNG TIN CHỦ THẺ CHÍNH</a>
                 </h2>
                 <fieldset>
                     <asp:UpdatePanel runat="server"
@@ -60,11 +64,12 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
+            
 
             <div class="c-margin-t-30 dnnPanels"
                  id="ContactInfo">
                 <h2 class="dnnFormSectionHead">
-                    <a href="#">THÔNG TIN LIÊN LẠC</a>
+                    <a href="#" tabindex="0">THÔNG TIN LIÊN LẠC</a>
                 </h2>
                 <fieldset>
                     <asp:UpdatePanel runat="server"
@@ -77,13 +82,34 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
+            
+            
+            <div class="dnnPanels"
+                 clientidmode="Static"
+                 id="AutoPayInfo"
+                 runat="server">
+                <h2 class="dnnFormSectionHead">
+                    <a href="#" tabindex="0">TRÍCH NỢ TỰ ĐỘNG</a>
+                </h2>
+                <fieldset>
+                    <asp:UpdatePanel runat="server"
+                                     UpdateMode="Conditional">
+                        <ContentTemplate>
+                            <app:SectionApplicationInfo ClientIDMode="Static"
+                                                        ID="SectionApplicationInfo1"
+                                                        runat="server" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </fieldset>
+            </div>
+
 
             <div class="c-margin-t-30 dnnPanels"
                  clientidmode="Static"
                  id="HistoryInfo"
                  runat="server">
                 <h2 class="dnnFormSectionHead">
-                    <a href="#">LỊCH SỬ THAO TÁC</a>
+                    <a href="#" tabindex="0">LỊCH SỬ THAO TÁC</a>
                 </h2>
                 <fieldset>
                     <asp:UpdatePanel runat="server"
@@ -103,7 +129,7 @@
                  id="ProcessInfo"
                  runat="server">
                 <h2 class="dnnFormSectionHead">
-                    <a href="#">THÔNG TIN XỬ LÝ</a>
+                    <a href="#" tabindex="0">THÔNG TIN XỬ LÝ</a>
                 </h2>
                 <fieldset>
                     <div class="col-sm-12">
@@ -112,9 +138,7 @@
                                 <label>Thao tác</label>
                             </div>
                             <div class="col-sm-4">
-                                <asp:DropDownList CssClass="form-control c-theme"
-                                                  ID="ctrlRoute"
-                                                  runat="server" />
+                                <control:AutoComplete ID="ctrlRoute" runat="server" ClientIDMode="Static" />
                             </div>
                             <div class="col-sm-6"></div>
                         </div>
@@ -140,11 +164,13 @@
                     <asp:Button CssClass="btn btn-primary"
                                 ID="btnInsert"
                                 OnClick="InsertData"
+                                OnClientClick="return validateData()"
                                 runat="server"
                                 Text="Lưu" />
                     <asp:Button CssClass="btn btn-primary"
                                 ID="btnUpdate"
                                 OnClick="UpdateData"
+                                OnClientClick="return validateData()"
                                 runat="server"
                                 Text="Cập Nhật" />
                     <asp:Button CssClass="btn btn-primary"

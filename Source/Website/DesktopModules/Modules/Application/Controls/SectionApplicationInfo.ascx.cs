@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using Modules.Application.Global;
+using Telerik.Web.UI;
 
 namespace DesktopModules.Modules.Application.Controls
 {
@@ -25,8 +26,8 @@ namespace DesktopModules.Modules.Application.Controls
 
         public Label ControlUniqueID => valUniqueID;
         public Label ControlApplicationID => valApplicationID;
-        public DropDownList ControlApplicationTypeID => ctrlApplicationTypeID;
-        public DropDownList ControlPriority => ctrlPriority;
+        public RadComboBox ControlApplicationTypeID => ctrlApplicationTypeID;
+        public RadComboBox ControlPriority => ctrlPriority;
         public Label ControlApplicationStatus => valApplicationStatus;
         public Label ControlDecisionCode => valDecisionCode;
         public Label ControlModifyUserID => valModifyUserID;

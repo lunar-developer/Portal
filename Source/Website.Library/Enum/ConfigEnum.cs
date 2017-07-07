@@ -6,5 +6,6 @@
         public static string ImageEmailEnvelope = "ImageEmailEnvelope";
         public static string ImageLogo = "ImageLogo";
         public static string SiteUrl = "SiteUrl";
+        public static string SiteFolder = "SiteFolder";
     }
 }

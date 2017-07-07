@@ -7,296 +7,335 @@
 <div class="col-sm-6">
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Cust ID/ID Doc No (main)"
-                                 Text="Số CMND/CCCD/HC" />
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Cust ID/ID Doc No (main)"
+                Text="Số CMND/CCCD/HC" />
         </div>
         <div class="col-sm-4">
-            <asp:TextBox CssClass="c-theme form-control"
-                         ID="ctrlCustomerID"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="c-theme form-control"
+                ID="ctrlCustomerID"
+                runat="server"
+                placeholder="Số CMND/CCCD/HC"/>
         </div>
         <div class="col-sm-4">
-            <asp:Button CssClass="btn btn-primary c-margin-0"
-                        ID="btnSearchIDNumber"
-                        runat="server"
-                        Text="Tìm" />
+            <asp:Button
+                CssClass="btn btn-primary c-margin-0" 
+                TabIndex="-1"
+                ID="btnSearchIDNumber"
+                OnClientClick="return alertOnConstruct()"
+                runat="server"
+                Text="Tìm" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="ID Doc Type (main)"
-                                 Text="Loại chứng từ" />
+            <control:DoubleLabel 
+                IsRequire="True"
+                runat="server"
+                SubText="ID Doc Type (main)"
+                Text="Loại chứng từ" />
         </div>
         <div class="col-sm-8">
-            <control:PickList autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlIdentityTypeCode"
-                              runat="server" />
+            <control:AutoComplete ID="ctrlIdentityTypeCode" runat="server" ClientIDMode="Static" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="CIF No"
-                                 Text="Mã KH" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="CIF No"
+                Text="Mã KH" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlCIFNo"
-                         runat="server" />
+            <asp:TextBox 
+                CssClass="form-control c-theme"
+                ID="ctrlCIFNo"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Basic Supp Ind"
-                                 Text="Thẻ chính/Phụ" />
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Basic Supp Ind"
+                Text="Thẻ chính/Phụ" />
         </div>
         <div class="col-sm-8">
-            <asp:DropDownList autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlIsBasicCard"
-                              runat="server">
-                <asp:ListItem Value="1">Chính</asp:ListItem>
-                <asp:ListItem Value="0">Phụ</asp:ListItem>
-            </asp:DropDownList>
+            <control:AutoComplete
+                ID="ctrlIsBasicCard"
+                ClientIDMode="Static"
+                runat="server"
+                OnClientSelectedIndexChanged="processOnCardIndicatorChange">
+                <Items>
+                    <control:ComboBoxItem Value="1" Text="Chính"/>
+                    <control:ComboBoxItem Value="0" Text="Phụ"/>
+                </Items>
+            </control:AutoComplete>
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Basic Card Number"
-                                 Text="Số thẻ chính" />
+            <control:DoubleLabel 
+                runat="server"
+                SubText="Basic Card Number"
+                Text="Số thẻ chính" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlBasicCardNumber"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                placeholder="Số thẻ chính"
+                ID="ctrlBasicCardNumber"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Customer Name (main)"
-                                 Text="Họ và tên" />
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Customer Name (main)"
+                Text="Họ và tên" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlFullName"
-                         MaxLength="50"
-                         runat="server" />
+            <asp:TextBox
+                ID="ctrlFullName"
+                runat="server"
+                CssClass="form-control c-theme"
+                placeholder="Họ và tên"
+                MaxLength="50"
+                onblur="processOnFullNameChange()"/>
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Emb Name"
-                                 Text="Tên dập trên thẻ" />
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Emb Name"
+                Text="Tên dập trên thẻ" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlEmbossName"
-                         MaxLength="26"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ID="ctrlEmbossName"
+                MaxLength="26"
+                placeholder="Tên dập trên thẻ"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Old IC Num"
-                                 Text="Số CMND/ HC Khác" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="Old IC Num"
+                Text="Số CMND/ HC Khác" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlOldCustomerID"
-                         runat="server" />
+            <asp:TextBox 
+                CssClass="form-control c-theme"
+                ID="ctrlOldCustomerID"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Medical/Social insurance No"
-                                 Text="Số BHYT/ BHXH" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="Medical/Social insurance No"
+                Text="Số BHYT/ BHXH" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlInsuranceNumber"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ID="ctrlInsuranceNumber"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-3 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Sex (main)"
-                                 Text="Giới tính" />
+            <control:DoubleLabel 
+                runat="server"
+                SubText="Sex (main)"
+                Text="Giới tính" />
         </div>
         <div class="col-sm-3">
-            <asp:DropDownList autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlGender"
-                              runat="server">
-                <asp:ListItem Value="M">Nam</asp:ListItem>
-                <asp:ListItem Value="F">Nữ</asp:ListItem>
-            </asp:DropDownList>
+            <control:AutoComplete ID="ctrlGender" runat="server" ClientIDMode="Static">
+                <Items>
+                    <control:ComboBoxItem Value="M" Text="Nam"/>
+                    <control:ComboBoxItem Value="F" Text="Nữ"/>
+                </Items>
+            </control:AutoComplete>
         </div>
         <div class="col-sm-3 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Title (main)"
-                                 Text="Danh xưng" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="Title (main)"
+                Text="Danh xưng" />
         </div>
         <div class="col-sm-3">
-            <asp:DropDownList autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlTitleOfAddress"
-                              runat="server">
-                <asp:ListItem Value="MR">Ông</asp:ListItem>
-                <asp:ListItem Value="MRS">Bà</asp:ListItem>
-                <asp:ListItem Value="MS">Cô</asp:ListItem>
-            </asp:DropDownList>
+            <control:AutoComplete ID="ctrlTitleOfAddress" runat="server" ClientIDMode="Static">
+                <Items>
+                    <control:ComboBoxItem Value="MR" Text="Ông"/>
+                    <control:ComboBoxItem Value="MRS" Text="Bà"/>
+                    <control:ComboBoxItem Value="MS" Text="Cô"/>
+                </Items>
+            </control:AutoComplete>
         </div>
     </div>
 </div>
+
 
 <!-- SECOND COLUMN -->
 <div class="col-sm-6">
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Language (main)"
-                                 Text="Ngôn ngữ" />
+            <control:DoubleLabel 
+                runat="server"
+                SubText="Language (main)"
+                Text="Ngôn ngữ" />
         </div>
         <div class="col-sm-8">
-            <control:Combobox autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlLanguage"
-                              runat="server" />
+            <control:AutoComplete ID="ctrlLanguage" runat="server" ClientIDMode="Static" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Nationality (main)"
-                                 Text="Quốc tịch" />
+            <control:DoubleLabel 
+                IsRequire="True"
+                runat="server"
+                SubText="Nationality (main)"
+                Text="Quốc tịch" />
         </div>
         <div class="col-sm-8">
-            <control:Combobox autocomplete="off"
-                              CssClass="form-control c-theme"
-                              ID="ctrlNationality"
-                              runat="server" />
+            <control:AutoComplete ID="ctrlNationality" runat="server" ClientIDMode="Static" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Birth Date (main)"
-                                 Text="Ngày sinh" />
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Birth Date (main)"
+                Text="Ngày sinh" />
         </div>
         <div class="col-sm-8">
-            <dnn:DnnDatePicker Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
-                               ID="ctrlBirthDate"
-                               runat="server" />
+            <dnn:DnnDatePicker 
+                Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
+                ID="ctrlBirthDate"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Mobile (main)"
-                                 Text="Điện thoại di động 1" />
+            <control:DoubleLabel 
+                IsRequire="True"
+                runat="server"
+                SubText="Mobile (main)"
+                Text="Điện thoại di động 1" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlMobile01"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                placeholder="Điện thoại di động 1"
+                ID="ctrlMobile01"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="2nd Mobile No (main)"
-                                 Text="Điện thoại di động 2" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="2nd Mobile No (main)"
+                Text="Điện thoại di động 2" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlMobile02"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ID="ctrlMobile02"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Email (main)/ Stmt Email"
-                                 Text="Thư điện tử 1" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="Email (main)/ Stmt Email"
+                Text="Thư điện tử 1" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlEmail01"
-                         runat="server" />
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ID="ctrlEmail01"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="2nd Email (main)"
-                                 Text="Thư điện tử 2" />
+            <control:DoubleLabel
+                runat="server"
+                SubText="2nd Email (main)"
+                Text="Thư điện tử 2" />
         </div>
         <div class="col-sm-8">
-            <asp:TextBox CssClass="form-control c-theme"
-                         ID="ctrlEmail02"
-                         runat="server" />
+            <asp:TextBox 
+                CssClass="form-control c-theme"
+                ID="ctrlEmail02"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Corp/Indv"
-                                 Text="Chủ thẻ được cấp TD" />
+            <control:DoubleLabel 
+                IsRequire="True"
+                runat="server"
+                SubText="Corp/Indv"
+                Text="Chủ thẻ được cấp TD" />
         </div>
         <div class="col-sm-8">
-            <asp:DropDownList CssClass="form-control c-theme"
-                              Enabled="False"
-                              ID="ctrlIsCorporateCard"
-                              runat="server">
-                <asp:ListItem Value="0">Cá Nhân</asp:ListItem>
-            </asp:DropDownList>
+            <control:AutoComplete
+                Enabled="False"
+                ID="ctrlIsCorporateCard"
+                ClientIDMode="Static"
+                runat="server">
+                <Items>
+                    <control:ComboBoxItem Value="0" Text="Cá Nhân"/>
+                </Items>
+            </control:AutoComplete>
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel IsRequire="True"
-                                 runat="server"
-                                 SubText="Cust Type"
-                                 Text="Chủ thẻ sử dụng HM" />
+            <control:DoubleLabel 
+                IsRequire="True"
+                runat="server"
+                SubText="Cust Type"
+                Text="Chủ thẻ sử dụng HM" />
         </div>
         <div class="col-sm-8">
-            <asp:DropDownList CssClass="form-control c-theme"
-                              Enabled="False"
-                              ID="ctrlCustomerType"
-                              runat="server">
-                <asp:ListItem Value="CONSUMER">Khách hàng</asp:ListItem>
-            </asp:DropDownList>
+            <control:AutoComplete
+                Enabled="False"
+                ID="ctrlCustomerType"
+                ClientIDMode="Static"
+                runat="server">
+                <Items>
+                    <control:ComboBoxItem Value="CONSUMER" Text="Khách hàng"/>
+                </Items>
+            </control:AutoComplete>
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <control:DoubleLabel runat="server"
-                                 SubText="Customer Class"
-                                 Text="Hạng khách hàng" />
+            <control:DoubleLabel 
+                runat="server"
+                SubText="Customer Class"
+                Text="Hạng khách hàng" />
         </div>
         <div class="col-sm-8">
-            <control:PickList CssClass="form-control c-theme"
-                              ID="ctrlCustomerClass"
-                              runat="server" />
+            <control:AutoComplete ID="ctrlCustomerClass" runat="server" ClientIDMode="Static" />
         </div>
     </div>
 </div>

@@ -1,9 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="EmployeeInquiry.ascx.cs" Inherits="DesktopModules.Modules.EmployeeManagement.EmployeeInquiry" %>
-<%@ Import Namespace="Website.Library.Global" %>
-<%@ Import Namespace="Modules.EmployeeManagement.Database" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
-<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
-<%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.UI.WebControls" Assembly="DotNetNuke.Web.Deprecated" %>
 
 <style type="text/css">
     .imageHeight
@@ -29,6 +25,16 @@
         line-height: 1.42857143;
         vertical-align: top;
         border-top: 1px solid #ddd;
+    }
+
+    .QRImage
+    {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        position: absolute;
+        right: 5px;
+        top: 5px;
     }
 </style>
 
@@ -97,69 +103,6 @@
                                 OnClick="SearchEmployee"
                                 runat="server"
                                 Text="Tìm Kiếm" />
-                </div>
-            </div>
-            <br />
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <control:Grid AllowPaging="true"
-                                 AutoGenerateColumns="false"
-                                 CssClass="dnnGrid"
-                                 EnableViewState="true"
-                                 ID="gridData"
-                                 OnPageIndexChanged="OnPageIndexChanging"
-                                 OnPageSizeChanged="OnPageSizeChanging"
-                                 PageSize="10"
-                                 runat="server"
-                                 Visible="false">
-                        <MasterTableView>
-                            <Columns>
-                                <dnn:DnnGridBoundColumn DataField="EmployeeID"
-                                                        HeaderText="EmployeeID">
-                                    <HeaderStyle Width="5%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="FullName"
-                                                        HeaderText="FullName">
-                                    <HeaderStyle Width="15%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridTemplateColumn DataField="DateOfBirth"
-                                                           HeaderText="DateOfBirth">
-                                    <HeaderStyle Width="5%" />
-                                    <ItemTemplate>
-                                        <%#FunctionBase.FormatDate(Eval(EmployeeTable.DateOfBirth).ToString()) %>
-                                    </ItemTemplate>
-                                </dnn:DnnGridTemplateColumn>
-                                <dnn:DnnGridBoundColumn DataField="Gender"
-                                                        HeaderText="Gender">
-                                    <HeaderStyle Width="5%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="Role"
-                                                        HeaderText="Role">
-                                    <HeaderStyle Width="15%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="Office"
-                                                        HeaderText="Office">
-                                    <HeaderStyle Width="20%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="Area"
-                                                        HeaderText="Area">
-                                    <HeaderStyle Width="15%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="PhoneNumber"
-                                                        HeaderText="PhoneNumber">
-                                    <HeaderStyle Width="5%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="PhoneExtendNumber"
-                                                        HeaderText="PhoneExtendNumber">
-                                    <HeaderStyle Width="5%" />
-                                </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridBoundColumn DataField="Email"
-                                                        HeaderText="Email">
-                                    <HeaderStyle Width="10%" />
-                                </dnn:DnnGridBoundColumn>
-                            </Columns>
-                        </MasterTableView>
-                    </control:Grid>
                 </div>
             </div>
         </div>

@@ -4,15 +4,20 @@
     {
         public const string TableName = "APP_Application";
 
+
+        // Application Info
         public const string UniqueID = "UniqueID";
         public const string ApplicationID = "ApplicationID";
         public const string ApplicationTypeID = "ApplicationTypeID";
         public const string Priority = "Priority";
         public const string ApplicationStatus = "ApplicationStatus";
         public const string DecisionCode = "DecisionCode";
+        public const string ModifyUserID = "ModifyUserID";
+        public const string ModifyDateTime = "ModifyDateTime";
         public const string ApplicationRemark = "ApplicationRemark";
 
 
+        // Card Holder Info
         public const string CustomerID = "CustomerID";
         public const string IdentityTypeCode = "IdentityTypeCode";
         public const string CIFNo = "CIFNo";
@@ -36,6 +41,8 @@
         public const string CustomerType = "CustomerType";
         public const string CustomerClass = "CustomerClass";
 
+
+        // Contact Info
         public const string HomeAddress01 = "HomeAddress01";
         public const string HomeAddress02 = "HomeAddress02";
         public const string HomeAddress03 = "HomeAddress03";
@@ -67,13 +74,14 @@
         public const string SourceBranchCode = "SourceBranchCode";
         public const string PolicyCode = "PolicyCode";
 
-        public const string ExportDate = "ExportDate";
-        public const string CreateDate = "CreateDate";
 
+        // Hidden Info
         public const string ProcessID = "ProcessID";
         public const string PhaseID = "PhaseID";
         public const string CurrentUserID = "CurrentUserID";
         public const string PreviousUserID = "PreviousUserID";
+        public const string CreateDateTime = "CreateDateTime";
+        public const string ExportDate = "ExportDate";
         public const string ProcessUserID = "ProcessUserID";
         public const string ProcessDateTime = "ProcessDateTime";
     }

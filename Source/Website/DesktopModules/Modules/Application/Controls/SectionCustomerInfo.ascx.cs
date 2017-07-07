@@ -2,6 +2,7 @@
 using System.Web.UI.WebControls;
 using DotNetNuke.Web.UI.WebControls;
 using Modules.Application.Global;
+using Telerik.Web.UI;
 
 namespace DesktopModules.Modules.Application.Controls
 {
@@ -28,27 +29,27 @@ namespace DesktopModules.Modules.Application.Controls
         #region PUBLIC PROPERTY
 
         public TextBox ControlCustomerID => ctrlCustomerID;
-        public DropDownList ControlIdentityTypeCode => ctrlIdentityTypeCode;
+        public RadComboBox ControlIdentityTypeCode => ctrlIdentityTypeCode;
         public TextBox ControlCIFNo => ctrlCIFNo;
-        public DropDownList ControlIsBasicCard => ctrlIsBasicCard;
+        public RadComboBox ControlIsBasicCard => ctrlIsBasicCard;
         public TextBox ControlBasicCardNumber => ctrlBasicCardNumber;
         public TextBox ControlFullName => ctrlFullName;
         public TextBox ControlEmbossName => ctrlEmbossName;
         public TextBox ControlOldCustomerID => ctrlOldCustomerID;
         public TextBox ControlInsuranceNumber => ctrlInsuranceNumber;
-        public DropDownList ControlGender => ctrlGender;
-        public DropDownList ControlTitleOfAddress => ctrlTitleOfAddress;
+        public RadComboBox ControlGender => ctrlGender;
+        public RadComboBox ControlTitleOfAddress => ctrlTitleOfAddress;
 
-        public DropDownList ControlLanguage => ctrlLanguage;
-        public DropDownList ControlNationality => ctrlNationality;
+        public RadComboBox ControlLanguage => ctrlLanguage;
+        public RadComboBox ControlNationality => ctrlNationality;
         public DnnDatePicker ControlBirthDate => ctrlBirthDate;
         public TextBox ControlMobile01 => ctrlMobile01;
         public TextBox ControlMobile02 => ctrlMobile02;
         public TextBox ControlEmail01 => ctrlEmail01;
         public TextBox ControlEmail02 => ctrlEmail02;
-        public DropDownList ControlIsCorporateCard => ctrlIsCorporateCard;
-        public DropDownList ControlCustomerType => ctrlCustomerType;
-        public DropDownList ControlCustomerClass => ctrlCustomerClass;
+        public RadComboBox ControlIsCorporateCard => ctrlIsCorporateCard;
+        public RadComboBox ControlCustomerType => ctrlCustomerType;
+        public RadComboBox ControlCustomerClass => ctrlCustomerClass;
 
         #endregion
     }

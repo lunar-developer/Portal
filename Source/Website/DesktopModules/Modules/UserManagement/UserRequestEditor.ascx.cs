@@ -96,6 +96,7 @@ namespace DesktopModules.Modules.UserManagement
             ddlBranch.SelectedValue = userCache.BranchID;
             LoadUsers();
             ddlUser.SelectedValue = userCache.UserID;
+            lblBranchManager.Text = BranchBusiness.GetManagerName(ddlBranch.SelectedValue);
         }
 
         private void LoadBranch(string branchID = null)

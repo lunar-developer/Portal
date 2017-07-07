@@ -1,18 +1,21 @@
 ﻿var gloDefaultCountryCode = "VN";
 var gloPanelState =
-{
-    "ApplicationInfo": true,
-    "CustomerInfo": true,
-    "ContactInfo": false,
-    "HistoryInfo": false,
-    "ProcessInfo": true
-};
+    {
+        "ApplicationInfo": true,
+        "CustomerInfo": true,
+        "ContactInfo": false,
+        "HistoryInfo": false,
+        "ProcessInfo": true
+    };
 
 
 function initializePage()
 {
-    renderControl();
-    bindEvent();
+    setTimeout(function ()
+    {
+        renderControl();
+        bindEvent();
+    }, 100);
 }
 
 
@@ -24,12 +27,20 @@ function renderControl()
 
 function renderPanel()
 {
-    $.each($(".dnnPanels"), function()
+    $.each($(".dnnPanels"), function ()
     {
         var state = gloPanelState[this.id] === true ? "open" : "close";
         $(this).dnnPanels(
             {
-                defaultState: state
+                defaultState: state,
+                onExpand: function ()
+                {
+                    gloPanelState[this.id] = true;
+                },
+                onHide: function ()
+                {
+                    gloPanelState[this.id] = false;
+                }
             });
     });
 }
@@ -38,17 +49,29 @@ function renderPanel()
 // EVENT
 function bindEvent()
 {
-    // BASIC CARD INDICATOR
-    getJQueryControl("ctrlIsBasicCard").bind("change", processOnCardIndicatorChange);
-    processOnCardIndicatorChange();
+    // Auto Expand Panels
+    $(".dnnFormSectionHead a").focus(function ()
+    {
+        var isExpanded = $(this).parent().next().is(":visible");
+        if (isExpanded === false)
+        {
+            this.click();
+        }
+    });
 
-    // EMBOSSING NAME
-    getJQueryControl("ctrlFullName").bind("blur", processOnFullNameChange);
+    // BASIC CARD INDICATOR
+    processOnCardIndicatorChange();
 }
 
 function processOnCardIndicatorChange()
 {
-    getControl("ctrlBasicCardNumber").disabled = getControl("ctrlIsBasicCard").value === "1";
+    var isDisable = $find("ctrlIsBasicCard").get_value() === "1";
+    var element = getControl("ctrlBasicCardNumber");
+    element.disabled = isDisable;
+    if (isDisable)
+    {
+        element.value = "";
+    }
 }
 
 function processOnFullNameChange()
@@ -62,6 +85,63 @@ function processOnFullNameChange()
     element.value = getEmbossingName(getControl("ctrlFullName").value, element.maxLength);
 }
 
+function processOnSelectCountry(sender)
+{
+    var isPostBack;
+    var value = sender.get_value();
+    if (value === gloDefaultCountryCode)
+    {
+        isPostBack = true;
+    }
+    else
+    {
+        var id = sender.get_attributes().getAttribute("control-id");
+        var element = $find(id);
+        isPostBack = element.get_items().get_count() > 1;
+    }
+
+    if (isPostBack)
+    {
+        __doPostBack(sender.get_id(), '{\"Command\" : \"Select\"}');
+    }
+}
+
+
+// VALIDATATION
+function validateData()
+{
+    try
+    {
+        var arrRequireFields = [
+            "ctrlCustomerID", "ctrlBasicCardNumber", "ctrlFullName", "ctrlEmbossName", "ctrlMobile01",
+            "ctrlHomeAddress01", "ctrlHomePhone01"
+        ];
+        var arrRequireRadOptions = [
+            "ctrlHomeCountry"
+        ];
+        if (validateInputArray(arrRequireFields) === false
+            || validateRadOptionArray(arrRequireRadOptions) === false)
+        {
+            return false;
+        }
+
+        var radCombobox = getRadCombobox("ctrlHomeCountry");
+        if (radCombobox.get_value() === gloDefaultCountryCode
+            && validateRadOptionArray(["ctrlHomeState", "ctrlHomeCity"]) === false)
+        {
+            return false;
+        }
+        return true;
+    }
+    catch (e)
+    {
+        log(e);
+        return false;
+    }
+}
+
+
+// LIBRARY
 function getEmbossingName(value, maxLength)
 {
     value = removeUnicode(replaceAll(value.trim(), "  ", " ").toUpperCase());
@@ -71,8 +151,7 @@ function getEmbossingName(value, maxLength)
         if (array.length === 1)
         {
             value = value.substring(value.length - maxLength);
-        }
-        else
+        } else
         {
             // Keep the First and Last word
             var length = value.length;
@@ -97,21 +176,6 @@ function getEmbossingName(value, maxLength)
     return value;
 }
 
-function processOnSelectCountry(element)
-{
-    var value = element.value;
-    if (value === gloDefaultCountryCode)
-    {
-        return true;
-    }
-
-    var id = $(element).attr("control-id");
-    element = getControl(id);
-    return element.options && element.options.length > 1;
-}
-
-
-// LIBRARY
 function removeUnicode(value)
 {
     return value
@@ -132,4 +196,11 @@ function removeUnicode(value)
         .replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\:|\;|\"|\$|\&|\#|\[|\]|~|$|_/g, "")
         .replace(/-+-/g, "")
         .replace(/^\-+|\-+$/g, "");
+}
+
+
+function alertOnConstruct()
+{
+    alertMessage("Chức năng này đang được hoàn thiện!");
+    return false;
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.MasterData.Business;
 using Modules.MasterData.Database;
@@ -34,7 +33,7 @@ namespace DesktopModules.Modules.MasterData
                 string text = row[MasterDataTable.Title].ToString();
                 string value = row[MasterDataTable.TableID].ToString();
 
-                ListItem item = new ListItem(text, value);
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
                 item.Attributes.Add(MasterDataTable.ConnectionName, row[MasterDataTable.ConnectionName].ToString());
                 item.Attributes.Add(MasterDataTable.DatabaseName, row[MasterDataTable.DatabaseName].ToString());
                 item.Attributes.Add(MasterDataTable.SchemaName, row[MasterDataTable.SchemaName].ToString());
@@ -83,6 +82,7 @@ namespace DesktopModules.Modules.MasterData
 
             // Bind Data
             BindGrid(dataSet.Tables[1]);
+            gridData.DataBind();
         }
 
         protected void Export(object sender, EventArgs e)
@@ -95,17 +95,12 @@ namespace DesktopModules.Modules.MasterData
         protected void Refresh(object sender, EventArgs e)
         {
             gridData.MasterTableView.ClearEditItems();
-            BindGrid(null, int.Parse(hidCurrentPage.Value));
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
             BindGrid(null);
         }
 
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
+        protected void OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
         {
-            BindGrid(null, e.NewPageIndex);
+            BindGrid(null);
         }
 
         protected void OnGridDataBound(object sender, GridItemEventArgs e)
@@ -130,17 +125,14 @@ namespace DesktopModules.Modules.MasterData
             }
         }
 
-        private void BindGrid(DataTable dataSource, int pageIndex = 0)
+        private void BindGrid(DataTable dataSource)
         {
             if (dataSource == null)
             {
                 dataSource = MasterDataBusiness.LoadTableData(hidConnectionName.Value,
                     hidDatabaseName.Value, hidSchemaName.Value, hidTableName.Value);
             }
-            hidCurrentPage.Value = pageIndex.ToString();
             gridData.DataSource = dataSource;
-            gridData.CurrentPageIndex = pageIndex;
-            gridData.DataBind();
         }
 
 

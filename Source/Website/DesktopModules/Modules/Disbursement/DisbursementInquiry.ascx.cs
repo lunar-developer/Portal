@@ -10,6 +10,8 @@ using Modules.Disbursement.Global;
 using Telerik.Web.UI;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
+using Website.Library.Global;
+using Modules.UserManagement.Global;
 
 namespace DesktopModules.Modules.Disbursement
 {
@@ -102,7 +104,53 @@ namespace DesktopModules.Modules.Disbursement
 
         protected void Export(object sender, EventArgs e)
         {
-            ExportToExcel(LoadData(), "Disbursement");
+            string[] columnName = {
+                "TTKD",
+                "Tên KH",
+                "Mã KH",
+                "Số tiền",
+                "Loại tiền",
+                "Lãi suất",
+                "Thời hạn vay",
+                "Mục đích vay",
+                "Phương thức vay",
+                "Ngày ĐK",
+                "Ngày GN",
+                "Hình thức GN",
+                "Loại KH",
+                "Trạng thái",
+                "Ghi chú"
+            };
+            DataTable dt = new DataTable();
+            dt.Clear();
+            for (int i = 0; i < columnName.Length; i++) {
+                dt.Columns.Add(columnName[i]);
+            }
+
+            DataTable dataTable = LoadData();
+            
+            foreach (DataRow row in dataTable.Rows)
+            {
+                DataRow newRow = dt.NewRow();
+
+                newRow[columnName[0]] = UserManagementModuleBase.FormatBranchID(row[DisbursementTable.BranchID].ToString());
+                newRow[columnName[1]] = row[DisbursementTable.CustomerName].ToString();
+                newRow[columnName[2]] = row[DisbursementTable.CustomerID].ToString();
+                newRow[columnName[3]] = row[DisbursementTable.Amount].ToString();
+                newRow[columnName[4]] = "704".Equals(row[DisbursementTable.CurrencyCode].ToString()) ? "VND" : "USD"; 
+                newRow[columnName[5]] = row[DisbursementTable.InterestRate].ToString();
+                newRow[columnName[6]] = FunctionBase.FormatDate(row[DisbursementTable.LoanExpire].ToString());
+                newRow[columnName[7]] = row[DisbursementTable.DisbursementPurpose].ToString();
+                newRow[columnName[8]] = row[DisbursementTable.LoanMethod].ToString();
+                newRow[columnName[9]] = FunctionBase.FormatDate(row[DisbursementTable.CreateDateTime].ToString());
+                newRow[columnName[10]] = FunctionBase.FormatDate(row[DisbursementTable.DisbursementDate].ToString());
+                newRow[columnName[11]] = "CK".Equals(row[DisbursementTable.DisbursementMethod].ToString()) ? "Chuyển khoản" : "Tiền mặt";
+                newRow[columnName[12]] = "E".Equals(row[DisbursementTable.CustomerType].ToString()) ? "Mới": "Hiện hữu";
+                newRow[columnName[13]] = GetStatusDescription(row[DisbursementTable.DisbursementStatus].ToString());
+                newRow[columnName[14]] = "0".Equals(row[DisbursementTable.Note].ToString()) ? "GN & TN trong ngày" : "GN nội bộ";
+                dt.Rows.Add(newRow);
+            }
+            ExportToExcel(dt, "Disbursement");
         }
 
         protected void Create(object sender, EventArgs e)

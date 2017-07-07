@@ -52,9 +52,7 @@ namespace Modules.MasterData.DataAccess
 					else 1
 				end) as IsPrimaryKey,
                 case
-                    when systypes.name = 'tinyint' then 2
-                    when systypes.name = 'int' then 8
-                    when systypes.name = 'bigint' then 16
+                    when columns.precision > 0 then columns.precision
                     else columns.max_length
                 end as MaxLength,
                 systypes.name as DataType

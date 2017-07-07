@@ -19,6 +19,12 @@
         public const string CreateDateTime = "CreateDateTime";
         public const string ModifyUserID = "ModifyUserID";
         public const string ModifyDateTime = "ModifyDateTime";
+        public const string ViolateFlag = "ViolateFlag";
+        public const string ViolateMsg = "ViolateMsg";
+        public const string InterestRate = "InterestRate";
+        public const string CustomerType = "CustomerType";
+        public const string LoanExpire = "LoanExpire";
+        public const string Note = "Note";
 
         public const string Remark = "Remark";
         public const string IsSensitiveInfo = "IsSensitiveInfo";

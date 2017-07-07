@@ -9,7 +9,7 @@ namespace Modules.EmployeeManagement.Business
 {
     public static class EmployeeBusiness
     {
-        public static bool InsertEmployee(List<EmployeeData> listEmployeeData, Dictionary<string,string> dictionary,
+        public static bool InsertEmployee(List<EmployeeData> listEmployeeData, Dictionary<string, string> dictionary,
             out string message)
         {
             bool result = new EmployeeProvider().InsertEmployee(listEmployeeData, dictionary);
@@ -20,6 +20,31 @@ namespace Modules.EmployeeManagement.Business
         public static DataTable SearchEmployee(Dictionary<string, SQLParameterData> parameterDictionary)
         {
             return new EmployeeProvider().SearchEmployee(parameterDictionary);
+        }
+
+        public static DataTable GetAllEmployeeEmail()
+        {
+            return new EmployeeProvider().GetAllEmployeeEmail();
+        }
+
+        public static DataTable GetEmployeeInfo(string email)
+        {
+            return new EmployeeProvider().GetEmployeeInfo(email);
+        }
+
+        public static bool UpdateEmployeeImage(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            return new EmployeeProvider().UpdateEmployeeImage(parameterDictionary);
+        }
+
+        public static bool UpdateEmployeeQRCode(Dictionary<string, string> parameterDictionary)
+        {
+            return new EmployeeProvider().UpdateEmployeeContactQRCode(parameterDictionary);
+        }
+
+        public static DataTable GetEmployeeEmail(string email)
+        {
+            return new EmployeeProvider().GetEmployeeEmail(email);
         }
     }
 }

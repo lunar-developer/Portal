@@ -14,7 +14,6 @@ using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Services.Localization;
-using DotNetNuke.Services.Social.Notifications;
 using DotNetNuke.UI.Skins;
 using DotNetNuke.UI.Skins.Controls;
 using Website.Library.Enum;
@@ -241,9 +240,10 @@ namespace Website.Library.Global
             }
         }
 
-        protected void ShowAlertDialog(string message, string title = null, bool isUseResource = false)
+        protected void ShowAlertDialog(string message, string title = null, bool isUseResource = false,
+            string script = "")
         {
-            RegisterScript(GetAlertScript(message, title, isUseResource));
+            RegisterScript(GetAlertScript(message, title, isUseResource, script));
         }
 
         protected void ShowException(Exception exception)

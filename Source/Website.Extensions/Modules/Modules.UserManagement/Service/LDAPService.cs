@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
@@ -22,24 +23,32 @@ namespace Modules.UserManagement.Service
         public UserInfo Authenticate(string userName, string password, out UserLoginStatus status)
         {
             status = UserLoginStatus.LOGIN_FAILURE;
-            string responseCode = Authenticate(userName, password).Result;
-            switch (responseCode)
+            try
             {
-                case ResponseEnum.Success:
-                    UserInfo userInfo = UserController.GetUserByName(0, userName);
-                    if (userInfo != null)
-                    {
-                        if (CacheBase.Receive<UserData>(userInfo.UserID.ToString()) == null)
+                string responseCode = Authenticate(userName, password).Result;
+                switch (responseCode)
+                {
+                    case ResponseEnum.Success:
+                        UserInfo userInfo = UserController.GetUserByName(0, userName);
+                        if (userInfo != null)
                         {
-                            CacheBase.Reload<UserData>(userInfo.UserID.ToString());
+                            if (CacheBase.Receive<UserData>(userInfo.UserID.ToString()) == null)
+                            {
+                                CacheBase.Reload<UserData>(userInfo.UserID.ToString());
+                            }
+
+                            status = UserLoginStatus.LOGIN_SUCCESS;
                         }
+                        return userInfo;
 
-                        status = UserLoginStatus.LOGIN_SUCCESS;
-                    }
-                    return userInfo;
-
-                default:
-                    return null;
+                    default:
+                        return null;
+                }
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                return null;
             }
         }
 

@@ -30,10 +30,7 @@ namespace Website.Library.Global
         }
 
 
-        /*
-         * FORMAT
-         */
-
+        #region FORMAT
         public static string FormatDecimal(string value)
         {
             decimal result;
@@ -94,11 +91,17 @@ namespace Website.Library.Global
             }
         }
 
+        public static string FormatPhoneNumber(string value)
+        {
+            if (value.Length >= 10)
+            {
+                return value.Substring(0, 4) + " " + value.Substring(4, 3) + " " + value.Substring(7);
+            }
+            return value;
+        }
+        #endregion
 
-        /*
-         * GET CONTENT
-         */
-
+        #region GET CONTENT
         public static DateTime GetDate(string value)
         {
             bool isDateFormat = value.Length == PatternEnum.Date.Length;
@@ -106,7 +109,6 @@ namespace Website.Library.Global
                 CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date);
             return date;
         }
-
 
         public static string GetConfiguration(string key, string defaultValue = "")
         {
@@ -131,11 +133,23 @@ namespace Website.Library.Global
             return tabInfo?.FullUrl;
         }
 
+        public static string ReadFile(string filePath)
+        {
+            return File.Exists(filePath) ? File.ReadAllText(filePath) : string.Empty;
+        }
 
-        /*
-         * IMPORT
-         */
+        public static UserInfo GetUserByUserID(int userID)
+        {
+            return UserController.GetUserById(PortalSettings.Current.PortalId, userID);
+        }
 
+        public static UserInfo GetUserByUserName(string userName)
+        {
+            return UserController.GetUserByName(PortalSettings.Current.PortalId, userName);
+        }
+        #endregion
+
+        #region IMPORT
         public static List<T> ImportCSV<T>(string filePath, char separator = SeparatorEnum.Comma) where T : class
         {
             using (FileStream stream = File.OpenRead(filePath))
@@ -188,12 +202,9 @@ namespace Website.Library.Global
 
             return listResult;
         }
+        #endregion
 
-
-        /*
-         * EXPORT
-         */
-
+        #region EXPORT
         public static byte[] ExportToExcel(DataTable dtResult)
         {
             XLWorkbook workbook = new XLWorkbook();
@@ -206,12 +217,9 @@ namespace Website.Library.Global
 
             return bytes;
         }
+        #endregion
 
-
-        /*
-         * MASK DATA
-         */
-
+        #region DATA MARK
         public static string MaskCardNo(string cardNo)
         {
             return cardNo.Length < 16
@@ -232,17 +240,14 @@ namespace Website.Library.Global
                 ? value
                 : new string('*', value.Length - 5) + value.Substring(value.Length - 5);
         }
+        #endregion
 
+        #region STRING UTILITIES
         public static string Minimize(string content)
         {
             content = content.Replace(Environment.NewLine, string.Empty).Replace(CharacterEnum.Tab, string.Empty);
             return Regex.Replace(content, @"\s+", " ").Replace("> <", "><");
         }
-
-
-        /*
-         * STRING UTILITIES
-         */
 
         public static string Left(string value, int length)
         {
@@ -254,11 +259,20 @@ namespace Website.Library.Global
             return value.Substring(value.Length - length);
         }
 
+        public static string GetCoalesceString(params string[] parameter)
+        {
+            foreach (string data in parameter)
+            {
+                if (string.IsNullOrWhiteSpace(data) == false)
+                {
+                    return data;
+                }
+            }
+            return string.Empty;
+        }
+        #endregion
 
-        /*
-         * VALIDATE
-         */
-
+        #region VALIDATION
         public static bool IsInRole(string roleName)
         {
             UserInfo userInfo = UserController.Instance.GetCurrentUserInfo();
@@ -284,29 +298,13 @@ namespace Website.Library.Global
             return array.Any(string.IsNullOrWhiteSpace);
         }
 
-        public static string GetCoalesceString(params string[] parameter)
-        {
-            foreach (string data in parameter)
-            {
-                if (string.IsNullOrWhiteSpace(data) == false)
-                {
-                    return data;
-                }
-            }
-            return string.Empty;
-        }
-
         public static bool IsInArray(string value, params string[] arrayData)
         {
             return arrayData.Any(data => value == data);
         }
+        #endregion
 
-
-        /*
-         * LOG
-         */
-
-
+        #region LOG
         public static void LogError(Exception exception)
         {
             Logger.Error(exception);
@@ -316,11 +314,9 @@ namespace Website.Library.Global
         {
             Logger.Error(message);
         }
+        #endregion
 
-
-        /*
-         * Convert
-         */
+        #region SERIALIZE / DESERIALIZE
         public static T Deserialize<T>(string data, string contentType = ContentEnum.Json) where T : class
         {
             switch (contentType)
@@ -350,18 +346,7 @@ namespace Website.Library.Global
                     return string.Empty;
             }
         }
-
-
-
-        public static UserInfo GetUserByUserID(int userID)
-        {
-            return UserController.GetUserById(PortalSettings.Current.PortalId, userID);
-        }
-
-        public static UserInfo GetUserByUserName(string userName)
-        {
-            return UserController.GetUserByName(PortalSettings.Current.PortalId, userName);
-        }
+        #endregion
 
         #region SEND NOTIFICATION
         public static void SendNotification(string subject, string body, int fromUserID, string toUserName)

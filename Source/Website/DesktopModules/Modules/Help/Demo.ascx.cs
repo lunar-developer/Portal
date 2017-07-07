@@ -5,22 +5,99 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
+using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Roles;
 using DotNetNuke.Services.Social.Notifications;
+using Telerik.Web.UI;
+using Website.Library.DataTransfer;
 using Website.Library.Global;
 
 namespace DesktopModules.Modules.Help
 {
     public partial class Demo : DesktopModuleBase
-	{
+    {
+        protected void RadGrid1_ItemCreated(object sender, GridItemEventArgs e)
+        {
+            if (e.Item is GridPagerItem)
+            {
+                RadNumericTextBox goToPageText = (RadNumericTextBox)e.Item.FindControl("GoToPageTextBox");
+
+
+
+                goToPageText.Width = Unit.Pixel(50);
+                goToPageText.ShowSpinButtons = true;
+                //goToPageText.Style.Add("color", "gray");
+
+                
+
+                RadNumericTextBox ChangePageSizeTextBox = (RadNumericTextBox)e.Item.FindControl("ChangePageSizeTextBox");
+                ChangePageSizeTextBox.IncrementSettings.Step = 10;
+
+
+
+                ChangePageSizeTextBox.Width = Unit.Pixel(50);
+                ChangePageSizeTextBox.ShowSpinButtons = true;
+                //ChangePageSizeTextBox.Style.Add("color", "gray");
+            }
+        }
+
+        protected void OnItemRequest(object sender, RadComboBoxItemsRequestedEventArgs e)
+        {
+            Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
+            {
+                { "UserName", new SQLParameterData(e.Text, SqlDbType.VarChar)},
+                { "UserID", new SQLParameterData(1, SqlDbType.Int)}
+            };
+
+            DataTable data = UserBusiness.SearchUser(dictionary);
+
+            if (data.Rows.Count == 0)
+            {
+                e.EndOfItems = false;
+                e.NumberOfItems = 0;
+                return;
+            }
+
+            int itemOffset = e.NumberOfItems;
+            int endOffset = Math.Min(itemOffset + ddlUser.ItemsPerRequest, data.Rows.Count);
+            e.EndOfItems = endOffset == data.Rows.Count;
+
+            for (int i = itemOffset; i < endOffset; i++)
+            {
+                string text = data.Rows[i]["UserName"].ToString();
+                string value = data.Rows[i]["UserID"].ToString();
+                ddlUser.Items.Add(new RadComboBoxItem(text, value));
+            }
+            //    ddlUser.ShowMoreResultsBox = !e.EndOfItems;
+
+            //   ddlUser.DataSource = data;
+            //ddlUser.DataTextField = "DisplayName";
+            //ddlUser.DataValueField = "UserID";
+            //   ddlUser.DataBind();
+        }
+
         protected override void OnLoad(EventArgs e)
         {
             if (IsPostBack == false)
             {
                 RegisterConfirmDialog(btnConfirm, "Are you sure?");
+                //Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
+                //{
+                //    { "UserID", new SQLParameterData(1, SqlDbType.Int)}
+                //};
+                //DataTable data = UserBusiness.SearchUser(dictionary);
+
+                //ddlUser.DataSource = data;
+                //ddlUser.DataTextField = "UserName";
+                //ddlUser.DataValueField = "UserID";
+                //ddlUser.DataBind();
+
+                GridData.DataSource = BranchBusiness.GetAllBranchInfo();
+                GridData.DataBind();
             }
+
 
             //var portalId =
             //    PortalController.GetEffectivePortalId(UserController.Instance.GetCurrentUserInfo().PortalID);
@@ -76,7 +153,7 @@ namespace DesktopModules.Modules.Help
         }
 
         protected void Search(object sender, EventArgs e)
-	    {
+        {
             try
             {
                 //Dictionary<string, string> dictionary = new Dictionary<string, string>
@@ -95,7 +172,7 @@ namespace DesktopModules.Modules.Help
             {
                 ShowMessage(exception.Message, ModuleMessage.ModuleMessageType.RedError);
             }
-	    }
+        }
 
         protected void Alert(object sender, EventArgs e)
         {

@@ -514,8 +514,7 @@ namespace DesktopModules.Modules.UserManagement
             DateTime date = DateTime.Parse(data[UserTable.LastLoginDate].ToString());
             txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
 
-            bool isAccountLDAP;
-            bool.TryParse(data[UserTable.IsAccountLDAP].ToString(), out isAccountLDAP);
+            bool isAccountLDAP = FunctionBase.ConvertToBool(data[UserTable.IsAccountLDAP].ToString());
             hidIsAccountLDAP.Value = isAccountLDAP ? "1" : "0";
             hidUserID.Value = txtUserID.Text;
         }

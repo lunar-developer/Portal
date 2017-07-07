@@ -8,18 +8,18 @@ namespace Modules.Application.DataAccess
 {
     public class ApplicationFieldProvider : DataProvider
     {
-        private static readonly string ScriptGetAllField = $@"
-            select * from dbo.{ApplicationFieldTable.DatabaseTableName}";
+        private static readonly string ScriptGetAllFields = $@"
+            select * from dbo.{ApplicationFieldTable.DatabaseTableName} with(nolock)";
 
-        public List<ApplicationFieldData> GetAllField()
+        public List<ApplicationFieldData> GetAllFields()
         {
             Connector.ExecuteSql<ApplicationFieldData, List<ApplicationFieldData>>(
-                ScriptGetAllField, out List<ApplicationFieldData> result);
+                ScriptGetAllFields, out List<ApplicationFieldData> result);
             return result;
         }
 
         private static readonly string ScriptGetField = $@"
-            {ScriptGetAllField} where {ApplicationFieldTable.FieldName} = @{ApplicationFieldTable.FieldName}";
+            {ScriptGetAllFields} where {ApplicationFieldTable.FieldName} = @{ApplicationFieldTable.FieldName}";
 
         public ApplicationFieldData GetField(string fieldName)
         {

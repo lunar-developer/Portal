@@ -2,6 +2,7 @@
 using System.Data;
 using Modules.Application.DataAccess;
 using Modules.Application.DataTransfer;
+using Website.Library.DataTransfer;
 using Website.Library.Global;
 
 namespace Modules.Application.Business
@@ -23,17 +24,8 @@ namespace Modules.Application.Business
                 return 0;
             }
 
-            DataTable dtResult = new ApplicationProvider().InsertApplication(userID,
+            return new ApplicationProvider().InsertApplication(userID,
                 listApplication, listInteger, listBigInteger, listString, listUnicodeString, listLog);
-            long result = long.Parse(dtResult.Rows[0][0].ToString());
-            if (result > 0)
-            {
-                return result;
-            }
-
-            string message = dtResult.Rows[0][1].ToString();
-            FunctionBase.LogError(message);
-            return result;
         }
 
         public static long UpdateApplication(int userID, string applicationID,
@@ -52,17 +44,8 @@ namespace Modules.Application.Business
                 return 0;
             }
 
-            DataTable dtResult = new ApplicationProvider().UpdateApplication(userID, applicationID,
+            return new ApplicationProvider().UpdateApplication(userID, applicationID,
                 listApplication, listInteger, listBigInteger, listString, listUnicodeString, listLog);
-            long result = long.Parse(dtResult.Rows[0][0].ToString());
-            if (result > 0)
-            {
-                return result;
-            }
-
-            string message = dtResult.Rows[0][1].ToString();
-            FunctionBase.LogError(message);
-            return result;
         }
 
         public static DataSet LoadApplication(string applicationID, int userID)
@@ -70,10 +53,16 @@ namespace Modules.Application.Business
             return new ApplicationProvider().LoadApplication(applicationID, userID);
         }
 
-        public static DataTable SearchApplication(Dictionary<string, string> conditionDictionary)
+        public static DataTable SearchApplication(Dictionary<string, SQLParameterData> conditionDictionary)
         {
             return new ApplicationProvider().SearchApplication(conditionDictionary);
         }
+
+        public static int ProcessApplication(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            return new ApplicationProvider().ProcessApplication(parameterDictionary);
+        }
+
 
         private static void BindData(IReadOnlyDictionary<string, string> fieldDictionary,
             ICollection<FieldData> listApplication,
@@ -139,7 +128,7 @@ namespace Modules.Application.Business
                     return $"N'{value}'";
 
                 default:
-                    return value;
+                    return string.IsNullOrWhiteSpace(value) ? "''" : value;
             }
         }
     }

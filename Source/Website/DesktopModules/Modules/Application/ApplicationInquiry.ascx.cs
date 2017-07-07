@@ -8,6 +8,7 @@ using Modules.Application.DataTransfer;
 using Modules.Application.Global;
 using Modules.UserManagement.DataTransfer;
 using Telerik.Web.UI;
+using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
 
@@ -217,7 +218,7 @@ namespace DesktopModules.Modules.Application
 
         private DataTable QueryData()
         {
-            Dictionary<string, string> conditionDictionary = new Dictionary<string, string>();
+            Dictionary<string, SQLParameterData> conditionDictionary = new Dictionary<string, SQLParameterData>();
             AddCondition(hidInputName01, hidInputValue01, conditionDictionary);
             AddCondition(hidInputName02, hidInputValue02, conditionDictionary);
             AddCondition(hidSelectName01, hidSelectValue01, conditionDictionary);
@@ -227,23 +228,23 @@ namespace DesktopModules.Modules.Application
             // Date Field
             if (string.IsNullOrWhiteSpace(hidDateField.Value) == false)
             {
-                conditionDictionary.Add("DateField", hidDateField.Value);
-                conditionDictionary.Add("FromDate", hidFromDate.Value);
-                conditionDictionary.Add("ToDate", hidToDate.Value);
+                conditionDictionary.Add("DateField", new SQLParameterData(hidDateField.Value, SqlDbType.VarChar));
+                conditionDictionary.Add("FromDate", new SQLParameterData(hidFromDate.Value, SqlDbType.Int));
+                conditionDictionary.Add("ToDate", new SQLParameterData(hidToDate.Value, SqlDbType.Int));
             }
 
             return ApplicationBusiness.SearchApplication(conditionDictionary);
         }
 
         private static void AddCondition(HiddenField fieldName, HiddenField fieldValue,
-            IDictionary<string, string> dictionary)
+            IDictionary<string, SQLParameterData> dictionary)
         {
             if (string.IsNullOrWhiteSpace(fieldName.Value))
             {
                 return;
             }
-            dictionary.Add(fieldName.ID.Replace("hid", string.Empty), fieldName.Value);
-            dictionary.Add(fieldValue.ID.Replace("hid", string.Empty), fieldValue.Value);
+            dictionary.Add(fieldName.ID.Replace("hid", string.Empty), new SQLParameterData(fieldName.Value, SqlDbType.NVarChar));
+            dictionary.Add(fieldValue.ID.Replace("hid", string.Empty), new SQLParameterData(fieldValue.Value, SqlDbType.NVarChar));
         }
 
         private static string BuildQueryData(string value)

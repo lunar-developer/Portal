@@ -17,7 +17,7 @@ namespace Modules.Application.Business
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
-            foreach (ApplicationFieldData item in ApplicationFieldBusiness.GetAllField())
+            foreach (ApplicationFieldData item in ApplicationFieldBusiness.GetAllFields())
             {
                 dictionary.TryAdd(item.FieldName, item);
             }

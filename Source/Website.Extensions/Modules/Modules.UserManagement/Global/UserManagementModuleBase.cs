@@ -124,18 +124,18 @@ namespace Modules.UserManagement.Global
 
         public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode)
         {
-            BindAllBranchData(dropDownList, false, false);
+            BindAllBranchData(dropDownList, isUseBranchCode, false);
         }
 
         public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll)
         {
-            BindAllBranchData(dropDownList, false, false, new List<string>());
+            BindAllBranchData(dropDownList, isUseBranchCode, isUseOptionAll, new List<string>());
         }
 
         public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll,
             List<string> listExclude)
         {
-            BindAllBranchData(dropDownList, false, false, new List<string>(), null);
+            BindAllBranchData(dropDownList, isUseBranchCode, isUseOptionAll, listExclude, null);
         }
 
         public static void BindAllBranchData(DropDownList dropDownList, bool isUseBranchCode, bool isUseOptionAll,

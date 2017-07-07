@@ -40,10 +40,14 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Telerik.Web.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Business\AbsentCalendarBusiness.cs" />
     <Compile Include="Business\ApplicationBusiness.cs" />
     <Compile Include="Business\ApplicationFieldBusiness.cs" />
     <Compile Include="Business\ApplicationFieldCacheBusiness.cs" />
@@ -59,25 +63,16 @@
     <Compile Include="Business\IdentityTypeCacheBusiness.cs" />
     <Compile Include="Business\IdentityTypeBusiness.cs" />
     <Compile Include="Business\ApplicationTypeBusiness.cs" />
-    <Compile Include="Business\PhaseBussiness.cs" />
-    <Compile Include="Business\PhaseCacheBussiness.cs" />
-    <Compile Include="Business\PhaseMappingBussiness.cs" />
-    <Compile Include="Business\PhaseMappingCacheBussiness.cs" />
     <Compile Include="Business\PolicyBusiness.cs" />
     <Compile Include="Business\ApplicationTypeCacheBusiness.cs" />
     <Compile Include="Business\PolicyCacheBusiness.cs" />
     <Compile Include="Business\StateBusiness.cs" />
     <Compile Include="Business\StateCacheBusiness.cs" />
-    <Compile Include="Business\UserApplicationBusiness.cs" />
-    <Compile Include="Business\UserPhaseMappingBusiness.cs" />
-    <Compile Include="Business\UserPhaseMappingCacheBusiness.cs" />
-    <Compile Include="DataAccess\AbsentCalendarProvider.cs" />
     <Compile Include="DataAccess\ApplicationFieldProvider.cs" />
     <Compile Include="DataAccess\ApplicationLogProvider.cs" />
     <Compile Include="Database\ApplicationLogDetailTable.cs" />
     <Compile Include="Database\ApplicationProcessTable.cs" />
     <Compile Include="DataTransfer\ApplicationFieldData.cs" />
-    <Compile Include="DataAccess\ApplicationFormProvider.cs" />
     <Compile Include="DataAccess\ApplicationProvider.cs" />
     <Compile Include="DataAccess\CityProvider.cs" />
     <Compile Include="DataAccess\CustomerClassProvider.cs" />
@@ -85,12 +80,7 @@
     <Compile Include="DataAccess\CountryProvider.cs" />
     <Compile Include="DataAccess\IdentityTypeProvider.cs" />
     <Compile Include="DataAccess\ApplicationTypeProvider.cs" />
-    <Compile Include="DataAccess\PhaseMappingProvider.cs" />
-    <Compile Include="DataAccess\PhaseProvider.cs" />
     <Compile Include="DataAccess\StateProvider.cs" />
-    <Compile Include="DataAccess\UserApplicationProvider.cs" />
-    <Compile Include="DataAccess\UserPhaseMappingProvider.cs" />
-    <Compile Include="Database\AbsentCalendarTable.cs" />
     <Compile Include="Database\ApplicationCardTable.cs" />
     <Compile Include="Database\ApplicationFieldTable.cs" />
     <Compile Include="Database\ApplicationFileTable.cs" />
@@ -100,11 +90,7 @@
     <Compile Include="Database\CustomerClassTable.cs" />
     <Compile Include="Database\LanguageTable.cs" />
     <Compile Include="Database\CountryTable.cs" />
-    <Compile Include="Database\PhaseMappingTable.cs" />
     <Compile Include="Database\StateTable.cs" />
-    <Compile Include="Database\UserApplicationTable.cs" />
-    <Compile Include="Database\UserPhaseMappingTable.cs" />
-    <Compile Include="DataTransfer\AbsentCalendarData.cs" />
     <Compile Include="DataTransfer\ApplicationCardData.cs" />
     <Compile Include="DataTransfer\ApplicationData.cs" />
     <Compile Include="DataTransfer\ApplicationFileData.cs" />
@@ -115,32 +101,25 @@
     <Compile Include="DataTransfer\CustomerClassData.cs" />
     <Compile Include="DataTransfer\CountryData.cs" />
     <Compile Include="DataTransfer\LanguageData.cs" />
-    <Compile Include="DataTransfer\PhaseData.cs" />
     <Compile Include="DataAccess\PolicyProvider.cs" />
     <Compile Include="Database\ApplicationTypeTable.cs" />
     <Compile Include="Database\IdentityTypeTable.cs" />
-    <Compile Include="Database\PhaseTable.cs" />
     <Compile Include="Database\PolicyTable.cs" />
     <Compile Include="DataTransfer\ApplicationTypeData.cs" />
     <Compile Include="DataTransfer\IdentityTypeData.cs" />
-    <Compile Include="DataTransfer\PhaseMappingData.cs" />
-    <Compile Include="DataTransfer\PhaseMappingListData.cs" />
     <Compile Include="DataTransfer\PolicyData.cs" />
     <Compile Include="DataTransfer\StateData.cs" />
-    <Compile Include="DataTransfer\UserApplicationData.cs" />
-    <Compile Include="DataTransfer\UserPhaseMappingData.cs" />
-    <Compile Include="Enum\AbsentCalendarEnum.cs" />
     <Compile Include="Enum\ApplicationFieldNameEnum.cs" />
     <Compile Include="Enum\ApplicationFieldTypeEnum.cs" />
+    <Compile Include="Enum\ApplicationStatusEnum.cs" />
     <Compile Include="Enum\ApplicationTypeEnum.cs" />
     <Compile Include="Enum\ApplicationEnum.cs" />
+    <Compile Include="Enum\CountryEnum.cs" />
     <Compile Include="Enum\IdentityTypeEnum.cs" />
     <Compile Include="Enum\PhaseEnum.cs" />
+    <Compile Include="Enum\ProcessEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
     <Compile Include="Global\ApplicationFormModuleBase.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Global\ApplicFormModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Global\ApplicationModuleBase.cs">

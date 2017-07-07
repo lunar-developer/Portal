@@ -22,7 +22,7 @@
 </head>
 <body id="Body" runat="server">
     
-    <dnn:Form ID="Form" runat="server" ENCTYPE="multipart/form-data">
+    <dnn:Form ID="Form" runat="server" ENCTYPE="multipart/form-data" autocomplete="off">
         <asp:PlaceHolder ID="BodySCRIPTS" runat="server" />
         <asp:Label ID="SkinError" runat="server" CssClass="NormalRed" Visible="False"></asp:Label>
         <asp:PlaceHolder ID="SkinPlaceHolder" runat="server" />

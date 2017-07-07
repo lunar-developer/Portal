@@ -27,10 +27,15 @@ namespace Modules.Disbursement.DataAccess
             Connector.AddParameter(DisbursementTable.DisbursementMethod, SqlDbType.VarChar, data.DisbursementMethod);
             Connector.AddParameter(DisbursementTable.DisbursementPurpose, SqlDbType.NVarChar, data.DisbursementPurpose);
             Connector.AddParameter(DisbursementTable.LoanMethod, SqlDbType.VarChar, data.LoanMethod);
-            Connector.AddParameter(DisbursementTable.CollectAmount, SqlDbType.Decimal, data.CollectAmount);
-            Connector.AddParameter(DisbursementTable.DisbursementStatus, SqlDbType.Int, data.DisbursementStatus);
+            //Connector.AddParameter(DisbursementTable.CollectAmount, SqlDbType.Decimal, data.CollectAmount);
+            //Connector.AddParameter(DisbursementTable.DisbursementStatus, SqlDbType.Int, data.DisbursementStatus);
             Connector.AddParameter(DisbursementTable.CreateUserID, SqlDbType.Int, data.CreateUserID);
             Connector.AddParameter(DisbursementTable.CreateDateTime, SqlDbType.BigInt, data.CreateDateTime);
+            Connector.AddParameter(DisbursementTable.InterestRate, SqlDbType.Decimal, decimal.Parse(data.InterestRate));
+            Connector.AddParameter(DisbursementTable.CustomerType, SqlDbType.VarChar, data.CustomerType);
+            Connector.AddParameter(DisbursementTable.LoanExpire, SqlDbType.VarChar, data.LoanExpire);
+            Connector.AddParameter(DisbursementTable.Note, SqlDbType.VarChar, data.Note);
+
             Connector.ExecuteProcedure("dbo.DB_SP_InsertDisbursement", out DataTable result);
             return result;
         }
@@ -47,9 +52,15 @@ namespace Modules.Disbursement.DataAccess
             Connector.AddParameter(DisbursementTable.DisbursementMethod, SqlDbType.VarChar, data.DisbursementMethod);
             Connector.AddParameter(DisbursementTable.DisbursementPurpose, SqlDbType.NVarChar, data.DisbursementPurpose);
             Connector.AddParameter(DisbursementTable.LoanMethod, SqlDbType.VarChar, data.LoanMethod);
-            Connector.AddParameter(DisbursementTable.CollectAmount, SqlDbType.Decimal, data.CollectAmount);
+            //Connector.AddParameter(DisbursementTable.CollectAmount, SqlDbType.Decimal, data.CollectAmount);
+            Connector.AddParameter(DisbursementTable.Remark, SqlDbType.NVarChar, data.Remark);
             Connector.AddParameter(DisbursementTable.ModifyUserID, SqlDbType.Int, data.ModifyUserID);
             Connector.AddParameter(DisbursementTable.ModifyDateTime, SqlDbType.BigInt, data.ModifyDateTime);
+            Connector.AddParameter(DisbursementTable.InterestRate, SqlDbType.Decimal, data.InterestRate);
+            Connector.AddParameter(DisbursementTable.CustomerType, SqlDbType.VarChar, data.CustomerType);
+            Connector.AddParameter(DisbursementTable.LoanExpire, SqlDbType.VarChar, data.LoanExpire);
+            Connector.AddParameter(DisbursementTable.Note, SqlDbType.VarChar, data.Note);
+
             Connector.ExecuteProcedure("dbo.DB_SP_UpdateDisbursement", out table);
             return table;
         }

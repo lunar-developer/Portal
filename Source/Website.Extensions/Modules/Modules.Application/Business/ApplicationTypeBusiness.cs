@@ -6,9 +6,9 @@ namespace Modules.Application.Business
 {
     public static class ApplicationTypeBusiness
     {
-        public static List<ApplicationTypeData> GetAllApplicationType()
+        public static List<ApplicationTypeData> GetAllApplicationTypes()
         {
-            return new ApplicationTypeProvider().GetAllApplicationType();
+            return new ApplicationTypeProvider().GetAllApplicationTypes();
         }
 
         public static ApplicationTypeData GetApplicationType(string applicationTypeID)

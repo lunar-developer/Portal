@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using Modules.Application.Global;
+using Telerik.Web.UI;
 
 namespace DesktopModules.Modules.Application.Controls
 {
@@ -17,8 +18,8 @@ namespace DesktopModules.Modules.Application.Controls
 
         private void BindData()
         {
-            BindCountryData(ctrlHomeCountry);
-            BindStateData(ctrlHomeState, GetEmptyItem());
+            BindCountryData(ctrlHomeCountry, GetEmptyItem());
+            ctrlHomeState.Items.Add(GetEmptyItem());
             ctrlHomeCity.Items.Add(GetEmptyItem());
 
             BindCountryData(ctrlAlternative01Country, GetEmptyItem());
@@ -30,16 +31,16 @@ namespace DesktopModules.Modules.Application.Controls
             ctrlAlternative02City.Items.Add(GetEmptyItem());
         }
 
-        protected void ProcessOnSelectCountry(object sender, EventArgs e)
+        public void ProcessOnSelectCountry(object sender, EventArgs e)
         {
-            DropDownList dropDownList = sender as DropDownList;
+            RadComboBox dropDownList = sender as RadComboBox;
             if (dropDownList == null)
             {
                 return;
             }
 
-            DropDownList dropDownListState;
-            DropDownList dropDownListCity;
+            RadComboBox dropDownListState;
+            RadComboBox dropDownListCity;
             switch (dropDownList.ID)
             {
                 case "ctrlAlternative01Country":
@@ -69,9 +70,9 @@ namespace DesktopModules.Modules.Application.Controls
             }
         }
 
-        protected void ProcessOnSelectState(object sender, EventArgs e)
+        public void ProcessOnSelectState(object sender, EventArgs e)
         {
-            DropDownList dropDownList = sender as DropDownList;
+            RadComboBox dropDownList = sender as RadComboBox;
             if (dropDownList == null)
             {
                 return;
@@ -103,7 +104,7 @@ namespace DesktopModules.Modules.Application.Controls
             }
         }
 
-        private void BindEmptyItem(ListControl dropDownList)
+        private void BindEmptyItem(RadComboBox dropDownList)
         {
             dropDownList.Items.Clear();
             dropDownList.Items.Add(GetEmptyItem());
@@ -114,9 +115,9 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlHomeAddress01 => ctrlHomeAddress01;
         public TextBox ControlHomeAddress02 => ctrlHomeAddress02;
         public TextBox ControlHomeAddress03 => ctrlHomeAddress03;
-        public DropDownList ControlHomeCountry => ctrlHomeCountry;
-        public DropDownList ControlHomeState => ctrlHomeState;
-        public DropDownList ControlHomeCity => ctrlHomeCity;
+        public RadComboBox ControlHomeCountry => ctrlHomeCountry;
+        public RadComboBox ControlHomeState => ctrlHomeState;
+        public RadComboBox ControlHomeCity => ctrlHomeCity;
         public TextBox ControlHomePhone01 => ctrlHomePhone01;
         public TextBox ControlHomeRemark => ctrlHomeRemark;
 
@@ -124,9 +125,9 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlAlternative01Address01 => ctrlAlternative01Address01;
         public TextBox ControlAlternative01Address02 => ctrlAlternative01Address02;
         public TextBox ControlAlternative01Address03 => ctrlAlternative01Address03;
-        public DropDownList ControlAlternative01Country => ctrlAlternative01Country;
-        public DropDownList ControlAlternative01State => ctrlAlternative01State;
-        public DropDownList ControlAlternative01City => ctrlAlternative01City;
+        public RadComboBox ControlAlternative01Country => ctrlAlternative01Country;
+        public RadComboBox ControlAlternative01State => ctrlAlternative01State;
+        public RadComboBox ControlAlternative01City => ctrlAlternative01City;
         public TextBox ControlAlternative01Phone01 => ctrlAlternative01Phone01;
         public TextBox ControlAlternative01Remark => ctrlAlternative01Remark;
 
@@ -134,9 +135,9 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlAlternative02Address01 => ctrlAlternative02Address01;
         public TextBox ControlAlternative02Address02 => ctrlAlternative02Address02;
         public TextBox ControlAlternative02Address03 => ctrlAlternative02Address03;
-        public DropDownList ControlAlternative02Country => ctrlAlternative02Country;
-        public DropDownList ControlAlternative02State => ctrlAlternative02State;
-        public DropDownList ControlAlternative02City => ctrlAlternative02City;
+        public RadComboBox ControlAlternative02Country => ctrlAlternative02Country;
+        public RadComboBox ControlAlternative02State => ctrlAlternative02State;
+        public RadComboBox ControlAlternative02City => ctrlAlternative02City;
         public TextBox ControlAlternative02Phone01 => ctrlAlternative02Phone01;
         public TextBox ControlAlternative02Remark => ctrlAlternative02Remark;
 

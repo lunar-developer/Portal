@@ -146,17 +146,62 @@
                                 runat="server" />
                         </div>
                         <div class="col-sm-2 control-label">
-                            <control:Label HelpText="Số tiền nợ cần phải thu Khách hàng trước khi giải ngân"
+                            <control:Label HelpText="Lãi suất (ví dụ: 0.08)"
                                 runat="server"
-                                Text="Số tiền cần thu" />
+                                Text="Lãi suất" />
                         </div>
                         <div class="col-sm-4">
                             <asp:TextBox autocomplete="off"
                                 CssClass="form-control c-theme"
-                                ID="tbCollectAmount"
+                                placeHolder="Lãi suất"
+                                ID="tbInterestRate"
                                 runat="server" />
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Loại Khách hàng"
+                                runat="server"
+                                Text="Loại KH" />
+                        </div>
+                        <div class="col-sm-4">
+                            <asp:DropDownList AutoPostBack="False"
+                                CssClass="form-control c-theme"
+                                ID="ddlCustomerType"
+                                runat="server" >
+                                <asp:ListItem Text="KH Hiện hữu" Value="E" />
+                                <asp:ListItem Text="KH Mới" Value="N" />
+                            </asp:DropDownList>
+                        </div>
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Thời hạn vay"
+                                    runat="server"
+                                    Text="Thời hạn vay" />
+                        </div>
+                        <div class="col-sm-4">
+                            <dnn:DnnDatePicker Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
+                                EnableTyping="False"
+                                ID="tbLoanExpire"
+                                runat="server" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Ghi chú"
+                                runat="server"
+                                Text="Ghi chú" />
+                        </div>
+                        <div class="col-sm-4">
+                            <asp:DropDownList AutoPostBack="False"
+                                CssClass="form-control c-theme"
+                                ID="ddlNote"
+                                runat="server" >
+                                <asp:ListItem Text="KH giải ngân và thu nợ trong ngày" Value="0" />
+                                <asp:ListItem Text="KH giải ngân nội bộ" Value="1" />
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <div class="col-sm-2 control-label">
                             <control:Label ID="DisbursementPurpose"
@@ -213,10 +258,10 @@
                                 ID="btnRevise"
                                 OnClick="Submit"
                                 runat="server"/>
-                    <asp:Button CssClass="btn btn-primary"
+                    <%--<asp:Button CssClass="btn btn-primary"
                                 ID="btnPreapprove"
                                 OnClick="Submit"
-                                runat="server"/>
+                                runat="server"/>--%>
                     <asp:Button CssClass="btn btn-primary"
                                 ID="btnApprove"
                                 OnClick="Submit"

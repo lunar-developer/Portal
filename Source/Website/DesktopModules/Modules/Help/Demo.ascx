@@ -1,8 +1,26 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="Demo.ascx.cs" Inherits="DesktopModules.Modules.Help.Demo" %>
-<%@ Register Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" TagPrefix="dnn" %>
-<%@ Register Assembly="DotNetNuke.Web" Namespace="DotNetNuke.Web.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
 <%@ Register Src="~/controls/DoubleLabel.ascx" TagName="DoubleLabel" TagPrefix="control" %>
+<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
+<%@ Register TagPrefix="dnn" Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" %>
+<%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4" %>
+
+<style type="text/css">
+    .icon {
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        color: red;
+        float: right;
+    }
+
+        .icon:before {
+            content: "\f2c3";
+        }
+</style>
 
 <asp:UpdatePanel ID="updatePanel"
     runat="server">
@@ -19,6 +37,29 @@
                 <asp:PlaceHolder ID="phMessage"
                     runat="server" />
             </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <telerik:RadComboBox EnableLoadOnDemand="True" Filter="Contains" Visible="False"
+                        ID="ddlUser" ShowMoreResultsBox="True"
+                        ItemsPerRequest="2" ItemRequestTimeout="1000" ShowWhileLoading="True"
+                        CheckedItemsTexts="DisplayAllInInput" EnableVirtualScrolling="False"
+                        OnItemsRequested="OnItemRequest"
+                        runat="server">
+                    </telerik:RadComboBox>
+
+                    <telerik:RadGrid runat="server" ID="GridData" AutoGenerateColumns="True" AllowCustomPaging="False" AllowPaging="True"
+                                     OnItemCreated="RadGrid1_ItemCreated">
+                        <PagerStyle Mode="Advanced"
+                            PageSizeControlType="RadComboBox"></PagerStyle>
+                        <ClientSettings >
+                        </ClientSettings>
+                    </telerik:RadGrid>
+                </div>
+            </div>
+
+
             <div class="dnnTabs">
                 <div class="form-group">
                     <ul class="dnnAdminTabNav dnnClear">
@@ -30,7 +71,7 @@
                         </li>
                     </ul>
                 </div>
-                
+
                 <div class="dnnClear"
                     id="TabControl">
                     <div class="dnnPanels">
@@ -40,8 +81,10 @@
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-sm-2 control-label">
-                                    <control:DoubleLabel ID="lblUserName" IsRequire="True" Text="aaa"
-                                        runat="server" />
+                                    <control:DoubleLabel ID="lblUserName"
+                                        IsRequire="True"
+                                        runat="server"
+                                        Text="aaa" />
                                 </div>
                                 <div class="col-sm-4">
                                     <asp:TextBox CssClass="form-control c-theme"
@@ -104,8 +147,9 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="c-checkbox has-info">
-                                        <asp:CheckBox runat="server" ID="chkState" />
-                                        <label for="<%=chkState.ClientID %>">
+                                        <asp:CheckBox ID="chkState"
+                                            runat="server" />
+                                        <label for="<%= chkState.ClientID %>">
                                             <span class="inc"></span>
                                             <span class="check"></span>
                                             <span class="box"></span>

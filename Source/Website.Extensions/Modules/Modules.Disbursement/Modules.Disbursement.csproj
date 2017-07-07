@@ -44,12 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\DisbursementBusiness.cs" />
+    <Compile Include="Business\DisbursementRoomBusiness.cs" />
     <Compile Include="DataAccess\DisbursementProvider.cs" />
+    <Compile Include="DataAccess\DisbursementRoomProvider.cs" />
+    <Compile Include="Database\DisbursementRoomTable.cs" />
     <Compile Include="Database\DisbursementTable.cs" />
     <Compile Include="DataTransfer\DisbursementData.cs" />
+    <Compile Include="DataTransfer\DisbursementRoomData.cs" />
     <Compile Include="Enum\CurrencyEnum.cs" />
     <Compile Include="Enum\DisbursementStatusEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\IdentifierEnum.cs" />
     <Compile Include="Global\DisbursementModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -65,5 +70,6 @@
       <Name>Modules.UserManagement</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

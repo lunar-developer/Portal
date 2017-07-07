@@ -36,7 +36,7 @@ namespace DesktopModules.Modules.Application.Controls
             StringBuilder html = new StringBuilder();
             foreach (DataRow row in logTable.Rows)
             {
-                bool isHasLogDetail = bool.Parse(row[ApplicationLogTable.IsHasLogDetail].ToString());
+                bool isHasLogDetail = row[ApplicationLogTable.IsHasLogDetail].ToString() == "1";
                 string link = isHasLogDetail
                     ? $@"<a href='{string.Format(historyUrl, row[ApplicationLogTable.ApplicationLogID])}' target='_blank'>
                             <i class='fa fa-eye'></i>
@@ -47,7 +47,7 @@ namespace DesktopModules.Modules.Application.Controls
                     <tr>
                         <td>{FunctionBase.FormatDate(row[BaseTable.ModifyDateTime].ToString())}</td>
                         <td>{FunctionBase.FormatUserID(row[BaseTable.ModifyUserID].ToString())}</td>
-                        <td>{row[ApplicationLogTable.ActionCode]}</td>
+                        <td>{row[ApplicationLogTable.LogAction]}</td>
                         <td>{row[ApplicationLogTable.Remark]}</td>
                         <td>{link}</td>
                     </tr>

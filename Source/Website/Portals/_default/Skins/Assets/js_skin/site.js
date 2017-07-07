@@ -2,10 +2,10 @@
 var gloMaxLength = 1000;
 var gloPostBackInterval;
 
-$(document).ready(function()
+$(document).ready(function ()
 {
     // Global error handler
-    window.onerror = function(message)
+    window.onerror = function (message)
     {
         log(message);
     };
@@ -17,17 +17,17 @@ $(document).ready(function()
 function initialize()
 {
     // Register Loading Panel
-    addPageLoaded(function()
+    addPageLoaded(function ()
     {
         // Loading Panel
         injectLoading();
         addBeginRequest(showLoading);
-        addEndRequest(function()
+        addEndRequest(function ()
         {
             hideLoading();
             cleanUpAutoComplete();
         });
-        addPostBackTrigger(function()
+        addPostBackTrigger(function ()
         {
             showLoading();
             waitPostBackComplete();
@@ -42,7 +42,7 @@ function addPageLoaded(fn, autoRefresh)
         return;
     }
 
-    $(document).ready(function()
+    $(document).ready(function ()
     {
         fn();
     });
@@ -55,7 +55,7 @@ function addPageLoaded(fn, autoRefresh)
 
 function addBeginRequest(fn)
 {
-    Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(function()
+    Sys.WebForms.PageRequestManager.getInstance().add_beginRequest(function ()
     {
         fn();
     });
@@ -63,7 +63,7 @@ function addBeginRequest(fn)
 
 function addEndRequest(fn)
 {
-    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function()
+    Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function ()
     {
         fn();
     });
@@ -85,7 +85,7 @@ function addPostBackTrigger(fn)
 
 function waitPostBackComplete()
 {
-    gloPostBackInterval = setInterval(function()
+    gloPostBackInterval = setInterval(function ()
     {
         if ($.cookie("PostBackComplete"))
         {
@@ -168,13 +168,16 @@ function registerConfirm(option)
     var noText = option.noText;
     var jquery = option.jquery;
 
-    if (typeof title === "undefined" || title === "") {
+    if (typeof title === "undefined" || title === "")
+    {
         title = "Xác nhận";
     }
-    if (typeof yesText === "undefined" || yesText === "") {
+    if (typeof yesText === "undefined" || yesText === "")
+    {
         yesText = "Đồng ý";
     }
-    if (typeof noText === "undefined" || noText === "") {
+    if (typeof noText === "undefined" || noText === "")
+    {
         noText = "Hủy";
     }
 
@@ -358,28 +361,31 @@ function validateInput(element)
 {
     try
     {
-        var message;
-        if (isNullOrEmpty(element.value))
+        if (element.disabled === false)
         {
-            message = "Vui lòng nhập vào <b>" + element.placeholder + "</b>";
-            alertMessage(message, undefined, undefined, function()
+            var message;
+            if (isNullOrEmpty(element.value))
             {
-                showError(element, true);
-                element.focus();
-            });
-            return false;
-        }
-        if (isInvalidLength(element.value, element.minLength, element.maxLength))
-        {            
-            message = "Độ dài <b>" + element.placeholder + "</b> không phù hợp." +
-                " Min = <b>" + (element.minLength || 0) + "</b>," +
-                " Max = <b>" + (element.maxLength || gloMaxLength) + "</b>";
-            alertMessage(message, undefined, undefined, function()
+                message = "Vui lòng nhập vào <b>" + element.placeholder + "</b>";
+                alertMessage(message, undefined, undefined, function ()
+                {
+                    showError(element, true);
+                    focus(element);
+                });
+                return false;
+            }
+            if (isInvalidLength(element.value, element.minLength, element.maxLength))
             {
-                showError(element, true);
-                element.focus();
-            });
-            return false;
+                message = "Độ dài <b>" + element.placeholder + "</b> không phù hợp." +
+                    " Min = <b>" + (element.minLength || 0) + "</b>," +
+                    " Max = <b>" + (element.maxLength || gloMaxLength) + "</b>";
+                alertMessage(message, undefined, undefined, function ()
+                {
+                    showError(element, true);
+                    focus(element);
+                });
+                return false;
+            }
         }
 
         showError(element, false);
@@ -411,7 +417,7 @@ function validateOption(element)
         if (isInvalidOption(element.value, ""))
         {
             var message = "Vui lòng chọn <b>" + element.attributes.placeholder.value + "</b>";
-            alertMessage(message, undefined, undefined, function()
+            alertMessage(message, undefined, undefined, function ()
             {
                 showError(element, true);
                 element.focus();
@@ -436,7 +442,7 @@ function validateNumber(element, min, max)
     {
         var message = "Vui lòng nhập vào " + element.placeholder + " một số lớn hơn bằng " + formatDigit(min) +
             " và bé hơn bằng " + formatDigit(max);
-        alertMessage(message, undefined, undefined, function()
+        alertMessage(message, undefined, undefined, function ()
         {
             showError(element, true);
             element.focus();
@@ -452,7 +458,7 @@ function validateEmail(element)
 {
     if (isInvalidEmail(element.value))
     {
-        alertMessage("Email không hợp lệ", undefined, undefined, function()
+        alertMessage("Email không hợp lệ", undefined, undefined, function ()
         {
             showError(element, true);
             element.focus();
@@ -481,7 +487,7 @@ function validateFileExtension(element, arrayExtensions)
     }
 
     alertMessage("Hệ thống chỉ hỗ trợ định dạng file " + arrayExtensions.join(", ") + ".", undefined, undefined,
-        function()
+        function ()
         {
             hideLoading();
             showError(element, true);
@@ -503,7 +509,7 @@ function fixClientIDModeStatic()
     if (Sys.WebForms.PageRequestManager)
     {
         var prm = Sys.WebForms.PageRequestManager.getInstance();
-        prm._findNearestElement = function(uniqueId)
+        prm._findNearestElement = function (uniqueId)
         {
             while (uniqueId.length > 0)
             {
@@ -535,7 +541,8 @@ function cleanUpAutoComplete()
     });
 
     // Clean up list duplicate
-    $("ul.ui-autocomplete").each(function () {
+    $("ul.ui-autocomplete").each(function ()
+    {
         if (array.indexOf(this.id) === -1)
         {
             this.remove();
@@ -552,4 +559,93 @@ function collapseAllPanels(container)
 function rollToTop()
 {
     $(".c-layout-go2top i").click();
+}
+
+function onRadComboBoxOpened(sender)
+{
+    var element = sender.get_inputDomElement();
+    element.focus();
+    element.select();
+}
+
+function onRadComboBoxLoad(sender)
+{
+    var id = sender.get_id();
+    $("#" + id + " button.rcbActionButton").attr("tabindex", -1);
+}
+
+function focus(element)
+{
+    // Visile Tab Container if it is hidden
+
+
+    // Expand Panel Container if it is collapsed
+    var panelContainer = $(element).closest("fieldset");
+    if (panelContainer.length === 1 && panelContainer.is(":visible") === false)
+    {
+        panelContainer.parent().find(".dnnFormSectionHead a").click();
+    }
+
+    scrollToObject(element);
+    element.focus();
+}
+
+function scrollToObject(element)
+{
+    var offset = jQuery(element).offset().top - 150;
+
+    jQuery("html, body").animate(
+        {
+            scrollTop: offset
+        }, 1000);
+}
+
+function validateRadOption(id)
+{
+    try
+    {
+        var radCombobox = getRadCombobox(id);
+        if (radCombobox === null || typeof radCombobox === "undefined")
+        {
+            return false;
+        }
+
+        var element = radCombobox.get_inputDomElement();
+        if (isInvalidOption(radCombobox.get_value(), ""))
+        {
+            var message = "Vui lòng chọn <b>" + radCombobox.get_emptyMessage() + "</b>";
+            alertMessage(message, undefined, undefined, function ()
+            {
+                showError(element, true);
+                focus(element);
+                element.select();
+            });
+            return false;
+        }
+
+        showError(element, false);
+        return true;
+    }
+    catch (e)
+    {
+        log(e);
+        return false;
+    }
+}
+
+function validateRadOptionArray(array)
+{
+    for (var i = 0; i < array.length; i++)
+    {
+        if (validateRadOption(array[i]) === false)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+function getRadCombobox(id)
+{
+    return $find(getClientID(id));
 }
