@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SectionAutoPayInfo.ascx.cs" Inherits="DesktopModules.Modules.Application.Controls.SectionAutoDebitInfo" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="SectionAutoPayInfo.ascx.cs" Inherits="DesktopModules.Modules.Application.Controls.SectionAutoPayInfo" %>
 <%@ Register TagPrefix="control" TagName="DoubleLabel" Src="~/controls/DoubleLabel.ascx" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
@@ -13,143 +13,126 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlIsBasicCard"
+                ID="ctrlPaymentMethod"
                 ClientIDMode="Static"
-                runat="server"
-                OnClientSelectedIndexChanged="processOnCardIndicatorChange">
+                Enabled="False"
+                runat="server">
                 <Items>
-                    <control:ComboBoxItem Value="1" Text="Chính"/>
-                    <control:ComboBoxItem Value="0" Text="Phụ"/>
+                    <control:ComboBoxItem Value="O" Text="Other - Khác" />
                 </Items>
             </control:AutoComplete>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                runat="server"
+                SubText="Pay By"
+                Text="Chủ thể thanh toán" />
+        </div>
+        <div class="col-sm-8">
+            <control:AutoComplete
+                ID="ctrlPaymentSource"
+                ClientIDMode="Static"
+                Enabled="False"
+                runat="server">
+                <Items>
+                    <control:ComboBoxItem Value="ACCOUNT" Text="Account - Tài Khoản" />
+                </Items>
+            </control:AutoComplete>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                runat="server"
+                SubText="CIF No of Acc name"
+                Text="Số CIF chủ tài khoản" />
+        </div>
+        <div class="col-sm-4">
+            <asp:TextBox
+                CssClass="c-theme form-control"
+                ID="ctrlPaymentCIFNo"
+                runat="server" />
+        </div>
+        <div class="col-sm-4">
+            <asp:Button
+                CssClass="btn btn-primary c-margin-0"
+                TabIndex="-1"
+                ID="btnSearchPaymentCIFNo"
+                OnClientClick="return alertOnConstruct()"
+                runat="server"
+                Text="Tìm" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                runat="server"
+                SubText="Payment Account Name"
+                Text="Tên chủ tài khoản" />
+        </div>
+        <div class="col-sm-8">
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ReadOnly="True"
+                ID="ctrlPaymentAccountName"
+                runat="server" />
         </div>
     </div>
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-<asp:UpdatePanel ID="SectionAssessmentPanel"
-    runat="server">
-    <ContentTemplate>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblPaymentMothod" CssClass="c-font-bold notice-label"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="False" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:DropDownList CssClass="form-control c-theme"
-                            ID="ctPaymentMothod"
-                            runat="server">
-                        </asp:DropDownList>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblPaymentBy" CssClass="c-font-bold notice-label"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="False" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:DropDownList CssClass="form-control c-theme"
-                            ID="ctPaymentBy"
-                            runat="server">
-                        </asp:DropDownList>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblCifNumberOfAccout" CssClass="c-font-bold"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="False" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <div class="input-group control-value">
-                            <asp:TextBox CssClass="c-theme form-control"
-                                ID="ctCifNumberOfAccout"
-                                runat="server" />
-                            <span class="input-group-btn">
-                                <asp:Button CssClass="c-theme btn btn-primary btn-inputGroup"
-                                    ID="btnCifNumberOfAccout"
-                                    runat="server"
-                                    Text="Tìm" />
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblAccountName" CssClass="c-font-bold"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="False" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:TextBox CssClass="form-control c-theme"
-                            ID="ctAccountName"
-                            runat="server" />
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblPaymentAccountNumber" CssClass="c-font-bold"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="True" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:DropDownList CssClass="form-control c-theme"
-                            ID="ctPaymentAccountNumber"
-                            runat="server">
-                        </asp:DropDownList>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblBranchOfPaymentAccount" CssClass="c-font-bold"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="False" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:TextBox CssClass="form-control c-theme"
-                            ID="ctBranchOfPaymentAccount"
-                            runat="server" ReadOnly="True" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-4 control-label">
-                        <control:DoubleLabel ID="lblProportionPMDebitAmount" CssClass="c-font-bold"
-                            SubCssClass="sub-label"
-                            runat="server"
-                            IsRequire="True" />
-                    </div>
-                    <div class="col-sm-8 control-value">
-                        <asp:DropDownList CssClass="form-control c-theme"
-                            ID="ctProportionPMDebitAmount"
-                            runat="server">
-                        </asp:DropDownList>
-                    </div>
-                </div>
-            </div>
+<div class="col-sm-6">
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Payment Account No"
+                Text="Số tài khoản" />
         </div>
-    </ContentTemplate>
-</asp:UpdatePanel>
-
+        <div class="col-sm-8">
+            <control:AutoComplete
+                ID="ctrlPaymentAccountNo"
+                ClientIDMode="Static"
+                Enabled="False"
+                runat="server" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                runat="server"
+                SubText="Payment Bank"
+                Text="Chi nhánh mở tài khoản" />
+        </div>
+        <div class="col-sm-8">
+            <asp:TextBox
+                CssClass="form-control c-theme"
+                ReadOnly="True"
+                ID="ctrlPaymentBankCode"
+                runat="server" />
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-4 control-label">
+            <control:DoubleLabel
+                IsRequire="True"
+                runat="server"
+                SubText="Direct Debit In"
+                Text="Tỷ lệ thanh toán" />
+        </div>
+        <div class="col-sm-8">
+            <control:AutoComplete
+                ID="ctrlAutoPayIndicator"
+                ClientIDMode="Static"
+                runat="server">
+                <Items>
+                    <control:ComboBoxItem Value="1" Text="1 - Thanh toán tối thiểu" />
+                    <control:ComboBoxItem Value="2" Text="2 - Thanh toán toàn bộ dư nợ" />
+                </Items>
+            </control:AutoComplete>
+        </div>
+    </div>
+</div>

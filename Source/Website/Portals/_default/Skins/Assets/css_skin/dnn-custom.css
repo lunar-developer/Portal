@@ -734,7 +734,6 @@ ul#ControlBar_Module_ModulePosition li {
     }
 .RadGrid .rgPagerTextBox {
     text-align: left;
-    max-width: 35px;
     height: 32px !important;
     border-color: #d0d7de;
     border-width: 1px;

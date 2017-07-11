@@ -127,6 +127,6 @@
     <value>Please enter your fiter keyword.</value>
   </data>
   <data name="TypeHint.Text" xml:space="preserve">
-    <value>Please select a type</value>
+    <value>Please select a cache type</value>
   </data>
 </root>

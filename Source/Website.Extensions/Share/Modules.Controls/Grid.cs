@@ -9,6 +9,9 @@ namespace Modules.Controls
 {
     public sealed class Grid : DnnGrid
     {
+        public string LocalResourceFile { get; set; }
+
+
         public Grid()
         {
             RenderMode = RenderMode.Lightweight;
@@ -185,19 +188,19 @@ namespace Modules.Controls
 
 
             RadNumericTextBox goToPageText = (RadNumericTextBox)gridPagerItem.FindControl("GoToPageTextBox");
-            goToPageText.Width = Unit.Pixel(60);
+            goToPageText.Width = Unit.Pixel(70);
             goToPageText.ShowSpinButtons = true;
 
 
             RadNumericTextBox changePageSizeTextBox = (RadNumericTextBox)gridPagerItem.FindControl("ChangePageSizeTextBox");
             changePageSizeTextBox.IncrementSettings.Step = 10;
-            changePageSizeTextBox.Width = Unit.Pixel(60);
+            changePageSizeTextBox.Width = Unit.Pixel(70);
             changePageSizeTextBox.ShowSpinButtons = true;
         }
 
         private void SetColumnFilterSetting(GridColumn column)
         {
-            string header = Localization.GetString(column.HeaderText + ".Header", this);
+            string header = Localization.GetString(column.HeaderText + ".Header", LocalResourceFile);
             if (string.IsNullOrWhiteSpace(header) == false)
             {
                 column.HeaderText = header;

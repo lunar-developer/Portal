@@ -1,16 +1,28 @@
 ﻿var gloDefaultCountryCode = "VN";
+var gloDefaultTaxCode = "2200269805";
+var gloDefaultCompanyName = "NH TMCP VIETNAM THUONG TIN – VIETBANK";
+
 var gloPanelState =
     {
         "ApplicationInfo": true,
         "CustomerInfo": true,
         "ContactInfo": false,
         "HistoryInfo": false,
+        "AutoPayInfo": false,
+        "FinanceInfo": false,
+        "ReferenceInfo": false,
+        "SaleInfo": false,
+        "CollateralInfo": false,
+        "PolicyInfo": false,
+        "CardInfo": false,
+        "AssessmentInfo": false,
         "ProcessInfo": true
     };
 
 
 function initializePage()
 {
+    // SetTimeout to allow Telerik control fully loaded
     setTimeout(function ()
     {
         renderControl();
@@ -31,17 +43,17 @@ function renderPanel()
     {
         var state = gloPanelState[this.id] === true ? "open" : "close";
         $(this).dnnPanels(
+        {
+            defaultState: state,
+            onExpand: function ()
             {
-                defaultState: state,
-                onExpand: function ()
-                {
-                    gloPanelState[this.id] = true;
-                },
-                onHide: function ()
-                {
-                    gloPanelState[this.id] = false;
-                }
-            });
+                gloPanelState[this.id] = true;
+            },
+            onHide: function ()
+            {
+                gloPanelState[this.id] = false;
+            }
+        });
     });
 }
 
@@ -49,14 +61,17 @@ function renderPanel()
 // EVENT
 function bindEvent()
 {
-    // Auto Expand Panels
-    $(".dnnFormSectionHead a").focus(function ()
+    // Auto Expand Panels when child element receive focus
+    $(".dnnFormSectionHead span").focus(function ()
     {
-        var isExpanded = $(this).parent().next().is(":visible");
-        if (isExpanded === false)
+        var $element = $(this).next();
+        if ($element.hasClass("dnnSectionExpanded"))
         {
-            this.click();
+            return;
         }
+
+        $element.click();
+        $element.focus();
     });
 
     // BASIC CARD INDICATOR
@@ -65,7 +80,7 @@ function bindEvent()
 
 function processOnCardIndicatorChange()
 {
-    var isDisable = $find("ctrlIsBasicCard").get_value() === "1";
+    var isDisable = $find("ctrlCardTypeIndicator").get_value() === "B";
     var element = getControl("ctrlBasicCardNumber");
     element.disabled = isDisable;
     if (isDisable)
@@ -103,6 +118,21 @@ function processOnSelectCountry(sender)
     if (isPostBack)
     {
         __doPostBack(sender.get_id(), '{\"Command\" : \"Select\"}');
+    }
+}
+
+function processOnStaffIndicatorChange(sender)
+{
+    var value = sender.get_value();
+    if (value === "Y")
+    {
+        getControl("ctrlCompanyTaxNo").value = gloDefaultTaxCode;
+        getControl("ctrlCompanyName").value = gloDefaultCompanyName;
+    }
+    else
+    {
+        getControl("ctrlCompanyTaxNo").value = "";
+        getControl("ctrlCompanyName").value = "";
     }
 }
 

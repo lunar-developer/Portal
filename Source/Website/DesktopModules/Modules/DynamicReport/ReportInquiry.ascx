@@ -7,8 +7,8 @@
 
 
 <asp:UpdatePanel ID="updatePanel"
-                 runat="server"
-                 UpdateMode="Conditional">
+    runat="server"
+    UpdateMode="Conditional">
     <Triggers>
         <asp:PostBackTrigger ControlID="btnExport" />
         <asp:AsyncPostBackTrigger ControlID="ddlReport" />
@@ -18,57 +18,53 @@
             <div class="form-group">
                 <div class="col-sm-2 control-label">
                     <dnn:Label runat="server"
-                               Text="Báo cáo" />
+                        Text="Báo cáo" />
                 </div>
                 <div class="col-sm-6">
-                    <control:Combobox autocomplete="off"
-                                      AutoPostBack="True"
-                                      CssClass="form-control c-theme"
-                                      ID="ddlReport"
-                                      OnSelectedIndexChanged="ProcessOnSelectReport"
-                                      runat="server" />
+                    <control:AutoComplete
+                        EmptyMessage="Vui lòng chọn Báo cáo cần xem"
+                        AutoPostBack="True"
+                        ID="ddlReport"
+                        OnSelectedIndexChanged="ProcessOnSelectReport"
+                        runat="server" />
                 </div>
             </div>
             <div id="DivForm"
-                 runat="server">
+                runat="server">
             </div>
             <div class="form-group">
                 <asp:UpdatePanel runat="server"
-                                 UpdateMode="Conditional">
+                    UpdateMode="Conditional">
                     <ContentTemplate>
                         <div class="col-sm-2"></div>
                         <div class="col-sm-10">
                             <asp:Button CssClass="btn btn-primary c-margin-t-0"
-                                        ID="btnView"
-                                        OnClick="LoadReportData"
-                                        OnClientClick="return validate();"
-                                        runat="server"
-                                        Text="View" />
+                                ID="btnView"
+                                OnClick="LoadReportData"
+                                OnClientClick="return validate();"
+                                runat="server"
+                                Text="View" />
                             <asp:Button CssClass="btn btn-primary c-margin-t-0"
-                                        ID="btnExport"
-                                        OnClick="ExportData"
-                                        runat="server"
-                                        Text="Export" />
+                                ID="btnExport"
+                                OnClick="ExportData"
+                                runat="server"
+                                Text="Export" />
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
             </div>
             <asp:UpdatePanel ID="upGridData"
-                             runat="server"
-                             UpdateMode="Conditional">
+                runat="server"
+                UpdateMode="Conditional">
                 <ContentTemplate>
-                    <div class="form-group">
-                        <div style="width: 100%; overflow: auto;">
-                            <control:Grid AllowPaging="True"
-                                          AutoGenerateColumns="true"
-                                          CssClass="dnnGrid"
-                                          EnableViewState="true"
-                                          ID="gridData"
-                                          OnPageIndexChanged="OnPageIndexChanging"
-                                          OnPageSizeChanged="OnPageSizeChanging"
-                                          runat="server"
-                                          Visible="False" />
-                        </div>
+                    <div class="form-group table-responsive">
+                        <control:Grid 
+                            AutoGenerateColumns="true"
+                            AllowFilteringByColumn="True"
+                            ID="gridData"
+                            OnNeedDataSource="OnNeedDataSource"
+                            runat="server"
+                            Visible="False" />
                     </div>
                 </ContentTemplate>
             </asp:UpdatePanel>
@@ -76,26 +72,26 @@
 
 
         <asp:HiddenField ID="hidConnectionName"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidDatabaseName"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidSchemaName"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidProcedureName"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidIsAllowExport"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidListFieldName"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
         <asp:HiddenField ID="hidListFieldValue"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
     </ContentTemplate>
 </asp:UpdatePanel>
 

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Activities.Expressions;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 using Modules.DynamicReport.Business;
 using Modules.DynamicReport.Database;
 using Modules.DynamicReport.DataTransfer;
@@ -31,16 +29,12 @@ namespace DesktopModules.Modules.DynamicReport
 
         public void BindData()
         {
-            ListItem defaultItem = new ListItem("Vui lòng chọn Báo cáo cần xem", string.Empty);
-            defaultItem.Attributes.Add("disabled", "disabled");
-            ddlReport.Items.Add(defaultItem);
-
             foreach (ReportData reportInfo in ReportBusiness.GetReports(UserInfo.UserID))
             {
                 string text = reportInfo.Title.Trim();
                 string value = reportInfo.ReportID;
 
-                ListItem item = new ListItem(text, value);
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
                 item.Attributes.Add(ReportTable.ConnectionName, reportInfo.ConnectionName.Trim());
                 item.Attributes.Add(ReportTable.DatabaseName, reportInfo.DatabaseName.Trim());
                 item.Attributes.Add(ReportTable.SchemaName, reportInfo.SchemaName.Trim());
@@ -302,6 +296,7 @@ namespace DesktopModules.Modules.DynamicReport
             gridData.Visible = true;
             btnExport.Visible = true;
             BindGrid();
+            gridData.DataBind();
             upGridData.Update();
         }
 
@@ -313,23 +308,16 @@ namespace DesktopModules.Modules.DynamicReport
             ExportToExcel(dtResult, "Report");
         }
 
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
+        protected void OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
         {
             BindGrid();
         }
 
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        private void BindGrid(int pageIndex = 0)
+        private void BindGrid()
         {
             gridData.DataSource = ReportBusiness.GetReportData(hidConnectionName.Value,
                 hidDatabaseName.Value, hidSchemaName.Value, hidProcedureName.Value,
                 GetParameters());
-            gridData.CurrentPageIndex = pageIndex;
-            gridData.DataBind();
         }
 
         private Dictionary<string, string> GetParameters()

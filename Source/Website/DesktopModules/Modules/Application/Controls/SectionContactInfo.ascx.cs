@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.UI.WebControls;
+using Modules.Application.Enum;
 using Modules.Application.Global;
 using Telerik.Web.UI;
 
@@ -60,7 +61,7 @@ namespace DesktopModules.Modules.Application.Controls
             }
 
             BindEmptyItem(dropDownListCity);
-            if (dropDownList.SelectedValue != "VN")
+            if (dropDownList.SelectedValue != CountryEnum.VietNam)
             {
                 BindEmptyItem(dropDownListState);
             }

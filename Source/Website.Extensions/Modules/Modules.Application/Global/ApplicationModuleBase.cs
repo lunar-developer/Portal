@@ -111,9 +111,12 @@ namespace Modules.Application.Global
             }
         }
 
-
-
-
+        protected bool IsSensitiveInfo(string status)
+        {
+            return FunctionBase.IsInArray(status,
+                ApplicationStatusEnum.SendToAssessTeam, ApplicationStatusEnum.Assessing,
+                ApplicationStatusEnum.SendToApprover, ApplicationStatusEnum.Approved);
+        }
 
 
 

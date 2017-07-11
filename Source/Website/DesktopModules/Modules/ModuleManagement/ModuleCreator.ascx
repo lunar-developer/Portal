@@ -3,7 +3,7 @@
 <%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.UI.WebControls" Assembly="DotNetNuke.Web.Deprecated" %>
 
 <asp:UpdatePanel ID="updatePanel"
-                 runat="server">
+    runat="server">
     <ContentTemplate>
         <div class="form-horizontal">
             <div class="form-group">
@@ -11,12 +11,12 @@
                     <label>Tab</label>
                 </div>
                 <div class="col-sm-5">
-                    <control:Combobox autocomplete="off"
-                                      AutoPostBack="True"
-                                      CssClass="c-theme form-control"
-                                      ID="ddlTab"
-                                      OnSelectedIndexChanged="LoadTabModule"
-                                      runat="server" />
+                    <control:AutoComplete
+                        AutoPostBack="True"
+                        ID="ddlTab"
+                        OnSelectedIndexChanged="LoadTabModule"
+                        EmptyMessage="Please select a Tab Page"
+                        runat="server" />
                 </div>
                 <div class="col-sm-2"></div>
             </div>
@@ -25,11 +25,12 @@
                     <label>Module</label>
                 </div>
                 <div class="col-sm-5">
-                    <control:Combobox AutoPostBack="True"
-                                      CssClass="c-theme form-control"
-                                      ID="ddlModule"
-                                      OnSelectedIndexChanged="LoadModuleDefinition"
-                                      runat="server" />
+                    <control:AutoComplete
+                        AutoPostBack="True"
+                        ID="ddlModule"
+                        OnSelectedIndexChanged="LoadModuleDefinition"
+                        EmptyMessage="Please select a Module"
+                        runat="server" />
                 </div>
                 <div class="col-sm-2"></div>
             </div>
@@ -38,9 +39,10 @@
                     <label>Definition</label>
                 </div>
                 <div class="col-sm-5">
-                    <control:Combobox CssClass="c-theme form-control"
-                                      ID="ddlDefinition"
-                                      runat="server" />
+                    <control:AutoComplete
+                        ID="ddlDefinition"
+                        EmptyMessage="Please select a Definition"
+                        runat="server" />
                 </div>
                 <div class="col-sm-2"></div>
             </div>
@@ -48,42 +50,42 @@
                 <div class="col-sm-3 control-label"></div>
                 <div class="col-sm-9">
                     <asp:Button CssClass="btn btn-primary"
-                                ID="btnInsert"
-                                OnClick="Insert"
-                                runat="server"
-                                Text="Add" />
+                        ID="btnInsert"
+                        OnClick="Insert"
+                        runat="server"
+                        Text="Add" />
                 </div>
             </div>
             <div class="form-group">
                 <asp:PlaceHolder ID="phMessage"
-                                 runat="server" />
+                    runat="server" />
             </div>
             <div class="form-group">
-                <div class="col-sm-12">
-                    <control:Grid AllowPaging="true"
-                                  AutoGenerateColumns="false"
-                                  CssClass="dnnGrid"
-                                  EnableViewState="true"
-                                  ID="gridData"
-                                  PageSize="10"
-                                  runat="server"
-                                  Visible="false">
+                <div class="col-sm-12 table-responsive">
+                    <control:Grid
+                        AutoGenerateColumns="false"
+                        AllowFilteringByColumn="False"
+                        AllowSorting="False"
+                        ID="gridData"
+                        PageSize="10"
+                        runat="server"
+                        Visible="false">
                         <MasterTableView>
                             <Columns>
                                 <dnn:DnnGridBoundColumn DataField="ModuleOrder"
-                                                        HeaderText="ModuleOrder">
+                                    HeaderText="ModuleOrder">
                                     <HeaderStyle Width="10%" />
                                 </dnn:DnnGridBoundColumn>
                                 <dnn:DnnGridBoundColumn DataField="ModuleName"
-                                                        HeaderText="ModuleName">
+                                    HeaderText="ModuleName">
                                     <HeaderStyle Width="30%" />
                                 </dnn:DnnGridBoundColumn>
                                 <dnn:DnnGridBoundColumn DataField="Content"
-                                                        HeaderText="Content">
+                                    HeaderText="Content">
                                     <HeaderStyle Width="30%" />
                                 </dnn:DnnGridBoundColumn>
                                 <dnn:DnnGridBoundColumn DataField="ControlSrc"
-                                                        HeaderText="ControlSrc">
+                                    HeaderText="ControlSrc">
                                     <HeaderStyle Width="30%" />
                                 </dnn:DnnGridBoundColumn>
                             </Columns>

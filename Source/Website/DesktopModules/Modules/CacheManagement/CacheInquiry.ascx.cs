@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using Website.Library.Global;
 
@@ -19,21 +18,6 @@ namespace DesktopModules.Modules.CacheManagement
             BindData();
         }
 
-        private void BindData()
-        {
-            BindCacheInfo();
-        }
-
-        private void BindCacheInfo()
-        {
-            ddlCacheType.Items.Add(new ListItem(GetResource("TypeHint"), string.Empty));
-            foreach (KeyValuePair<string, string> pair in CacheBase.GetCacheInfo())
-            {
-                ddlCacheType.Items.Add(new ListItem(pair.Value, pair.Key));
-            }
-            ddlCacheType.DataBind();
-        }
-
         protected void ProcessOnSelectionChange(object sender, EventArgs e)
         {
             if (ddlCacheType.SelectedValue == string.Empty)
@@ -47,37 +31,10 @@ namespace DesktopModules.Modules.CacheManagement
             gridView.Visible = true;
             DivControl.Visible = true;
             lblTotal.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
+
+            ResetFilter();
             BindDataField();
             BindGrid();
-        }
-
-        private void BindDataField()
-        {
-            string guid = ddlCacheType.SelectedValue;
-            Type type = CacheBase.GetCacheType(guid);
-
-            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-            MemberInfo[] members = type.GetFields(bindingFlags)
-                .Cast<MemberInfo>()
-                .Concat(type.GetProperties(bindingFlags))
-                .ToArray();
-
-            ddlField.Items.Clear();
-            ddlField.Items.Add(new ListItem(GetResource("FieldHint"), string.Empty));
-            foreach (MemberInfo member in members)
-            {
-                ddlField.Items.Add(new ListItem(member.Name, member.Name));
-            }
-        }
-
-        private void BindGrid(int pageIndex = 0)
-        {
-            string guid = ddlCacheType.SelectedValue;
-            gridView.CurrentPageIndex = pageIndex;
-            gridView.DataSource = string.IsNullOrWhiteSpace(hidFieldName.Value)
-                ? CacheBase.Receive(guid)
-                : CacheBase.Filter(guid, hidFieldName.Value, hidFieldValue.Value);
-            gridView.DataBind();
         }
 
         protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
@@ -92,9 +49,16 @@ namespace DesktopModules.Modules.CacheManagement
 
         protected void Reload(object sender, EventArgs e)
         {
+            if (ddlCacheType.SelectedValue == string.Empty)
+            {
+                ShowAlertDialog(GetResource("TypeHint"));
+                return;
+            }
+
             string guid = ddlCacheType.SelectedValue;
             CacheBase.Reload(guid);
             BindGrid();
+            lblTotal.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
         }
 
         protected void Filter(object sender, EventArgs e)
@@ -119,10 +83,60 @@ namespace DesktopModules.Modules.CacheManagement
 
         protected void ClearFilter(object sender, EventArgs e)
         {
-            ddlField.SelectedIndex = 0;
+            ResetFilter();
+            BindGrid();
+        }
+
+
+        private void BindData()
+        {
+            BindCacheInfo();
+        }
+
+        private void BindCacheInfo()
+        {
+            ddlCacheType.Items.Clear();
+            ddlCacheType.ClearSelection();
+            foreach (KeyValuePair<string, string> pair in CacheBase.GetCacheInfo())
+            {
+                ddlCacheType.Items.Add(new RadComboBoxItem(pair.Value, pair.Key));
+            }
+            ddlCacheType.DataBind();
+        }
+
+        private void BindDataField()
+        {
+            string guid = ddlCacheType.SelectedValue;
+            Type type = CacheBase.GetCacheType(guid);
+
+            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
+            MemberInfo[] members = type.GetFields(bindingFlags)
+                .Cast<MemberInfo>()
+                .Concat(type.GetProperties(bindingFlags))
+                .ToArray();
+
+            ddlField.Items.Clear();
+            foreach (MemberInfo member in members)
+            {
+                ddlField.Items.Add(new RadComboBoxItem(member.Name, member.Name));
+            }
+        }
+
+        private void BindGrid(int pageIndex = 0)
+        {
+            string guid = ddlCacheType.SelectedValue;
+            gridView.CurrentPageIndex = pageIndex;
+            gridView.DataSource = string.IsNullOrWhiteSpace(hidFieldName.Value)
+                ? CacheBase.Receive(guid)
+                : CacheBase.Filter(guid, hidFieldName.Value, hidFieldValue.Value);
+            gridView.DataBind();
+        }
+
+        private void ResetFilter()
+        {
+            ddlField.ClearSelection();
             tbKeyword.Text = string.Empty;
             hidFieldName.Value = hidFieldValue.Value = string.Empty;
-            BindGrid();
         }
     }
 }

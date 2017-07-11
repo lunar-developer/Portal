@@ -7,13 +7,13 @@
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-5">
-                    <control:Combobox autocomplete="off"
-                                      AutoPostBack="True"
-                                      CssClass="form-control c-theme"
-                                      ID="ddlCacheType"
-                                      onselectedindexchanged="ProcessOnSelectionChange"
-                                      runat="server">
-                    </control:Combobox>
+                    <control:AutoComplete 
+                        ID="ddlCacheType"
+                        AutoPostBack="True"
+                        onselectedindexchanged="ProcessOnSelectionChange"
+                        EmptyMessage="Please select a cache type"
+                        runat="server">
+                    </control:AutoComplete>
                 </div>
                 <div class="col-sm-3">
                     <h4>
@@ -33,12 +33,13 @@
 
             <div class="form-group"
                  id="DivControl"
+                Visible="False"
                  runat="server">
                 <div class="col-sm-5">
-                    <control:Combobox autocomplete="off"
-                                      CssClass="form-control c-theme"
-                                      ID="ddlField"
-                                      runat="server" />
+                    <control:AutoComplete
+                        ID="ddlField"
+                        runat="server"
+                        EmptyMessage="Please select a field"/>
                 </div>
                 <div class="col-sm-3">
                     <asp:TextBox CssClass="form-control"
@@ -61,17 +62,14 @@
             </div>
 
             <div class="form-group">
-                <div class="col-sm-12">
-                    <control:Grid AllowPaging="true"
-                                  AutoGenerateColumns="true"
-                                  CssClass="dnnGrid"
-                                  EnableViewState="true"
-                                  ID="gridView"
-                                  OnPageIndexChanged="OnPageIndexChanging"
-                                  OnPageSizeChanged="OnPageSizeChanging"
-                                  PageSize="10"
-                                  runat="server"
-                                  Visible="True" />
+                <div class="col-sm-12 table-responsive">
+                    <control:Grid 
+                        ID="gridView"
+                        OnPageIndexChanged="OnPageIndexChanging"
+                        OnPageSizeChanged="OnPageSizeChanging"
+                        AllowSorting="False"
+                        runat="server"
+                        Visible="True" />
                 </div>
             </div>
         </div>

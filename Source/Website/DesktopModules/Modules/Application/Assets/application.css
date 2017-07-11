@@ -12,3 +12,8 @@
         background: #fff;
         text-align: center;
     }
+
+.control-label .dnnLabel
+{
+    padding: 0 !important;
+}

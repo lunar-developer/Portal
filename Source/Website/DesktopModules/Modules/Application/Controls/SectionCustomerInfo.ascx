@@ -61,18 +61,18 @@
             <control:DoubleLabel
                 IsRequire="True"
                 runat="server"
-                SubText="Basic Supp Ind"
+                SubText="Basic Supp Indicator"
                 Text="Thẻ chính/Phụ" />
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlIsBasicCard"
+                ID="ctrlCardTypeIndicator"
                 ClientIDMode="Static"
                 runat="server"
                 OnClientSelectedIndexChanged="processOnCardIndicatorChange">
                 <Items>
-                    <control:ComboBoxItem Value="1" Text="Chính"/>
-                    <control:ComboBoxItem Value="0" Text="Phụ"/>
+                    <control:ComboBoxItem Value="B" Text="Basic - Chính"/>
+                    <control:ComboBoxItem Value="S" Text="Supplementary - Phụ"/>
                 </Items>
             </control:AutoComplete>
         </div>
@@ -298,11 +298,12 @@
         <div class="col-sm-8">
             <control:AutoComplete
                 Enabled="False"
-                ID="ctrlIsCorporateCard"
+                ID="ctrlCorporateCardIndicator"
                 ClientIDMode="Static"
                 runat="server">
                 <Items>
-                    <control:ComboBoxItem Value="0" Text="Cá Nhân"/>
+                    <control:ComboBoxItem Value="I" Text="Individial - Cá Nhân"/>
+                    <control:ComboBoxItem Value="C" Text="Corporate - Doanh nghiệp"/>
                 </Items>
             </control:AutoComplete>
         </div>
@@ -322,7 +323,7 @@
                 ClientIDMode="Static"
                 runat="server">
                 <Items>
-                    <control:ComboBoxItem Value="CONSUMER" Text="Khách hàng"/>
+                    <control:ComboBoxItem Value="CONSUMER" Text="Consumer - Khách hàng"/>
                 </Items>
             </control:AutoComplete>
         </div>

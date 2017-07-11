@@ -154,7 +154,7 @@ namespace DesktopModules.Modules.MasterData
                 .ToDictionary(key => key, key => item.GetDataKeyValue(key).ToString());
             switch (e.CommandName)
             {
-                case ActionEnum.Edit:
+                case "EditRow":
                     EditData(dictionary);
                     break;
 

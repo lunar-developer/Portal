@@ -31,7 +31,7 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlCustomerID => ctrlCustomerID;
         public RadComboBox ControlIdentityTypeCode => ctrlIdentityTypeCode;
         public TextBox ControlCIFNo => ctrlCIFNo;
-        public RadComboBox ControlIsBasicCard => ctrlIsBasicCard;
+        public RadComboBox ControlCardTypeIndicator => ctrlCardTypeIndicator;
         public TextBox ControlBasicCardNumber => ctrlBasicCardNumber;
         public TextBox ControlFullName => ctrlFullName;
         public TextBox ControlEmbossName => ctrlEmbossName;
@@ -47,7 +47,7 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlMobile02 => ctrlMobile02;
         public TextBox ControlEmail01 => ctrlEmail01;
         public TextBox ControlEmail02 => ctrlEmail02;
-        public RadComboBox ControlIsCorporateCard => ctrlIsCorporateCard;
+        public RadComboBox ControlCorporateCardIndicator => ctrlCorporateCardIndicator;
         public RadComboBox ControlCustomerType => ctrlCustomerType;
         public RadComboBox ControlCustomerClass => ctrlCustomerClass;
 

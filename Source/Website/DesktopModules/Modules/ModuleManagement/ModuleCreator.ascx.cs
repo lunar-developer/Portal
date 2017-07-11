@@ -1,9 +1,9 @@
 using System;
-using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Modules;
 using DotNetNuke.Entities.Modules.Definitions;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.UI.Skins.Controls;
+using Telerik.Web.UI;
 using Website.Library.Global;
 
 namespace DesktopModules.Modules.ModuleManagement
@@ -21,10 +21,10 @@ namespace DesktopModules.Modules.ModuleManagement
 
         private void BindData()
         {
+            gridData.LocalResourceFile = LocalResourceFile;
             gridData.Visible = btnInsert.Visible = false;
 
             // Tab Info
-            ddlTab.Items.Add(new ListItem("Please select a Tab Page", string.Empty));
             foreach (TabInfo tab in TabController.Instance.GetTabsByPortal(PortalId).Values)
             {
                 if (tab.IsSuperTab && tab.DisableLink)
@@ -34,11 +34,10 @@ namespace DesktopModules.Modules.ModuleManagement
 
                 string value = tab.TabID.ToString();
                 string text = $"{value} - {tab.TabName}";
-                ddlTab.Items.Add(new ListItem(text, value));
+                ddlTab.Items.Add(new RadComboBoxItem(text, value));
             }
 
             // Module Info
-            ddlModule.Items.Add(new ListItem("Please select a Module", string.Empty));
             foreach (DesktopModuleInfo module in DesktopModuleController.GetDesktopModules(PortalId).Values)
             {
                 if (module.ModuleName.StartsWith("Modules.") == false)
@@ -48,11 +47,8 @@ namespace DesktopModules.Modules.ModuleManagement
 
                 string value = module.DesktopModuleID.ToString();
                 string text = $"{value} - {module.ModuleName}";
-                ddlModule.Items.Add(new ListItem(text, value));
+                ddlModule.Items.Add(new RadComboBoxItem(text, value));
             }
-
-            // Definition Info
-            ddlDefinition.Items.Add(new ListItem("Please select a Definition", string.Empty));
         }
 
         protected void LoadTabModule(object sender = null, EventArgs e = null)
@@ -78,14 +74,14 @@ namespace DesktopModules.Modules.ModuleManagement
             }
 
             ddlDefinition.Items.Clear();
-            ddlDefinition.Items.Add(new ListItem("Please select a Definition", string.Empty));
+            ddlDefinition.ClearSelection();
             int desktopModuleID = int.Parse(ddlModule.SelectedValue);
             foreach (ModuleDefinitionInfo definition
                 in ModuleDefinitionController.GetModuleDefinitionsByDesktopModuleID(desktopModuleID).Values)
             {
                 string value = definition.ModuleDefID.ToString();
                 string text = $"{value} - {definition.DefinitionName}";
-                ListItem item = new ListItem(text, value);
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
                 item.Attributes.Add("DefinitionName", definition.DefinitionName);
                 ddlDefinition.Items.Add(item);
             }

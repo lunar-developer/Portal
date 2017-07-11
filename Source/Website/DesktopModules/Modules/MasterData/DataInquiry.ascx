@@ -55,37 +55,35 @@
                         Text="Refresh" />
                 </div>
             </div>
-            <div class="c-margin-t-50 form-group">
-                <div style="width: 100%; overflow: auto;">
-                    <control:Grid AutoGenerateColumns="true"
-                        ID="gridData"
-                        AllowFilteringByColumn="True"
-                        OnItemCommand="GridOnItemCommand"
-                        OnItemDataBound="OnGridDataBound"
-                        OnNeedDataSource="OnNeedDataSource"
-                        runat="server"
-                        Visible="False">
-                        <MasterTableView>
-                            <Columns>
-                                <dnn:DnnGridImageCommandColumn
-                                    AllowFiltering="False"
-                                    CommandName="Edit"
-                                    IconKey="Edit"
-                                    UniqueName="EditButton">
-                                    <HeaderStyle Width="30" />
-                                </dnn:DnnGridImageCommandColumn>
-                                <dnn:DnnGridImageCommandColumn
-                                    AllowFiltering="False"
-                                    CommandName="Delete"
-                                    IconKey="Delete"
-                                    UniqueName="DeleteButton">
-                                    <ItemStyle CssClass="btnDelete" />
-                                    <HeaderStyle Width="30" />
-                                </dnn:DnnGridImageCommandColumn>
-                            </Columns>
-                        </MasterTableView>
-                    </control:Grid>
-                </div>
+            <div class="c-margin-t-50 form-group table-responsive">
+                <control:Grid AutoGenerateColumns="true"
+                    ID="gridData"
+                    AllowFilteringByColumn="True"
+                    OnItemCommand="GridOnItemCommand"
+                    OnItemDataBound="OnGridDataBound"
+                    OnNeedDataSource="OnNeedDataSource"
+                    runat="server"
+                    Visible="False">
+                    <MasterTableView>
+                        <Columns>
+                            <dnn:DnnGridImageCommandColumn
+                                AllowFiltering="False"
+                                CommandName="EditRow"
+                                IconKey="Edit"
+                                UniqueName="EditButton">
+                                <HeaderStyle Width="30" />
+                            </dnn:DnnGridImageCommandColumn>
+                            <dnn:DnnGridImageCommandColumn
+                                AllowFiltering="False"
+                                CommandName="Delete"
+                                IconKey="Delete"
+                                UniqueName="DeleteButton">
+                                <ItemStyle CssClass="btnDelete" />
+                                <HeaderStyle Width="30" />
+                            </dnn:DnnGridImageCommandColumn>
+                        </Columns>
+                    </MasterTableView>
+                </control:Grid>
             </div>
         </div>
 
@@ -121,20 +119,23 @@
 </asp:UpdatePanel>
 
 <script type="text/javascript">
-    function processOnLoad() {
+    function processOnLoad()
+    {
         return validateOption(getControl("ddlDataTable"));
     }
 
-    function processOnChange() {
+    function processOnChange()
+    {
         getJQueryControl("btnAdd").hide();
         getJQueryControl("btnExport").hide();
     }
 
-    function refresh() {
+    function refresh()
+    {
         getControl("btnRefresh").click();
     }
 
-    addPageLoaded(function()
+    addPageLoaded(function ()
     {
         confirmMessage("td.btnDelete input", "Bạn có chắc muốn <b>XÓA</b> thông tin này?");
     }, true);
