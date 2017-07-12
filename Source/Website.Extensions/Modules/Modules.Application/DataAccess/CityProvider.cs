@@ -9,7 +9,7 @@ namespace Modules.Application.DataAccess
     public class CityProvider : DataProvider
     {
         private static readonly string ScriptGetAllCity =
-            $"select * from dbo.{CityTable.TableName} with(nolock)";
+            $"select * from dbo.{CityTable.TableName} with(nolock) order by {CityTable.CityName}";
 
         public List<CityData> GetAllCity()
         {
@@ -17,8 +17,10 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
-        private static readonly string ScriptGetCity =
-            ScriptGetAllCity + $" where {CityTable.CityCode} = @{CityTable.CityCode}";
+
+        private static readonly string ScriptGetCity = $@"
+            select * from dbo.{CityTable.TableName} with(nolock)
+            where {CityTable.CityCode} = @{CityTable.CityCode}";
 
         public CityData GetCity(string cityCode)
         {

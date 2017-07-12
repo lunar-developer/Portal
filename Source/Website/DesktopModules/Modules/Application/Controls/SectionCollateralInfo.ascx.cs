@@ -18,7 +18,7 @@ namespace DesktopModules.Modules.Application.Controls
 
         public TextBox ControlCollateralID => ctrlCollateralID;
         public TextBox ControlCollateralValue => ctrlCollateralValue;
-        public TextBox ControlCollateralRate => ctrlCollateralRate;
+        public TextBox ControlCollateralCreditLimit => ctrlCollateralCreditLimit;
 
         public TextBox ControlCollateralPurpose => ctrlCollateralPurpose;
         public RadComboBox ControlCollateralType => ctrlCollateralType;

@@ -9,7 +9,7 @@ namespace Modules.Application.DataAccess
     public class StateProvider : DataProvider
     {
         private static readonly string ScriptGetAllState =
-            $"select * from dbo.{StateTable.TableName} with(nolock)";
+            $"select * from dbo.{StateTable.TableName} with(nolock) order by {StateTable.StateName}";
 
         public List<StateData> GetAllState()
         {
@@ -17,8 +17,10 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
-        private static readonly string ScriptGetState =
-            ScriptGetAllState + $" where {StateTable.StateCode} = @{StateTable.StateCode}";
+
+        private static readonly string ScriptGetState = $@"
+            select * from dbo.{StateTable.TableName} with(nolock)
+            where {StateTable.StateCode} = @{StateTable.StateCode}";
 
         public StateData GetState(string stateCode)
         {

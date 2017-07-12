@@ -9,7 +9,7 @@ namespace Modules.Application.DataAccess
     public class CountryProvider: DataProvider
     {
         private static readonly string ScriptGetAllCountry =
-            $"Select * from dbo.{CountryTable.TableName} with(nolock)";
+            $"select * from dbo.{CountryTable.TableName} with(nolock) order by {CountryTable.Name}";
 
         public List<CountryData> GetAllCountry()
         {
@@ -17,8 +17,10 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
+
         private static readonly string ScriptGetCountry = $@"
-            {ScriptGetAllCountry} where {CountryTable.CountryCode} = @{CountryTable.CountryCode}";
+            select * from dbo.{CountryTable.TableName} with(nolock)
+            where {CountryTable.CountryCode} = @{CountryTable.CountryCode}";
 
         public CountryData GetCountry(string countryCode)
         {

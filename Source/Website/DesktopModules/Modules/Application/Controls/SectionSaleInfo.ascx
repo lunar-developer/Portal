@@ -100,7 +100,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlChecker"
+                ID="ctrlSaleChecker"
                 ClientIDMode="Static"
                 runat="server" />
         </div>

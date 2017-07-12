@@ -247,9 +247,9 @@
                 Text="Chức danh" />
         </div>
         <div class="col-sm-8">
-            <control:AutoComplete
+            <asp:TextBox
+                CssClass="c-theme form-control"
                 ID="ctrlTitle"
-                ClientIDMode="Static"
                 runat="server" />
         </div>
     </div>

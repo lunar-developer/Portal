@@ -22,6 +22,16 @@ namespace DesktopModules.Modules.Application.Controls
             BindCountryData(ctrlCompanyCountry, GetEmptyItem());
             ctrlCompanyState.Items.Add(GetEmptyItem());
             ctrlCompanyCity.Items.Add(GetEmptyItem());
+
+            BindPositionData(ctrlPosition, GetEmptyItem());
+            BindContractTypeData(ctrlContractType, GetEmptyItem());
+            BindOccupationData(ctrlJobCategory, GetEmptyItem());
+            BindCorporateEntityTypeData(ctrlBusinessType, GetEmptyItem());
+            BindCorporateSizeData(ctrlTotalStaff, GetEmptyItem());
+            BindCorporateStatusData(ctrlBusinessSize, GetEmptyItem());
+            BindSICData(ctrlSIC, GetEmptyItem());
+            BindHomeOwnershipData(ctrlHomeOwnership, GetEmptyItem());
+            BindEducationData(ctrlEducation, GetEmptyItem());
         }
 
         public void ProcessOnSelectCountry(object sender, EventArgs e)
@@ -89,7 +99,7 @@ namespace DesktopModules.Modules.Application.Controls
         public TextBox ControlWorkingYear => ctrlWorkingYear;
         public TextBox ControlWorkingMonth => ctrlWorkingMonth;
         public RadComboBox ControlPosition => ctrlPosition;
-        public RadComboBox ControlTitle => ctrlTitle;
+        public TextBox ControlTitle => ctrlTitle;
         public TextBox ControlCompanyRemark => ctrlCompanyRemark;
 
 

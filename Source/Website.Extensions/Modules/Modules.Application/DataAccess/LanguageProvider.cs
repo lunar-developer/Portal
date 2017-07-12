@@ -9,7 +9,7 @@ namespace Modules.Application.DataAccess
     public class LanguageProvider : DataProvider
     {
         private static readonly string ScriptGetAllLanguage =
-            $"Select * from dbo.{LanguageTable.TableName} with(nolock)";
+            $"Select * from dbo.{LanguageTable.TableName} with(nolock) order by {LanguageTable.Name}";
 
         public List<LanguageData> GetAllLanguage()
         {
@@ -18,8 +18,10 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
+
         private static readonly string ScriptGetLanguage = $@"
-            {ScriptGetAllLanguage} where {LanguageTable.LanguageID} = @{LanguageTable.LanguageID}";
+            Select * from dbo.{LanguageTable.TableName} with(nolock)
+            where {LanguageTable.LanguageID} = @{LanguageTable.LanguageID}";
 
         public LanguageData GetLanguage(string languageID)
         {

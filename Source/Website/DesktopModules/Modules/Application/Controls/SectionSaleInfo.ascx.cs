@@ -19,7 +19,7 @@ namespace DesktopModules.Modules.Application.Controls
 
         private void BindData()
         {
-            
+            BindBranchData(ctrlSourceBranchCode);
         }
 
         #region PUBLIC PROPERTY
@@ -29,7 +29,7 @@ namespace DesktopModules.Modules.Application.Controls
         public RadComboBox ControlProgramCode => ctrlProgramCode;
         public RadComboBox ControlProcessingBranch => ctrlProcessingBranch;
         public RadComboBox ControlSourceBranchCode => ctrlSourceBranchCode;
-        public RadComboBox ControlChecker => ctrlChecker;
+        public RadComboBox ControlSaleChecker => ctrlSaleChecker;
         public RadComboBox ControlSaleOfficer => ctrlSaleOfficer;
         public TextBox ControlSaleStaffID => ctrlSaleStaffID;
 

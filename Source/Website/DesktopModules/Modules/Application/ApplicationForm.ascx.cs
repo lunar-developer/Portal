@@ -262,7 +262,7 @@ namespace DesktopModules.Modules.Application
                 { ApplicationTable.WorkingYear, SectionFinanceInfo.ControlWorkingYear.Text.Trim() },
                 { ApplicationTable.WorkingMonth, SectionFinanceInfo.ControlWorkingMonth.Text.Trim() },
                 { ApplicationTable.Position, SectionFinanceInfo.ControlPosition.SelectedValue },
-                { ApplicationTable.Title, SectionFinanceInfo.ControlTitle.SelectedValue },
+                { ApplicationTable.Title, SectionFinanceInfo.ControlTitle.Text.Trim() },
                 { ApplicationTable.CompanyRemark, SectionFinanceInfo.ControlCompanyRemark.Text.Trim() },
 
                 { ApplicationTable.ContractType, SectionFinanceInfo.ControlContractType.SelectedValue },
@@ -282,24 +282,64 @@ namespace DesktopModules.Modules.Application
 
             #endregion
 
-            #region REFERENCE INFO
+                #region REFERENCE INFO
 
-            { ApplicationTable.MarialStatus, SectionReferenceInfo.ControlMarialStatus.SelectedValue },
-            { ApplicationTable.ContactSpouseType, SectionReferenceInfo.ControlContactSpouseType.SelectedValue },
-            { ApplicationTable.ContactSpouseName, SectionReferenceInfo.ControlContactSpouseName.Text.Trim() },
-            { ApplicationTable.ContactSpouseID, SectionReferenceInfo.ControlContactSpouseID.Text.Trim() },
-            { ApplicationTable.ContactSpouseMobile, SectionReferenceInfo.ControlContactSpouseMobile.Text.Trim() },
-            { ApplicationTable.ContactSpouseCompanyName, SectionReferenceInfo.ControlContactSpouseCompanyName.Text.Trim() },
-            { ApplicationTable.ContactSpouseRemark, SectionReferenceInfo.ControlContactSpouseRemark.Text.Trim() },
+                { ApplicationTable.MarialStatus, SectionReferenceInfo.ControlMarialStatus.SelectedValue },
+                { ApplicationTable.ContactSpouseType, SectionReferenceInfo.ControlContactSpouseType.SelectedValue },
+                { ApplicationTable.ContactSpouseName, SectionReferenceInfo.ControlContactSpouseName.Text.Trim() },
+                { ApplicationTable.ContactSpouseID, SectionReferenceInfo.ControlContactSpouseID.Text.Trim() },
+                { ApplicationTable.ContactSpouseMobile, SectionReferenceInfo.ControlContactSpouseMobile.Text.Trim() },
+                { ApplicationTable.ContactSpouseCompanyName, SectionReferenceInfo.ControlContactSpouseCompanyName.Text.Trim() },
+                { ApplicationTable.ContactSpouseRemark, SectionReferenceInfo.ControlContactSpouseRemark.Text.Trim() },
 
-            { ApplicationTable.Contact01Type, SectionReferenceInfo.ControlContact01Type.SelectedValue },
-            { ApplicationTable.Contact01Name, SectionReferenceInfo.ControlContact01Name.Text.Trim() },
-            { ApplicationTable.Contact01ID, SectionReferenceInfo.ControlContact01ID.Text.Trim() },
-            { ApplicationTable.Contact01Mobile, SectionReferenceInfo.ControlContact01Mobile.Text.Trim() },
-            { ApplicationTable.Contact01CompanyName, SectionReferenceInfo.ControlContact01CompanyName.Text.Trim() },
-            { ApplicationTable.Contact01Remark, SectionReferenceInfo.ControlContact01Remark.Text.Trim() },
+                { ApplicationTable.Contact01Type, SectionReferenceInfo.ControlContact01Type.SelectedValue },
+                { ApplicationTable.Contact01Name, SectionReferenceInfo.ControlContact01Name.Text.Trim() },
+                { ApplicationTable.Contact01ID, SectionReferenceInfo.ControlContact01ID.Text.Trim() },
+                { ApplicationTable.Contact01Mobile, SectionReferenceInfo.ControlContact01Mobile.Text.Trim() },
+                { ApplicationTable.Contact01CompanyName, SectionReferenceInfo.ControlContact01CompanyName.Text.Trim() },
+                { ApplicationTable.Contact01Remark, SectionReferenceInfo.ControlContact01Remark.Text.Trim() },
 
-            #endregion
+                #endregion
+
+                #region SALE INFO
+
+                { ApplicationTable.ApplicationSourceCode, SectionSaleInfo.ControlApplicationSourceCode.SelectedValue },
+                { ApplicationTable.SaleMethod, SectionSaleInfo.ControlSaleMethod.SelectedValue },
+                { ApplicationTable.ProgramCode, SectionSaleInfo.ControlProgramCode.SelectedValue },
+                { ApplicationTable.ProcessingBranch, SectionSaleInfo.ControlProcessingBranch.SelectedValue },
+                { ApplicationTable.SourceBranchCode, SectionSaleInfo.ControlSourceBranchCode.SelectedValue },
+                { ApplicationTable.SaleChecker, SectionSaleInfo.ControlSaleChecker.SelectedValue },
+                { ApplicationTable.SaleOfficer, SectionSaleInfo.ControlSaleOfficer.SelectedValue },
+                { ApplicationTable.SaleStaffID, SectionSaleInfo.ControlSaleStaffID.Text.Trim() },
+
+                { ApplicationTable.SaleSupporter, SectionSaleInfo.ControlSaleSupporter.SelectedValue },
+                { ApplicationTable.SaleID, SectionSaleInfo.ControlSaleID.Text.Trim() },
+                { ApplicationTable.SaleAccount, SectionSaleInfo.ControlSaleAccount.Text.Trim() },
+                { ApplicationTable.SaleMobile, SectionSaleInfo.ControlSaleMobile.Text.Trim() },
+                { ApplicationTable.SaleEmail, SectionSaleInfo.ControlSaleEmail.Text.Trim() },
+
+                #endregion
+
+                #region COLLATERAL INFO
+
+                { ApplicationTable.CollateralID, SectionCollateralInfo.ControlCollateralID.Text.Trim() },
+                { ApplicationTable.CollateralValue, SectionCollateralInfo.ControlCollateralValue.Text.Trim() },
+                { ApplicationTable.CollateralCreditLimit, SectionCollateralInfo.ControlCollateralCreditLimit.Text.Trim() },
+
+                { ApplicationTable.CollateralPurpose, SectionCollateralInfo.ControlCollateralPurpose.Text.Trim() },
+                { ApplicationTable.CollateralType, SectionCollateralInfo.ControlCollateralType.Text.Trim() },
+                { ApplicationTable.CollateralDescription, SectionCollateralInfo.ControlCollateralDescription.Text.Trim() },
+
+                #endregion
+
+                #region POLICY INFO
+
+                { ApplicationTable.PolicyCode, SectionPolicyInfo.ControlPolicyCode.SelectedValue },
+                { ApplicationTable.NumOfDocument, SectionPolicyInfo.ControlNumOfDocument.Text.Trim() },
+                { ApplicationTable.MembershipID, SectionPolicyInfo.ControlMembershipID.Text.Trim() },
+                { ApplicationTable.GuarantorName, SectionPolicyInfo.ControlGuarantorName.Text.Trim() },
+
+                #endregion
         };
 
             return fieldDictionary;
@@ -441,7 +481,7 @@ namespace DesktopModules.Modules.Application
             SectionFinanceInfo.ControlWorkingYear.Text = row[ApplicationTable.WorkingYear].ToString();
             SectionFinanceInfo.ControlWorkingMonth.Text = row[ApplicationTable.WorkingMonth].ToString();
             SectionFinanceInfo.ControlPosition.SelectedValue = row[ApplicationTable.Position].ToString();
-            SectionFinanceInfo.ControlTitle.SelectedValue = row[ApplicationTable.Title].ToString();
+            SectionFinanceInfo.ControlTitle.Text = row[ApplicationTable.Title].ToString();
             SectionFinanceInfo.ControlCompanyRemark.Text = row[ApplicationTable.CompanyRemark].ToString();
 
             SectionFinanceInfo.ControlContractType.SelectedValue = row[ApplicationTable.ContractType].ToString();
@@ -477,6 +517,46 @@ namespace DesktopModules.Modules.Application
             SectionReferenceInfo.ControlContact01Mobile.Text = row[ApplicationTable.Contact01Mobile].ToString();
             SectionReferenceInfo.ControlContact01CompanyName.Text = row[ApplicationTable.Contact01CompanyName].ToString();
             SectionReferenceInfo.ControlContact01Remark.Text = row[ApplicationTable.Contact01Remark].ToString();
+
+            #endregion
+
+            #region SALE INFO
+
+            SectionSaleInfo.ControlApplicationSourceCode.SelectedValue = row[ApplicationTable.ApplicationSourceCode].ToString();
+            SectionSaleInfo.ControlSaleMethod.SelectedValue = row[ApplicationTable.SaleMethod].ToString();
+            SectionSaleInfo.ControlProgramCode.SelectedValue = row[ApplicationTable.ProgramCode].ToString();
+            SectionSaleInfo.ControlProcessingBranch.SelectedValue = row[ApplicationTable.ProcessingBranch].ToString();
+            SectionSaleInfo.ControlSourceBranchCode.SelectedValue = row[ApplicationTable.SourceBranchCode].ToString();
+            SectionSaleInfo.ControlSaleChecker.SelectedValue = row[ApplicationTable.SaleChecker].ToString();
+            SectionSaleInfo.ControlSaleOfficer.SelectedValue = row[ApplicationTable.SaleOfficer].ToString();
+            SectionSaleInfo.ControlSaleStaffID.Text = row[ApplicationTable.SaleStaffID].ToString();
+
+            SectionSaleInfo.ControlSaleSupporter.SelectedValue = row[ApplicationTable.SaleSupporter].ToString();
+            SectionSaleInfo.ControlSaleID.Text = row[ApplicationTable.SaleID].ToString();
+            SectionSaleInfo.ControlSaleAccount.Text = row[ApplicationTable.SaleAccount].ToString();
+            SectionSaleInfo.ControlSaleMobile.Text = row[ApplicationTable.SaleMobile].ToString();
+            SectionSaleInfo.ControlSaleEmail.Text = row[ApplicationTable.SaleEmail].ToString();
+
+            #endregion
+
+            #region COLLATERAL INFO
+
+            SectionCollateralInfo.ControlCollateralID.Text = row[ApplicationTable.CollateralID].ToString();
+            SectionCollateralInfo.ControlCollateralValue.Text = row[ApplicationTable.CollateralValue].ToString();
+            SectionCollateralInfo.ControlCollateralCreditLimit.Text = row[ApplicationTable.CollateralCreditLimit].ToString();
+
+            SectionCollateralInfo.ControlCollateralPurpose.Text = row[ApplicationTable.CollateralPurpose].ToString();
+            SectionCollateralInfo.ControlCollateralType.Text = row[ApplicationTable.CollateralType].ToString();
+            SectionCollateralInfo.ControlCollateralDescription.Text = row[ApplicationTable.CollateralDescription].ToString();
+
+            #endregion
+
+            #region POLICY INFO
+
+            SectionPolicyInfo.ControlPolicyCode.SelectedValue = row[ApplicationTable.PolicyCode].ToString();
+            SectionPolicyInfo.ControlNumOfDocument.Text = row[ApplicationTable.NumOfDocument].ToString();
+            SectionPolicyInfo.ControlMembershipID.Text = row[ApplicationTable.MembershipID].ToString();
+            SectionPolicyInfo.ControlGuarantorName.Text = row[ApplicationTable.GuarantorName].ToString();
 
             #endregion
         }
@@ -613,7 +693,7 @@ namespace DesktopModules.Modules.Application
             SectionFinanceInfo.ControlWorkingYear.Text = "";
             SectionFinanceInfo.ControlWorkingMonth.Text = "";
             SectionFinanceInfo.ControlPosition.SelectedIndex = 0;
-            SectionFinanceInfo.ControlTitle.SelectedIndex = 0;
+            SectionFinanceInfo.ControlTitle.Text = "";
             SectionFinanceInfo.ControlCompanyRemark.Text = "";
 
             SectionFinanceInfo.ControlContractType.SelectedIndex = 0;
@@ -649,6 +729,46 @@ namespace DesktopModules.Modules.Application
             SectionReferenceInfo.ControlContact01Mobile.Text = "";
             SectionReferenceInfo.ControlContact01CompanyName.Text = "";
             SectionReferenceInfo.ControlContact01Remark.Text = "";
+
+            #endregion
+
+            #region SALE INFO
+
+            SectionSaleInfo.ControlApplicationSourceCode.SelectedIndex = 0;
+            SectionSaleInfo.ControlSaleMethod.SelectedIndex = 0;
+            SectionSaleInfo.ControlProgramCode.SelectedIndex = 0;
+            SectionSaleInfo.ControlProcessingBranch.SelectedIndex = 0;
+            SectionSaleInfo.ControlSourceBranchCode.SelectedIndex = 0;
+            SectionSaleInfo.ControlSaleChecker.SelectedIndex = 0;
+            SectionSaleInfo.ControlSaleOfficer.SelectedIndex = 0;
+            SectionSaleInfo.ControlSaleStaffID.Text = "";
+
+            SectionSaleInfo.ControlSaleSupporter.SelectedIndex = 0;
+            SectionSaleInfo.ControlSaleID.Text = "";
+            SectionSaleInfo.ControlSaleAccount.Text = "";
+            SectionSaleInfo.ControlSaleMobile.Text = "";
+            SectionSaleInfo.ControlSaleEmail.Text = "";
+
+            #endregion
+
+            #region COLLATERAL INFO
+
+            SectionCollateralInfo.ControlCollateralID.Text = "";
+            SectionCollateralInfo.ControlCollateralValue.Text = "";
+            SectionCollateralInfo.ControlCollateralCreditLimit.Text = "";
+
+            SectionCollateralInfo.ControlCollateralPurpose.Text = "";
+            SectionCollateralInfo.ControlCollateralType.Text = "";
+            SectionCollateralInfo.ControlCollateralDescription.Text = "";
+
+            #endregion
+
+            #region POLICY INFO
+
+            SectionPolicyInfo.ControlPolicyCode.SelectedIndex = 0;
+            SectionPolicyInfo.ControlNumOfDocument.Text = "";
+            SectionPolicyInfo.ControlMembershipID.Text = "";
+            SectionPolicyInfo.ControlGuarantorName.Text = "";
 
             #endregion
         }

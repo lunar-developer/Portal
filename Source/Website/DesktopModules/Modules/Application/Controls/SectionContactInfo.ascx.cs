@@ -108,7 +108,9 @@ namespace DesktopModules.Modules.Application.Controls
         private void BindEmptyItem(RadComboBox dropDownList)
         {
             dropDownList.Items.Clear();
+            dropDownList.ClearSelection();
             dropDownList.Items.Add(GetEmptyItem());
+            dropDownList.SelectedIndex = 0;
         }
 
         #region PUBLIC PROPERTY

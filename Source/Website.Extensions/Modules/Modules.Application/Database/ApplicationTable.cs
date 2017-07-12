@@ -137,12 +137,34 @@
         public const string ApplicationSourceCode = "ApplicationSourceCode";
         public const string SaleMethod = "SaleMethod";
         public const string ProgramCode = "ProgramCode";
-        public const string Contact01Type = "Contact01Type";
-        public const string Contact01Type = "Contact01Type";
-        public const string Contact01Type = "Contact01Type";
-        public const string Contact01Type = "Contact01Type";
-        public const string Contact01Type = "Contact01Type";
+        public const string ProcessingBranch = "ProcessingBranch";
+        public const string SourceBranchCode = "SourceBranchCode";
+        public const string SaleChecker = "SaleChecker";
+        public const string SaleOfficer = "SaleOfficer";
+        public const string SaleStaffID = "SaleStaffID";
 
+        public const string SaleSupporter = "SaleSupporter";
+        public const string SaleID = "SaleID";
+        public const string SaleAccount = "SaleAccount";
+        public const string SaleMobile = "SaleMobile";
+        public const string SaleEmail = "SaleEmail";
+
+
+        // COLLATERAL INFO
+        public const string CollateralID = "CollateralID";
+        public const string CollateralValue = "CollateralValue";
+        public const string CollateralCreditLimit = "CollateralCreditLimit";
+
+        public const string CollateralPurpose = "CollateralPurpose";
+        public const string CollateralType = "CollateralType";
+        public const string CollateralDescription = "CollateralDescription";
+
+
+        // ASSESSMENT INFO
+        public const string PolicyCode = "PolicyCode";
+        public const string NumOfDocument = "NumOfDocument";
+        public const string MembershipID = "MembershipID";
+        public const string GuarantorName = "GuarantorName";
 
 
         // HIDDEN INFO
@@ -158,9 +180,5 @@
 
         // Other Info
         public const string ActionName = "ActionName";
-
-
-        public const string SourceBranchCode = "SourceBranchCode";
-        public const string PolicyCode = "PolicyCode";
     }
 }

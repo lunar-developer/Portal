@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI.WebControls;
 using Modules.Application.Database;
 using Modules.Application.DataTransfer;
 using Modules.Application.Enum;
+using Modules.UserManagement.Business;
+using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Global;
 using Telerik.Web.UI;
 using Website.Library.Global;
@@ -86,29 +89,37 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (CustomerClassData cacheData in CacheBase.Receive<CustomerClassData>())
             {
-                RadComboBoxItem item = CreateItem(cacheData.Name, cacheData.CustomerClassCode, cacheData.IsDisable);
+                string text = $"{cacheData.CustomerClassCode} - {cacheData.Name}";
+                string value = cacheData.CustomerClassCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
                 dropDownList.Items.Add(item);
             }
         }
 
         protected static void BindStateData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
         {
+            dropDownList.ClearSelection();
             BindItems(dropDownList, additionalItems);
             foreach (StateData cacheData in CacheBase.Receive<StateData>())
             {
                 RadComboBoxItem item = CreateItem(cacheData.StateName, cacheData.StateCode, cacheData.IsDisable);
                 dropDownList.Items.Add(item);
             }
+            dropDownList.SelectedIndex = 0;
         }
 
         protected static void BindCityData(RadComboBox dropDownList, string filterID, params RadComboBoxItem[] additionalItems)
         {
+            dropDownList.ClearSelection();
             BindItems(dropDownList, additionalItems);
-            foreach (CityData cacheData in CacheBase.Filter<CityData>(CityTable.StateCode, filterID))
+            foreach (CityData cacheData in CacheBase
+                .Filter<CityData>(CityTable.StateCode, filterID)
+                .OrderBy(item => item.CityName))
             {
                 RadComboBoxItem item = CreateItem(cacheData.CityName, cacheData.CityCode, cacheData.IsDisable);
                 dropDownList.Items.Add(item);
             }
+            dropDownList.SelectedIndex = 0;
         }
 
         protected bool IsSensitiveInfo(string status)
@@ -117,6 +128,170 @@ namespace Modules.Application.Global
                 ApplicationStatusEnum.SendToAssessTeam, ApplicationStatusEnum.Assessing,
                 ApplicationStatusEnum.SendToApprover, ApplicationStatusEnum.Approved);
         }
+
+        protected void BindBranchData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            dropDownList.Items.AddRange(additionalItems);
+            if (IsRoleAssessment())
+            {
+                BindAllBranchData(dropDownList);
+            }
+            else
+            {
+                BindBranchData(dropDownList);
+            }
+        }
+
+        protected void BindAllBranchData(RadComboBox dropDownList)
+        {
+            foreach (BranchData branch in BranchBusiness.GetAllBranchInfo())
+            {
+                if (branch.BranchID == "-1")
+                {
+                    continue;
+                }
+
+                string text = $"{branch.BranchCode} - {branch.BranchName}";
+                string value = branch.BranchCode;
+                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
+            }
+        }
+
+        protected void BindBranchData(RadComboBox dropDownList)
+        {
+            foreach (BranchData branch in UserBusiness.GetUserBranch(UserInfo.UserID.ToString()))
+            {
+                if (branch.BranchID == "-1")
+                {
+                    continue;
+                }
+
+                string text = $"{branch.BranchCode} - {branch.BranchName}";
+                string value = branch.BranchCode;
+                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
+            }
+        }
+
+        protected static void BindContractTypeData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (ContractTypeData cacheData in CacheBase.Receive<ContractTypeData>())
+            {
+                string text = $"{cacheData.ContractTypeCode} - {cacheData.ContractTypeName}";
+                string value = cacheData.ContractTypeCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindCorporateEntityTypeData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (CorporateEntityTypeData cacheData in CacheBase.Receive<CorporateEntityTypeData>())
+            {
+                string text = $"{cacheData.CorporateEntityTypeCode} - {cacheData.CorporateEntityTypeName}";
+                string value = cacheData.CorporateEntityTypeCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindCorporateSizeData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (CorporateSizeData cacheData in CacheBase.Receive<CorporateSizeData>())
+            {
+                string text = cacheData.CorporateSizeName;
+                string value = cacheData.CorporateSizeCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindCorporateStatusData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (CorporateStatusData cacheData in CacheBase.Receive<CorporateStatusData>())
+            {
+                string text = $"{cacheData.CorporateStatusCode} - {cacheData.CorporateStatusName}";
+                string value = cacheData.CorporateStatusCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindOccupationData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (OccupationData cacheData in CacheBase.Receive<OccupationData>())
+            {
+                string text = $"{cacheData.OccupationCode} - {cacheData.OccupationName}";
+                string value = cacheData.OccupationCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindSICData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (SICData cacheData in CacheBase.Receive<SICData>())
+            {
+                string text = $"{cacheData.SICCode} - {cacheData.SICName}";
+                string value = cacheData.SICCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindEducationData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (EducationData cacheData in CacheBase.Receive<EducationData>())
+            {
+                string text = $"{cacheData.EducationCode} - {cacheData.EducationName}";
+                string value = cacheData.EducationCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindHomeOwnershipData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (HomeOwnershipData cacheData in CacheBase.Receive<HomeOwnershipData>())
+            {
+                string text = $"{cacheData.HomeOwnershipCode} - {cacheData.HomeOwnershipName}";
+                string value = cacheData.HomeOwnershipCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindMaritalStatusData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (MaritalStatusData cacheData in CacheBase.Receive<MaritalStatusData>())
+            {
+                string text = $"{cacheData.MaritalStatusCode} - {cacheData.MaritalStatusName}";
+                string value = cacheData.MaritalStatusCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
+        protected static void BindPositionData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (PositionData cacheData in CacheBase.Receive<PositionData>())
+            {
+                string text = $"{cacheData.PositionCode} - {cacheData.PositionName}";
+                string value = cacheData.PositionCode;
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                dropDownList.Items.Add(item);
+            }
+        }
+
 
 
 

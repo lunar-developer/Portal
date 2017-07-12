@@ -52,7 +52,7 @@
         <div class="col-sm-8">
             <asp:TextBox
                 CssClass="c-theme form-control"
-                ID="ctrlCollateralRate"
+                ID="ctrlCollateralCreditLimit"
                 runat="server" />
         </div>
     </div>
