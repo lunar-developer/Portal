@@ -11,8 +11,17 @@ namespace DesktopModules.Modules.Application.Controls
         {
             if (IsPostBack)
             {
+                return;
             }
+
+            BindData();
         }
+
+        private void BindData()
+        {
+            BindPolicyData(ctrlPolicyCode, GetEmptyItem());
+        }
+
 
         #region PUBLIC PROPERTY
 

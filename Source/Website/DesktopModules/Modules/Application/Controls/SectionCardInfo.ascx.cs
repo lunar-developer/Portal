@@ -17,13 +17,13 @@ namespace DesktopModules.Modules.Application.Controls
 
         public RadComboBox ControlEmbossIndicator => ctrlEmbossIndicator;
         public RadComboBox ControlInstantEmbossIndicator => ctrlInstantEmbossIndicator;
-        public RadComboBox ControlDeliveryMethod => ctrlDeliveryMethod;
-        public RadComboBox ControlDespatchBranchCode => ctrlDespatchBranchCode;
-        public RadComboBox ControlDeliveryAddress => ctrlDeliveryAddress;
+        public RadComboBox ControlCardDeliveryMethod => ctrlCardDeliveryMethod;
+        public RadComboBox ControlCardDespatchBranchCode => ctrlCardDespatchBranchCode;
+        public RadComboBox ControlCardDeliveryAddress => ctrlCardDeliveryAddress;
 
-        public RadComboBox ControlStatementDeliveryType => ctrlStatementDeliveryType;
+        public RadComboBox ControlStatementDeliveryMethod => ctrlStatementDeliveryMethod;
         public RadComboBox ControlStatementType => ctrlStatementType;
-        public RadComboBox ControlStatementAddress => ctrlStatementAddress;
+        public RadComboBox ControlStatementDeliveryAddress => ctrlStatementDeliveryAddress;
 
         #endregion
     }

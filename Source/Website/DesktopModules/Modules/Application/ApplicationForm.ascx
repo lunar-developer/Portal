@@ -29,11 +29,9 @@
     <ContentTemplate>
         <div class="form-horizontal">
 
-
             <div class="form-group">
                 <asp:PlaceHolder ID="phMessage" runat="server" />
             </div>
-
 
             <div class="dnnPanels" clientidmode="Static" id="ApplicationInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
@@ -52,7 +50,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" id="CustomerInfo">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -69,7 +66,6 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
-
 
             <div class="c-margin-t-30 dnnPanels" id="ContactInfo">
                 <h2 class="dnnFormSectionHead">
@@ -88,7 +84,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="AutoPayInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -105,7 +100,6 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
-
 
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="FinanceInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
@@ -124,7 +118,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="ReferenceInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -141,7 +134,6 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
-
 
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="SaleInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
@@ -160,7 +152,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="CollateralInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -178,7 +169,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="PolicyInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -195,7 +185,6 @@
                     </asp:UpdatePanel>
                 </fieldset>
             </div>
-
 
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="CardInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
@@ -231,7 +220,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="HistoryInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -249,7 +237,6 @@
                 </fieldset>
             </div>
 
-
             <div class="c-margin-t-30 dnnPanels" clientidmode="Static" id="ProcessInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -263,6 +250,15 @@
                             </div>
                             <div class="col-sm-4">
                                 <control:AutoComplete ID="ctrlRoute" runat="server" ClientIDMode="Static" />
+                            </div>
+                            <div class="col-sm-6"></div>
+                        </div>
+                        <div id="DivProcessUser" runat="server" class="form-group">
+                            <div class="col-sm-2 control-label">
+                                <label>User xử lý</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <control:AutoComplete ID="ctrlUser" runat="server" ClientIDMode="Static" />
                             </div>
                             <div class="col-sm-6"></div>
                         </div>
@@ -290,20 +286,21 @@
                         CssClass="btn btn-primary"
                         ID="btnInsert"
                         OnClick="InsertApplication"
-                        OnClientClick="return validateData()"
+                        OnClientClick="return validateData(this)"
                         runat="server"
                         Text="Lưu" />
                     <asp:Button
                         CssClass="btn btn-primary"
                         ID="btnUpdate"
-                        OnClick="UpdateData"
-                        OnClientClick="return validateData()"
+                        OnClick="UpdateApplication"
+                        OnClientClick="return validateData(this)"
                         runat="server"
                         Text="Cập Nhật" />
                     <asp:Button
                         CssClass="btn btn-primary"
                         ID="btnProcess"
-                        OnClientClick="return onProcess(arguments[1])"
+                        ClientIDMode="Static"
+                        OnClick="ProcessApplication"
                         runat="server"
                         Text="Xử Lý" />
                 </div>
@@ -324,6 +321,14 @@
                 Visible="False" />
             <asp:HiddenField
                 ID="ctrlApplicationStatus"
+                runat="server"
+                Visible="False" />
+            <asp:HiddenField
+                ID="ctrlCurrentUserID"
+                runat="server"
+                Visible="False" />
+            <asp:HiddenField
+                ID="ctrlPreviousUserID"
                 runat="server"
                 Visible="False" />
         </div>

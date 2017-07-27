@@ -2,11 +2,11 @@
 {
     public static class PhaseTable
     {
-        public const string StoredProcedure = "APP_GetPhase";
-        public const string PhaseId = "PhaseId";
-        public const string PhaseCode = "PhaseCode";
+        public const string TableName = "APP_Phase";
+        public const string PhaseID = "PhaseID";
+        public const string ApplicationStatus = "ApplicationStatus";
         public const string Name = "Name";
-        public const string Description = "Description";
+        public const string Remark = "Remark";
         public const string IsDisable = "IsDisable";
     }
 }

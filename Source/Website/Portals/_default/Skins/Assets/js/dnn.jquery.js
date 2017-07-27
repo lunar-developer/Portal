@@ -87,9 +87,11 @@
                 defaultAction = $this.attr('href'),
                 $dnnDialog;
 
-            if (defaultAction || opts.isButton) {
+            if (defaultAction || opts.isButton)
+            {
                 $dnnDialog = $("<div class='dnnDialog'></div>").html(opts.text).dialog(opts);
-                $this.click(function (e, isTrigger) {
+                $this.click(function (e, isTrigger) 
+                {
                     if (typeof (opts.onBeforeOpen) === "function"
                         && opts.onBeforeOpen() !== true)
                     {
@@ -97,14 +99,22 @@
                         return false;
                     }
 
-                    if (isTrigger) {
+                    if (isTrigger) 
+                    {
                         return true;
                     }
 
-                    if ($dnnDialog.is(':visible')) {
+                    if ($dnnDialog.is(':visible')) 
+                    {
                         $dnnDialog.dialog("close");
                         return true;
                     }
+
+                    if (typeof opts.text === "function")
+                    {
+                        $dnnDialog.html(opts.text());
+                    }
+
                     $dnnDialog.dialog({
                         open: function () {
                             $('.ui-dialog-buttonpane').find('button:contains("' + opts.noText + '")').addClass('dnnConfirmCancel');
@@ -113,18 +123,25 @@
                         buttons: [
                         {
                             text: opts.yesText,
-                            click: function () {
+                            click: function () 
+                            {
                                 $dnnDialog.dialog("close");
-                                if ($.isFunction(opts.callbackTrue)) {
-                                    opts.callbackTrue.call(this);
+                                if ($.isFunction(opts.callbackTrue)) 
+                                {
+                                    if (opts.callbackTrue.call(this) !== true)
+                                    {
+                                        return;
+                                    }
                                 }
-                                else {
-                                    if (opts.isButton) {
-                                        $this.trigger("click", [true]);
-                                    }
-                                    else {
-                                        window.location.href = defaultAction;
-                                    }
+
+                                // Continue invoke original events
+                                if (opts.isButton) 
+                                {
+                                    $this.trigger("click", [true]);
+                                }
+                                else 
+                                {
+                                    window.location.href = defaultAction;
                                 }
                             },
                             'class': opts.buttonYesClass

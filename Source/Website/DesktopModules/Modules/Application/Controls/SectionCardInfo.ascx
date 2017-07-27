@@ -53,7 +53,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlDeliveryMethod"
+                ID="ctrlCardDeliveryMethod"
                 ClientIDMode="Static"
                 runat="server"/>
         </div>
@@ -67,7 +67,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlDespatchBranchCode"
+                ID="ctrlCardDespatchBranchCode"
                 ClientIDMode="Static"
                 runat="server"/>
         </div>
@@ -81,7 +81,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlDeliveryAddress"
+                ID="ctrlCardDeliveryAddress"
                 ClientIDMode="Static"
                 runat="server"/>
         </div>
@@ -101,7 +101,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlStatementDeliveryType"
+                ID="ctrlStatementDeliveryMethod"
                 ClientIDMode="Static"
                 runat="server"/>
         </div>
@@ -129,7 +129,7 @@
         </div>
         <div class="col-sm-8">
             <control:AutoComplete
-                ID="ctrlStatementAddress"
+                ID="ctrlStatementDeliveryAddress"
                 ClientIDMode="Static"
                 runat="server"/>
         </div>

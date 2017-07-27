@@ -16,7 +16,16 @@
             <control:AutoComplete
                 ID="ctrlDecisionCode"
                 ClientIDMode="Static"
-                runat="server"/>
+                AutoPostBack="true"
+                OnSelectedIndexChanged="ProcessOnSelectDecisionCode"
+                runat="server">
+                <Items>
+                    <control:ComboBoxItem Value="" Text="CHƯA CHỌN" />
+                    <control:ComboBoxItem Value="A" Text="A - Approve" />
+                    <control:ComboBoxItem Value="D" Text="D - Decline" />
+                    <control:ComboBoxItem Value="C" Text="C - Cancel" />
+                </Items>
+            </control:AutoComplete>
         </div>
     </div>
     <div class="form-group">
@@ -30,7 +39,12 @@
             <control:AutoComplete
                 ID="ctrlDecisionReason"
                 ClientIDMode="Static"
-                runat="server"/>
+                AutoPostBack="true"
+                CheckBoxes="true"
+                AllowCustomText="true"
+                OnSelectedIndexChanged="ProcessOnSelectDecisionReason"
+                EmptyMessage="CHƯA CHỌN"
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
@@ -119,7 +133,7 @@
             <control:AutoComplete
                 ID="ctrlAssessmentBranchCode"
                 ClientIDMode="Static"
-                runat="server"/>
+                runat="server" />
         </div>
     </div>
     <div class="form-group">
@@ -130,7 +144,7 @@
                 Text="Ngày tái đánh giá" />
         </div>
         <div class="col-sm-8">
-            <dnn:DnnDatePicker 
+            <dnn:DnnDatePicker
                 Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
                 ID="ctrlReAssessmentDate"
                 runat="server" />

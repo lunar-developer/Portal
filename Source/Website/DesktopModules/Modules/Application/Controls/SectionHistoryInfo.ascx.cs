@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Text;
+using System.Web.UI.HtmlControls;
 using Modules.Application.Database;
 using Modules.Application.Global;
 using Website.Library.Database;
@@ -54,6 +55,12 @@ namespace DesktopModules.Modules.Application.Controls
                 ");
             }
             DivLog.InnerHtml = string.Format(TableLog, html);
+        }
+
+
+        public void Reset()
+        {
+            DivLog.InnerHtml = string.Empty;
         }
     }
 }

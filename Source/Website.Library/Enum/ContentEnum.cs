@@ -4,5 +4,6 @@
     {
         public const string Json = "application/json";
         public const string Xml = "application/xml";
+        public const string Text = "text/plain";
     }
 }

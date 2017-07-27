@@ -75,7 +75,7 @@ namespace DesktopModules.Modules.Application
             ?? (ListFieldDate = new Dictionary<string, string>
             {
                 { string.Empty, "Chưa chọn" },
-                { ApplicationTable.CreateDate, "Ngày tạo" },
+                { ApplicationTable.CreateDateTime, "Ngày tạo" },
                 { ApplicationTable.ExportDate, "Ngày chạy Batch" }
             });
 
@@ -113,14 +113,14 @@ namespace DesktopModules.Modules.Application
 
         protected void LoadData(object sender, EventArgs e)
         {
-            DropDownList source = sender as DropDownList;
+            RadComboBox source = sender as RadComboBox;
             if (source == null)
             {
                 return;
             }
 
             // Identify Target
-            DropDownList target;
+            RadComboBox target;
             if (source.ID == ddlSelectName01.ID)
             {
                 target = ddlSelectValue01;
@@ -170,25 +170,25 @@ namespace DesktopModules.Modules.Application
             calToDate.SelectedDate = DateTime.Now;
         }
 
-        private static void BindPickListField(ListControl dropDownList, IEnumerable<OptionData> listOption)
+        private static void BindPickListField(RadComboBox dropDownList, IEnumerable<OptionData> listOption)
         {
             foreach (OptionData option in listOption)
             {
-                ListItem item = new ListItem(option.Text, option.Value);
+                RadComboBoxItem item = new RadComboBoxItem(option.Text, option.Value);
                 item.Attributes.Add("ClassGuid", option.ClassGuid);
                 dropDownList.Items.Add(item);
             }
         }
 
-        private static void BindInputField(ListControl dropDownList, Dictionary<string, string> fieldDictionary)
+        private static void BindInputField(RadComboBox dropDownList, Dictionary<string, string> fieldDictionary)
         {
             foreach (KeyValuePair<string, string> pair in fieldDictionary)
             {
-                dropDownList.Items.Add(new ListItem(pair.Value, pair.Key));
+                dropDownList.Items.Add(new RadComboBoxItem(pair.Value, pair.Key));
             }
         }
 
-        private void LoadOptionData(string classGuid, DropDownList dropDownList)
+        private void LoadOptionData(string classGuid, RadComboBox dropDownList)
         {
             if (classGuid == FunctionBase.GetClassGuid(typeof(BranchData)))
             {

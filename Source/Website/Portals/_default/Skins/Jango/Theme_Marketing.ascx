@@ -60,7 +60,7 @@
     </div>
 </header>
 
-<div class="c-layout-page" <%#SetHeaderMargin(true) %>>
+<div class="c-layout-page">
 
     <section class=""
              dir="ltr"
@@ -78,21 +78,8 @@
             <div class="c-content-feature-10">
 
                 <div class="c-content-title-1">
-                    <h3 class="c-center c-font-bold c-font-uppercase">Quán Quân huy động 2017</h3>
+                    <h3 class="c-center c-font-bold c-font-uppercase">CHƯƠNG TRÌNH KHUYẾN MÃI MÙA HÈ RỰC NẮNG</h3>
                     <div class="c-line-center c-theme-bg"></div>
-                    <p class="c-font-left">
-                        "Quán Quân huy động 2017" - Sân chơi thi đua nội bộ <b>lớn nhất</b>, <b>lần đầu tiên</b> được tổ chức tại Vietbank dành cho tất cả CBNV (kể cả CBNV Hội Sở) với tổng giá trị giải thưởng lên đến <b>2 Tỷ đồng</b>.
-                    </p>
-                    <p class="c-font-left">
-                        Bí quyết để chiến thắng của chính là sự kiên trì. Tích tiểu thành đại từ những món gửi nhỏ, có thể bạn không chiến thắng giải tuần, nhưng giải vinh quang nhất là <b>Quán Quân Huy động - 100 triệu đồng</b> vẫn chờ đợi bạn nếu:
-                    </p>
-                    <ul class="c-font-center"
-                        style="list-style-type: disc; margin: 0 auto; width: 500px; font-size: 17px; font-weight: 400; color: #5c6873;">
-                        <li style="text-align: left; list-style: disc;">Thuyết phục khách hàng gửi kỳ hạn dài</li>
-                        <li style="text-align: left; list-style: disc;">Tăng cường tiếp thị chéo “Khách hàng gửi khách hàng”</li>
-                        <li style="text-align: left; list-style: disc;">Đừng quên các món gửi CASA được tính điểm gấp đôi</li>
-
-                    </ul>
                 </div>
 
                 <ul class="c-list">
@@ -110,10 +97,10 @@
                                         THỂ LỆ CHƯƠNG TRÌNH
                                     </a>
                                 </h3>
-                                <ul style="list-style-type: none; font-size: 17px; font-weight: 400; color: #5c6873;">
-                                    <li style="text-align: right;">Giải thưởng tuần: 1 chiếc iPhone 7/tuần</li>
-                                    <li style="text-align: right;">Giải thưởng năm: 100 triệu đồng </li>
-                                    <li style="text-align: right;">Bạn sẽ là người chiến thắng và chủ nhân sở hữu những phần thưởng giá trị trên?</li>
+                                <ul style="list-style-type: none; font-size: 17px; color: #5c6873;">
+                                    <li style="text-align: right;font-weight: 600;">Chương trình ưu đãi hấp dẫn:</li>
+                                    <li style="text-align: right;font-weight: 400;">100% nhận ngay quà tặng</li>
+                                    <li style="text-align: right;font-weight: 400;">Cơ hội nhận chuyến du lịch Hawaii 6 ngày 5 đêm dành cho 4 người & Sổ tiết kiệm 100 triệu đồng.</li>
                                 </ul>
                             </div>
                         </div>
@@ -131,12 +118,12 @@
                                 <h3 class="c-font-bold c-font-uppercase">
                                     <a class="c-theme-font"
                                        href="<%#DotNetNuke.Common.Globals.NavigateURL(95) %>">
-                                        KẾT QUẢ XẾP HẠNG
+                                        KẾT QUẢ CHƯƠNG TRÌNH ĐỊNH HƯỚNG
                                     </a>
                                 </h3>
                                 <ul style="list-style-type: none; font-size: 17px; font-weight: 400; color: #5c6873;">
-                                    <li style="text-align: left;">Bạn đang ở vị trí thứ mấy trong Bảng xếp hạng?</li>
-                                    <li style="text-align: left;">TOP cá nhân đang dẫn đầu giải tuần và giải năm Quán Quân Huy Động 2017?</li>
+                                    <li style="text-align: left;">Tiến độ thực hiện của Trung tâm kinh doanh?</li>
+                                    <li style="text-align: left;">TOP Trung tâm kinh doanh đang dẫn đầu bảng xếp hạng?</li>
                                 </ul>
                             </div>
                         </div>
@@ -159,7 +146,7 @@
                                     </a>
                                 </h3>
                                 <p style="font-size: 17px; font-weight: 400; color: #5c6873;">
-                                    Giải đáp mọi thắc mắc liên quan đến đến chương trình “Quán Quân Huy Động”.
+                                    Giải đáp các thắc mắc liên quan đến Chương trình khuyến mại Mùa Hè Rực Nắng.
                                 </p>
                             </div>
                         </div>

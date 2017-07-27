@@ -16,6 +16,8 @@ namespace DesktopModules.Modules.Application.Controls
 
         #region PUBLIC PROPERTY
 
+        public Button ControlQueryCollateral => ctrlQueryCollateral;
+
         public TextBox ControlCollateralID => ctrlCollateralID;
         public TextBox ControlCollateralValue => ctrlCollateralValue;
         public TextBox ControlCollateralCreditLimit => ctrlCollateralCreditLimit;

@@ -9,6 +9,7 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Entities.Users.Membership;
 using DotNetNuke.Security.Membership;
+using DotNetNuke.Security.Roles;
 using Modules.UserManagement.DataAccess;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
@@ -303,6 +304,14 @@ namespace Modules.UserManagement.Business
         {
             BranchData branch = CacheBase.Find<BranchData>(BranchTable.BranchCode, branchCode);
             return CacheBase.Receive<UserData>().Where(item => item.BranchID == branch.BranchID).ToList();
+        }
+
+        public static List<UserData> GetUsersHaveRoles(params string[] roles)
+        {
+            List<int> listRoleID = roles.Select(roleName =>
+                RoleController.Instance.GetRoleByName(0, roleName).RoleID).ToList();
+
+            return new UserProvider().GetUsersHaveRoles(string.Join(",", listRoleID));
         }
     }
 }

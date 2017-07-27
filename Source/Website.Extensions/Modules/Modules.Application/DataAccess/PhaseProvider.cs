@@ -8,18 +8,16 @@ namespace Modules.Application.DataAccess
 {
     public class PhaseProvider: DataProvider
     {
-        public List<PhaseData> GetAllPhase()
+        public List<PhaseData> GetAllPhaseData()
         {
-            List<PhaseData> list;
-            Connector.ExecuteProcedure<PhaseData, List<PhaseData>>(PhaseTable.StoredProcedure, out list);
+            Connector.ExecuteProcedure<PhaseData, List<PhaseData>>("dbo.APP_SP_GetPhase", out List<PhaseData> list);
             return list;
         }
 
-        public PhaseData GetPhaseByCode(string code)
+        public PhaseData GetPhaseData(string phaseID)
         {
-            PhaseData phase;
-            Connector.AddParameter(PhaseTable.PhaseCode, SqlDbType.VarChar, code);
-            Connector.ExecuteProcedure(PhaseTable.StoredProcedure, out phase);
+            Connector.AddParameter(PhaseTable.PhaseID, SqlDbType.Int, phaseID);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetPhase", out PhaseData phase);
             return phase;
         }
     }

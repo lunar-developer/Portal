@@ -16,6 +16,9 @@ namespace Modules.Cache.Business
             BundleBusiness.Include(JangoSkinBase.SkinBundles);
             BundleBusiness.Initialize();
 
+            // Message Queue
+            MessageQueueBusiness.Initialize();
+
             // Caches
             // User Management
             CacheBase.Inject(new UserCacheBusiness<UserData>());
@@ -38,12 +41,16 @@ namespace Modules.Cache.Business
             CacheBase.Inject(new CorporateSizeCacheBusiness<CorporateSizeData>());
             CacheBase.Inject(new CorporateStatusCacheBusiness<CorporateStatusData>());
             CacheBase.Inject(new OccupationCacheBusiness<OccupationData>());
-
             CacheBase.Inject(new SICCacheBusiness<SICData>());
             CacheBase.Inject(new MaritalStatusCacheBusiness<MaritalStatusData>());
             CacheBase.Inject(new HomeOwnershipCacheBussiness<HomeOwnershipData>());
             CacheBase.Inject(new PositionCacheBusiness<PositionData>());
             CacheBase.Inject(new EducationCacheBusiness<EducationData>());
+            CacheBase.Inject(new DecisionReasonCacheBusiness<DecisionReasonData>());
+            CacheBase.Inject(new IncompleteReasonCacheBusiness<IncompleteReasonData>());
+            CacheBase.Inject(new PhaseCacheBussiness<PhaseData>());
+            CacheBase.Inject(new ScheduleCacheBusiness<ScheduleData>());
+            ApplicationBusiness.Initialize();
 
 
             //CacheBase.Inject(new PhaseCacheBussiness<PhaseData>());

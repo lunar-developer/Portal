@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Text;
+using Modules.Application.Business;
 using Modules.Application.Database;
 using Modules.Application.DataTransfer;
 using Website.Library.DataAccess;
@@ -14,13 +16,18 @@ namespace Modules.Application.DataAccess
     {
         private static readonly string ScriptInsert;
         private static readonly string ScriptUpdate;
+        private static readonly string ScriptAutoAssign;
+        private static readonly string ScriptUpdatePhase;
+        private static readonly string ScriptInsertProcess;
+        private static readonly string ScriptInsertLog;
+        private static readonly string ScriptInsertScheduleLog;
 
 
         static ApplicationProvider()
         {
             int index = 0;
 
-            #region INSERT SCRIPT
+            #region SCRIPT INSERT
 
             ScriptInsert = $@"
                 declare @Step varchar(50) = 'Begin Insert'
@@ -89,7 +96,7 @@ namespace Modules.Application.DataAccess
                         {BaseTable.ModifyDateTime}) 
                     values (
                         @{ApplicationTable.ApplicationID},
-                        N'Thêm Mới',
+                        N'Thêm mới',
                         '',
                         0,
                         0,
@@ -220,7 +227,7 @@ namespace Modules.Application.DataAccess
                         {BaseTable.ModifyDateTime}) 
                     values (
                         @{ApplicationTable.ApplicationID},
-                        N'Cập Nhật',
+                        N'Cập nhật',
                         '',
                         1,
                         0,
@@ -249,6 +256,144 @@ namespace Modules.Application.DataAccess
 
                     select -1
                 end catch";
+
+            #endregion
+
+            #region SCRIPT AUTO ASSIGN
+
+            index = 0;
+            ScriptAutoAssign = $@"
+                declare @Step as varchar(250) = 'Begin Auto Assign'
+                declare @{ApplicationProcessTable.Remark} as nvarchar(250) = N'Hệ thống tự động phân hồ sơ cho '
+
+                begin transaction
+                begin try
+                    set @Step = 'Step 01 - Update Application Status'
+                    {{{index++}}}
+
+                    set @Step = 'Step 02 - Insert Application Process'
+                    {{{index++}}}
+
+                    set @Step = 'Step 03 - Insert Application Log'
+                    {{{index++}}}
+
+                    set @Step = 'Step 04 - Insert Schedule Log'
+                    {{{index}}}
+
+                    commit transaction
+                    select 1
+                end try
+                begin catch
+                    rollback transaction
+                    
+                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                    select 
+                        Error_Number(), 
+                        Error_Message(), 
+                        'ApplicationProvider.AutoAssign - ' + @Step,
+                        @{ApplicationTable.ModifyDateTime}
+
+                    insert into dbo.APP_ScheduleLog
+			            (ScheduleName, LogDate, LogMessage, IsSuccess, CreateDateTime)
+		            values
+			            ('AUTO_ASSIGN', @CurrentDate, N'Có lỗi khi xử lý.', 0, @{ApplicationTable.ModifyDateTime})
+
+                    select -1
+                end catch
+            ";
+
+
+            index = 0;
+            ScriptUpdatePhase = $@"
+                update
+			        dbo.{ApplicationTable.TableName}
+		        set
+			        {ApplicationTable.PhaseID} = {{{index++}}},
+			        {ApplicationTable.ApplicationStatus} = {{{index++}}},
+			        {ApplicationTable.CurrentUserID} = {{{index++}}},
+			        {ApplicationTable.ApplicationRemark} = '',
+			        {ApplicationTable.ModifyUserID} = @{ApplicationTable.ModifyUserID},
+			        {ApplicationTable.ModifyDateTime} = @{ApplicationTable.ModifyDateTime}
+		        where
+			        {ApplicationTable.ApplicationID} in ({{{index++}}})
+		        and {ApplicationTable.PhaseID} = {{{index}}}
+            ";
+
+
+            index = 0;
+            ScriptInsertProcess = $@"
+                insert into dbo.{ApplicationProcessTable.TableName}
+			    (
+                    {ApplicationTable.ApplicationID}, 
+                    {ApplicationTable.ProcessID},
+                    {ApplicationTable.PhaseID},
+                    {ApplicationProcessTable.PreviousPhaseID},
+                    {ApplicationProcessTable.Remark},
+                    {ApplicationTable.ProcessUserID},
+                    {ApplicationTable.ProcessDateTime}
+                )
+		        select
+			        {ApplicationTable.ApplicationID},
+                    {ApplicationTable.ProcessID},
+                    {ApplicationTable.PhaseID},
+                    {{{index++}}},
+                    @{ApplicationProcessTable.Remark} + N'{{{index++}}}',
+                    @{ApplicationTable.ModifyUserID},
+                    @{ApplicationTable.ModifyDateTime}
+                from
+                    dbo.{ApplicationTable.TableName} with(nolock)
+                where
+                    {ApplicationTable.ApplicationID} in ({{{index++}}})
+                and {ApplicationTable.PhaseID} = {{{index}}}
+            ";
+
+
+            index = 0;
+            ScriptInsertLog = $@"
+                insert into dbo.{ApplicationLogTable.TableName}
+			    (
+                    {ApplicationTable.ApplicationID},
+                    {ApplicationLogTable.LogAction},
+                    {ApplicationLogTable.Remark},
+                    {ApplicationLogTable.IsHasLogDetail},
+                    {ApplicationLogTable.IsSensitiveInfo},
+                    {ApplicationTable.ModifyUserID},
+                    {ApplicationTable.ModifyDateTime}
+                )
+		        select
+                    {ApplicationTable.ApplicationID},
+                    N'{{{index++}}}',
+                    @{ApplicationLogTable.Remark} + N'{{{index++}}}',
+                    0,
+                    0,
+                    @{ApplicationTable.ModifyUserID},
+                    @{ApplicationTable.ModifyDateTime}
+                from
+                    dbo.{ApplicationTable.TableName} with(nolock)
+                where
+                    {ApplicationTable.ApplicationID} in ({{{index++}}})
+                and {ApplicationTable.PhaseID} = {{{index}}}
+            ";
+
+
+            ScriptInsertScheduleLog = $@"
+                insert into dbo.APP_ScheduleLog
+			    (
+                    ScheduleName,
+                    LogDate,
+                    LogMessage,
+                    IsSuccess,
+                    CreateDateTime
+                )
+		        values
+			    (
+                    'AUTO_ASSIGN',
+                    @CurrentDate,
+                    N'{{0}}',
+                    1,
+                    @{ApplicationTable.ModifyDateTime}
+                )
+            ";
 
             #endregion
         }
@@ -336,14 +481,70 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
-        public int ProcessApplication(Dictionary<string, SQLParameterData> parameterDictionary)
+        public long ProcessApplication(Dictionary<string, SQLParameterData> parameterDictionary)
         {
             foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
             {
                 Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
             Connector.ExecuteProcedure("dbo.APP_SP_ProcessApplication", out string result);
-            return int.Parse(result);
+            return long.Parse(result);
+        }
+
+        public DataSet GetAutoAssignData()
+        {
+            Connector.ExecuteProcedure("dbo.APP_SP_GetAutoAssignData", out DataSet result);
+            return result;
+        }
+
+        public bool AutoAssign(int processUserID,
+            List<AutoAssignData> listAssignData)
+        {
+            StringBuilder updateScript = new StringBuilder();
+            StringBuilder insertProcessScript = new StringBuilder();
+            StringBuilder insertLogScript = new StringBuilder();
+            StringBuilder insertScheduleLog = new StringBuilder();
+            foreach (AutoAssignData item in listAssignData)
+            {
+                List<UserAssignData> listUserAssignData = item.ListUserAssignData;
+                string currentPhaseID = item.CurrentPhaseID;
+                string targetPhaseID = item.TargetPhaseID;
+                string applicationStatus = PhaseBussiness.GetPhaseStatus(targetPhaseID);
+                const string logAction = "Phân hồ sơ";
+                string logMessage = item.LogMessage;
+                foreach (UserAssignData userAssignData in listUserAssignData)
+                {
+                    string userID = userAssignData.UserID;
+                    string userName = userAssignData.UserName;
+
+
+                    updateScript.AppendLine(string.Format(ScriptUpdatePhase,
+                        targetPhaseID, applicationStatus, userID, userAssignData.AssignData, currentPhaseID));
+                    insertProcessScript.AppendLine(string.Format(ScriptInsertProcess,
+                        currentPhaseID, userName, userAssignData.AssignData, targetPhaseID));
+                    insertLogScript.AppendLine(string.Format(ScriptInsertLog,
+                        logAction, userName, userAssignData.AssignData, targetPhaseID));
+                }
+                insertScheduleLog.AppendLine(string.Format(ScriptInsertScheduleLog, logMessage));
+            }
+
+            string script = string.Format(ScriptAutoAssign,
+                updateScript, insertProcessScript, insertLogScript, insertScheduleLog);
+
+            Connector.AddParameter("CurrentDate", SqlDbType.Int, DateTime.Now.ToString(PatternEnum.Date));
+            Connector.AddParameter(ApplicationTable.ModifyUserID, SqlDbType.Int, processUserID);
+            Connector.AddParameter(
+                ApplicationTable.ModifyDateTime, SqlDbType.BigInt, DateTime.Now.ToString(PatternEnum.DateTime));
+            Connector.ExecuteSql(script, out string result);
+            return result == "1";
+        }
+
+
+        public DataTable GetVSaleKitApplication(string uniqueID)
+        {
+            Connector.AddParameter(ApplicationTable.UniqueID, SqlDbType.VarChar, uniqueID);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetVSaleKitApplication", out DataTable result);
+            return result;
         }
 
 

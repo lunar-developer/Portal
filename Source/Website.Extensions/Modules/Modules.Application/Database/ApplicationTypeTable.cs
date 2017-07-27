@@ -4,6 +4,7 @@
     {
         public const string TableName = "APP_ApplicationType";
         public const string ApplicationTypeID = "ApplicationTypeID";
+        public const string ApplicationTypeCode = "ApplicationTypeCode";
         public const string Name = "Name";
         public const string IsDisable = "IsDisable";
     }

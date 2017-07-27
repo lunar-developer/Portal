@@ -20,13 +20,36 @@ namespace Website.Library.Global
 {
     public static class FunctionBase
     {
-        private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof(FunctionBase));
+        private static readonly ILog Logger;
+
+
+        static FunctionBase()
+        {
+            try
+            {
+                Logger = LoggerSource.Instance.GetLogger(typeof(FunctionBase));
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
 
 
         public static bool ConvertToBool(string value)
         {
-            string data = value.Trim().ToLower();
+            string data = value?.Trim().ToLower();
             return data == "true" || data == "1";
+        }
+
+        public static int ConvertToInteger(string value, int defaultValues = 0)
+        {
+            if (int.TryParse(value, out int result) == false)
+            {
+                result = defaultValues;
+            }
+            return result;
         }
 
 

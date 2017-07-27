@@ -10,8 +10,8 @@
         public const string ApplicationID = "ApplicationID";
         public const string ApplicationTypeID = "ApplicationTypeID";
         public const string Priority = "Priority";
+
         public const string ApplicationStatus = "ApplicationStatus";
-        public const string DecisionCode = "DecisionCode";
         public const string ModifyUserID = "ModifyUserID";
         public const string ModifyDateTime = "ModifyDateTime";
         public const string ApplicationRemark = "ApplicationRemark";
@@ -167,6 +167,33 @@
         public const string GuarantorName = "GuarantorName";
 
 
+        // CARD INFO
+        public const string EmbossIndicator = "EmbossIndicator";
+        public const string InstantEmbossIndicator = "InstantEmbossIndicator";
+        public const string CardDespatchBranchCode = "CardDespatchBranchCode";
+        public const string CardDeliveryMethod = "CardDeliveryMethod";
+        public const string CardDeliveryAddress = "CardDeliveryAddress";
+
+        public const string StatementType = "StatementType";
+        public const string StatementDeliveryMethod = "StatementDeliveryMethod";
+        public const string StatementDeliveryAddress = "StatementDeliveryAddress";
+
+
+        // ASSESSMENT INFO
+        public const string DecisionCode = "DecisionCode";
+        public const string DecisionReason = "DecisionReason";
+        public const string AssessmentContent = "AssessmentContent";
+        public const string AssessmentDisplayContent = "AssessmentDisplayContent";
+        public const string ProposeLimit = "ProposeLimit";
+        public const string CreditLimit = "CreditLimit";
+        public const string ProposeInstallmentLimit = "ProposeInstallmentLimit";
+        public const string InstallmentLimit = "InstallmentLimit";
+
+        public const string AssessmentBranchCode = "AssessmentBranchCode";
+        public const string ReAssessmentDate = "ReAssessmentDate";
+        public const string ReAssessmentReason = "ReAssessmentReason";
+
+
         // HIDDEN INFO
         public const string ProcessID = "ProcessID";
         public const string PhaseID = "PhaseID";
@@ -178,7 +205,8 @@
         public const string ProcessUserID = "ProcessUserID";
         public const string ProcessDateTime = "ProcessDateTime";
 
-        // Other Info
+        // Other Info (Route)
+        public const string ActionCode = "ActionCode";
         public const string ActionName = "ActionName";
     }
 }

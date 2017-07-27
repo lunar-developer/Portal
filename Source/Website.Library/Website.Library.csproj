@@ -52,6 +52,9 @@
     <Reference Include="QRCoder">
       <HintPath>..\..\Library\QRCoder.dll</HintPath>
     </Reference>
+    <Reference Include="RabbitMQ.Client">
+      <HintPath>..\..\Library\RabbitMQ.Client.dll</HintPath>
+    </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\..\library\ServiceStack.Text.dll</HintPath>
     </Reference>
@@ -59,6 +62,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Optimization">
@@ -68,11 +72,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ImageBusiness.cs" />
+    <Compile Include="Business\MessageQueueBusiness.cs" />
     <Compile Include="DataAccess\DataProvider.cs" />
     <Compile Include="Database\BaseTable.cs" />
     <Compile Include="DataTransfer\BundleData.cs" />
     <Compile Include="DataTransfer\CacheData.cs" />
     <Compile Include="DataTransfer\FolderData.cs" />
+    <Compile Include="DataTransfer\MessageQueueData.cs" />
+    <Compile Include="DataTransfer\RequestData.cs" />
+    <Compile Include="DataTransfer\ResponseData.cs" />
     <Compile Include="DataTransfer\SQLParameterData.cs" />
     <Compile Include="Enum\ActionEnum.cs" />
     <Compile Include="Enum\CharacterEnum.cs" />
@@ -82,20 +90,27 @@
     <Compile Include="Enum\FolderEnum.cs" />
     <Compile Include="Enum\ContentEnum.cs" />
     <Compile Include="Enum\HTTPMethodEnum.cs" />
+    <Compile Include="Enum\MessageQueueEnum.cs" />
     <Compile Include="Enum\PatternEnum.cs" />
     <Compile Include="Enum\PermissionEnum.cs" />
+    <Compile Include="Enum\ResourceEnum.cs" />
     <Compile Include="Enum\ResponseEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
     <Compile Include="Enum\SeparatorEnum.cs" />
     <Compile Include="Enum\UnitEnum.cs" />
     <Compile Include="Business\BundleBusiness.cs" />
+    <Compile Include="Extension\InsensitiveDictionary.cs" />
+    <Compile Include="Extension\InsensitiveList.cs" />
     <Compile Include="Extension\OrderedConcurrentDictionary.cs" />
     <Compile Include="Global\CacheBase.cs" />
+    <Compile Include="Global\ConfigurationBase.cs" />
     <Compile Include="Global\DesktopModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Global\FunctionBase.cs" />
     <Compile Include="Global\MailBase.cs" />
+    <Compile Include="Global\MessageQueueBase.cs" />
+    <Compile Include="Global\RabbitMessageQueueBase.cs" />
     <Compile Include="Global\ServiceBase.cs" />
     <Compile Include="Interface\ICache.cs" />
     <Compile Include="Global\SkinBase.cs">

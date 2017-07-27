@@ -52,7 +52,7 @@
             <label class="dnnLabel">Tình trạng hồ sơ</label>
         </div>
         <div class="col-sm-8 control-value">
-            <asp:Label ID="valApplicationStatus" runat="server" />
+            <asp:Label ID="valApplicationStatus" runat="server" CssClass="c-font-bold" />
         </div>
     </div>
     <div class="form-group">

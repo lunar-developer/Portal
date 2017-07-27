@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
@@ -62,14 +63,31 @@ namespace DesktopModules.Modules.Application
             }
         }
 
+        protected void UpdateApplication(object sender, EventArgs e)
+        {
+            Dictionary<string, string> fieldDictionary = GetInputData();
+            long result = ApplicationBusiness.UpdateApplication(
+                UserInfo.UserID, ctrlApplicationID.Value, fieldDictionary);
+            if (result > 0)
+            {
+                LoadData(ctrlApplicationID.Value);
+                ShowMessage("Cập nhật hồ sơ thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
+            }
+            else
+            {
+                ShowMessage("Cập nhật hồ sơ thất bại.", ModuleMessage.ModuleMessageType.RedError);
+            }
+        }
+
         protected void ProcessApplication(object sender, EventArgs e)
         {
             if (ctrlRoute.SelectedValue == string.Empty)
             {
-                string script = $"focus(document.getElementByID('{ctrlRoute.ClientID}'))";
+                string script = $"focus(document.getElementByID('{ctrlRoute.ClientID}'));";
                 ShowAlertDialog("Vui lòng chọn <b>Thao tác</b> trước khi xử lý.", null, false, script);
                 return;
             }
+
             Process();
         }
 
@@ -104,27 +122,44 @@ namespace DesktopModules.Modules.Application
                     ApplicationLogTable.ApplicationLogID, "{0}");
                 SectionHistoryInfo.BindData(applicationID, historyUrl, dsResult.Tables[1]);
 
-                // Load Route
-                ctrlRoute.Items.Clear();
-                foreach (DataRow row in dsResult.Tables[2].Rows)
-                {
-                    string text = row[ApplicationTable.ActionName].ToString();
-                    string value = row[ApplicationTable.RouteID].ToString();
-                    ctrlRoute.Items.Add(new RadComboBoxItem(text, value));
-                }
+                // Load Routes
+                BindRoute(dsResult.Tables[2].Rows);
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
             }
             finally
             {
-                // Set State & Permission
-                SetState();
+                // Set Permission
                 SetPermission();
             }
         }
 
         private void Process()
         {
-            string nextUserID = "0";
+            // Identify Next Action User
+            int nextUserID;
+            string actionCode = ctrlRoute.SelectedItem.Attributes[ApplicationTable.ActionCode];
+            switch (actionCode)
+            {
+                case "Accept":
+                    nextUserID = UserInfo.UserID;
+                    break;
+
+                case "Return":
+                    int.TryParse(ctrlPreviousUserID.Value, out nextUserID);
+                    break;
+
+                default:
+                    int.TryParse(ctrlUser.SelectedValue, out nextUserID);
+                    break;
+            }
+
+            // Identify Log Sensitive
             bool isSensitiveInfo = IsSensitiveInfo(ctrlApplicationStatus.Value);
+
+
             Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
             {
                 { ApplicationTable.ApplicationID, new SQLParameterData(ctrlApplicationID.Value, SqlDbType.BigInt) },
@@ -141,7 +176,7 @@ namespace DesktopModules.Modules.Application
             };
 
             string action = ctrlRoute.SelectedItem.Text;
-            int result = ApplicationBusiness.ProcessApplication(parameterDictionary);
+            long result = ApplicationBusiness.ProcessApplication(parameterDictionary);
             if (result < 0)
             {
                 ShowMessage($"{action} thất bại.", ModuleMessage.ModuleMessageType.RedError);
@@ -157,6 +192,23 @@ namespace DesktopModules.Modules.Application
             }
         }
 
+
+        private void AddDefaultValues(IDictionary<string, string> fieldDictionary)
+        {
+            string applicationTypeID = SectionApplicationInfo.ControlApplicationTypeID.SelectedValue;
+            string processID = applicationTypeID == ApplicationTypeEnum.Personal
+                ? ProcessEnum.Personal
+                : ProcessEnum.PreApprove;
+            fieldDictionary.Add(ApplicationTable.UniqueID, string.Empty);
+            fieldDictionary.Add(ApplicationTable.ProcessID, processID);
+            fieldDictionary.Add(ApplicationTable.PhaseID, PhaseEnum.New);
+            fieldDictionary.Add(ApplicationTable.ApplicationStatus, ApplicationStatusEnum.New00);
+            fieldDictionary.Add(ApplicationTable.ApplicationRemark, string.Empty);
+            fieldDictionary.Add(ApplicationTable.CurrentUserID, UserInfo.UserID.ToString());
+            fieldDictionary.Add(ApplicationTable.PreviousUserID, "0");
+            fieldDictionary.Add(ApplicationTable.CreateDateTime, fieldDictionary[ApplicationTable.ModifyDateTime]);
+            fieldDictionary.Add(ApplicationTable.ExportDate, "0");
+        }
 
         private Dictionary<string, string> GetInputData()
         {
@@ -340,16 +392,53 @@ namespace DesktopModules.Modules.Application
                 { ApplicationTable.GuarantorName, SectionPolicyInfo.ControlGuarantorName.Text.Trim() },
 
                 #endregion
-        };
+
+                #region CARD INFO
+
+                { ApplicationTable.EmbossIndicator, SectionCardInfo.ControlEmbossIndicator.SelectedValue },
+                { ApplicationTable.InstantEmbossIndicator, SectionCardInfo.ControlInstantEmbossIndicator.SelectedValue },
+                { ApplicationTable.CardDeliveryMethod, SectionCardInfo.ControlCardDeliveryMethod.SelectedValue },
+                { ApplicationTable.CardDespatchBranchCode, SectionCardInfo.ControlCardDespatchBranchCode.SelectedValue },
+                { ApplicationTable.CardDeliveryAddress, SectionCardInfo.ControlCardDeliveryAddress.SelectedValue  },
+
+                { ApplicationTable.StatementDeliveryMethod, SectionCardInfo.ControlStatementDeliveryMethod.SelectedValue },
+                { ApplicationTable.StatementType, SectionCardInfo.ControlStatementType.SelectedValue },
+                { ApplicationTable.StatementDeliveryAddress, SectionCardInfo.ControlStatementDeliveryAddress.SelectedValue },
+
+                #endregion
+
+                #region ASSESSMENT INFO
+
+                { ApplicationTable.DecisionCode, SectionAssessmentInfo.ControlDecisionCode.SelectedValue },
+                { ApplicationTable.DecisionReason, SectionAssessmentInfo.ControlDecisionReason.SelectedValue },
+                { ApplicationTable.AssessmentContent, SectionAssessmentInfo.ControlAssessmentContent.Text.Trim() },
+                { ApplicationTable.AssessmentDisplayContent, SectionAssessmentInfo.ControlAssessmentDisplayContent.Text.Trim() },
+                { ApplicationTable.ProposeLimit, SectionAssessmentInfo.ControlProposeLimit.Text.Trim() },
+                { ApplicationTable.CreditLimit, SectionAssessmentInfo.ControlCreditLimit.Text.Trim() },
+                { ApplicationTable.ProposeInstallmentLimit, SectionAssessmentInfo.ControlProposeInstallmentLimit.Text.Trim() },
+                { ApplicationTable.InstallmentLimit, SectionAssessmentInfo.ControlInstallmentLimit.Text.Trim() },
+                { ApplicationTable.AssessmentBranchCode, SectionAssessmentInfo.ControlAssessmentBranchCode.SelectedValue },
+                { ApplicationTable.ReAssessmentDate, SectionAssessmentInfo.ControlReAssessmentDate.SelectedDate?.ToString(PatternEnum.Date) },
+                { ApplicationTable.ReAssessmentReason, SectionAssessmentInfo.ControlReAssessmentReason.Text.Trim() }
+
+                #endregion
+            };
 
             return fieldDictionary;
         }
 
         private void SetData(DataRow row)
         {
-            // Hidden Fields
-            ctrlApplicationID.Value = row[ApplicationTable.ApplicationID].ToString();
+            #region HIDDEN INFO
 
+            ctrlApplicationID.Value = row[ApplicationTable.ApplicationID].ToString();
+            ctrlProcessID.Value = row[ApplicationTable.ProcessID].ToString();
+            ctrlPhaseID.Value = row[ApplicationTable.PhaseID].ToString();
+            ctrlApplicationStatus.Value = row[ApplicationTable.ApplicationStatus].ToString();
+            ctrlCurrentUserID.Value = row[ApplicationTable.CurrentUserID].ToString();
+            ctrlPreviousUserID.Value = row[ApplicationTable.PreviousUserID].ToString();
+
+            #endregion
 
             #region APPLICATION INFO
 
@@ -381,15 +470,12 @@ namespace DesktopModules.Modules.Application
             SectionCustomerInfo.ControlGender.SelectedValue = row[ApplicationTable.Gender].ToString();
             SectionCustomerInfo.ControlTitleOfAddress.SelectedValue = row[ApplicationTable.TitleOfAddress].ToString();
 
-
             SectionCustomerInfo.ControlLanguage.SelectedValue = row[ApplicationTable.Language].ToString();
             SectionCustomerInfo.ControlNationality.SelectedValue = row[ApplicationTable.Nationality].ToString();
-
             DateTime birthdate;
             DateTime.TryParseExact(row[ApplicationTable.BirthDate].ToString(), PatternEnum.Date,
                 CultureInfo.CurrentCulture, DateTimeStyles.None, out birthdate);
             SectionCustomerInfo.ControlBirthDate.SelectedDate = birthdate;
-
             SectionCustomerInfo.ControlMobile01.Text = row[ApplicationTable.Mobile01].ToString();
             SectionCustomerInfo.ControlMobile02.Text = row[ApplicationTable.Mobile02].ToString();
             SectionCustomerInfo.ControlEmail01.Text = row[ApplicationTable.Email01].ToString();
@@ -417,7 +503,6 @@ namespace DesktopModules.Modules.Application
             SectionContactInfo.ControlHomePhone01.Text = row[ApplicationTable.HomePhone01].ToString();
             SectionContactInfo.ControlHomeRemark.Text = row[ApplicationTable.HomeRemark].ToString();
 
-
             // ALTERNATIVE 01 ADDRESS
             SectionContactInfo.ControlAlternative01Address01.Text = row[ApplicationTable.Alternative01Address01].ToString();
             SectionContactInfo.ControlAlternative01Address02.Text = row[ApplicationTable.Alternative01Address02].ToString();
@@ -432,7 +517,6 @@ namespace DesktopModules.Modules.Application
             SectionContactInfo.ControlAlternative01City.SelectedValue = row[ApplicationTable.Alternative01City].ToString();
             SectionContactInfo.ControlAlternative01Phone01.Text = row[ApplicationTable.Alternative01Phone01].ToString();
             SectionContactInfo.ControlAlternative01Remark.Text = row[ApplicationTable.Alternative01Remark].ToString();
-
 
             // ALTERNATIVE 02 ADDRESS
             SectionContactInfo.ControlAlternative02Address01.Text = row[ApplicationTable.Alternative02Address01].ToString();
@@ -559,23 +643,42 @@ namespace DesktopModules.Modules.Application
             SectionPolicyInfo.ControlGuarantorName.Text = row[ApplicationTable.GuarantorName].ToString();
 
             #endregion
-        }
 
-        private void AddDefaultValues(IDictionary<string, string> fieldDictionary)
-        {
-            string applicationTypeID = SectionApplicationInfo.ControlApplicationTypeID.SelectedValue;
-            string processID = applicationTypeID == ApplicationTypeEnum.Personal
-                ? ProcessEnum.Personal
-                : ProcessEnum.PreApprove;
-            fieldDictionary.Add(ApplicationTable.UniqueID, string.Empty);
-            fieldDictionary.Add(ApplicationTable.ProcessID, processID);
-            fieldDictionary.Add(ApplicationTable.PhaseID, PhaseEnum.New);
-            fieldDictionary.Add(ApplicationTable.ApplicationStatus, ApplicationStatusEnum.New);
-            fieldDictionary.Add(ApplicationTable.ApplicationRemark, string.Empty);
-            fieldDictionary.Add(ApplicationTable.CurrentUserID, UserInfo.UserID.ToString());
-            fieldDictionary.Add(ApplicationTable.PreviousUserID, "0");
-            fieldDictionary.Add(ApplicationTable.CreateDateTime, fieldDictionary[ApplicationTable.ModifyDateTime]);
-            fieldDictionary.Add(ApplicationTable.ExportDate, "0");
+            #region CARD INFO
+
+            SectionCardInfo.ControlEmbossIndicator.SelectedValue = row[ApplicationTable.EmbossIndicator].ToString();
+            SectionCardInfo.ControlInstantEmbossIndicator.SelectedValue = row[ApplicationTable.InstantEmbossIndicator].ToString();
+            SectionCardInfo.ControlCardDeliveryMethod.SelectedValue = row[ApplicationTable.CardDeliveryMethod].ToString();
+            SectionCardInfo.ControlCardDespatchBranchCode.SelectedValue = row[ApplicationTable.CardDespatchBranchCode].ToString();
+            SectionCardInfo.ControlCardDeliveryAddress.SelectedValue = row[ApplicationTable.CardDeliveryAddress].ToString();
+
+            SectionCardInfo.ControlStatementDeliveryMethod.SelectedValue = row[ApplicationTable.StatementDeliveryMethod].ToString();
+            SectionCardInfo.ControlStatementType.SelectedValue = row[ApplicationTable.StatementType].ToString();
+            SectionCardInfo.ControlStatementDeliveryAddress.SelectedValue = row[ApplicationTable.StatementDeliveryAddress].ToString();
+
+            #endregion
+
+            #region ASSESSMENT INFO
+
+            SectionAssessmentInfo.ControlDecisionCode.SelectedValue = row[ApplicationTable.DecisionCode].ToString();
+            SectionAssessmentInfo.ControlDecisionReason.SelectedValue = row[ApplicationTable.DecisionReason].ToString();
+            SectionAssessmentInfo.ControlAssessmentContent.Text = row[ApplicationTable.AssessmentContent].ToString();
+            SectionAssessmentInfo.ControlAssessmentDisplayContent.Text = row[ApplicationTable.AssessmentDisplayContent].ToString();
+            SectionAssessmentInfo.ControlProposeLimit.Text = row[ApplicationTable.ProposeLimit].ToString();
+            SectionAssessmentInfo.ControlCreditLimit.Text = row[ApplicationTable.CreditLimit].ToString();
+            SectionAssessmentInfo.ControlProposeInstallmentLimit.Text = row[ApplicationTable.ProposeInstallmentLimit].ToString();
+            SectionAssessmentInfo.ControlInstallmentLimit.Text = row[ApplicationTable.InstallmentLimit].ToString();
+
+            SectionAssessmentInfo.ControlAssessmentBranchCode.SelectedValue = row[ApplicationTable.AssessmentBranchCode].ToString();
+            DateTime reassessmentDate;
+            if (DateTime.TryParseExact(row[ApplicationTable.ReAssessmentDate].ToString(), PatternEnum.Date,
+                CultureInfo.CurrentCulture, DateTimeStyles.None, out reassessmentDate))
+            {
+                SectionAssessmentInfo.ControlReAssessmentDate.SelectedDate = reassessmentDate;
+            }
+            SectionAssessmentInfo.ControlReAssessmentReason.Text = row[ApplicationTable.ReAssessmentReason].ToString();
+
+            #endregion
         }
 
         private void SetDefaltValue()
@@ -586,6 +689,8 @@ namespace DesktopModules.Modules.Application
             ctrlProcessID.Value = "";
             ctrlPhaseID.Value = "";
             ctrlApplicationStatus.Value = "";
+            ctrlCurrentUserID.Value = "";
+            ctrlPreviousUserID.Value = "";
 
             #endregion
 
@@ -771,6 +876,57 @@ namespace DesktopModules.Modules.Application
             SectionPolicyInfo.ControlGuarantorName.Text = "";
 
             #endregion
+
+            #region CARD INFO
+
+            SectionCardInfo.ControlEmbossIndicator.SelectedIndex = 0;
+            SectionCardInfo.ControlInstantEmbossIndicator.SelectedIndex = 0;
+            SectionCardInfo.ControlCardDeliveryMethod.SelectedIndex = 0;
+            SectionCardInfo.ControlCardDespatchBranchCode.SelectedIndex = 0;
+            SectionCardInfo.ControlCardDeliveryAddress.SelectedIndex = 0;
+
+            SectionCardInfo.ControlStatementDeliveryMethod.SelectedIndex = 0;
+            SectionCardInfo.ControlStatementType.SelectedIndex = 0;
+            SectionCardInfo.ControlStatementDeliveryAddress.SelectedIndex = 0;
+
+            #endregion
+
+            #region ASSESSMENT INFO
+
+            SectionAssessmentInfo.ControlDecisionCode.SelectedIndex = 0;
+            SectionAssessmentInfo.ControlDecisionReason.ClearCheckedItems();
+            SectionAssessmentInfo.ControlAssessmentContent.Text = "";
+            SectionAssessmentInfo.ControlAssessmentDisplayContent.Text = "";
+            SectionAssessmentInfo.ControlProposeLimit.Text = "";
+            SectionAssessmentInfo.ControlCreditLimit.Text = "";
+            SectionAssessmentInfo.ControlProposeInstallmentLimit.Text = "";
+            SectionAssessmentInfo.ControlInstallmentLimit.Text = "";
+
+            SectionAssessmentInfo.ControlAssessmentBranchCode.SelectedIndex = 0;
+            SectionAssessmentInfo.ControlReAssessmentDate.SelectedDate = DateTime.Now;
+            SectionAssessmentInfo.ControlReAssessmentReason.Text = "";
+
+            #endregion
+
+            #region HISTORY INFO
+
+            SectionHistoryInfo.Reset();
+
+            #endregion
+
+            #region PROCESS INFO
+
+            ctrlRoute.Items.Clear();
+            ctrlRoute.ClearSelection();
+            ctrlRoute.SelectedIndex = 0;
+
+            ctrlUser.Items.Clear();
+            ctrlUser.ClearSelection();
+            ctrlUser.SelectedIndex = 0;
+
+            ctrlRemark.Text = string.Empty;
+
+            #endregion
         }
 
 
@@ -784,25 +940,6 @@ namespace DesktopModules.Modules.Application
 
 
 
-
-
-
-
-        protected void UpdateData(object sender, EventArgs e)
-        {
-            Dictionary<string, string> fieldDictionary = GetInputData();
-            long result = ApplicationBusiness.UpdateApplication(
-                UserInfo.UserID, ctrlApplicationID.Value, fieldDictionary);
-            if (result > 0)
-            {
-                LoadData(ctrlApplicationID.Value);
-                ShowMessage("Cập nhật hồ sơ thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
-            }
-            else
-            {
-                ShowMessage("Cập nhật hồ sơ thất bại.", ModuleMessage.ModuleMessageType.RedError);
-            }
-        }
 
 
 
@@ -811,17 +948,60 @@ namespace DesktopModules.Modules.Application
 
         private void SetPermission()
         {
+            bool isEditMode = IsEditMode;
+            bool isCreditUser = IsCreditUser();
             bool isRoleInput = IsRoleInput();
-            btnInsert.Visible = IsEditMode == false && isRoleInput;
-            btnUpdate.Visible = IsEditMode && isRoleInput;
+            bool isRoleAssessment = isCreditUser && IsRoleAssessment();
+            bool isRoleApproval = isCreditUser && IsRoleApproval();
+            bool isRouteAvailable = isEditMode && ctrlRoute.Items.Count > 0;
+            bool isOwner = ctrlCurrentUserID.Value == UserInfo.UserID.ToString();
+            string status = ctrlApplicationStatus.Value;
+
+            // Sections
+            AssessmentInfo.Visible = isEditMode && (isRoleAssessment || isRoleApproval);
+            HistoryInfo.Visible = isEditMode;
+            ProcessInfo.Visible = isEditMode && status != ApplicationStatusEnum.Approved10 && isRouteAvailable;
+
+            // Rows
+            DivProcessUser.Visible = status == ApplicationStatusEnum.Assessing08;
+            if (status == ApplicationStatusEnum.Assessing08)
+            {
+                BindUser();
+            }
+
+            // Fields
+            SectionApplicationInfo.ControlApplicationTypeID.Enabled = isEditMode == false;
+
+            // Query Buttons
+            SectionCustomerInfo.ControlQueryCustomer.Visible = isCreditUser && status != ApplicationStatusEnum.Approved10;
+            SectionAutoPayInfo.ControlQueryAccount.Visible = isCreditUser && status != ApplicationStatusEnum.Approved10;
+            SectionCollateralInfo.ControlQueryCollateral.Visible = isCreditUser && status != ApplicationStatusEnum.Approved10;
+
+            // Process Buttons
+            btnInsert.Visible = isEditMode == false && isRoleInput;
+            btnUpdate.Visible = isEditMode && isOwner;
+            btnProcess.Visible = isRouteAvailable;
         }
 
-        private void SetState()
+
+        private void BindRoute(IEnumerable rows)
         {
-            HistoryInfo.Visible = ProcessInfo.Visible = IsEditMode;
+            ctrlRoute.ClearSelection();
+            ctrlRoute.Items.Clear();
+            foreach (DataRow row in rows)
+            {
+                string text = row[ApplicationTable.ActionName].ToString();
+                string value = row[ApplicationTable.RouteID].ToString();
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
+                item.Attributes.Add(ApplicationTable.ActionCode, row[ApplicationTable.ActionCode].ToString());
+                ctrlRoute.Items.Add(item);
+            }
         }
 
-
+        private void BindUser(params RadComboBoxItem[] additionalItems)
+        {
+            BindUserApproval(ctrlUser, additionalItems);
+        }
 
         private void BindState(RadComboBox comboboxHome)
         {

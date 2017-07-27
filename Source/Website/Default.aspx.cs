@@ -771,7 +771,7 @@ namespace DotNetNuke.Framework
 		{
 			if (PortalSettings.UserMode == PortalSettings.Mode.Edit)
 			{
-			    var editClass = "dnnEditState";
+			    var editClass = "dnnEditState c-layout-header-fixed c-layout-header-fullscreen c-layout-header-mobile-fixed";
 
 				var bodyClass = Body.Attributes["class"];
 				if (!string.IsNullOrEmpty(bodyClass))

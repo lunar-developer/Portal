@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Web.UI.WebControls;
 using DotNetNuke.Web.UI.WebControls;
+using Modules.Application.DataTransfer;
 using Modules.Application.Global;
 using Telerik.Web.UI;
+using Website.Library.Global;
 
 namespace DesktopModules.Modules.Application.Controls
 {
@@ -14,6 +18,47 @@ namespace DesktopModules.Modules.Application.Controls
             {
             }
         }
+
+
+        public void ProcessOnSelectDecisionCode(object sender, EventArgs e)
+        {
+            string decisionCode = ctrlDecisionCode.SelectedValue;
+            CleanUp();
+            if (string.IsNullOrWhiteSpace(decisionCode))
+            {
+                return;
+            }
+            BindDecisionReasonData(ctrlDecisionReason, decisionCode);
+        }
+
+        public void ProcessOnSelectDecisionReason(object sender, EventArgs e)
+        {
+            IList<RadComboBoxItem> reasonList = ctrlDecisionReason.CheckedItems;
+            StringBuilder hiddenRemarkBuilder = new StringBuilder();
+            StringBuilder remarkBuilder = new StringBuilder();
+            foreach (RadComboBoxItem item in reasonList)
+            {
+                DecisionReasonData decisionReason = CacheBase.Receive<DecisionReasonData>(item.Value);
+                if (decisionReason == null)
+                {
+                    continue;
+                }
+                hiddenRemarkBuilder.Append(decisionReason.HiddenRemark + Environment.NewLine);
+                remarkBuilder.Append(decisionReason.Remark + Environment.NewLine);
+            }
+            ctrlAssessmentContent.Text = hiddenRemarkBuilder.ToString();
+            ctrlAssessmentDisplayContent.Text = remarkBuilder.ToString();
+        }
+
+        private void CleanUp()
+        {
+            ctrlDecisionReason.ClearSelection();
+            ctrlDecisionReason.ClearCheckedItems();
+            ctrlDecisionReason.Items.Clear();
+            ctrlAssessmentContent.Text = string.Empty;
+            ctrlAssessmentDisplayContent.Text = string.Empty;
+        }
+
 
         #region PUBLIC PROPERTY
 

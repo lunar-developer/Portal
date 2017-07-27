@@ -383,14 +383,13 @@ ul#ControlBar_Module_ModulePosition li {
         background: transparent !important;
     }
 
-    .RadComboBox .rcbInner.has-error
-    {
+    .RadComboBox .rcbInner.has-error {
         border-color: #e12330 !important;
     }
 
     .RadComboBox .rcbInput {
         height: 32px !important;
-        padding: 6px 12px !important;
+        padding: 6px 25px 6px 12px !important;
         font-size: 16px;
         font-family: "Roboto Condensed", sans-serif;
         background: transparent;
@@ -421,11 +420,11 @@ ul#ControlBar_Module_ModulePosition li {
                 content: "\f0d7";
             }
 
-.RadComboBoxDropDown .rcbScroll
-{
+.RadComboBoxDropDown .rcbScroll {
     height: auto !important;
     max-height: 200px !important;
 }
+
 .RadComboBoxDropDown .rcbList {
     border: 1px solid #5893dd;
     border-top: 0;
@@ -440,6 +439,7 @@ ul#ControlBar_Module_ModulePosition li {
         font-weight: 300;
         cursor: pointer;
         border: 0 !important;
+        line-height: 20px;
     }
 
         .RadComboBoxDropDown .rcbList li.rcbDisabled {
@@ -453,6 +453,11 @@ ul#ControlBar_Module_ModulePosition li {
 .RadComboBoxDropDown_Default .rcbItem em, .RadComboBoxDropDown_Default .rcbHovered em {
     background-color: transparent !important;
 }
+
+.RadComboBoxDropDown .rcbList .rcbCheckBox {
+    margin: 5px 5px 5px 0 !important;
+}
+
 
 
 
@@ -468,37 +473,42 @@ ul#ControlBar_Module_ModulePosition li {
 .GridToolTip_Default {
     font-size: 100%;
     font: inherit;
-                     }
+}
 
 .RadGrid_Default {
     border: none;
     background: inherit;
     color: inherit;
-                 }
+}
 
 .RadGrid .rgMasterTable, .RadGrid .rgDetailTable {
     border-collapse: inherit;
     border-spacing: inherit;
     border-bottom: 1px solid #cfd8dc;
     border-top: 1px solid #cfd8dc;
-                                                 }
+}
+
 .RadGrid_Default .rgFilterRow td {
     border-bottom: 1px solid #cfd8dc;
-                                 }
+}
+
 .RadGrid .rgClipCells .rgHeader, .RadGrid .rgClipCells .rgFilterRow > td, .RadGrid .rgClipCells .rgRow > td, .RadGrid .rgClipCells .rgAltRow > td, .RadGrid .rgClipCells .rgEditRow > td, .RadGrid .rgClipCells .rgFooter > td {
     overflow: hidden;
-                                                                                                                                                                                                                               }
+}
+
 .RadGrid .rgClipCells .rgHeader {
     border-bottom: 1.5px solid #cfd8dc;
     border-left: 0.8px dotted #cfd8dc;
 }
+
 .RadGrid .rgFilterRow td {
     padding-bottom: 5px;
     padding-top: 5px;
-                         }
+}
+
 .RadGrid .rgHeader, .RadGrid .rgHeader a {
     color: #333;
-                                         }
+}
 
 .RadGrid .rgHeader, .RadGrid th.rgResizeCol {
     -moz-border-bottom-colors: inherit;
@@ -510,36 +520,38 @@ ul#ControlBar_Module_ModulePosition li {
     border-image: inherit;
     border-style: inherit;
     border-width: inherit;
-                                            }
+}
 
 .RadGrid .rgHeader, .RadGrid th.rgResizeCol {
     font-weight: inherit;
     padding: inherit;
     text-align: inherit;
-                                            }
+}
 
 .RadGrid .rgRow td, .RadGrid .rgAltRow td, .RadGrid .rgEditRow td, .RadGrid .rgFooter td, .RadGrid .rgFilterRow td, .RadGrid .rgHeader, .RadGrid .rgResizeCol, .RadGrid .rgGroupHeader td {
     padding-left: 8px;
     padding-right: 8px;
-                                                                                                                                                                                          }
+}
+
 .RadGrid .rgHeader {
     padding-top: 6px;
     padding-bottom: 6px;
     background: #F5F6F7;
-                   }
+}
+
 .RadGrid .rgRow, .RadGrid .rgAltRow, .RadGrid .rgHeader, .RadGrid .rgResizeCol, .RadGrid .rgPager, .RadGrid .rgGroupPanel, .RadGrid .rgGroupHeader {
     cursor: inherit;
-                                                                                                                                                   }
+}
 
 .RadGrid .rgFilterRow {
     background: #f7fafb none repeat scroll 0 0;
-                      }
+}
 
 .RadGrid .rgFilterBox {
     border-color: inherit;
     color: inherit;
     font-family: inherit;
-                      }
+}
 
 .RadGrid .rgFilterBox, .RadGrid .riTextBox {
     background: white none repeat scroll 0 0;
@@ -547,8 +559,9 @@ ul#ControlBar_Module_ModulePosition li {
     box-shadow: none;
     font-family: inherit;
     font-weight: 300;
+    font-size: inherit;
     outline: medium none;
-    width: 80%;
+    width: 100%;
     height: 34px !important;
     padding: 6px 12px !important;
 }
@@ -557,23 +570,6 @@ ul#ControlBar_Module_ModulePosition li {
         border-color: #5893dd;
     }
 
-.RadGrid .rgFilter {
-    background: inherit;
-    box-shadow: inherit;
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #82AAFF;
-                   }
-
-.RadGrid .rgFilter:before {
-    /*font-family: "FontAwesome" !important;*/
-    content: "\f059" !important;
-    /*font-size: 120% !important;*/
-                          }
 .RadGrid input.rgFilter {
     -ms-background-attachment: scroll;
     background-attachment: scroll;
@@ -591,7 +587,7 @@ ul#ControlBar_Module_ModulePosition li {
     box-shadow: none;
     height: 0;
     padding-top: 16px;
-                        }
+}
 
 .RadGrid input.rgFilter:hover {
     -ms-background-attachment: scroll;
@@ -609,11 +605,11 @@ ul#ControlBar_Module_ModulePosition li {
     box-shadow: none;
     height: 0;
     padding-top: 16px;
-                              }
+}
 
 .RadGrid .rgFooterDiv, .RadGrid_Default .rgFooter {
     background: #f7fafb none repeat scroll 0 0;
-                                                  }
+}
 
 
 
@@ -623,121 +619,139 @@ ul#ControlBar_Module_ModulePosition li {
 .RadGrid .rgPagerCell .rgInfoPart,
 .RadGrid .rgPagerCell .rgAdvPart {
     margin-top: 3px;
-                                 }
-.RadGrid .rgPagerCell .rgArrPart1 a:hover,
-.RadGrid .rgPagerCell .rgArrPart2 a:hover,
-.RadGrid .rgArrPart a:hover,
-.RadGrid .rgArrPart1 a:hover,
-.RadGrid .rgArrPart2 a:hover {
-    color: #5893dd;
-                             }
+}
+
+    .RadGrid .rgPagerCell .rgArrPart1 a:hover,
+    .RadGrid .rgPagerCell .rgArrPart2 a:hover,
+    .RadGrid .rgArrPart a:hover,
+    .RadGrid .rgArrPart1 a:hover,
+    .RadGrid .rgArrPart2 a:hover {
+        color: #5893dd;
+    }
+
 .RadGrid .NumericPages .rgNumPart {
     padding: 10px 10px 0;
-                                  }
+}
 
 .RadGrid td.rgPagerCell {
     border-color: #cfd8dc;
     color: #455a64;
-                        }
+}
 
 
 .RadGrid .rgNumPart a.rgCurrentPage span, .RadGrid .rgNumPart a.rgCurrentPage:hover span {
     background-position: 0 -1350px;
-                                                                                         }
+}
 
 .RadGrid .rgNumPart a:hover,
 .RadGrid .rgNumPart a:hover span,
 .RadGrid .rgNumPart a.rgCurrentPage,
 .RadGrid .rgNumPart a.rgCurrentPage span {
     font-weight: inherit;
-                                         }
+}
 
 
-.RadGrid .rgNumPart a:hover,
-.RadGrid .rgNumPart a:hover span {
-    background: #CCE8FF;
-    border: none;
-    border-radius: 40px;
-                                 }
+    .RadGrid .rgNumPart a:hover,
+    .RadGrid .rgNumPart a:hover span {
+        background: #CCE8FF;
+        border: none;
+        border-radius: 40px;
+    }
 
-.RadGrid .rgNumPart a.rgCurrentPage, .RadGrid .rgNumPart a.rgCurrentPage:hover, .RadGrid .rgNumPart a.rgCurrentPage span, .RadGrid .rgNumPart a.rgCurrentPage:hover span {
-    cursor: default;
-    background: none;
-    border: none;
-    color: #5893dd;
-    text-decoration: none;
-    font-weight: bold;
-                                                                                                                                                                         }
+    .RadGrid .rgNumPart a.rgCurrentPage, .RadGrid .rgNumPart a.rgCurrentPage:hover, .RadGrid .rgNumPart a.rgCurrentPage span, .RadGrid .rgNumPart a.rgCurrentPage:hover span {
+        cursor: default;
+        background: none;
+        border: none;
+        color: #5893dd;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
 .RadGrid tr.rgPager td table caption {
     padding: 0;
 }
+
 .RadGrid td.rgPagerCell {
     border-top: 1px solid #cfd8dc;
-                        }
+}
+
 .RadGrid .rgNumPart a.rgCurrentPage span, .RadGrid .rgNumPart a.rgCurrentPage:hover span {
     border-bottom: 1px solid #5893dd;
     border-radius: 0;
-                                                                                         }
+}
+
 .RadGrid .rgPager td {
     padding: 0;
-                     }
+}
+
 .RadGrid .rgNumPart {
     padding: 10px;
-                    }
-.RadGrid .rgNumPart a {
-    color: inherit;
-                      }
+}
+
+    .RadGrid .rgNumPart a {
+        color: inherit;
+    }
+
 .RadGrid .rgInfoPart {
     color: inherit;
     margin-right: 8px;
     line-height: 28px;
-                     }
-.RadGrid .rgInfoPart strong {
-    color: inherit;
-                            }
+}
+
+    .RadGrid .rgInfoPart strong {
+        color: inherit;
+    }
+
 .RadGrid .rgNumPart a {
     float: left;
     line-height: 28px;
     margin: 0;
     padding: 0 10px;
     text-decoration: none;
-                      }
+}
 
 
 .RadGrid .rgNumPart span {
     float: left;
     padding: 0;
-                         }
+}
+
 .RadGrid .NextPrevNumericAndAdvanced .rgAdvPart {
     float: none;
     text-align: center;
     margin-top: 3px;
-                                                }
+}
+
 .RadGrid .rgWrap {
     line-height: 28px;
     padding-top: 10px;
     white-space: nowrap;
-                 }
+}
+
 .RadGrid .rgInfoPart {
     float: right;
-                     }
+}
+
 .RadGrid .rgPagerLabel, .RadGrid .rgPager .RadComboBox, .RadGrid .rgPager .RadInput {
     margin: 0 8px 0 0;
     vertical-align: middle;
-                                                                                    }
+}
+
 .RadGrid .rgPager .riSingle .riTextBox {
     height: inherit;
     margin: 0 3px 0 0 !important;
 }
+
     .RadGrid .rgPager .riSingle .riTextBox:focus {
         border-color: #5893dd;
     }
+
 .RadGrid .rgPagerTextBox {
     text-align: left;
     height: 32px !important;
     border-color: #d0d7de;
     border-width: 1px;
-                         }
+}
 
 .RadGrid .rgPager .rgPagerButton {
     border-style: inherit;
@@ -751,36 +765,42 @@ ul#ControlBar_Module_ModulePosition li {
     margin: 0 14px 0 0;
     padding: 6px 8px;
     vertical-align: top;
-                                 }
+}
+
 .RadGrid .rgPager .rgPagerButton {
     border-color: #5e9cd1;
     color: #ffffff;
     background: #5e9cd1;
     font-family: inherit;
-                                 }
-.RadGrid .rgPager .rgPagerButton:hover {
-    border-color: #408ece;
-    color: #ffffff;
-    background: #408ece;
-    font-family: inherit;
-                                       }
+}
+
+    .RadGrid .rgPager .rgPagerButton:hover {
+        border-color: #408ece;
+        color: #ffffff;
+        background: #408ece;
+        font-family: inherit;
+    }
+
 .RadGrid .rgArrPart1 img, .RadGrid .rgArrPart2 img {
     border: 1px solid transparent;
     border-radius: 40px;
     padding: 5px;
-                                                   }
-.RadGrid .rgArrPart1 img:hover, .RadGrid .rgArrPart2 img:hover {
-    border: 1px solid #CCE8FF;
-    border-radius: 40px;
-    background: #CCE8FF;
-                                                               }
+}
+
+    .RadGrid .rgArrPart1 img:hover, .RadGrid .rgArrPart2 img:hover {
+        border: 1px solid #CCE8FF;
+        border-radius: 40px;
+        background: #CCE8FF;
+    }
+
 .RadGrid .rcbReadOnly {
     height: 26px !important;
-                      }
-.RadGrid .rgAdvPart
-{
+}
+
+.RadGrid .rgAdvPart {
     padding: 8px 10px;
 }
+
 .RadGrid .rcbInput {
     height: 26px !important;
     background-color: #fff !important;
@@ -789,7 +809,8 @@ ul#ControlBar_Module_ModulePosition li {
     border-width: 0 !important;
     color: #5893dd !important;
     transition: all 0.2s ease-in-out 0s;
-                   }
+}
+
 .RadGrid td.rcbInputCell,
 .RadGrid td.rcbArrowCell {
     background-color: #fff !important;
@@ -802,11 +823,13 @@ ul#ControlBar_Module_ModulePosition li {
     box-shadow: none !important;
     color: #5893dd !important;
     font-weight: bold !important;
-                         }
+}
+
 .RadGrid td.rcbArrowCellLeft, .RadGrid td.rcbArrowCellLeft {
     background: #fff !important;
     color: #5893dd;
-                                                           }
+}
+
 .RadGrid .RadPicker .rcCalPopup, .RadPicker .rcTimePopup {
     background: url("../images/Edit-DatePicker.png");
     background-origin: padding-box;
@@ -820,7 +843,8 @@ ul#ControlBar_Module_ModulePosition li {
     text-align: center;
     text-indent: -2222px;
     width: 22px;
-                                                         }
+}
+
 .RadGrid .RadCalendar {
     background: #f2f2f2 none repeat scroll 0 0;
     border: 0 none;
@@ -830,6 +854,7 @@ ul#ControlBar_Module_ModulePosition li {
     font: inherit;
     width: 220px;
 }
+
 .RadGrid .RadCalendarFastNavPopup table.RadCalendarMonthView {
     background: #f2f2f2 none repeat scroll 0 0;
     border-collapse: separate;
@@ -837,15 +862,18 @@ ul#ControlBar_Module_ModulePosition li {
     color: #3a3f45;
     border-color: #cfd8dc;
 }
+
 .RadGrid .RadCalendarMonthView #rcMView_Today {
     margin: 0 .4em 0 0;
 }
+
 .RadGrid .RadCalendarFastNavPopup table.RadCalendarMonthView td.rcButtons input[type="button"] {
     background: #5e9cd1 none repeat scroll 0 0;
     border-color: #5e9cd1;
     color: #ffffff;
     font-family: inherit;
 }
+
 .RadGrid .RadCalendarFastNavPopup table.RadCalendarMonthView .rcHover a, .RadCalendarFastNavPopup table.RadCalendarMonthView .rcSelected a {
     border-style: solid;
     border-width: 1px;
@@ -854,17 +882,20 @@ ul#ControlBar_Module_ModulePosition li {
     color: #fff;
     border-color: #cfd8dc;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcTitle {
     cursor: pointer;
     width: 100%;
     font-weight: bold;
 }
+
 .RadGrid .RadCalendar .rcTitlebar td {
     border: 0 none;
     padding: 0;
     text-align: center;
     vertical-align: middle;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcPrev,
 .RadGrid .RadCalendar .rcTitlebar .rcNext,
 .RadGrid .RadCalendar .rcTitlebar .rcFastPrev,
@@ -877,6 +908,7 @@ ul#ControlBar_Module_ModulePosition li {
     text-indent: -2222px;
     width: 15px;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcFastPrev {
     background-attachment: scroll;
     background-clip: border-box;
@@ -890,6 +922,7 @@ ul#ControlBar_Module_ModulePosition li {
     height: 0;
     padding-top: 18px;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcPrev {
     background-attachment: scroll;
     background-clip: border-box;
@@ -903,6 +936,7 @@ ul#ControlBar_Module_ModulePosition li {
     height: 0;
     padding-top: 18px;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcNext {
     background-attachment: scroll;
     background-clip: border-box;
@@ -916,6 +950,7 @@ ul#ControlBar_Module_ModulePosition li {
     height: 0;
     padding-top: 18px;
 }
+
 .RadGrid .RadCalendar .rcTitlebar .rcFastNext {
     background-attachment: scroll;
     background-clip: border-box;
@@ -929,15 +964,18 @@ ul#ControlBar_Module_ModulePosition li {
     height: 0;
     padding-top: 18px;
 }
+
 .RadGrid .RadCalendar .rcMain .rcRow a,
 .RadGrid .RadCalendar .rcMain .rcRow span {
     display: block;
     padding: 1px 5px 1px 0;
     text-decoration: none;
 }
+
 .RadGrid .RadCalendar .rcTitlebar {
     border-color: #cfd8dc;
 }
+
 .RadGrid .RadCalendar .rcMainTable {
     border: 0 none;
     border-collapse: separate;
@@ -945,6 +983,7 @@ ul#ControlBar_Module_ModulePosition li {
     table-layout: auto;
     width: 100%;
 }
+
 .RadGrid .RadCalendar .rcMain {
     border-color: #cfd8dc;
     border-style: solid;
@@ -952,6 +991,7 @@ ul#ControlBar_Module_ModulePosition li {
     padding: 0;
     width: 100%;
 }
+
 .RadGrid .RadCalendar .rcRow td {
     border-style: dotted;
     border-color: #cfd8dc;
@@ -960,6 +1000,7 @@ ul#ControlBar_Module_ModulePosition li {
     text-align: right;
     vertical-align: middle;
 }
+
 .RadGrid .RadCalendar .rcMain .rcRow a:hover {
     background-color: #408ece;
     color: #fff;
@@ -981,10 +1022,12 @@ ul#ControlBar_Module_ModulePosition li {
     display: inline-block;
     vertical-align: top;
 }
+
     .RadGrid .riSingle a.riUp span {
         opacity: 0;
         z-index: -9999;
     }
+
 .RadGrid .riSingle a.riDown {
     background-attachment: scroll;
     background-clip: border-box;
@@ -1003,17 +1046,111 @@ ul#ControlBar_Module_ModulePosition li {
     border-radius: 0;
     border-width: 0;
 }
+
     .RadGrid .riSingle a.riDown span {
         opacity: 0;
         z-index: -9999;
     }
+
 .RadGrid .rgCommandRow {
     background: #F7FAFB none repeat scroll 0 0;
     color: inherit;
-                       }
+}
 
 .RadGrid .rgDataDiv, .RadGrid .jspContainer, .RadGrid .jspPane {
     width: 100% !important;
-                                                               }
+}
+
+.RadGrid_Default .rgSelectedCell a, .RadGrid_Default .rgSelectedRow a {
+    color: #5e9cd1;
+}
+
+
+.GridContextMenu li.rmItem {
+    padding: 5px !important;
+}
+
+    .GridContextMenu li.rmItem a.rmLink {
+        font-size: 16px;
+        font-family: "Roboto Condensed", sans-serif;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        background-image: none !important;
+        display: block;
+    }
+
+        .GridContextMenu li.rmItem a.rmLink:hover {
+            background-color: #cce8ff !important;
+        }
+
+        .GridContextMenu li.rmItem a.rmLink span.rmText {
+            background-image: none !important;
+        }
+
+    .GridContextMenu li.rmItem span.rmExpandRight:after {
+        background-image: none;
+        font-family: 'FontAwesome';
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        margin-top: -5px;
+        content: "\f0da";
+        margin-left: 10px;
+    }
+
+.rmSlide {
+    min-width: 250px;
+    min-height: 200px;
+}
+
+    .rmSlide .rmVertical {
+        background-image: none !important;
+        min-height: 200px;
+        width: 100% !important;
+    }
+
+        .rmSlide .rmVertical .rmItem {
+            width: 100% !important;
+            padding: 2px !important;
+        }
+
+            .rmSlide .rmVertical .rmItem div.rmText {
+                width: 100% !important;
+                padding-left: 5px !important;
+                padding-right: 5px !important;
+                margin-left: 0 !important;
+            }
+
+    .rmSlide ul.rmVertical li.rmItem input[type="checkbox"] {
+        margin-right: 5px;
+    }
+
+    .rmSlide ul.rmVertical li.rmItem div.rmText span.RadInput {
+        width: 100% !important;
+    }
+
+    .rmSlide ul.rmVertical li.rmItem div.rmText .rgHCMShow, .rmSlide ul.rmVertical li.rmItem div.rmText .rgHCMAnd {
+        margin-top: 15px !important;
+    }
+
+    .rmSlide ul.rmVertical li.rmItem div.rmText .RadInput input {
+        background: white none repeat scroll 0 0;
+        border-color: #d0d7de;
+        box-shadow: none;
+        font-family: "Roboto Condensed", sans-serif;
+        font-weight: 300;
+        font-size: 16px !important;
+        outline: medium none;
+        width: 100% !important;
+        height: 34px !important;
+        padding: 6px 12px !important;
+    }
+
+        .rmSlide ul.rmVertical li.rmItem div.rmText .RadInput input:focus {
+            border-color: #5893dd;
+        }
 /*EndTelerik Grid - Edit Skin */
 /******************************/

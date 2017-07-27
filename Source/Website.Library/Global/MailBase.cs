@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using DotNetNuke.Services.Mail;
 using Website.Library.Enum;
 
@@ -35,7 +36,7 @@ namespace Website.Library.Global
                 listAttachments.Add(logo);
                 body = body.Replace("@Envelope", emailEnvelope.ContentId).Replace("@Logo", logo.ContentId);
             }
-            Mail.SendEmail(fromAddress, fromAddress, toAddress, subject, body, listAttachments);
+            Task.Run(() => Mail.SendEmail(fromAddress, fromAddress, toAddress, subject, body, listAttachments));
         }
 
         private static Attachment CreateAttachment(string imageBase64, string name)

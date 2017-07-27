@@ -88,5 +88,13 @@ namespace Modules.UserManagement.DataAccess
             Connector.ExecuteProcedure("dbo.UM_SP_ConfirmBranch", out string result);
             return result == "1";
         }
+
+        public List<UserData> GetUsersHaveRoles(string listRoleID)
+        {
+            Connector.AddParameter("RoleID", SqlDbType.VarChar, listRoleID);
+            Connector.ExecuteProcedure<UserData, List<UserData>>(
+                "dbo.UM_SP_GetUsersHaveRoles", out List<UserData> result);
+            return result;
+        }
     }
 }

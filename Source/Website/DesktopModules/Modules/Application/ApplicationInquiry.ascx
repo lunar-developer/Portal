@@ -10,10 +10,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlInputName01"
-                                          runat="server" />
+                        <control:AutoComplete ID="ddlInputName01" runat="server" />
                     </div>
                     <div class="col-sm-7">
                         <asp:TextBox CssClass="c-theme form-control"
@@ -24,10 +21,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlInputName02"
-                                          runat="server" />
+                        <control:AutoComplete ID="ddlInputName02" runat="server" />
                     </div>
                     <div class="col-sm-7">
                         <asp:TextBox CssClass="c-theme form-control"
@@ -38,10 +32,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlDateField"
-                                          runat="server" />
+                        <control:AutoComplete ID="ddlDateField" runat="server" />
                     </div>
                     <div class="col-sm-3">
                         <dnn:DnnDatePicker Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
@@ -73,47 +64,40 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          AutoPostBack="True"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlSelectName01"
-                                          OnSelectedIndexChanged="LoadData"
-                                          runat="server" />
+                        <control:AutoComplete
+                            AutoPostBack="True"
+                            ID="ddlSelectName01"
+                            OnSelectedIndexChanged="LoadData"
+                            runat="server" />
                     </div>
                     <div class="col-sm-8">
-                        <control:Combobox CssClass="c-theme form-control"
-                                          ID="ddlSelectValue01"
-                                          runat="server" />
+                        <control:AutoComplete ID="ddlSelectValue01" runat="server" />
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          AutoPostBack="True"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlSelectName02"
-                                          OnSelectedIndexChanged="LoadData"
-                                          runat="server" />
+                        <control:AutoComplete 
+                            AutoPostBack="True"
+                            ID="ddlSelectName02"
+                            OnSelectedIndexChanged="LoadData"
+                            runat="server" />
                     </div>
                     <div class="col-sm-8">
-                        <control:Combobox CssClass="c-theme form-control"
-                                          ID="ddlSelectValue02"
-                                          runat="server" />
+                        <control:AutoComplete ID="ddlSelectValue02" runat="server" />
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-4">
-                        <control:Combobox autocomplete="off"
-                                          AutoPostBack="True"
-                                          CssClass="c-theme form-control"
-                                          ID="ddlSelectName03"
-                                          OnSelectedIndexChanged="LoadData"
-                                          runat="server" />
+                        <control:AutoComplete
+                            AutoPostBack="True"
+                            ID="ddlSelectName03"
+                            OnSelectedIndexChanged="LoadData"
+                            runat="server" />
                     </div>
                     <div class="col-sm-8">
-                        <control:Combobox CssClass="c-theme form-control"
-                                          ID="ddlSelectValue03"
-                                          runat="server" />
+                        <control:AutoComplete
+                            ID="ddlSelectValue03"
+                            runat="server" />
                     </div>
                 </div>
             </div>
@@ -121,16 +105,15 @@
             <div class="clearfix"></div>
             <div class="form-group">
                 <div style="width: 100%; overflow: auto;">
-                    <control:Grid AllowPaging="true"
-                                  AutoGenerateColumns="True"
-                                  CssClass="dnnGrid"
-                                  EnableViewState="true"
-                                  ID="gridData"
-                                  runat="server"
-                                  Visible="false">
+                    <control:Grid
+                        AutoGenerateColumns="True"
+                        ID="gridData"
+                        runat="server"
+                        Visible="false">
                         <MasterTableView>
                             <Columns>
                                 <dnn:DnnGridTemplateColumn HeaderText="#">
+                                    <HeaderStyle Width="35px"></HeaderStyle>
                                     <ItemTemplate>
                                         <a href="<%#GetEditUrl(Eval(ApplicationTable.ApplicationID).ToString()) %>" target="_blank">
                                             <i class="fa fa-edit"></i>

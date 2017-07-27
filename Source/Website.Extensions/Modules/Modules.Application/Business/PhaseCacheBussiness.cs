@@ -17,16 +17,16 @@ namespace Modules.Application.Business
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
-            foreach (PhaseData item in PhaseBussiness.GetPhase())
+            foreach (PhaseData item in PhaseBussiness.GetAllPhaseData())
             {
-                dictionary.TryAdd(item.Name, item);
+                dictionary.TryAdd(item.PhaseID, item);
             }
             return dictionary;
         }
 
-        public CacheData Reload(string code)
+        public CacheData Reload(string phaseID)
         {
-            return PhaseBussiness.GetPhaseByCode(code);
+            return PhaseBussiness.GetPhaseData(phaseID);
         }
     }
 }

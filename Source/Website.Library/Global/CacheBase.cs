@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Extension;
@@ -40,8 +41,16 @@ namespace Website.Library.Global
 
         public static bool Reload<T>(string key = null) where T : CacheData
         {
-            string guid = GetClassGuid(typeof(T));
-            return Reload(guid, key);
+            try
+            {
+                string guid = GetClassGuid(typeof(T));
+                return Reload(guid, key);
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                return false;
+            }
         }
 
         public static bool Reload(string guid, string key = null)
@@ -165,29 +174,39 @@ namespace Website.Library.Global
         public static T Find<T>(string fieldName, string fieldValue) where T : CacheData
         {
             Type type = typeof(T);
-            string guid = GetClassGuid(type);
+            FieldInfo fieldInfo = type.GetField(fieldName);
+            PropertyInfo propertyInfo = type.GetProperty(fieldName);
             OrderedConcurrentDictionary<string, CacheData> dictionary;
+            string guid = GetClassGuid(type);
+
             return CacheDictionary.TryGetValue(guid, out dictionary)
                 ? dictionary.Values.Cast<T>()
                     .FirstOrDefault(
-                        item => string.Equals(type.GetField(fieldName)?.GetValue(item).ToString(), fieldValue)
-                            || string.Equals(type.GetProperty(fieldName)?.GetValue(item).ToString(), fieldValue))
+                        item => string.Equals(fieldInfo?.GetValue(item).ToString(), fieldValue)
+                            || string.Equals(propertyInfo?.GetValue(item).ToString(), fieldValue))
                 : null;
         }
 
         public static List<T> Filter<T>(string fieldName, string fieldValue) where T : CacheData
         {
             Type type = typeof(T);
-            string guid = GetClassGuid(type);
             List<T> list = new List<T>();
             OrderedConcurrentDictionary<string, CacheData> dictionary;
+            string guid = GetClassGuid(type);
+
             if (CacheDictionary.TryGetValue(guid, out dictionary))
             {
-                list.AddRange(dictionary.Values
-                    .Where(item =>
-                        string.Equals(type.GetField(fieldName)?.GetValue(item).ToString(), fieldValue)
-                        || string.Equals(type.GetProperty(fieldName)?.GetValue(item).ToString(), fieldValue))
-                    .Cast<T>());
+                FieldInfo fieldInfo = type.GetField(fieldName);
+                PropertyInfo propertyInfo = type.GetProperty(fieldName);
+                foreach (string key in dictionary.SortKeys)
+                {
+                    object item = dictionary[key];
+                    if(string.Equals(fieldInfo?.GetValue(item).ToString(), fieldValue)
+                        || string.Equals(propertyInfo?.GetValue(item).ToString(), fieldValue))
+                    {
+                        list.Add(item as T);
+                    }
+                }
             }
             return list;
         }
@@ -197,12 +216,20 @@ namespace Website.Library.Global
             Type type = GetCacheType(guid);
             List<object> list = new List<object>();
             OrderedConcurrentDictionary<string, CacheData> dictionary;
+
             if (CacheDictionary.TryGetValue(guid, out dictionary))
             {
-                list.AddRange(dictionary.Values
-                    .Where(item => 
-                        string.Equals(type.GetField(fieldName)?.GetValue(item).ToString(), fieldValue)
-                        || string.Equals(type.GetProperty(fieldName)?.GetValue(item).ToString(), fieldValue)));
+                FieldInfo fieldInfo = type.GetField(fieldName);
+                PropertyInfo propertyInfo = type.GetProperty(fieldName);
+                foreach (string key in dictionary.SortKeys)
+                {
+                    object item = dictionary[key];
+                    if (string.Equals(fieldInfo?.GetValue(item).ToString(), fieldValue)
+                        || string.Equals(propertyInfo?.GetValue(item).ToString(), fieldValue))
+                    {
+                        list.Add(item);
+                    }
+                }
             }
             return list;
         }

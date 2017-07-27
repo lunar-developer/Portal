@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.UI.WebControls;
+using Modules.Application.Business;
 using Modules.Application.Database;
 using Modules.Application.DataTransfer;
 using Modules.Application.Enum;
@@ -18,14 +18,17 @@ namespace Modules.Application.Global
             FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("APP_EditUrl"));
 
 
-        protected RadComboBoxItem GetEmptyItem()
+        #region ComboBox Data Bind
+        protected RadComboBoxItem GetEmptyItem(bool isEnable = true)
         {
-            RadComboBoxItem item = new RadComboBoxItem("CHƯA CHỌN", string.Empty);
+            RadComboBoxItem item = new RadComboBoxItem("CHƯA CHỌN", string.Empty) { Enabled = isEnable };
             return item;
         }
 
         private static void BindItems(RadComboBox dropDownList, RadComboBoxItem[] additionalItems)
         {
+            dropDownList.ClearSelection();
+            dropDownList.ClearCheckedItems();
             dropDownList.Items.Clear();
             if (additionalItems != null)
             {
@@ -33,7 +36,7 @@ namespace Modules.Application.Global
             }
         }
 
-        private static RadComboBoxItem CreateItem(string text, string value, string isDisable)
+        private static RadComboBoxItem CreateItem(string text, string value, string isDisable = "0")
         {
             RadComboBoxItem item = new RadComboBoxItem(text, value)
             {
@@ -47,9 +50,7 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (ApplicationTypeData cacheData in CacheBase.Receive<ApplicationTypeData>())
             {
-                RadComboBoxItem item =
-                    CreateItem(cacheData.Name, cacheData.ApplicationTypeID, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.Name, cacheData.ApplicationTypeID, cacheData.IsDisable));
             }
         }
 
@@ -58,9 +59,7 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (IdentityTypeData cacheData in CacheBase.Receive<IdentityTypeData>())
             {
-                RadComboBoxItem item =
-                    CreateItem(cacheData.Name, cacheData.IdentityTypeCode, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.Name, cacheData.IdentityTypeCode, cacheData.IsDisable));
             }
         }
 
@@ -69,8 +68,7 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (LanguageData cacheData in CacheBase.Receive<LanguageData>())
             {
-                RadComboBoxItem item = CreateItem(cacheData.Name, cacheData.LanguageID, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.Name, cacheData.LanguageID, cacheData.IsDisable));
             }
         }
 
@@ -79,8 +77,7 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (CountryData cacheData in CacheBase.Receive<CountryData>())
             {
-                RadComboBoxItem item = CreateItem(cacheData.Name, cacheData.CountryCode, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.Name, cacheData.CountryCode, cacheData.IsDisable));
             }
         }
 
@@ -91,42 +88,28 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.CustomerClassCode} - {cacheData.Name}";
                 string value = cacheData.CustomerClassCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
         protected static void BindStateData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
         {
-            dropDownList.ClearSelection();
             BindItems(dropDownList, additionalItems);
             foreach (StateData cacheData in CacheBase.Receive<StateData>())
             {
-                RadComboBoxItem item = CreateItem(cacheData.StateName, cacheData.StateCode, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.StateName, cacheData.StateCode, cacheData.IsDisable));
             }
             dropDownList.SelectedIndex = 0;
         }
 
         protected static void BindCityData(RadComboBox dropDownList, string filterID, params RadComboBoxItem[] additionalItems)
         {
-            dropDownList.ClearSelection();
             BindItems(dropDownList, additionalItems);
-            foreach (CityData cacheData in CacheBase
-                .Filter<CityData>(CityTable.StateCode, filterID)
-                .OrderBy(item => item.CityName))
+            foreach (CityData cacheData in CacheBase.Filter<CityData>(CityTable.StateCode, filterID))
             {
-                RadComboBoxItem item = CreateItem(cacheData.CityName, cacheData.CityCode, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(cacheData.CityName, cacheData.CityCode, cacheData.IsDisable));
             }
             dropDownList.SelectedIndex = 0;
-        }
-
-        protected bool IsSensitiveInfo(string status)
-        {
-            return FunctionBase.IsInArray(status,
-                ApplicationStatusEnum.SendToAssessTeam, ApplicationStatusEnum.Assessing,
-                ApplicationStatusEnum.SendToApprover, ApplicationStatusEnum.Approved);
         }
 
         protected void BindBranchData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
@@ -179,8 +162,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.ContractTypeCode} - {cacheData.ContractTypeName}";
                 string value = cacheData.ContractTypeCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -191,8 +173,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.CorporateEntityTypeCode} - {cacheData.CorporateEntityTypeName}";
                 string value = cacheData.CorporateEntityTypeCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -203,8 +184,7 @@ namespace Modules.Application.Global
             {
                 string text = cacheData.CorporateSizeName;
                 string value = cacheData.CorporateSizeCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -215,8 +195,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.CorporateStatusCode} - {cacheData.CorporateStatusName}";
                 string value = cacheData.CorporateStatusCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -227,8 +206,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.OccupationCode} - {cacheData.OccupationName}";
                 string value = cacheData.OccupationCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -239,8 +217,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.SICCode} - {cacheData.SICName}";
                 string value = cacheData.SICCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -251,8 +228,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.EducationCode} - {cacheData.EducationName}";
                 string value = cacheData.EducationCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -263,8 +239,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.HomeOwnershipCode} - {cacheData.HomeOwnershipName}";
                 string value = cacheData.HomeOwnershipCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -275,8 +250,7 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.MaritalStatusCode} - {cacheData.MaritalStatusName}";
                 string value = cacheData.MaritalStatusCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
@@ -287,10 +261,96 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.PositionCode} - {cacheData.PositionName}";
                 string value = cacheData.PositionCode;
-                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
-                dropDownList.Items.Add(item);
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
+
+        protected static void BindPolicyData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (PolicyData cacheData in CacheBase.Receive<PolicyData>())
+            {
+                string text = $"{cacheData.PolicyCode} - {cacheData.Name}";
+                string value = cacheData.PolicyCode;
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
+            }
+        }
+
+        protected static void BindDecisionReasonData(RadComboBox dropDownList, string decisionReasonType,
+            params RadComboBoxItem[] additionalItems)
+        {
+            dropDownList.ClearSelection();
+            dropDownList.ClearCheckedItems();
+            BindItems(dropDownList, additionalItems);
+            foreach (DecisionReasonData cacheData in CacheBase
+                .Filter<DecisionReasonData>(DecisionReasonTable.DecisionReasonType, decisionReasonType))
+            {
+                string text = $"{cacheData.DecisionReasonCode} - {cacheData.HiddenRemark}";
+                string value = cacheData.DecisionReasonCode;
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
+            }
+        }
+
+        protected static void BindIncompleteReasonData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (IncompleteReasonData cacheData in CacheBase.Receive<IncompleteReasonData>())
+            {
+                string text = cacheData.IncompleteReasonName;
+                string value = cacheData.IncompleteReasonCode;
+                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
+            }
+        }
+
+        protected static void BindUserApproval(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (UserData userInfo in ApplicationBusiness.GetListUserApprover())
+            {
+                string text = $"{userInfo.DisplayName} ({userInfo.UserName})";
+                string value = userInfo.UserID;
+                dropDownList.Items.Add(CreateItem(text, value));
+            }
+        }
+        #endregion
+
+        #region Permission
+
+        protected bool IsSensitiveInfo(string status)
+        {
+            return FunctionBase.IsInArray(status,
+                ApplicationStatusEnum.WaitForAssess07, ApplicationStatusEnum.Assessing08,
+                ApplicationStatusEnum.WaitForApprove09, ApplicationStatusEnum.Approved10);
+        }
+
+        protected bool IsCreditUser()
+        {
+            return IsInRole(RoleEnum.UserCredit);
+        }
+
+        protected bool IsRoleInput()
+        {
+            return IsInRole(RoleEnum.Input);
+        }
+
+        protected bool IsRoleAssessment()
+        {
+            return IsInRole(RoleEnum.Assessment);
+        }
+
+        protected bool IsRoleApproval()
+        {
+            return IsInRole(RoleEnum.Approval);
+        }
+
+        protected bool IsRoleConfiguration()
+        {
+            return IsInRole(RoleEnum.SystemConfiguration);
+        }
+
+        #endregion
+
+
 
 
 
@@ -304,20 +364,7 @@ namespace Modules.Application.Global
             UserManagementModuleBase.BindBranchData(dropDownList, UserInfo.UserID.ToString(), true, isHasOptionAll, new List<string>(), additionalItems);
         }
 
-        protected bool IsRoleInput()
-        {
-            return IsInRole(RoleEnum.Input);
-        }
-
-        protected bool IsRoleAssessment()
-        {
-            return IsInRole(RoleEnum.Assessment);
-        }
-
-        protected bool IsRoleConfiguration()
-        {
-            return IsInRole(RoleEnum.Configuration);
-        }
+        
 
 
 

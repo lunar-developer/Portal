@@ -28,6 +28,8 @@ namespace DesktopModules.Modules.Application.Controls
 
         #region PUBLIC PROPERTY
 
+        public Button ControlQueryCustomer => ctrlQueryCustomer;
+
         public TextBox ControlCustomerID => ctrlCustomerID;
         public RadComboBox ControlIdentityTypeCode => ctrlIdentityTypeCode;
         public TextBox ControlCIFNo => ctrlCIFNo;

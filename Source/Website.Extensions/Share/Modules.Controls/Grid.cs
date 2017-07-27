@@ -14,20 +14,25 @@ namespace Modules.Controls
 
         public Grid()
         {
-            RenderMode = RenderMode.Lightweight;
             AllowFilteringByColumn = false;
             AllowMultiRowSelection = true;
             AllowPaging = true;
             AllowSorting = true;
             CssClass = "dnnGrid";
+            EnableHeaderContextMenu = true;
+            EnableHeaderContextFilterMenu = true;
             EnableViewState = true;
             GroupingEnabled = false;
             GroupingSettings.CaseSensitive = false;
+            HeaderContextMenu.EnableAutoScroll = true;
+            HeaderContextMenu.ItemCreated += OnMenuItemCreated;
             HeaderStyle.VerticalAlign = VerticalAlign.Middle;
             HorizontalAlign = HorizontalAlign.Center;
+            RenderMode = RenderMode.Lightweight;
             SortingSettings.EnableSkinSortStyles = true;
 
-            #region Paging Override
+
+            #region Pager Style
             PagerStyle.Mode = GridPagerMode.Advanced;
             PagerStyle.Position = GridPagerPosition.Bottom;
             PagerStyle.PageSizeControlType = PagerDropDownControlType.RadComboBox;
@@ -68,13 +73,13 @@ namespace Modules.Controls
             PagerStyle.ChangePageSizeButtonToolTip = "Thay đổi số dòng trên trang";
             #endregion
 
-            #region Sort Setting
+            #region Sort Settings
             SortingSettings.SortToolTip = "Sắp xếp (Sort)";
             SortingSettings.SortedDescToolTip = "Thứ tự giảm dần";
             SortingSettings.SortedAscToolTip = "Thứ tự tăng dần";
             #endregion
 
-            #region ClientSetting
+            #region Client Settings
             ClientSettings.AllowColumnsReorder = true;
             ClientSettings.AllowDragToGroup = true;
             ClientSettings.AllowRowsDragDrop = true;
@@ -127,7 +132,7 @@ namespace Modules.Controls
             }
 
             System.Web.UI.WebControls.Label lblPageSize =
-                (System.Web.UI.WebControls.Label) gridPagerItem.FindControl("ChangePageSizeLabel");
+                (System.Web.UI.WebControls.Label)gridPagerItem.FindControl("ChangePageSizeLabel");
             if (lblPageSize != null)
             {
                 lblPageSize.Text = "Số dòng:";
@@ -142,7 +147,7 @@ namespace Modules.Controls
 
 
             System.Web.UI.WebControls.Label lblGotoPage =
-                (System.Web.UI.WebControls.Label) gridPagerItem.FindControl("GoToPageLabel");
+                (System.Web.UI.WebControls.Label)gridPagerItem.FindControl("GoToPageLabel");
             if (lblGotoPage != null)
             {
                 lblGotoPage.Text = "Trang: ";
@@ -150,7 +155,7 @@ namespace Modules.Controls
 
 
             System.Web.UI.WebControls.Label lblPageOf =
-                (System.Web.UI.WebControls.Label) gridPagerItem.FindControl("PageOfLabel");
+                (System.Web.UI.WebControls.Label)gridPagerItem.FindControl("PageOfLabel");
             if (lblPageOf != null)
             {
                 GridPagerItem item = gridPagerItem;
@@ -158,22 +163,22 @@ namespace Modules.Controls
             }
 
 
-            Button lnkGotoPage = (Button) gridPagerItem.FindControl("GoToPageLinkButton");
+            Button lnkGotoPage = (Button)gridPagerItem.FindControl("GoToPageLinkButton");
             if (lnkGotoPage != null)
             {
                 lnkGotoPage.Text = "Chuyển Trang";
             }
 
 
-            Button lnkChangePageSize = (Button) gridPagerItem.FindControl("ChangePageSizeLinkButton");
+            Button lnkChangePageSize = (Button)gridPagerItem.FindControl("ChangePageSizeLinkButton");
             if (lnkChangePageSize != null)
             {
                 lnkChangePageSize.Text = "Áp dụng";
             }
 
 
-            System.Web.UI.WebControls.Label lblChangePage = 
-                (System.Web.UI.WebControls.Label) gridPagerItem.FindControl("ChangePageSizeLabel");
+            System.Web.UI.WebControls.Label lblChangePage =
+                (System.Web.UI.WebControls.Label)gridPagerItem.FindControl("ChangePageSizeLabel");
             if (lblChangePage != null)
             {
                 lblChangePage.Text = "Số dòng:";
@@ -196,6 +201,76 @@ namespace Modules.Controls
             changePageSizeTextBox.IncrementSettings.Step = 10;
             changePageSizeTextBox.Width = Unit.Pixel(70);
             changePageSizeTextBox.ShowSpinButtons = true;
+        }
+
+        private static void OnMenuItemCreated(object sender, RadMenuEventArgs e)
+        {
+            switch (e.Item.Value)
+            {
+                case "SortAsc":
+                    e.Item.Text = "Sort ascending";
+                    break;
+
+                case "SortDesc":
+                    e.Item.Text = "Sort descending";
+                    break;
+
+                case "SortNone":
+                    e.Item.Text = "Clear sorting";
+                    break;
+
+                case "GroupBy":
+                    e.Item.Text = "Group by";
+                    break;
+
+                case "UnGroupBy":
+                    e.Item.Text = "Ungroup";
+                    break;
+
+                case "ColumnsContainer":
+                    e.Item.Text = "Show/Hide columns";
+                    break;
+
+                case "FilterMenuParent":
+                    e.Item.Text = "Filter";
+                    break;
+
+                case "FilterMenuContainer":
+                    // Clear Filter Button       
+                    Button btnClearFilter = e.Item.FindControl("HCFMClearFilterButton") as Button;
+                    if (btnClearFilter != null)
+                    {
+                        btnClearFilter.CssClass = "btn btn-primary";
+                        btnClearFilter.Text = "Clear filter";
+                    }
+
+                    // First Filter Condition ComboBox
+                    RadComboBox comboBox = e.Item.FindControl("HCFMRCMBFirstCond") as RadComboBox;
+                    if (comboBox != null)
+                    {
+                        comboBox.CssClass = "";
+                        comboBox.Width = new Unit("100%");
+                        comboBox.RenderMode = RenderMode.Lightweight;
+                    }
+
+                    // Second Filter Condition ComboBox
+                    comboBox = e.Item.FindControl("HCFMRCMBSecondCond") as RadComboBox;
+                    if (comboBox != null)
+                    {
+                        comboBox.CssClass = "";
+                        comboBox.Width = new Unit("100%");
+                        comboBox.RenderMode = RenderMode.Lightweight;
+                    }
+
+                    // Filter Button    
+                    Button btnFilter = e.Item.FindControl("HCFMFilterButton") as Button;
+                    if (btnFilter != null)
+                    {
+                        btnFilter.CssClass = "btn btn-primary";
+                        btnFilter.Text = "Apply filters";
+                    }
+                    break;
+            }
         }
 
         private void SetColumnFilterSetting(GridColumn column)

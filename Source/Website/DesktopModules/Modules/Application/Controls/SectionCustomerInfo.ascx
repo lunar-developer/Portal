@@ -24,7 +24,7 @@
             <asp:Button
                 CssClass="btn btn-primary c-margin-0" 
                 TabIndex="-1"
-                ID="btnSearchIDNumber"
+                ID="ctrlQueryCustomer"
                 OnClientClick="return alertOnConstruct()"
                 runat="server"
                 Text="Tìm" />

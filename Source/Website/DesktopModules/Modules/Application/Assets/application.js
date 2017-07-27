@@ -61,6 +61,9 @@ function renderPanel()
 // EVENT
 function bindEvent()
 {
+    // Button Events
+    confirmMessage("#btnProcess", getConfirmMessage, undefined, undefined, undefined, onBeforeProcess);
+
     // Auto Expand Panels when child element receive focus
     $(".dnnFormSectionHead span").focus(function ()
     {
@@ -138,7 +141,7 @@ function processOnStaffIndicatorChange(sender)
 
 
 // VALIDATATION
-function validateData()
+function validateData(element)
 {
     try
     {
@@ -161,6 +164,8 @@ function validateData()
         {
             return false;
         }
+
+        $(element).hide();
         return true;
     }
     catch (e)
@@ -168,6 +173,11 @@ function validateData()
         log(e);
         return false;
     }
+}
+
+function onBeforeProcess()
+{
+    return true;
 }
 
 
@@ -233,4 +243,11 @@ function alertOnConstruct()
 {
     alertMessage("Chức năng này đang được hoàn thiện!");
     return false;
+}
+
+function getConfirmMessage()
+{
+    var combobox = getRadCombobox("ctrlRoute");
+    return "Bạn có chắc muốn " +
+        (combobox ? "<b>" + combobox.get_text() + "</b>?" : "tiếp tục?");
 }

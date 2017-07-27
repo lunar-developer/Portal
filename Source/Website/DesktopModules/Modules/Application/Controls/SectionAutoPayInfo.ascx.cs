@@ -16,6 +16,8 @@ namespace DesktopModules.Modules.Application.Controls
 
         #region PUBLIC PROPERTY
 
+        public Button ControlQueryAccount => ctrlQueryAccount;
+
         public RadComboBox ControlPaymentMethod => ctrlPaymentMethod;
         public RadComboBox ControlPaymentSource => ctrlPaymentSource;
         public TextBox ControlPaymentCIFNo => ctrlPaymentCIFNo;
