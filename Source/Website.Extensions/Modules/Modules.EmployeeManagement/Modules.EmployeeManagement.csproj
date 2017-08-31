@@ -48,8 +48,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\EmployeeBranchCacheBusiness.cs" />
     <Compile Include="Business\EmployeeBusiness.cs" />
     <Compile Include="Database\EmployeeImageTable.cs" />
+    <Compile Include="DataTransfer\EmployeeBranchData.cs" />
     <Compile Include="Enum\ImportColumnEnum.cs" />
     <Compile Include="Enum\MessageDefinitionEnum.cs" />
     <Compile Include="Global\EmployeeManagementModuleBase.cs">

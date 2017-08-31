@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblFileBrowser.Help" xml:space="preserve">
-    <value>Chọn file để tải lên hệ thống. Yêu cầu định dạng CSV</value>
+    <value>Chọn file để tải lên hệ thống. Yêu cầu định dạng XLSX</value>
   </data>
   <data name="lblFileBrowser.Text" xml:space="preserve">
-    <value>Chọn File (CSV)</value>
+    <value>Chọn File (XLSX)</value>
   </data>
   <data name="CreditLimit.Header" xml:space="preserve">
     <value>Credit Limit</value>

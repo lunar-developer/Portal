@@ -30,7 +30,7 @@ namespace Modules.Application.DataTransfer
             string policyCode = user[UserPhaseTable.PolicyCode].ToString();
             if (string.IsNullOrWhiteSpace(policyCode) == false)
             {
-                ListPolicy = policyCode.Split(';').ToList();
+                ListPolicy = policyCode.Split(',').ToList();
             }
             Rate = Math.Round(100 / float.Parse(user[UserPhaseTable.KPI].ToString()), 1);
             TotalApplications = int.Parse(user["TotalApplications"].ToString());

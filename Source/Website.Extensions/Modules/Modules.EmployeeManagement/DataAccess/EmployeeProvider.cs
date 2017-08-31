@@ -62,7 +62,7 @@ namespace Modules.EmployeeManagement.DataAccess
             foreach (EmployeeData data in listEmployeeData)
             {
                 script.Append($@"execute dbo.EM_SP_InsertEmployee 
-                    '{data.EmployeeID}', N'{data.FullName}', {data.DateOfBirth},
+                    '{data.EmployeeID}', N'{data.FullName}', '{data.DateOfBirth}',
                     N'{data.Gender}', N'{data.Role}', N'{data.Branch}', N'{data.Office}', 
                     N'{data.Area}', '{data.BeginWorkDate}', '{data.ContractDate}',
                     N'{data.ContractType}', '{data.IdentityNumber}', '{data.DateOfIssue}',
@@ -73,13 +73,13 @@ namespace Modules.EmployeeManagement.DataAccess
             return result == "1";
         }
 
-        public DataTable SearchEmployee(Dictionary<string, SQLParameterData> parameterDictionary)
+        public DataSet SearchEmployee(Dictionary<string, SQLParameterData> parameterDictionary)
         {
             foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
             {
                 Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
             }
-            Connector.ExecuteProcedure("EM_SP_SearchEmployee", out DataTable dtResult);
+            Connector.ExecuteProcedure("EM_SP_SearchEmployee", out DataSet dtResult);
             return dtResult;
         }
 
@@ -103,6 +103,13 @@ namespace Modules.EmployeeManagement.DataAccess
             }
             Connector.ExecuteSql(string.Join(Environment.NewLine, script), out string result);
             return result == "1";
+        }
+
+        public List<EmployeeBranchData> GetAllBranch()
+        {
+            Connector.ExecuteProcedure<EmployeeBranchData, List<EmployeeBranchData>>(
+                "dbo.EM_SP_GetEmployeeBranch", out List<EmployeeBranchData> listBranch);
+            return listBranch;
         }
     }
 }

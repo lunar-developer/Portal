@@ -11,14 +11,14 @@ namespace Modules.Application.DataAccess
         public List<CorporateStatusData> GetAllCorporateStatus()
         {
             Connector.ExecuteProcedure<CorporateStatusData, List<CorporateStatusData>>(
-                CorporateStatusTable.StoreProcedure, out List<CorporateStatusData> list);
+                "dbo.APP_SP_GetCorporateStatus", out List<CorporateStatusData> list);
             return list;
         }
         
         public CorporateStatusData GetCorporateStatus(string corporateStatusCode)
         {
             Connector.AddParameter(CorporateStatusTable.CorporateStatusCode, SqlDbType.VarChar, corporateStatusCode);
-            Connector.ExecuteProcedure(CorporateStatusTable.StoreProcedure, out CorporateStatusData result);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetCorporateStatus", out CorporateStatusData result);
             return result;
         }
     }

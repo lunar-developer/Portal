@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="EmployeeInquiry.ascx.cs" Inherits="DesktopModules.Modules.EmployeeManagement.EmployeeInquiry" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
+<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
 <style type="text/css">
     .imageHeight
@@ -77,9 +78,11 @@
                                runat="server" />
                 </div>
                 <div class="col-sm-4">
-                    <asp:TextBox CssClass="form-control c-theme"
-                                 ID="txtBranch"
-                                 runat="server" />
+                    <control:AutoComplete 
+                        ID="cboBranch" 
+                        AllowCustomText="True"
+                        EmptyMessage="Phòng ban"
+                        runat="server" />
                 </div>
             </div>
             <div class="form-group">
@@ -107,8 +110,15 @@
             </div>
         </div>
         
-        <div id="divResultSearch" runat="server"></div>
+        <div id="divResultText" runat="server"></div>
+        <div id="divResultHidden" runat="server" enableviewstate="false" class="invisible"></div>
         
+        <asp:HiddenField ID="hidPageIndex"
+                         runat="server"
+                         Visible="true" />
+        <asp:HiddenField ID="hidTotalRecord"
+                         runat="server"
+                         Visible="False" />
         <asp:HiddenField ID="hidEmployeeID"
                          runat="server"
                          Visible="False" />
@@ -126,3 +136,47 @@
                          Visible="False" />
     </ContentTemplate>
 </asp:UpdatePanel>
+
+
+<!-- DIV SEARCH RESULT -->
+<div id="divResult"></div>
+
+
+<asp:UpdatePanel runat="server">
+    <ContentTemplate>
+        <div>
+            <h3 id="divEndStatistic" runat="server" style="text-align:center"></h3>
+            <div class="form-group">
+                <div class="col-sm-12" style="text-align: right">
+                    <asp:LinkButton CssClass="btn btn-primary"
+                            ID="btnShowMore"
+                            OnClick="ProcessOnShowMore"                                
+                            runat="server"
+                            Visible="false">
+                            Xem Tiếp <i class="fa fa-chevron-right"></i>
+                    </asp:LinkButton>
+                </div>
+            </div>
+        </div>
+    </ContentTemplate>
+</asp:UpdatePanel>
+
+<script type="text/javascript">
+    addPageLoaded(function ()
+    {      
+        var $resultContainer = getJQueryControl("divResultHidden");
+        var $control = $("#divResult");
+
+        if (getJQueryControl("hidPageIndex").val() === "0")
+        {
+            $control.html($resultContainer.html());
+        }
+        else
+        {
+            var html = $control.html();
+            $control.html(html + $resultContainer.html());
+        }
+
+        $resultContainer.remove();
+    }, true); 
+</script>

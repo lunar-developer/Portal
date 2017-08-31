@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Web.UI.WebControls;
 using DotNetNuke.Web.UI.WebControls;
+using Modules.Application.Business;
 using Modules.Application.Global;
 using Telerik.Web.UI;
+using Website.Library.Extension;
 
 namespace DesktopModules.Modules.Application.Controls
 {
     public partial class SectionCustomerInfo : ApplicationFormModuleBase
     {
+        public Action<InsensitiveDictionary<string>> Callback;
+
+
         protected override void OnLoad(EventArgs e)
         {
             if (IsPostBack)
@@ -23,6 +28,21 @@ namespace DesktopModules.Modules.Application.Controls
             BindLanguageData(ctrlLanguage);
             BindCountryData(ctrlNationality);
             BindCustomerClassData(ctrlCustomerClass);
+        }
+
+        protected void QueryCustomer(object sender, EventArgs e)
+        {
+            string customerID = ctrlCustomerID.Text.Trim();
+            string message;
+            InsensitiveDictionary<string> customerInfo = ApplicationBusiness.QueryCustomerByIDNo(customerID, out message);
+            if (customerInfo == null || customerInfo.Count == 0)
+            {
+                ShowAlertDialog(message);
+            }
+            else
+            {
+                Callback(customerInfo);
+            }
         }
 
 

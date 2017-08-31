@@ -33,25 +33,58 @@
     <Reference Include="DotNetNuke">
       <HintPath>..\..\..\..\library\DotNetNuke.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\..\..\Website\Bin\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="LunarSoft.SqlServerConnector, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b5cabe615762e631, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\library\LunarSoft.SqlServerConnector.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\Telerik.Web.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ApplicationFormBusiness.cs" />
+    <Compile Include="Business\ApplicController.cs" />
+    <Compile Include="Business\AssignUserBusiness.cs" />
     <Compile Include="Business\BatchDataBusiness.cs" />
+    <Compile Include="Business\DocumentController.cs" />
+    <Compile Include="Business\UserBusiness.cs" />
     <Compile Include="DataAccess\ApplicationFormProvider.cs" />
+    <Compile Include="DataAccess\ApplicProvider.cs" />
+    <Compile Include="DataAccess\AssignUserProvider.cs" />
     <Compile Include="DataAccess\BatchDataProvider.cs" />
+    <Compile Include="DataAccess\DatabaseCtrl.cs" />
+    <Compile Include="DataAccess\DocumentProvider.cs" />
+    <Compile Include="DataAccess\SQLAccess.cs" />
+    <Compile Include="DataAccess\UserProvider.cs" />
     <Compile Include="Database\ApplicationFormTable.cs" />
     <Compile Include="Database\BatchDataTable.cs" />
+    <Compile Include="Database\SuperUserTable.cs" />
+    <Compile Include="DataTransfer\ApplicInfo.cs" />
+    <Compile Include="DataTransfer\ApplicProcessHistoryInfo.cs" />
     <Compile Include="DataTransfer\BatchExceptionData.cs" />
     <Compile Include="DataTransfer\BatchData.cs" />
+    <Compile Include="DataTransfer\DocumentInfo.cs" />
+    <Compile Include="DataTransfer\FileData.cs" />
+    <Compile Include="DataTransfer\PermissionData.cs" />
+    <Compile Include="DataTransfer\SuperUserData.cs" />
+    <Compile Include="Enum\ApplicStatusEnum.cs" />
+    <Compile Include="Enum\CommandEnum.cs" />
+    <Compile Include="Enum\DBEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\PermissionEnum.cs" />
+    <Compile Include="Global\ImageProcesser.cs" />
+    <Compile Include="Global\Utilities.cs" />
     <Compile Include="Global\VSaleKitModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -65,6 +98,10 @@
     <ProjectReference Include="..\Modules.Application\Modules.Application.csproj">
       <Project>{045302fc-989d-4bb1-b40c-ea323d50e402}</Project>
       <Name>Modules.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Modules.UserManagement\Modules.UserManagement.csproj">
+      <Project>{A573178E-F590-46FC-87CA-0F976AAD7A68}</Project>
+      <Name>Modules.UserManagement</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

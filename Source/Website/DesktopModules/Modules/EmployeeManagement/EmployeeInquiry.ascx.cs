@@ -8,6 +8,8 @@ using Modules.EmployeeManagement.Database;
 using Modules.EmployeeManagement.Enum;
 using Website.Library.DataTransfer;
 using Website.Library.Global;
+using Modules.EmployeeManagement.DataTransfer;
+using Telerik.Web.UI;
 
 namespace DesktopModules.Modules.EmployeeManagement
 {
@@ -20,6 +22,23 @@ namespace DesktopModules.Modules.EmployeeManagement
                 return;
             }
             AutoWire();
+            BindData();
+        }
+
+        public void BindData()
+        {
+            cboBranch.ClearSelection();
+            foreach(EmployeeBranchData branch in CacheBase.Receive<EmployeeBranchData>())
+            {
+                cboBranch.Items.Add(new RadComboBoxItem(branch.Branch, branch.Branch));
+            }
+            hidPageIndex.Value = "0";
+        }
+
+        protected void ProcessOnShowMore(object sender, EventArgs e)
+        {
+            hidPageIndex.Value = (int.Parse(hidPageIndex.Value) + 1).ToString();
+            BindToTable();
         }
 
         protected void SearchEmployee(object sender, EventArgs e)
@@ -27,16 +46,18 @@ namespace DesktopModules.Modules.EmployeeManagement
             hidEmployeeID.Value = txtEmployeeID.Text.Trim();
             hidFullName.Value = txtFullName.Text.Trim();
             hidEmail.Value = txtEmail.Text.Trim();
-            hidBranch.Value = txtBranch.Text.Trim();
+            hidBranch.Value = cboBranch.SelectedValue;
             hidArea.Value = txtArea.Text.Trim();
+            hidPageIndex.Value = "0";
 
             BindToTable();
         }
 
-        private DataTable GetData()
+        private DataSet GetData()
         {
             Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
             {
+                { "PageIndex", new SQLParameterData(hidPageIndex.Value, SqlDbType.Int) },
                 { EmployeeTable.EmployeeID, new SQLParameterData(hidEmployeeID.Value, SqlDbType.VarChar) },
                 { EmployeeTable.FullName, new SQLParameterData(hidFullName.Value, SqlDbType.NVarChar) },
                 { EmployeeTable.Email, new SQLParameterData(hidEmail.Value, SqlDbType.VarChar) },
@@ -47,26 +68,35 @@ namespace DesktopModules.Modules.EmployeeManagement
         }
 
         private const string HTMLSearchResultTemplate = @"
-            <h3 class='text-center'>KẾT QUẢ TÌM KIẾM</h3>
             <div class='form-horizontal divRecord'>
                 {0}
             </div>
             ";
 
+        private const string HTMLSearchResultStatistic = @"<h3 class='text-center' style='line-height: 30px'>KẾT QUẢ TÌM KIẾM{0}</h3>";
+
         protected void BindToTable()
         {
             StringBuilder listData = new StringBuilder();
-            DataTable dtTable = GetData();
+            DataSet dtTable = GetData();
             Dictionary<string, string> employeeQRDictionary = new Dictionary<string, string>();
 
-            if (dtTable.Rows.Count <= 0)
+            if (dtTable.Tables.Count <= 0 || dtTable.Tables[0].Rows.Count == 0)
             {
-                divResultSearch.InnerHtml = string.Format(HTMLSearchResultTemplate,
+                divResultText.InnerHtml = string.Format(HTMLSearchResultStatistic, string.Empty);
+                divResultHidden.InnerHtml = string.Format(HTMLSearchResultTemplate,
                     $"<div class='text-center c-font-bold'><i>{MessageDefinitionEnum.NoRecordFound}<i></div>");
+                btnShowMore.Visible = false;
                 return;
             }
+            if(dtTable.Tables.Count > 1)
+            {
+                hidTotalRecord.Value = dtTable.Tables[1].Rows[0]["TotalRecord"].ToString();
+            }         
+            btnShowMore.Visible = int.Parse(hidPageIndex.Value) * 10 + 10 < int.Parse(hidTotalRecord.Value);
 
-            foreach (DataRow row in dtTable.Rows)
+            
+            foreach (DataRow row in dtTable.Tables[0].Rows)
             {
                 string qrCode = row[EmployeeImageTable.ContactQRCode].ToString();
                 if (string.IsNullOrWhiteSpace(qrCode))
@@ -132,7 +162,11 @@ namespace DesktopModules.Modules.EmployeeManagement
                     </div>");
                 listData.Append(data);
             }
-            divResultSearch.InnerHtml = string.Format(HTMLSearchResultTemplate, listData);
+
+            int currentRecord = Math.Min(int.Parse(hidPageIndex.Value) * 10 + 10, int.Parse(hidTotalRecord.Value));
+            divResultText.InnerHtml = string.Format(HTMLSearchResultStatistic, $"<br>{currentRecord} / {hidTotalRecord.Value}");
+            divEndStatistic.InnerHtml = $"<hr>{currentRecord} / {hidTotalRecord.Value}";
+            divResultHidden.InnerHtml = string.Format(HTMLSearchResultTemplate, listData);
 
             if (employeeQRDictionary.Count > 0)
             {

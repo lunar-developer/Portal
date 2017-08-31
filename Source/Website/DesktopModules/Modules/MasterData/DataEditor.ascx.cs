@@ -8,6 +8,7 @@ using Modules.MasterData.Business;
 using Modules.MasterData.Database;
 using Modules.MasterData.Enum;
 using Modules.MasterData.Global;
+using Website.Library.Database;
 using Website.Library.Global;
 using DataTable = System.Data.DataTable;
 
@@ -117,6 +118,7 @@ namespace DesktopModules.Modules.MasterData
             bool isClose = false;
             IsInsertMode = dataRow == null;
             List<DataRow> listSettingRow = settingTable.Rows.Cast<DataRow>().ToList();
+            List<string> listScript = new List<string>(); 
             StringBuilder html = new StringBuilder("<div class=\"form-group\">");
             for (int i = 0; i < fieldTable.Rows.Count; i++)
             {
@@ -130,7 +132,7 @@ namespace DesktopModules.Modules.MasterData
                     iterator => iterator[MasterDataTable.FieldName].ToString() == fieldName);
 
                 // Build control
-                string fieldHTML = RenderField(fieldName, fieldValue, fieldInfo, fieldSetting);
+                string fieldHTML = RenderField(fieldName, fieldValue, fieldInfo, fieldSetting, listScript);
                 html.Append(fieldHTML);
 
                 // Is wrapping row?
@@ -156,6 +158,7 @@ namespace DesktopModules.Modules.MasterData
                 html.Append("</div>");
             }
             DivForm.InnerHtml = html.ToString();
+            RegisterScript(string.Join(Environment.NewLine, listScript));
 
             // Store list fields
             if (btnSave.Visible || btnUpdate.Visible)
@@ -165,18 +168,24 @@ namespace DesktopModules.Modules.MasterData
             }
         }
 
-        private string RenderField(string fieldName, string fieldValue, DataRow fieldInfo, DataRow fieldSetting)
+        private string RenderField(
+            string fieldName,
+            string fieldValue,
+            DataRow fieldInfo,
+            DataRow fieldSetting,
+            ICollection<string> listScript)
         {
             #region Default Setting
             bool isIdentity = bool.Parse(fieldInfo[MasterDataTable.IsIdentity].ToString());
             bool isPrimary = bool.Parse(fieldInfo[MasterDataTable.IsPrimaryKey].ToString());
             bool isRunTimeField = IsRuntimeField(fieldName);
             bool isReadOnly = isIdentity || isRunTimeField || IsInsertMode == false && isPrimary;
-            bool isRequire = false;
+            bool isRequire = isIdentity || isPrimary;
             int minLength = 0;
             int maxLength = int.Parse(fieldInfo[MasterDataTable.MaxLength].ToString());
-            string fieldLabel = fieldName;
+            string fieldLabel = FunctionBase.SeparateCapitalLetters(fieldName);
             string tooltip = string.Empty;
+            string placeHolder = fieldLabel;
             string dataType = fieldInfo[MasterDataTable.DataType].ToString();
             string inputType = InputEnum.Text;
             #endregion
@@ -195,7 +204,7 @@ namespace DesktopModules.Modules.MasterData
                 // Required?
                 isRequire = bool.Parse(fieldSetting[MasterDataTable.IsRequire].ToString());
 
-                // Min Length
+                // Min Length & Max Length
                 minLength = int.Parse(fieldSetting[MasterDataTable.MinLength].ToString());
 
                 // Field Label
@@ -219,6 +228,10 @@ namespace DesktopModules.Modules.MasterData
                     </div>";
                 }
 
+                // PlaceHolder
+                label = fieldSetting[MasterDataTable.PlaceHolder].ToString();
+                placeHolder = FunctionBase.GetCoalesceString(label, fieldLabel);
+
                 // Input Type
                 inputType = fieldSetting[MasterDataTable.InputType].ToString();
             }
@@ -235,7 +248,7 @@ namespace DesktopModules.Modules.MasterData
             fieldValue = isIdentity && IsInsertMode
                 ? "NULL"
                 : FunctionBase.GetCoalesceString(
-                    GetTemplateValue(fieldName, fieldValue),
+                    IsRuntimeField(fieldName) ? GetTemplateValue(fieldName, fieldValue) : fieldValue,
                     fieldSetting?[MasterDataTable.DefaultValue].ToString());
             #endregion
 
@@ -255,59 +268,44 @@ namespace DesktopModules.Modules.MasterData
                     {{0}}
                 </div>";
 
+
             // Fixed Control (Bit)
             if (dataType == SQLDataTypeEnum.Bit)
             {
-                control = $@"
-                    <select name=""{fieldName}""
-                            class=""form-control"">
-                        <option value=""0""
-                                {(fieldValue == "False" ? "selected=\"true\"" : string.Empty)}>No</option>
-                        <option value=""1""
-                                {(fieldValue == "True" ? "selected=\"true\"" : string.Empty)}>Yes</option>
-                    </select>";
+                string value = FunctionBase.ConvertToBool(fieldValue) ? "1" : "0";
+                string options = $@"{{
+                    ""name"": ""{fieldName}"",
+                    ""emptyMessage"": ""{placeHolder}"",
+                    ""options"": [
+                        {{ ""text"": ""No"",  ""value"": ""0"", ""selected"": {(value == "0").ToString().ToLower()} }},
+                        {{ ""text"": ""Yes"", ""value"": ""1"", ""selected"": {(value == "1").ToString().ToLower()} }}
+                    ]
+                }}";
+                listScript.Add($"declareVariable(\"glo_MasterData_{fieldName}\", {options});");
+                control = RenderRadCombobox(fieldName, value, isRequire, isReadOnly);
             }
             else
             {
                 switch (inputType)
                 {
-                    case InputEnum.DropDownList:
                     case InputEnum.Combobox:
-                        if (isReadOnly)
-                        {
-                            control = $@"
-                                <select class=""form-control {(inputType == InputEnum.Combobox ? inputType : string.Empty)}""
-                                        placeholder=""{fieldLabel}""
-                                        is-require=""{isRequire}""
-                                        disabled=""true"">
-                                    {RenderOption(fieldSetting, fieldValue)}
-                                </select>
-                                <input  type=""hidden""
-                                        name=""{fieldName}""
-                                        value=""{fieldValue}""/>";
-                        }
-                        else
-                        {
-                            control = $@"
-                                <select name=""{fieldName}""
-                                        class=""form-control {(inputType == InputEnum.Combobox ? inputType : string.Empty)}""
-                                        placeholder=""{fieldLabel}""
-                                        is-require=""{isRequire}"">
-                                    {RenderOption(fieldSetting, fieldValue)}
-                                </select>";
-                        }
+                        string options = RenderOption(fieldName, fieldValue, placeHolder, fieldSetting);
+                        listScript.Add($"declareVariable(\"glo_MasterData_{fieldName}\", {options});");
+                        control = RenderRadCombobox(fieldName, fieldValue, isRequire, isReadOnly);
                         break;
+
 
                     case InputEnum.TextArea:
                         control = $@"
                             <textarea   name=""{fieldName}"" 
                                         class=""form-control""
-                                        placeholder=""{fieldLabel}""
+                                        placeholder=""{placeHolder}""
                                         is-require=""{isRequire}""
                                         minlength = ""{minLength}""
                                         maxlength = ""{maxLength}""
                                         {(isReadOnly ? "readonly=readonly" : string.Empty)}>{fieldValue}</textarea>";
                         break;
+
 
                     default:
                         control = $@"
@@ -315,7 +313,7 @@ namespace DesktopModules.Modules.MasterData
                                     type =""text"" 
                                     class=""form-control"" 
                                     value=""{fieldValue}""
-                                    placeholder=""{fieldLabel}""
+                                    placeholder=""{placeHolder}""
                                     is-require=""{isRequire}""
                                     minlength = ""{minLength}""
                                     maxlength = ""{maxLength}""
@@ -327,30 +325,65 @@ namespace DesktopModules.Modules.MasterData
             #endregion            
         }
 
-        private string RenderOption(DataRow fieldSetting, string selectedValue)
+        private static string RenderRadCombobox(
+            string fieldName,
+            string fieldValue,
+            bool isRequire,
+            bool isReadOnly)
         {
+            return $@"
+                <div class=""RadComboBox RadComboBox_Default"" id=""{fieldName}"">
+                    <span class=""rcbInner {(isReadOnly ? "rcbDisabled" : string.Empty)}"">
+                        <input type=""text"" id=""{fieldName}_Input"" class=""rcbInput radPreventDecorate"" autocomplete=""off"">
+                        <button type=""button"" class=""rcbActionButton"" tabindex=""-1"">
+                            <span class=""rcbIcon rcbIconDown""></span>
+                            <span class=""rcbButtonText""></span>
+                        </button>
+                    </span>
+                    <div style=""z-index:6000;"" class=""rcbSlide"">
+                            <div style=""display: none;"" class=""RadComboBoxDropDown RadComboBoxDropDown_Default "" id=""{fieldName}_DropDown"">
+                            <div style=""height:200px; width:100%;"" class=""rcbScroll rcbWidth"">
+			                    <ul style=""list-style: none; margin: 0; padding: 0; zoom: 1;"" class=""rcbList"">
+			                    </ul>
+		                    </div>
+	                    </div>
+                    </div>
+                    <input type=""hidden"" id=""{fieldName}_Hidden"" name=""{fieldName}"" value=""{fieldValue}"" is-require=""{isRequire}""/>
+                </div>
+            ";
+        }
+
+        private string RenderOption(string fieldName, string selectedValue, string placeHolder, DataRow fieldSetting)
+        {
+            List<Dictionary<string, object>> listOptions =  new List<Dictionary<string, object>>();
+            Dictionary<string, object> dataDictionary = new Dictionary<string, object>
+            {
+                { "name", fieldName },
+                { "emptyMessage", placeHolder },
+                { "options", listOptions }
+            };
+
             if (fieldSetting == null)
             {
-                return string.Empty;
+                goto EndPoint;
             }
 
-            StringBuilder html = new StringBuilder();
-            bool isRunTime = bool.Parse(fieldSetting[MasterDataTable.IsRunTime].ToString());
             string dataSource = fieldSetting[MasterDataTable.DataSource].ToString();
             string fieldText = fieldSetting[MasterDataTable.FieldText].ToString().Trim();
             string fieldValue = fieldSetting[MasterDataTable.FieldValue].ToString().Trim();
             if (FunctionBase.IsNullOrWhiteSpace(dataSource, fieldText, fieldValue))
             {
-                return string.Empty;
+                goto EndPoint;
             }
 
             // Load Data
+            bool isRunTime = bool.Parse(fieldSetting[MasterDataTable.IsRunTime].ToString());
             if (isRunTime)
             {
                 Type type = Type.GetType(dataSource);
                 if (type == null)
                 {
-                    return html.ToString();
+                    goto EndPoint;
                 }
 
                 foreach (object data in ReceiveCache(type))
@@ -361,10 +394,18 @@ namespace DesktopModules.Modules.MasterData
                     string value = FunctionBase.GetCoalesceString(
                         type.GetField(fieldValue)?.GetValue(data) + string.Empty,
                         type.GetProperty(fieldValue)?.GetValue(data) + string.Empty);
+                    string isDisable = FunctionBase.GetCoalesceString(
+                        type.GetField(BaseTable.IsDisable)?.GetValue(data) + string.Empty,
+                        type.GetProperty(BaseTable.IsDisable)?.GetValue(data) + string.Empty);
                     bool isSelected = value == selectedValue;
-                    html.Append($@"
-                        <option value=""{value}""
-                                {(isSelected ? "selected=\"true\"" : string.Empty)}>{text}</option>");
+
+                    listOptions.Add(new Dictionary<string, object>
+                    {
+                        { "text", text },
+                        { "value", value },
+                        { "selected", isSelected },
+                        { "disabled", FunctionBase.ConvertToBool(isDisable) }
+                    });
                 }
             }
             else
@@ -375,12 +416,19 @@ namespace DesktopModules.Modules.MasterData
                     string text = row[fieldText].ToString();
                     string value = row[fieldValue].ToString();
                     bool isSelected = value == selectedValue;
-                    html.Append($@"
-                        <option value=""{value}""
-                                {(isSelected ? "selected=\"true\"" : string.Empty)}>{text}</option>");
+
+                    listOptions.Add(new Dictionary<string, object>
+                    {
+                        { "text", text },
+                        { "value", value },
+                        { "selected", isSelected },
+                        { "disabled", false }
+                    });
                 }
             }
-            return html.ToString();
+
+            EndPoint:
+            return FunctionBase.Serialize(dataDictionary);
         }
 
         private void SetPermission(DataRow row)

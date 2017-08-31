@@ -3,11 +3,12 @@ using DotNetNuke.UI.Skins.Controls;
 using Modules.Disbursement.Business;
 using Modules.Disbursement.DataTransfer;
 using Website.Library.Enum;
-using Website.Library.Global;
+using Modules.Disbursement.Global;
+using System.Data;
 
 namespace DesktopModules.Modules.Disbursement
 {
-    public partial class DisbursementRoom : DesktopModuleBase
+    public partial class DisbursementCreateRoom : DisbursementModuleBase
     {
         protected override void OnLoad(EventArgs e)
         {
@@ -15,10 +16,15 @@ namespace DesktopModules.Modules.Disbursement
             {
                 return;
             }
-            btnUpdate.Visible = true;
-            tbRateLDR.Enabled = true;
-            tbRate.Enabled = true;
-            tbRoom.Enabled = true;
+            btnUpdate.Visible = IsRoleALM();
+            tbRateLDR.Enabled = IsRoleALM();
+            tbRate.Enabled = IsRoleALM();
+            tbRoom.Enabled = IsRoleALM();
+
+            DataTable dt = DisbursementRoomBusiness.GetTopOne();
+            tbRateLDR.Text = dt.Rows[0][0].ToString();
+            tbRoom.Text = dt.Rows[0][1].ToString();
+            tbRate.Text = dt.Rows[0][2].ToString();
         }
         
         protected void History(object sender, EventArgs e)

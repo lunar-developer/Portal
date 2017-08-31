@@ -22,8 +22,17 @@ namespace DesktopModules.Modules.Disbursement
     {
         private bool IsEditMode;
 
+        private const string Signature = "<br/><br/><font color='#757c87'>----------------</font><br/> <p><font color='#757c87'>This email is automatically sent by VietBank Portal. Please don't reply</font></p>";
+        private const string Prefix = "[Disbursement]";
+        private string SmeEmails = "";
+        private string AlmEmails = "";
+        
+
         protected override void OnLoad(EventArgs e)
         {
+            
+            SmeEmails = FunctionBase.GetConfiguration("DB_SMEEmail"); 
+            AlmEmails = FunctionBase.GetConfiguration("DB_ALMEmail");
             if (IsPostBack)
             {
                 return;
@@ -76,6 +85,13 @@ namespace DesktopModules.Modules.Disbursement
             DivRemark.Visible = false;
             TabHistory.Visible = false;
             DivHistory.Visible = false;
+
+            roomLdrRateLabel.Visible = IsAdministrator();
+            roomLdrRate.Visible = IsAdministrator();
+            roomRateLabel.Visible = IsAdministrator();
+            roomRate.Visible = IsAdministrator();
+            roomLimitLabel.Visible = IsAdministrator();
+            roomLimit.Visible = IsAdministrator();
         }
 
         private void LoadData(string id)
@@ -108,12 +124,16 @@ namespace DesktopModules.Modules.Disbursement
 
                 bool isViolate = "Y".Equals(data[DisbursementTable.ViolateFlag].ToString());
                 if (isViolate) {
-                    string msg = "Yêu cầu giải ngân này vi phạm: " + data[DisbursementTable.ViolateMsg].ToString();
+                    string msg = "Yêu cầu giải ngân này vi phạm: " + data[DisbursementTable.ViolateMsg];
                     ShowAlertDialog(msg);
                 }
 
-
                 BindData(data);
+
+                if (IsAdministrator())
+                {
+                    GetRoom();
+                }
                 BindLogData(dsResult.Tables[1]);
                 IsEditMode = true;
                 TabHistory.Visible = DivHistory.Visible = true;
@@ -129,6 +149,14 @@ namespace DesktopModules.Modules.Disbursement
             {
                 SetPermission();
             }
+
+        }
+
+        private void GetRoom() {
+            DataTable dt = DisbursementRoomBusiness.GetTopOne();
+            roomLimit.Text = FunctionBase.FormatDecimal(dt.Rows[0][0].ToString());
+            roomLdrRate.Text = dt.Rows[0][1].ToString();
+            roomRate.Text = dt.Rows[0][2].ToString();
         }
 
         private void BindData(DataRow data)
@@ -137,21 +165,31 @@ namespace DesktopModules.Modules.Disbursement
             hidStatus.Value = data[DisbursementTable.DisbursementStatus].ToString();
             lblStatus.Text = GetStatusDescription(hidStatus.Value);
 
-            tbIdentifier.Text = data[DisbursementTable.CustomerID].ToString();
+            hidIdentifyId.Value = data[DisbursementTable.CustomerID].ToString();
+            tbIdentifier.Text = hidIdentifyId.Value;
+            
+            hidOrgId.Value = data[DisbursementTable.OrganizationID].ToString();
+            tbOrgNumber.Text = hidOrgId.Value;
+
             hidBranchID.Value = data[DisbursementTable.BranchID].ToString();
             lblBranchID.Text = UserManagementModuleBase.FormatBranchID(hidBranchID.Value);
 
-            tbCustomerName.Text = data[DisbursementTable.CustomerName].ToString();
+            hidCustomerName.Value = data[DisbursementTable.CustomerName].ToString();
+            tbCustomerName.Text = hidCustomerName.Value;
+
             ddlCurrencyCode.SelectedValue = data[DisbursementTable.CurrencyCode].ToString();
+            hidCurrencyCodeId.Value = ddlCurrencyCode.Text;
+
             tbAmount.Text = FunctionBase.FormatDecimal(data[DisbursementTable.Amount].ToString());
             tbDisbursementDate.SelectedDate = FunctionBase.GetDate(data[DisbursementTable.DisbursementDate].ToString());
             ddlDisbursementMethod.SelectedValue = data[DisbursementTable.DisbursementMethod].ToString();
             tbDisbursementPurpose.Text = data[DisbursementTable.DisbursementPurpose].ToString();
             tbLoanMethod.Text = data[DisbursementTable.LoanMethod].ToString();
             tbLoanExpire.SelectedDate = FunctionBase.GetDate(data[DisbursementTable.LoanExpire].ToString());
-            tbInterestRate.Text = decimal.Parse(data[DisbursementTable.InterestRate].ToString()).ToString("0.00");// FunctionBase.FormatDecimal(data[DisbursementTable.InterestRate].ToString());
+            tbInterestRate.Text = decimal.Parse(data[DisbursementTable.InterestRate].ToString()).ToString("0.000000");// FunctionBase.FormatDecimal(data[DisbursementTable.InterestRate].ToString());
             ddlCustomerType.SelectedValue = data[DisbursementTable.CustomerType].ToString();
             ddlNote.SelectedValue = data[DisbursementTable.Note].ToString();
+            hidLastModifiedAt.Value = data[DisbursementTable.ModifyDateTime].ToString();
         }
 
         private const string TableLog = @"
@@ -187,8 +225,8 @@ namespace DesktopModules.Modules.Disbursement
                 bool isSensitiveInfo = bool.Parse(row[DisbursementTable.IsSensitiveInfo].ToString());
                 if (isSensitiveInfo && isRoleAdmin == false)
                 {
-                    actionUser = string.Empty;
-                    remark = string.Empty;
+                    actionUser = "********@vietbank.com.vn";
+                    //remark = "***";
                 }
 
                 html.Append($@"
@@ -217,7 +255,7 @@ namespace DesktopModules.Modules.Disbursement
 
             bool isRoleInput = IsRoleInput();
             bool isRoleRevise = IsRoleRevise();
-            bool isRolePreapprove = IsRolePreapprove();
+            //bool isRolePreapprove = IsRolePreapprove();
             bool isRoleApprove = IsRoleApprove();
             string status = hidStatus.Value;
 
@@ -237,8 +275,8 @@ namespace DesktopModules.Modules.Disbursement
                         break;
 
                     case DisbursementStatusEnum.Submited:
-                        //btnRequestCancel.Visible = isRoleInput;
-                        btnUpdate.Visible = isRoleRevise;
+                        btnRequestCancel.Visible = isRoleInput;
+                        btnUpdate.Visible = isRoleRevise || isRoleInput;
                         btnRevise.Visible = isRoleRevise;
                         btnReject.Visible = isRoleRevise;
                         break;
@@ -250,7 +288,8 @@ namespace DesktopModules.Modules.Disbursement
                         //break;
                     case DisbursementStatusEnum.Revised:
                     case DisbursementStatusEnum.Preapproved:
-                        //btnRequestCancel.Visible = isRoleInput;
+                        btnRequestCancel.Visible = isRoleInput;
+                        btnUpdate.Visible = isRoleRevise;// || isRoleInput;
                         btnApprove.Visible = isRoleApprove;
                         btnReject.Visible = isRoleApprove;
                         break;
@@ -264,7 +303,8 @@ namespace DesktopModules.Modules.Disbursement
                         break;
 
                     case DisbursementStatusEnum.RequestApproved:
-                        btnCancel.Visible = isRolePreapprove;
+                        //btnCancel.Visible = isRolePreapprove;
+                        btnCancel.Visible = isRoleApprove;
                         break;
                 }
             }
@@ -273,9 +313,9 @@ namespace DesktopModules.Modules.Disbursement
 
         private bool Validate()
         {
-            if (string.IsNullOrWhiteSpace(tbIdentifier.Text))
+            if (string.IsNullOrWhiteSpace(tbIdentifier.Text) && string.IsNullOrWhiteSpace(tbOrgNumber.Text))
             {
-                ShowMessage("Vui lòng nhập vào <b>Mã khách hàng</b>", ModuleMessage.ModuleMessageType.YellowWarning);
+                ShowMessage("Vui lòng nhập vào <b>Mã khách hàng/Doanh nghiệp</b>", ModuleMessage.ModuleMessageType.YellowWarning);
                 return false;
             }
 
@@ -314,8 +354,9 @@ namespace DesktopModules.Modules.Disbursement
             DisbursementData data = new DisbursementData
             {
                 CustomerID = tbIdentifier.Text.Trim(),
+                OrganizationID = tbOrgNumber.Text.Trim(),
                 CustomerName = tbCustomerName.Text.Trim(),
-                //BranchID = userData.BranchID,
+                BranchID = userData.BranchID,
                 Amount = tbAmount.Text.Trim().Replace(",", string.Empty),
                 CurrencyCode = ddlCurrencyCode.SelectedValue,
                 DisbursementDate = tbDisbursementDate.SelectedDate?.ToString(PatternEnum.Date),
@@ -323,10 +364,11 @@ namespace DesktopModules.Modules.Disbursement
                 LoanMethod = tbLoanMethod.Text.Trim(),
                 Remark = tbRemark.Text.Trim(),
                 InterestRate = FunctionBase.GetCoalesceString(tbInterestRate.Text.Trim().Replace(",", string.Empty), "0"),
-                CustomerType = ddlCustomerType.SelectedValue.ToString(),
+                CustomerType = ddlCustomerType.SelectedValue,
                 LoanExpire = tbLoanExpire.SelectedDate?.ToString(PatternEnum.Date),
                 DisbursementPurpose = tbDisbursementPurpose.Text.Trim(),
-                Note = ddlNote.SelectedValue.ToString()
+                Note = ddlNote.SelectedValue,
+                ModifyTimeWhenView = hidLastModifiedAt.Value
             };
             if (hidDisbursementID.Value == string.Empty)
             {
@@ -381,16 +423,18 @@ namespace DesktopModules.Modules.Disbursement
             {
                 return;
             }
-
-            bool result = DisbursementBusiness.UpdateRecord(data);
-            if (result)
+            string errorMsg;
+            int result = DisbursementBusiness.UpdateRecord(data, out errorMsg);
+            if (result == 1)
             {
                 LoadData(data.DisbursementID);
                 ShowMessage("Cập nhật yêu cầu thành công", ModuleMessage.ModuleMessageType.GreenSuccess);
+                hidLastModifiedAt.Value = DateTime.Now.ToString(PatternEnum.DateTime);
             }
             else
             {
-                ShowMessage("Cập nhật yêu cầu thất bại", ModuleMessage.ModuleMessageType.RedError);
+                string msg = (0 == result) ? "Cập nhật yêu cầu thất bại" : errorMsg;
+                ShowMessage(msg, ModuleMessage.ModuleMessageType.RedError);
             }
         }
 
@@ -425,9 +469,18 @@ namespace DesktopModules.Modules.Disbursement
             }
 
             Dictionary<string, SQLParameterData> parametrDictionary = GetProcessData(button.CommandArgument);
-            int result = DisbursementBusiness.ProcessDisbursement(parametrDictionary);
+            string errorMsg;
+            int result = DisbursementBusiness.ProcessDisbursement(parametrDictionary, out errorMsg);
+            // send email. SME does not want to receive email in this case
+            //if (result > 0 && IsRoleRevise())
+            //{
+            //    string body = $@"<p>Chi nhánh {lblBranchID.Text} <font color='blue'>vừa trình giải ngân</font> của khách hàng/công ty: {hidCustomerName.Value} - Mã số: {hidIdentifyId.Value}</p>";
+            //    MailBase.SendEmail(SmeEmails, $@"{Prefix} ĐVKD trình yêu cầu giải ngân", body + Signature, null);
+            //}
+
             string message = GetAction(button.CommandArgument);
-            ShowResult(result, message);
+            ShowResult(result, message, errorMsg);
+
         }
 
         private Dictionary<string, SQLParameterData> GetProcessData(string nextStatus)
@@ -445,10 +498,11 @@ namespace DesktopModules.Modules.Disbursement
                     DisbursementTable.ModifyDateTime,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 },
+                { "ModifyTimeWhenView", new SQLParameterData(hidLastModifiedAt.Value, SqlDbType.BigInt) },
             };
         }
 
-        private void ShowResult(int result, string message)
+        private void ShowResult(int result, string message, string errorMsg)
         {
             if (result > 0)
             {
@@ -457,6 +511,20 @@ namespace DesktopModules.Modules.Disbursement
             }
             else
             {
+                if (result == -2) //Đang cập nhật điều chỉnh
+                {
+                    ShowMessage(errorMsg, ModuleMessage.ModuleMessageType.RedError);
+                    return;
+                }
+                if (result == -4) //Duyệt giải ngân bị thiếu tiền
+                {
+                    string customer = String.IsNullOrEmpty(hidOrgId.Value) ? $@"khách hàng: {hidCustomerName.Value}" : $@"công ty: {hidCustomerName.Value}";
+                    string customerId = String.IsNullOrEmpty(hidOrgId.Value) ? hidIdentifyId.Value : hidOrgId.Value;
+                    string body = $@"SME không thể thực hiện duyệt giải ngân cho chi nhánh {lblBranchID.Text}, giải ngân của {customer} - Mã số: {customerId} - Số tiền: {tbAmount.Text} {hidCurrencyCodeId.Value} vì: <strong>Vượt room tại thời điểm đăng ký</strong>";
+                    MailBase.SendEmail(AlmEmails + "," + SmeEmails, $@"{Prefix} Vượt room tại thời điểm đăng ký", body + Signature, null);
+                    ShowMessage(errorMsg, ModuleMessage.ModuleMessageType.YellowWarning);
+                    return;
+                }
                 ShowMessage(message + " thất bại", ModuleMessage.ModuleMessageType.RedError);
             }
         }
@@ -470,9 +538,18 @@ namespace DesktopModules.Modules.Disbursement
             }
 
             Dictionary<string, SQLParameterData> parametrDictionary = GetProcessCancelData(button.CommandArgument);
-            int result = DisbursementBusiness.ProcessCancel(parametrDictionary);
+            string errorMsg;
+            int result = DisbursementBusiness.ProcessCancel(parametrDictionary, out errorMsg);
+            // send email
+            if (result > 0 && IsRoleRevise())
+            {
+                string customer = String.IsNullOrEmpty(hidOrgId.Value) ? $@"khách hàng: {hidCustomerName.Value}" : $@"công ty: {hidCustomerName.Value}";
+                string customerId = String.IsNullOrEmpty(hidOrgId.Value) ? hidIdentifyId.Value : hidOrgId.Value;
+                string body = $@"Chi nhánh {lblBranchID.Text} <font color='red'>đã hủy yêu cầu giải ngân</font> của {customer} - Mã số: {customerId} - Số tiền: {tbAmount.Text} {hidCurrencyCodeId.Value}";
+                MailBase.SendEmail(SmeEmails, $@"{Prefix} ĐVKD yêu cầu hủy giải ngân", body + Signature, null);
+            }
             string message = GetAction(button.CommandArgument);
-            ShowResult(result, message);
+            ShowResult(result, message, String.Empty);
         }
 
         private Dictionary<string, SQLParameterData> GetProcessCancelData(string nextStatus)
@@ -487,6 +564,7 @@ namespace DesktopModules.Modules.Disbursement
                     DisbursementTable.ModifyDateTime,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 },
+                { "ModifyTimeWhenView", new SQLParameterData(hidLastModifiedAt.Value, SqlDbType.BigInt) },
             };
         }
     }

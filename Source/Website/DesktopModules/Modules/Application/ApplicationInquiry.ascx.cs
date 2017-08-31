@@ -143,14 +143,9 @@ namespace DesktopModules.Modules.Application
             }
         }
 
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
+        protected void OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
         {
-            BindGridData(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGridData();
+            gridData.DataSource = QueryData();
         }
 
 
@@ -165,7 +160,7 @@ namespace DesktopModules.Modules.Application
             BindInputField(ddlDateField, FieldDate);
 
             ddlSelectValue01.Enabled = ddlSelectValue02.Enabled = ddlSelectValue03.Enabled = false;
-            ddlInputName01.SelectedValue = ApplicationTable.CustomerID;
+            //ddlInputName01.SelectedValue = ApplicationTable.CustomerID;
             calFromDate.SelectedDate = DateTime.Now.AddDays(-1);
             calToDate.SelectedDate = DateTime.Now;
         }
@@ -208,11 +203,10 @@ namespace DesktopModules.Modules.Application
             }
         }
 
-        private void BindGridData(int pageIndex = 0)
+        private void BindGridData()
         {
             gridData.Visible = true;
             gridData.DataSource = QueryData();
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataBind();
         }
 

@@ -6,7 +6,7 @@
         public const string ApplicID = "ApplicID";
         public const string ApplicationTypeID = "ApplicationTypeID";
         public const string PolicyID = "PolicyID";
-        public const string LegalType = "LegalType";
+        public const string IdentityTypeCode = "IdentityTypeCode";
         public const string CustomerID = "CustomerID";
         public const string CustomerName = "CustomerName";
         public const string CreditLimit = "CreditLimit";

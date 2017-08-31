@@ -11,14 +11,14 @@ namespace Modules.Application.DataAccess
         public List<CorporateSizeData> GetAllCorporateSize()
         {
             Connector.ExecuteProcedure<CorporateSizeData, List<CorporateSizeData>>(
-                CorporateSizeTable.StoreProcedure, out List<CorporateSizeData> list);
+                "dbo.APP_SP_GetCorporateSize", out List<CorporateSizeData> list);
             return list;
         }
         
         public CorporateSizeData GetCorporateSize(string corporateSizeCode)
         {
             Connector.AddParameter(CorporateSizeTable.CorporateSizeCode, SqlDbType.VarChar, corporateSizeCode);
-            Connector.ExecuteProcedure(CorporateSizeTable.StoreProcedure, out CorporateSizeData result);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetCorporateSize", out CorporateSizeData result);
             return result;
         }
     }

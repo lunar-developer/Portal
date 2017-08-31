@@ -127,7 +127,7 @@
     <value>Email</value>
   </data>
   <data name="EmployeeID.Header" xml:space="preserve">
-    <value>Mã NV</value>
+    <value>Mã nhân viên</value>
   </data>
   <data name="FullName.Header" xml:space="preserve">
     <value>Họ và Tên</value>
@@ -154,13 +154,13 @@
     <value>Mã NV</value>
   </data>
   <data name="lblFullName.Help" xml:space="preserve">
-    <value>Họ và tên nhân viên</value>
+    <value>Họ và Tên</value>
   </data>
   <data name="lblFullName.Text" xml:space="preserve">
-    <value>Họ Tên</value>
+    <value>Họ và Tên</value>
   </data>
   <data name="lblBranch.Help" xml:space="preserve">
-    <value>Phòng ban</value>
+    <value>Phòng ban trực thuộc</value>
   </data>
   <data name="lblBranch.Text" xml:space="preserve">
     <value>Phòng ban</value>

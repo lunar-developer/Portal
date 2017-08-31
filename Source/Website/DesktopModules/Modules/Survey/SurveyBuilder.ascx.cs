@@ -71,7 +71,7 @@ namespace DesktopModules.Modules.Survey {
 
         protected void GetListSurvey(object sender, EventArgs eventArgs)
         {
-            string script = EditUrl("List", 800, 400, true, "tableId","fd");
+            string script = EditUrl("List", 800, 400, true, true, null, "tableId","fd");
             RegisterScript(script);
         }
 

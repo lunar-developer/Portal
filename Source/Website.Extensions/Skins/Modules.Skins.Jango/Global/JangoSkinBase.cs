@@ -118,20 +118,20 @@ namespace Modules.Skins.Jango.Global
                         <a class='c-link dropdown-toggle' href='javascript:;'>
                             <i class=""fa fa-user""></i>&nbsp;{userInfo.DisplayName}<span class='c-arrow c-toggler'></span>
                         </a>
-                        <ul class='c-menu-type-classic c-pull-left dropdown-menu'>
+                        <ul class='c-menu-type-classic c-pull-right dropdown-menu'>
                             <li>
                                 <a href='{profileUrl}'>
-				                    Account Information
+				                    Thông tin Tài khoản
 			                    </a>
                             </li>
-<li>
+                            <li>
                                 <a href='{requestUrl}'>
-				                    My Request
+				                    Thông tin Phiếu yêu cầu
 			                    </a>
                             </li>
                             <li>
                                 <a href='{logoffUrl}'>
-				                    Sign Out
+				                    <i class=""fa fa-sign-out""></i> Thoát
 			                    </a>
                             </li>
                         </ul>
@@ -151,7 +151,7 @@ namespace Modules.Skins.Jango.Global
                     <a href=""{loginUrl}"" onclick=""{
                     clickEvent
                 }"" class=""btn btn-no-focus btn-sm c-btn c-btn-border-1x c-btn-border-opacity-04 c-btn-dark c-btn-sbold c-btn-square c-btn-uppercase"">
-                        <i class=""fa fa-user""></i>Sign In
+                        <i class=""fa fa-user""></i>Đăng Nhập
                     </a>
                 </li>";
         }
@@ -167,7 +167,7 @@ namespace Modules.Skins.Jango.Global
 
             StringBuilder breadcrumbs = new StringBuilder();
             breadcrumbs.Append("<div class = 'c-fonts-bold c-fonts-uppercase c-layout-breadcrumbs-1'>");
-            breadcrumbs.Append("<div class = 'container'>");
+            breadcrumbs.Append("<div class = 'container-fluid'>");
             breadcrumbs.Append("<div class = 'c-page-title c-pull-left'>");
             breadcrumbs.Append($"<h3 class = 'c-font-sbold c-font-uppercase'>{title}</h3>");
             breadcrumbs.Append("</div>");

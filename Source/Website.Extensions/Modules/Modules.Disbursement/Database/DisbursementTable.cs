@@ -5,6 +5,7 @@
         public const string DisbursementID = "DisbursementID";
         public const string BranchID = "BranchID";
         public const string CustomerID = "CustomerID";
+        public const string OrganizationID = "OrganizationID";
         public const string CustomerName = "CustomerName";
         public const string CurrencyCode = "CurrencyCode";
         public const string Amount = "Amount";

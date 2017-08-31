@@ -1,6 +1,8 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="DataEditor.ascx.cs" Inherits="DesktopModules.Modules.MasterData.DataEditor" %>
 
-<asp:UpdatePanel ID="UpdatePanel"
+
+
+<asp:UpdatePanel ID="UpdatePanel" UpdateMode="Always"
                  runat="server">
     <ContentTemplate>
         <div class="form-horizontal">
@@ -29,11 +31,12 @@
                                 OnClientClick="return validate()"
                                 runat="server"
                                 Text="Cập Nhật" />
-                    <asp:Button CssClass="btn btn-primary"
+                    <asp:Button CssClass="btn btn-danger"
                                 ID="btnDelete"
                                 OnClick="DeleteData"
                                 runat="server"
                                 Text="Xóa" />
+                    <input type="button" class="btn btn-default" value="Đóng" onclick="<%=GetCloseScript()%>"/>
                 </div>
             </div>
         </div>
@@ -81,27 +84,33 @@
     addPageLoaded(function()
     {
         $(".dnnTooltip").dnnTooltip();
-        $(".combobox").combobox();
+        $(".RadComboBox").autoComplete();
     }, false);
+
+    addEndRequest(function()
+    {
+        $(".RadComboBox").autoComplete();
+    });
+
 
     function validate()
     {
-        var list = getJQueryControl("DivForm").find("input[is-require='True'], textarea[is-require='True'], select[is-require='True']");
+        var list = getJQueryControl("DivForm").find("input:text[is-require='True'], textarea[is-require='True'], input:hidden[is-require='True']");
         for (var i = 0; i < list.length; i++)
         {
             var element = list.get(i);
-            switch (element.tagName.toLowerCase())
+            switch (element.type)
             {
-                case "input":
-                case "textarea":
-                    if (validateInput(element) === false)
+                case "hidden":
+                    var combobox = $find(element.name);
+                    if (validateRadAutocomplete(combobox) === false)
                     {
                         return false;
                     }
                     break;
 
-                case "select":    
-                    if (validateOption(element) === false)
+                default:
+                    if (validateInput(element) === false)
                     {
                         return false;
                     }

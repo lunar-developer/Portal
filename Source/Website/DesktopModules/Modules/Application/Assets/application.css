@@ -17,3 +17,73 @@
 {
     padding: 0 !important;
 }
+
+.column-left
+{
+    text-align: left !important;
+}
+.column-left .col-sm-6
+{
+    width: 100% !important;
+}
+/*.column-left .col-lg-1,
+.column-left .col-lg-10,
+.column-left .col-lg-11,
+.column-left .col-lg-12,
+.column-left .col-lg-2,
+.column-left .col-lg-3,
+.column-left .col-lg-4,
+.column-left .col-lg-5,
+.column-left .col-lg-6,
+.column-left .col-lg-7,
+.column-left .col-lg-8,
+.column-left .col-lg-9,
+.column-left .col-md-1,
+.column-left .col-md-10,
+.column-left .col-md-11,
+.column-left .col-md-12,
+.column-left .col-md-2,
+.column-left .col-md-3,
+.column-left .col-md-4,
+.column-left .col-md-5,
+.column-left .col-md-6,
+.column-left .col-md-7,
+.column-left .col-md-8,
+.column-left .col-md-9,
+.column-left .col-sm-1,
+.column-left .col-sm-10,
+.column-left .col-sm-11,
+.column-left .col-sm-12,
+.column-left .col-sm-2,
+.column-left .col-sm-3,
+.column-left .col-sm-4,
+.column-left .col-sm-5,
+.column-left .col-sm-6,
+.column-left .col-sm-7,
+.column-left .col-sm-8,
+.column-left .col-sm-9,
+.column-left .col-xs-1,
+.column-left .col-xs-10,
+.column-left .col-xs-11,
+.column-left .col-xs-12,
+.column-left .col-xs-2,
+.column-left .col-xs-3,
+.column-left .col-xs-4,
+.column-left .col-xs-5,
+.column-left .col-xs-6,
+.column-left .col-xs-7,
+.column-left .col-xs-8,
+.column-left .col-xs-9
+{
+    width: 100% !important;
+    text-align: left !important;
+}*/
+.column-left .dnnLabel
+{
+}
+.column-left .c-margin-0
+{
+}
+.column-left .form-group
+{
+}

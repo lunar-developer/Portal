@@ -35,11 +35,7 @@
                                 OnClientClick="return checkFileExtension();"
                                 runat="server"
                                 Text="Upload" />
-                    <a class="btn btn-default"
-                       href=<%= LinkTemplate %>
-                       target="_blank">
-                        Download template
-                    </a>
+                    <a class="btn btn-default" href="<%= LinkTemplate %>" target="_blank">Download Template</a>
                 </div>
             </div>
         </div>

@@ -9,16 +9,17 @@
         public const string MobileNumber = "MobileNumber";
         public const string ApplicationTypeID = "ApplicationTypeID";
         public const string IdentityTypeCode = "IdentityTypeCode";
-        public const string PolicyCode = "PolicyCode";
+        public const string PolicyID = "PolicyID";
         public const string ProposalLimit = "ProposalLimit";
-        public const string IsHighPriority = "IsHighPriority";
+        public const string Priority = "Priority";
         public const string BranchCode = "BranchCode";
 
-        public const string PhaseID = "PhaseID";
-        public const string PhaseName = "PhaseName";
-        public const string ProcessID = "ProcessID";
-        public const string ActionCode = "ActionCode";
+        public const string Status = "Status";
+
         public const string DocumentCode = "DocumentCode";
+        public const string DocumentName = "DocumentName";
+        public const string FileID = "FileID";
+        public const string FileNumber = "FileNumber";
         public const string FileName = "FileName";
         public const string FileData = "FileData";
     }

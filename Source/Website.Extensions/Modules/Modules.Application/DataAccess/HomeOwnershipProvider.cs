@@ -8,23 +8,18 @@ namespace Modules.Application.DataAccess
 {
     public class HomeOwnershipProvider:DataProvider
     {
-        private static readonly string ScriptAll = $@"Select * from dbo.{HomeOwnershipTable.TableName} with(nolock)";
         public List<HomeOwnershipData> GetList()
         {
-            Connector.ExecuteSql<HomeOwnershipData, List<HomeOwnershipData>>(ScriptAll, out List<HomeOwnershipData> outList);
+            Connector.ExecuteSql<HomeOwnershipData, List<HomeOwnershipData>>(
+                "dbo.APP_SP_GetHomeOwnership", out List<HomeOwnershipData> outList);
             return outList;
         }
 
 
-        private static readonly string Script = $@"
-            Select * 
-            from dbo.{HomeOwnershipTable.TableName} with(nolock) 
-            where {HomeOwnershipTable.HomeOwnershipCode} = @{HomeOwnershipTable.HomeOwnershipCode}";
-
-        public HomeOwnershipData GetItem(string id)
+        public HomeOwnershipData GetItem(string code)
         {
-            Connector.AddParameter(HomeOwnershipTable.HomeOwnershipCode, SqlDbType.VarChar, id);
-            Connector.ExecuteSql(Script, out HomeOwnershipData result);
+            Connector.AddParameter(HomeOwnershipTable.HomeOwnershipCode, SqlDbType.VarChar, code);
+            Connector.ExecuteSql("dbo.APP_SP_GetHomeOwnership", out HomeOwnershipData result);
             return result;
         }
     }

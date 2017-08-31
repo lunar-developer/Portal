@@ -14,9 +14,9 @@ namespace Modules.Application.DataAccess
             return result;
         }
 
-        public ScheduleData GetScheduleData(string scheduleName)
+        public ScheduleData GetScheduleData(string scheduleCode)
         {
-            Connector.AddParameter(SheduleTable.ScheduleName, SqlDbType.VarChar, scheduleName);
+            Connector.AddParameter(SheduleTable.ScheduleCode, SqlDbType.VarChar, scheduleCode);
             Connector.ExecuteProcedure("dbo.APP_SP_GetScheduleData", out ScheduleData result);
             return result;
         }

@@ -15,6 +15,7 @@
             <asp:TextBox
                 CssClass="c-theme form-control"
                 ID="ctrlCollateralID"
+                placeholder="Mã tài sản đảm bảo"
                 runat="server" />
         </div>
         <div class="col-sm-4">
@@ -22,7 +23,8 @@
                 CssClass="btn btn-primary c-margin-0"
                 TabIndex="-1"
                 ID="ctrlQueryCollateral"
-                OnClientClick="return alertOnConstruct()"
+                OnClick="QueryCollateral"
+                OnClientClick="return onBeforeQueryCollateral();"
                 runat="server"
                 Text="Tìm" />
         </div>
@@ -53,6 +55,7 @@
             <asp:TextBox
                 CssClass="c-theme form-control"
                 ID="ctrlCollateralCreditLimit"
+                Enabled="False"
                 runat="server" />
         </div>
     </div>
@@ -71,6 +74,7 @@
             <asp:TextBox
                 CssClass="c-theme form-control"
                 ID="ctrlCollateralPurpose"
+                Enabled="False"
                 runat="server" />
         </div>
     </div>
@@ -102,6 +106,7 @@
                 TextMode="MultiLine"
                 Height="100"
                 ID="ctrlCollateralDescription"
+                Enabled="False"
                 runat="server" />
         </div>
     </div>

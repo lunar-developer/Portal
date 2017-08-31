@@ -28,6 +28,7 @@ namespace DesktopModules.Modules.CacheManagement
                 return;
             }
 
+            btnReload.Visible = true;
             gridView.Visible = true;
             DivControl.Visible = true;
             lblTotal.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();

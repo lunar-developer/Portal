@@ -6,25 +6,20 @@ using Website.Library.DataAccess;
 
 namespace Modules.Application.DataAccess
 {
-    public class EducationProvider:DataProvider
+    public class EducationProvider : DataProvider
     {
-        private static readonly string ScriptAll = $@"Select * 
-                                            from dbo.{EducationTable.TableName} with(nolock)";
         public List<EducationData> GetList()
         {
-            Connector.ExecuteSql<EducationData, List<EducationData>>(ScriptAll, out List<EducationData> outList);
+            Connector.ExecuteSql<EducationData, List<EducationData>>(
+                "dbo.APP_SP_GetEducation", out List<EducationData> outList);
             return outList;
         }
 
 
-        private static readonly string Script = $@"
-            Select * 
-            from dbo.{EducationTable.TableName} with(nolock) 
-            where {EducationTable.EducationCode} = @{EducationTable.EducationCode}";
-        public EducationData GetItem(string id)
+        public EducationData GetItem(string code)
         {
-            Connector.AddParameter(EducationTable.EducationCode, SqlDbType.VarChar, id);
-            Connector.ExecuteSql(Script, out EducationData result);
+            Connector.AddParameter(EducationTable.EducationCode, SqlDbType.VarChar, code);
+            Connector.ExecuteSql("dbo.APP_SP_GetEducation", out EducationData result);
             return result;
         }
     }

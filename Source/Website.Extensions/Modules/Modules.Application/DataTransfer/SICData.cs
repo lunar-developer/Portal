@@ -6,6 +6,7 @@ namespace Modules.Application.DataTransfer
     {
         public string SICCode { get; set; }
         public string SICName { get; set; }
+        public string SortOrder { get; set; }
         public string IsDisable { get; set; }
     }
 }

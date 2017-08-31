@@ -41,7 +41,7 @@ namespace Website.Library.Business
             };
 
             // Inject Consumer
-            InjectConsumer(ConfigurationBase.QueuePortalServiceOut, ProcessOnQueueReceive);
+            InjectConsumer(ConfigurationBase.QueuePortalServiceOut, ProcessOnQueueReceive, "PortalService.Out");
 
             // Define Schedule Timer
             int interval = FunctionBase.ConvertToInteger(
@@ -81,7 +81,7 @@ namespace Website.Library.Business
             // Process all expired items
             long currentTime = long.Parse(DateTime.Now.ToString(PatternEnum.DateTime));
             List<string> listExpireItems = MessageDictionary
-                .Where(item => item.Value.ExpireTime > currentTime)
+                .Where(item => item.Value.ExpireTime <= currentTime)
                 .Select(item => item.Key).ToList();
             foreach (string key in listExpireItems)
             {
@@ -102,6 +102,7 @@ namespace Website.Library.Business
         public static bool InjectConsumer(
             string queueName,
             Action<string, string> callback,
+            string clientName = "Portal",
             string queueHandler = MessageQueueEnum.Rabbit)
         {
             try
@@ -114,7 +115,7 @@ namespace Website.Library.Business
 
                 MessageQueueBase instance = messageQueue.Clone();
                 ConsumerDictionary.Add(queueName, instance);
-                instance.ReceiveFromQueue(queueName, callback);
+                instance.ReceiveFromQueue(queueName, callback, clientName);
                 return true;
             }
             catch (Exception exception)

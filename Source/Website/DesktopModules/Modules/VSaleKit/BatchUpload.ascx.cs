@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Users;
+using DotNetNuke.UI.Skins.Controls;
 using Modules.Application.Database;
 using Modules.Application.DataTransfer;
-using Modules.VSaleKit.DataAccess;
+using Modules.Controls;
+using Modules.VSaleKit.Business;
 using Modules.VSaleKit.Database;
 using Modules.VSaleKit.DataTransfer;
 using Modules.VSaleKit.Global;
@@ -25,6 +26,18 @@ namespace DesktopModules.Modules.VSaleKit
             }
 
             BindData();
+        }
+
+        private void BindData()
+        {
+            ddlApplicationType.EmptyMessage = GetResource("lblApplicationType.Help");
+            ddlApplicationType.ClearSelection();
+            ddlPolicy.EmptyMessage = GetResource("lblPolicy.Help");
+            ddlPolicy.ClearSelection();
+
+            BindApplicationTypeData(ddlApplicationType);
+            LoadPolicyData(ddlPolicy);
+
             divResult.Visible = gridData.Visible = gridException.Visible = false;
             divForm.Visible = false;
         }
@@ -41,8 +54,7 @@ namespace DesktopModules.Modules.VSaleKit
 
                 // Upload file csv => list object
                 List<BatchExceptionData> listException = new List<BatchExceptionData>();
-                List<BatchData> listData =
-                    FunctionBase.ImportCSV<BatchData>(fupFile.FileContent);
+                List<BatchData> listData = FunctionBase.ImportExcel<BatchData>(fupFile.FileContent);
 
                 // Validate upload data
                 for (int i = 0; i < listData.Count; i++)
@@ -53,10 +65,11 @@ namespace DesktopModules.Modules.VSaleKit
                     // Check require fields
                     Dictionary<string, string> dictionary = new Dictionary<string, string>
                     {
-                        { BatchDataTable.LegalType, item.LegalType },
+                        { BatchDataTable.IdentityTypeCode, item.IdentityTypeCode },
                         { BatchDataTable.CustomerID, item.CustomerID },
                         { BatchDataTable.CustomerName, item.CustomerName },
-                        { BatchDataTable.UserName, item.UserName }
+                        { BatchDataTable.UserName, item.UserName },
+                        { BatchDataTable.Priority, item.Priority }
                     };
                     if (IsRequireFieldEmpty(lineNumber, dictionary, listException))
                     {
@@ -72,15 +85,23 @@ namespace DesktopModules.Modules.VSaleKit
                     {
                         continue;
                     }
+                    dictionary = new Dictionary<string, string>
+                    {
+                        { BatchDataTable.Priority, item.Priority }
+                    };
+                    if (IsInvalidNumberField(lineNumber, dictionary, listException, 0, 1))
+                    {
+                        continue;
+                    }
 
                     // Check option field
-                    if (CacheBase.Find<IdentityTypeData>(IdentityTypeTable.IdentityTypeCode, item.LegalType) == null)
+                    if (CacheBase.Find<IdentityTypeData>(IdentityTypeTable.IdentityTypeCode, item.IdentityTypeCode) == null)
                     {
                         listException.Add(new BatchExceptionData
                         {
                             LineNumber = lineNumber,
-                            FieldName = BatchDataTable.LegalType,
-                            Error = $"Không tìm thấy giá trị {item.LegalType}."
+                            FieldName = BatchDataTable.IdentityTypeCode,
+                            Error = $"Không tìm thấy giá trị {item.IdentityTypeCode}."
                         });
                         continue;
                     }
@@ -109,7 +130,8 @@ namespace DesktopModules.Modules.VSaleKit
             }
             catch (Exception exception)
             {
-                ShowException(exception);
+                FunctionBase.LogError(exception);
+                ShowMessage("Có lỗi khi xử lý", ModuleMessage.ModuleMessageType.RedError);
             }
         }
 
@@ -125,7 +147,7 @@ namespace DesktopModules.Modules.VSaleKit
                     { BatchDataTable.ImportUserID, UserInfo.UserID.ToString() }
                 };
 
-                DataTable dataTable = new BatchDataProvider().Insert(list, dictionary);
+                DataTable dataTable = BatchDataBusiness.Insert(list, dictionary);
                 ViewState[BatchDataTable.TableName] = dataTable;
                 BindGrid(gridData, dataTable);
 
@@ -136,10 +158,15 @@ namespace DesktopModules.Modules.VSaleKit
                         .ToString();
                 lblMessage.Visible = false;
                 divForm.Visible = false;
+                if (dataTable.Rows.Count > 0)
+                {
+                    ShowMessage("Quá trình xử lý đã hoàn tất. Vui lòng kiểm tra thông tin chi tiết.", ModuleMessage.ModuleMessageType.GreenSuccess);
+                }
             }
             catch (Exception exception)
             {
-                ShowException(exception);
+                FunctionBase.LogError(exception);
+                ShowMessage("Có lỗi khi xử lý", ModuleMessage.ModuleMessageType.RedError);
             }
         }
 
@@ -149,16 +176,6 @@ namespace DesktopModules.Modules.VSaleKit
             string title = $"Chính sách: {policy.PolicyCode} - {policy.Name}";
             string message = policy.Remark.Replace(Environment.NewLine, string.Empty);
             ShowAlertDialog(message, title);
-        }
-
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(sender as RadGrid, ViewState[BatchDataTable.TableName], e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid(sender as RadGrid, ViewState[BatchDataTable.TableName]);
         }
 
         private static bool IsRequireFieldEmpty(string lineNumber, Dictionary<string, string> dictionary,
@@ -181,6 +198,7 @@ namespace DesktopModules.Modules.VSaleKit
             }
             return false;
         }
+
 
         private static bool IsInvalidNumberField(string lineNumber, Dictionary<string, string> dictionary,
             ICollection<BatchExceptionData> listException, decimal min, decimal max)
@@ -232,21 +250,28 @@ namespace DesktopModules.Modules.VSaleKit
             });
         }
 
-        private void BindData()
-        {
-            ddlApplicationType.Attributes.Add("placeholder", GetResource("lblApplicationType.Help"));
-            ddlPolicy.Attributes.Add("placeholder", GetResource("lblPolicy.Help"));
 
-            BindApplicationTypeData(ddlApplicationType, new ListItem("Chưa chọn", string.Empty));
-            BindPolicyData(ddlPolicy, new ListItem("Chưa chọn", string.Empty));
-        }
-
-        private static void BindGrid(RadGrid grid, object dataSource, int pageIndex = 0)
+        private void BindGrid(Grid grid, object dataSource)
         {
             grid.Visible = true;
-            grid.CurrentPageIndex = pageIndex;
             grid.DataSource = dataSource;
+            grid.LocalResourceFile = LocalResourceFile;
             grid.DataBind();
+        }
+
+        protected string FormatIdentityTypeCode(string value)
+        {
+            return CacheBase.Find<IdentityTypeData>(IdentityTypeTable.IdentityTypeCode, value)?.Name;
+        }
+
+        protected void OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            Grid grid = sender as Grid;
+            if (grid == null)
+            {
+                return;
+            }
+            grid.DataSource = ViewState[BatchDataTable.TableName];
         }
     }
 }

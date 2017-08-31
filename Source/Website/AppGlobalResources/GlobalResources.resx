@@ -1090,10 +1090,10 @@ Sincerely,
         <value>Trang Chủ</value>
     </data>
         <data name="//Home//Event01.String" xml:space="preserve">
-            <value>Quán Quân Huy Động</value>
+            <value>Mùa hè rực nắng</value>
         </data>
             <data name="//Home//Event01//Ranking.String" xml:space="preserve">
-                <value>Kết Quả Xếp Hạng</value>
+                <value>Chương Trình Định Hướng</value>
             </data>
             <data name="//Home//Event01//Rules.String" xml:space="preserve">
                 <value>Thể Lệ</value>
@@ -1108,12 +1108,12 @@ Sincerely,
             <value>Thách thức Huy Động</value>
         </data>
         <data name="//Home//Event03.String" xml:space="preserve">
-            <value>Chương trình Định Hướng</value>
+            <value>Event03</value>
         </data>
         <data name="//Home//Promotion.String" xml:space="preserve">
             <value>Chương Trình Khuyến Mãi</value>
         </data>
-            <data name="//Home//Promotion//Event01.String" xml:space="preserve">
+            <data name="//Home//Promotion//Promotion01.String" xml:space="preserve">
                 <value>Chuyển Tiền Du Học Không Lo Về Phí</value>
             </data>
     
@@ -1131,6 +1131,44 @@ Sincerely,
         <value>Hồ Sơ Thẻ</value>
     </data>
 
+    <data name="//Application//VietBankSaleKit//ApplicationInquiry.String" xml:space="preserve">
+        <value>Tra Cứu Hồ Sơ</value>
+    </data>
+    <data name="//Application//VietBankSaleKit//ApplicationDetail.String" xml:space="preserve">
+        <value>Thêm Mới Hồ Sơ</value>
+    </data>
+
+    <data name="//Application//Credit.String" xml:space="preserve">
+        <value>Thẻ Tín Dụng</value>
+    </data>
+    <data name="//Application//Credit//ApplicationInquiry.String" xml:space="preserve">
+        <value>Tra Cứu Hồ Sơ</value>
+    </data>
+    <data name="//Application//Credit//ApplicationForm.String" xml:space="preserve">
+        <value>Thêm Mới Hồ Sơ</value>
+    </data>
+    <data name="//Application//Credit//BatchUpload.String" xml:space="preserve">
+        <value>Upload Hồ Sơ</value>
+    </data>
+    <data name="//Application//Credit//ApplicationHistory.String" xml:space="preserve">
+        <value>Lịch Sử Thay Đổi</value>
+    </data>
+
+    <data name="//Application//Management.String" xml:space="preserve">
+        <value>Quản Trị</value>
+    </data>
+    <data name="//Application//Management//UserAssignment.String" xml:space="preserve">
+        <value>Phân Công Hồ Sơ</value>
+    </data>
+    <data name="//Application//Management//Schedule.String" xml:space="preserve">
+        <value>Quản Lý Tác Vụ</value>
+    </data>
+    <data name="//Application//Management//MasterData.String" xml:space="preserve">
+        <value>Quản Lý Danh Mục / Cấu Hình</value>
+    </data>
+    
+    
+
     <data name="//Business.String" xml:space="preserve">
         <value>Nghiệp Vụ</value>
     </data>
@@ -1141,22 +1179,70 @@ Sincerely,
             <value>Quản Lý Văn Bản</value>
         </data>
         <data name="//Business//Marketing//UploadEvent01Result.String" xml:space="preserve">
-            <value>Upload Kết Quả Quán Quân</value>
+            <value>Upload Kết Quả</value>
         </data>
         <data name="//Business//Marketing//SurveyBuilder.String" xml:space="preserve">
             <value>Quản Lý Survey</value>
         </data>
     
         <data name="//Business//Disbursement.String" xml:space="preserve">
-            <value>Giải Ngân</value>
+            <value>Yêu Cầu Giải Ngân</value>
+        </data>
+        <data name="//Business//Disbursement//DisbursementLimit.String" xml:space="preserve">
+            <value>Hạn Mức Giải Ngân</value>
         </data>
     
     <data name="//Management.String" xml:space="preserve">
         <value>Quản Trị</value>
     </data>
+    <data name="//Management//Users.String" xml:space="preserve">
+        <value>Tài Khoản Người Dùng</value>
+    </data>
+    <data name="//Management//Users//UserManagement.String" xml:space="preserve">
+        <value>Tra Cứu Tài Khoản</value>
+    </data>
+    <data name="//Management//Users//UserRequestManagement.String" xml:space="preserve">
+        <value>Tra Cứu Phiếu Yêu Cầu</value>
+    </data>
+    <data name="//Management//Users//JobTitleDefinition.String" xml:space="preserve">
+        <value>Định Nghĩa Chức Danh</value>
+    </data>
+    <data name="//Management//Users//BranchPermission.String" xml:space="preserve">
+        <value>Phân Quyền Chi Nhánh</value>
+    </data>
+    <data name="//Management//Users//RoleGroupSetting.String" xml:space="preserve">
+        <value>Cấu hình Nhóm Quyền</value>
+    </data>
 
-  
-  
+    <data name="//Management//Settings.String" xml:space="preserve">
+        <value>Cấu Hình</value>
+    </data>
+    <data name="//Management//Settings//MasterData.String" xml:space="preserve">
+        <value>Quản Lý Danh Mục</value>
+    </data>
+
+    <data name="//Management//System.String" xml:space="preserve">
+        <value>Hệ Thống</value>
+    </data>
+    <data name="//Management//System//ModuleManagement.String" xml:space="preserve">
+        <value>Quản Lý Modules</value>
+    </data>
+    <data name="//Management//System//CacheManagement.String" xml:space="preserve">
+        <value>Quản Lý Caches</value>
+    </data>
+    <data name="//Management//System//ContactManagement.String" xml:space="preserve">
+        <value>Quản Lý Danh Bạ</value>
+    </data>
+    <data name="//Management//System//ContactEditor.String" xml:space="preserve">
+        <value>Điều Chỉnh Thông Tin Danh Bạ</value>
+    </data>
+
+    <data name="//Management//Reports.String" xml:space="preserve">
+        <value>Báo Cáo</value>
+    </data>
+    <data name="//Management//Reports//GeneralReport.String" xml:space="preserve">
+        <value>Danh Mục Báo Cáo</value>
+    </data>
   
 
 

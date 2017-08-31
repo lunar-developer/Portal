@@ -7,6 +7,7 @@ namespace Modules.Application.DataTransfer
         public string IdentityTypeID { get; set; }
         public string IdentityTypeCode { get; set; }
         public string Name { get; set; }
+        public string SortOrder { get; set; }
         public string IsDisable { get; set; }
     }
 }

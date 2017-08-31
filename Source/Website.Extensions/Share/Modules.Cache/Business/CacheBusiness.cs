@@ -1,5 +1,7 @@
 ﻿using Modules.Application.Business;
 using Modules.Application.DataTransfer;
+using Modules.EmployeeManagement.Business;
+using Modules.EmployeeManagement.DataTransfer;
 using Modules.Skins.Jango.Global;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.DataTransfer;
@@ -25,6 +27,9 @@ namespace Modules.Cache.Business
             CacheBase.Inject(new BranchCacheBusiness<BranchData>());
             CacheBase.Inject(new BranchManagerCacheBusiness<BranchManagerData>());
 
+            // Employee
+            CacheBase.Inject(new EmployeeBranchCacheBusiness<EmployeeBranchData>());
+
             // Application
             CacheBase.Inject(new ApplicationFieldCacheBusiness<ApplicationFieldData>());
             CacheBase.Inject(new ApplicationTypeCacheBusiness<ApplicationTypeData>());
@@ -48,8 +53,15 @@ namespace Modules.Cache.Business
             CacheBase.Inject(new EducationCacheBusiness<EducationData>());
             CacheBase.Inject(new DecisionReasonCacheBusiness<DecisionReasonData>());
             CacheBase.Inject(new IncompleteReasonCacheBusiness<IncompleteReasonData>());
+            CacheBase.Inject(new ProcessCacheBusiness<ProcessData>());
             CacheBase.Inject(new PhaseCacheBussiness<PhaseData>());
+            CacheBase.Inject(new RouteCacheBusiness<RouteData>());
             CacheBase.Inject(new ScheduleCacheBusiness<ScheduleData>());
+            CacheBase.Inject(new UserPhaseCacheBusiness<UserPhaseData>());
+            CacheBase.Inject(new DocumentTypeCacheBusiness<DocumentTypeData>());
+            CacheBase.Inject(new PolicyDocumentCacheBusiness<PolicyDocumentData>());
+            CacheBase.Inject(new ApplicationTypeProcessCacheBusiness<ApplicationTypeProcessData>());
+            CacheBase.Inject(new ApplicationStatusCacheBusiness<ApplicationStatusData>());
             ApplicationBusiness.Initialize();
 
 

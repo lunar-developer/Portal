@@ -53,6 +53,7 @@
             <asp:TextBox
                 CssClass="c-theme form-control"
                 ID="ctrlPaymentCIFNo"
+                placeholder="Số CIF chủ tài khoản"
                 runat="server" />
         </div>
         <div class="col-sm-4">
@@ -60,7 +61,8 @@
                 CssClass="btn btn-primary c-margin-0"
                 TabIndex="-1"
                 ID="ctrlQueryAccount"
-                OnClientClick="return alertOnConstruct()"
+                OnClick="QueryAccount"
+                OnClientClick="return onBeforeQueryAccount();"
                 runat="server"
                 Text="Tìm" />
         </div>
@@ -96,7 +98,8 @@
             <control:AutoComplete
                 ID="ctrlPaymentAccountNo"
                 ClientIDMode="Static"
-                Enabled="False"
+                AutoPostBack="True"
+                OnSelectedIndexChanged="ProcessOnSelectAccount"
                 runat="server" />
         </div>
     </div>

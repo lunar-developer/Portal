@@ -313,5 +313,11 @@ namespace Modules.UserManagement.Business
 
             return new UserProvider().GetUsersHaveRoles(string.Join(",", listRoleID));
         }
+
+        public static string GetCurrentBranchCode(int userID)
+        {
+            UserData userData = CacheBase.Receive<UserData>(userID.ToString());
+            return CacheBase.Receive<BranchData>(userData.BranchID).BranchCode;
+        }
     }
 }

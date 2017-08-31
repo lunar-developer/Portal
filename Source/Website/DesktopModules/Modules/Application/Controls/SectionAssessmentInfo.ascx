@@ -17,10 +17,10 @@
                 ID="ctrlDecisionCode"
                 ClientIDMode="Static"
                 AutoPostBack="true"
+                EmptyMessage="Đề xuất"
                 OnSelectedIndexChanged="ProcessOnSelectDecisionCode"
                 runat="server">
                 <Items>
-                    <control:ComboBoxItem Value="" Text="CHƯA CHỌN" />
                     <control:ComboBoxItem Value="A" Text="A - Approve" />
                     <control:ComboBoxItem Value="D" Text="D - Decline" />
                     <control:ComboBoxItem Value="C" Text="C - Cancel" />
@@ -40,10 +40,10 @@
                 ID="ctrlDecisionReason"
                 ClientIDMode="Static"
                 AutoPostBack="true"
+                EmptyMessage="Mã đề xuất"
                 CheckBoxes="true"
-                AllowCustomText="true"
+                AllowCustomText="true"                
                 OnSelectedIndexChanged="ProcessOnSelectDecisionReason"
-                EmptyMessage="CHƯA CHỌN"
                 runat="server" />
         </div>
     </div>

@@ -72,6 +72,11 @@ function addEndRequest(fn)
 function addPostBackTrigger(fn)
 {
     var array = Sys.WebForms.PageRequestManager.getInstance()._postBackControlClientIDs;
+    if (array === null || typeof array === "undefined")
+    {
+        return;
+    }
+
     for (var i = 0; i < array.length; i++)
     {
         var $control = $("#" + array[i]);
@@ -435,6 +440,88 @@ function validateOption(element)
     }
 }
 
+function validateRadOption(id)
+{
+    return validateRadAutocomplete(getRadCombobox(id));
+}
+
+function validateRadAutocomplete(radCombobox)
+{
+    try
+    {
+        if (radCombobox === null || typeof radCombobox === "undefined")
+        {
+            return false;
+        }
+
+        var element = radCombobox.get_inputDomElement();
+        if (isInvalidOption(radCombobox.get_value(), ""))
+        {
+            var message = "Vui lòng chọn <b>" + radCombobox.get_emptyMessage() + "</b>";
+            alertMessage(message, undefined, undefined, function ()
+            {
+                showError(element, true);
+                focus(element);
+                element.select();
+            });
+            return false;
+        }
+
+        showError(element, false);
+        return true;
+    }
+    catch (e)
+    {
+        log(e);
+        return false;
+    }
+}
+
+function validateRadMultiSelectOption(id)
+{
+    try
+    {
+        var radCombobox = getRadCombobox(id);
+        if (radCombobox === null || typeof radCombobox === "undefined")
+        {
+            return false;
+        }
+
+        var element = radCombobox.get_inputDomElement();
+        if (radCombobox.get_checkedItems().length === 0)
+        {
+            var message = "Vui lòng chọn <b>" + radCombobox.get_emptyMessage() + "</b>";
+            alertMessage(message, undefined, undefined, function ()
+            {
+                showError(element, true);
+                focus(element);
+                element.select();
+            });
+            return false;
+        }
+
+        showError(element, false);
+        return true;
+    }
+    catch (e)
+    {
+        log(e);
+        return false;
+    }
+}
+
+function validateRadOptionArray(array)
+{
+    for (var i = 0; i < array.length; i++)
+    {
+        if (validateRadOption(array[i]) === false)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 function validateNumber(element, min, max)
 {
     var value = replaceAll(element.value, ",", "");
@@ -600,52 +687,30 @@ function scrollToObject(element)
         }, 1000);
 }
 
-function validateRadOption(id)
-{
-    try
-    {
-        var radCombobox = getRadCombobox(id);
-        if (radCombobox === null || typeof radCombobox === "undefined")
-        {
-            return false;
-        }
-
-        var element = radCombobox.get_inputDomElement();
-        if (isInvalidOption(radCombobox.get_value(), ""))
-        {
-            var message = "Vui lòng chọn <b>" + radCombobox.get_emptyMessage() + "</b>";
-            alertMessage(message, undefined, undefined, function ()
-            {
-                showError(element, true);
-                focus(element);
-                element.select();
-            });
-            return false;
-        }
-
-        showError(element, false);
-        return true;
-    }
-    catch (e)
-    {
-        log(e);
-        return false;
-    }
-}
-
-function validateRadOptionArray(array)
-{
-    for (var i = 0; i < array.length; i++)
-    {
-        if (validateRadOption(array[i]) === false)
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 function getRadCombobox(id)
 {
     return $find(getClientID(id));
+}
+
+function enableLightBox(container)
+{
+    $(container).find("img").each(function()
+    {
+        var image = $(this);
+        var link = $("<a>");
+        link.attr("href", image.attr("src"));
+        link.attr("data-lightbox", image.attr("group"));
+        link.attr("data-title", image.attr("name"));
+        image.wrap(link);
+    });
+}
+
+function declareVariable(key, value)
+{
+    if (typeof window[key] === "undefined")
+    {
+        window[key] = {};
+    }
+    
+    window[key] = value;
 }

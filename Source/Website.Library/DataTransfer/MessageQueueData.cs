@@ -12,6 +12,7 @@ namespace Website.Library.DataTransfer
         public string RequestData;
         public string ResponseData;
         public string ResponseCode;
+        public string ContentType;
         public long ExpireTime;
 
 
@@ -31,6 +32,7 @@ namespace Website.Library.DataTransfer
                 ? Guid.NewGuid().ToString(PatternEnum.GuidDigits)
                 : requestID;
             RequestData = MessageQueueBusiness.BuildMessage(functionName, data, contentType, RequestID);
+            ContentType = contentType;
             ExpireTime = long.Parse(DateTime.Now.AddSeconds(timeout).ToString(PatternEnum.DateTime));
         }
     }

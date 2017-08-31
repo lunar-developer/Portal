@@ -18,20 +18,26 @@ namespace Modules.MasterData.Global
         {
             FunctionDictionary = new Dictionary<string, Func<string>>
             {
-                { MasterDataTable.ModifyUserID, GetCurrentUserID },
-                { MasterDataTable.ModifyDateTime, GetCurrentDateTime }
+                { MasterDataTable.UserIDModify, GetCurrentUserID },
+                { MasterDataTable.DateTimeModify, GetCurrentDateTime },
             };
 
             TemplateDictionary = new Dictionary<string, Func<string, string>>
             {
-                { MasterDataTable.ModifyUserID, FunctionBase.FormatUserID },
-                { MasterDataTable.ModifyDateTime, FunctionBase.FormatDate }
+                { MasterDataTable.UserIDModify, FunctionBase.FormatUserID },
+                { MasterDataTable.DateTimeModify, FunctionBase.FormatDate },
+                { MasterDataTable.RoleID, FunctionBase.FormatRoleID }
             };
         }
 
         public bool IsRuntimeField(string fieldName)
         {
             return FunctionDictionary.ContainsKey(fieldName);
+        }
+
+        public bool IsTemplateField(string fieldName)
+        {
+            return TemplateDictionary.ContainsKey(fieldName);
         }
 
         public string GetRuntimeValue(string fieldName)
@@ -51,6 +57,7 @@ namespace Modules.MasterData.Global
                 : fieldValue;
         }
 
+
         private static string GetCurrentUserID()
         {
             return UserController.Instance.GetCurrentUserInfo().UserID.ToString();
@@ -60,6 +67,7 @@ namespace Modules.MasterData.Global
         {
             return DateTime.Now.ToString(PatternEnum.DateTime);
         }
+
 
         public void ReloadCache(string assemblyName, string cacheName, string cacheID,
             Dictionary<string, string> dataDictionary)
@@ -103,7 +111,7 @@ namespace Modules.MasterData.Global
                 return;
             }
 
-            MethodInfo method = typeof(CacheBase).GetMethod("Remove").MakeGenericMethod(type);
+            MethodInfo method = typeof(CacheBase).GetMethod("Remove", new []{ typeof(string) }).MakeGenericMethod(type);
             method.Invoke(null, new object[] { key });
         }
 

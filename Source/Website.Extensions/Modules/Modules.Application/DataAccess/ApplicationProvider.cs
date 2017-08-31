@@ -293,8 +293,14 @@ namespace Modules.Application.DataAccess
                         'ApplicationProvider.AutoAssign - ' + @Step,
                         @{ApplicationTable.ModifyDateTime}
 
-                    insert into dbo.APP_ScheduleLog
-			            (ScheduleName, LogDate, LogMessage, IsSuccess, CreateDateTime)
+                    insert into dbo.{ScheduleLogTable.TableName}
+			        (
+                        {ScheduleLogTable.ScheduleCode},
+                        {ScheduleLogTable.LogDate},
+                        {ScheduleLogTable.LogMessage},
+                        {ScheduleLogTable.IsSuccess},
+                        {ScheduleLogTable.CreateDateTime}
+                    )
 		            values
 			            ('AUTO_ASSIGN', @CurrentDate, N'Có lỗi khi xử lý.', 0, @{ApplicationTable.ModifyDateTime})
 
@@ -377,13 +383,13 @@ namespace Modules.Application.DataAccess
 
 
             ScriptInsertScheduleLog = $@"
-                insert into dbo.APP_ScheduleLog
+                insert into dbo.{ScheduleLogTable.TableName}
 			    (
-                    ScheduleName,
-                    LogDate,
-                    LogMessage,
-                    IsSuccess,
-                    CreateDateTime
+                    {ScheduleLogTable.ScheduleCode},
+                    {ScheduleLogTable.LogDate},
+                    {ScheduleLogTable.LogMessage},
+                    {ScheduleLogTable.IsSuccess},
+                    {ScheduleLogTable.CreateDateTime}
                 )
 		        values
 			    (
@@ -580,6 +586,22 @@ namespace Modules.Application.DataAccess
                     {fieldInfo.FieldValue})");
             }
             return string.Join(CharacterEnum.Comma, listData);
+        }
+
+        public void LinkApplication(string uniqueID, string functionName, string applicationID)
+        {
+            Connector.AddParameter(ApplicationTable.UniqueID, SqlDbType.VarChar, uniqueID);
+            Connector.AddParameter("FunctionName", SqlDbType.VarChar, functionName);
+            Connector.AddParameter(ApplicationTable.ApplicationID, SqlDbType.BigInt, applicationID);
+            Connector.ExecuteProcedure("dbo.APP_SP_LinkApplication");
+        }
+
+        public int SupplyDocument(string uniqueID, string functionName)
+        {
+            Connector.AddParameter(ApplicationTable.UniqueID, SqlDbType.VarChar, uniqueID);
+            Connector.AddParameter("FunctionName", SqlDbType.VarChar, functionName);
+            Connector.ExecuteProcedure("dbo.APP_SP_SupplyDocument", out string result);
+            return int.Parse(result);
         }
     }
 }

@@ -14,6 +14,11 @@ namespace Modules.MasterData.Business
             return new MasterDataProvider().LoadTableSetting(userID);
         }
 
+        public static DataTable LoadTableFieldSetting(string tableID)
+        {
+            return new MasterDataProvider().LoadTableFieldSetting(tableID);
+        }
+
         public static DataTable LoadTablePermission(int userID, string tableID)
         {
             return new MasterDataProvider().LoadTablePermission(userID, tableID);
@@ -30,6 +35,7 @@ namespace Modules.MasterData.Business
             }
 
             dsResult.Tables.Add(tablePermission);
+            dsResult.Tables.Add(LoadTableFieldSetting(tableID));
             dsResult.Tables.Add(LoadTableData(connectionName, databaseName, schemaName, tableName));
             return dsResult;
         }

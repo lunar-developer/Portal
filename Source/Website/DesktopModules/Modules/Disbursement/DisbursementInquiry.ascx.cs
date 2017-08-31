@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
-using DotNetNuke.UI.Skins.Controls;
 using Modules.Disbursement.Business;
 using Modules.Disbursement.Database;
 using Modules.Disbursement.Enum;
@@ -12,6 +11,7 @@ using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
 using Modules.UserManagement.Global;
+using System.Web;
 
 namespace DesktopModules.Modules.Disbursement
 {
@@ -23,7 +23,6 @@ namespace DesktopModules.Modules.Disbursement
             {
                 return;
             }
-
             BindData();
         }
 
@@ -36,10 +35,12 @@ namespace DesktopModules.Modules.Disbursement
             btnAdd.Visible = IsRoleInput();
             btnExport.Visible = false;
             DivProcessInfo.Visible = false;
+            btnUpload.Visible = IsRoleALM();
 
             RegisterButton(btnPreapprove, DisbursementStatusEnum.Preapproved);
             RegisterButton(btnApprove, DisbursementStatusEnum.Approved);
             RegisterButton(btnCancel, DisbursementStatusEnum.Canceled);
+            calProcessDate.SelectedDate = DateTime.Now;
         }
 
         protected void Search(object sender, EventArgs e)
@@ -56,12 +57,16 @@ namespace DesktopModules.Modules.Disbursement
             BindGrid();
             SetPermission();
         }
+        protected void Grid_OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            gridData.Visible = true;
+            gridData.DataSource = LoadData();
+        }
 
         private void BindGrid(int pageIndex = 0)
         {
             gridData.Visible = true;
             gridData.DataSource = LoadData();
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataBind();
         }
 
@@ -69,13 +74,13 @@ namespace DesktopModules.Modules.Disbursement
         {
             DivProcessInfo.Visible = true; // allow inner control can set attribute visible
 
-            bool isRolePreapprove = IsRolePreapprove();
+            bool isRolePreapprove = IsRoleApprove();// IsRoleRevise();
             btnExport.Visible = true;
-            btnPreapprove.Visible = hidStatus.Value == DisbursementStatusEnum.Revised && isRolePreapprove;
-            btnCancel.Visible = hidStatus.Value == DisbursementStatusEnum.RequestApproved && isRolePreapprove;
-            btnApprove.Visible = hidStatus.Value == DisbursementStatusEnum.Preapproved && IsRoleApprove();
+            btnPreapprove.Visible = false;//** hidStatus.Value == DisbursementStatusEnum.Revised && isRolePreapprove;
+            btnCancel.Visible = false;//hidStatus.Value == DisbursementStatusEnum.RequestApproved && IsRoleApprove(); // isRolePreapprove;
+            btnApprove.Visible = false;// hidStatus.Value == DisbursementStatusEnum.Revised/*Preapproved*/ && IsRoleApprove();
 
-            DivProcessInfo.Visible = btnPreapprove.Visible || btnApprove.Visible || btnCancel.Visible;
+            DivProcessInfo.Visible = false;// btnPreapprove.Visible || btnApprove.Visible || btnCancel.Visible;
         }
 
         private DataTable LoadData()
@@ -92,22 +97,13 @@ namespace DesktopModules.Modules.Disbursement
             return DisbursementBusiness.QueryDisbursement(parameterDictionary);
         }
 
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid();
-        }
-
         protected void Export(object sender, EventArgs e)
         {
             string[] columnName = {
                 "TTKD",
                 "Tên KH",
-                "Mã KH",
+                "Mã KHCN",
+                "Mã KHDN",
                 "Số tiền",
                 "Loại tiền",
                 "Lãi suất",
@@ -119,7 +115,8 @@ namespace DesktopModules.Modules.Disbursement
                 "Hình thức GN",
                 "Loại KH",
                 "Trạng thái",
-                "Ghi chú"
+                "Ghi chú",
+                "Tuân thủ TB"
             };
             DataTable dt = new DataTable();
             dt.Clear();
@@ -136,18 +133,20 @@ namespace DesktopModules.Modules.Disbursement
                 newRow[columnName[0]] = UserManagementModuleBase.FormatBranchID(row[DisbursementTable.BranchID].ToString());
                 newRow[columnName[1]] = row[DisbursementTable.CustomerName].ToString();
                 newRow[columnName[2]] = row[DisbursementTable.CustomerID].ToString();
-                newRow[columnName[3]] = row[DisbursementTable.Amount].ToString();
-                newRow[columnName[4]] = "704".Equals(row[DisbursementTable.CurrencyCode].ToString()) ? "VND" : "USD"; 
-                newRow[columnName[5]] = row[DisbursementTable.InterestRate].ToString();
-                newRow[columnName[6]] = FunctionBase.FormatDate(row[DisbursementTable.LoanExpire].ToString());
-                newRow[columnName[7]] = row[DisbursementTable.DisbursementPurpose].ToString();
-                newRow[columnName[8]] = row[DisbursementTable.LoanMethod].ToString();
-                newRow[columnName[9]] = FunctionBase.FormatDate(row[DisbursementTable.CreateDateTime].ToString());
-                newRow[columnName[10]] = FunctionBase.FormatDate(row[DisbursementTable.DisbursementDate].ToString());
-                newRow[columnName[11]] = "CK".Equals(row[DisbursementTable.DisbursementMethod].ToString()) ? "Chuyển khoản" : "Tiền mặt";
-                newRow[columnName[12]] = "E".Equals(row[DisbursementTable.CustomerType].ToString()) ? "Mới": "Hiện hữu";
-                newRow[columnName[13]] = GetStatusDescription(row[DisbursementTable.DisbursementStatus].ToString());
-                newRow[columnName[14]] = "0".Equals(row[DisbursementTable.Note].ToString()) ? "GN & TN trong ngày" : "GN nội bộ";
+                newRow[columnName[3]] = row[DisbursementTable.OrganizationID].ToString();
+                newRow[columnName[4]] = row[DisbursementTable.Amount].ToString();
+                newRow[columnName[5]] = "704".Equals(row[DisbursementTable.CurrencyCode].ToString()) ? "VND" : "USD"; 
+                newRow[columnName[6]] = row[DisbursementTable.InterestRate].ToString();
+                newRow[columnName[7]] = FunctionBase.FormatDate(row[DisbursementTable.LoanExpire].ToString());
+                newRow[columnName[8]] = row[DisbursementTable.DisbursementPurpose].ToString();
+                newRow[columnName[9]] = row[DisbursementTable.LoanMethod].ToString();
+                newRow[columnName[10]] = FunctionBase.FormatDate(row[DisbursementTable.CreateDateTime].ToString());
+                newRow[columnName[11]] = FunctionBase.FormatDate(row[DisbursementTable.DisbursementDate].ToString());
+                newRow[columnName[12]] = "CK".Equals(row[DisbursementTable.DisbursementMethod].ToString()) ? "Chuyển khoản" : "Tiền mặt";
+                newRow[columnName[13]] = "E".Equals(row[DisbursementTable.CustomerType].ToString()) ? "Mới": "Hiện hữu";
+                newRow[columnName[14]] = GetStatusDescription(row[DisbursementTable.DisbursementStatus].ToString());
+                newRow[columnName[15]] = "0".Equals(row[DisbursementTable.Note].ToString()) ? "GN & TN trong ngày" : "GN trong hệ thống";
+                newRow[columnName[16]] = "Y".Equals(row[DisbursementTable.ViolateFlag].ToString()) ? "Vi phạm" : "Tuân thủ";
                 dt.Rows.Add(newRow);
             }
             ExportToExcel(dt, "Disbursement");
@@ -155,7 +154,7 @@ namespace DesktopModules.Modules.Disbursement
 
         protected void Create(object sender, EventArgs e)
         {
-            string script = EditUrl("Edit", 1024, 768, false);
+            string script = EditUrl("Edit", 1024, 768, true);
             RegisterScript(script);
         }
 
@@ -168,7 +167,7 @@ namespace DesktopModules.Modules.Disbursement
             }
 
             string disbursementID = linkButton.CommandArgument;
-            string script = EditUrl("Edit", 1024, 768, false, DisbursementTable.DisbursementID, disbursementID);
+            string script = EditUrl("Edit", 1024, 768, false, true, null, DisbursementTable.DisbursementID, disbursementID);
             RegisterScript(script);
         }
 
@@ -192,7 +191,8 @@ namespace DesktopModules.Modules.Disbursement
             }
             Dictionary<string, SQLParameterData> parametrDictionary =
                 GetProcessData(string.Join(",", listID), button.CommandArgument);
-            int result = DisbursementBusiness.ProcessDisbursement(parametrDictionary);
+            string errorMsg = null;
+            int result = DisbursementBusiness.ProcessDisbursement(parametrDictionary, out errorMsg);
             string message = GetAction(button.CommandArgument);
             ShowResult(result, message);
         }
@@ -226,6 +226,12 @@ namespace DesktopModules.Modules.Disbursement
             {
                 ShowAlertDialog(message + " thất bại");
             }
+        }
+
+        protected void Upload(object sender, EventArgs e)
+        {
+            string script = EditUrl("Result", 1024, 768, false);
+            RegisterScript(script);
         }
     }
 }

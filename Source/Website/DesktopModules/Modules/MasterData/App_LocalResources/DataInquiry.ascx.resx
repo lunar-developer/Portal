@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblSetting.Help" xml:space="preserve">
-    <value>Chọn cấu hình cần xem/điều chỉnh</value>
+    <value>Chọn Danh mục hoặc Cấu hình cần xem/điều chỉnh</value>
   </data>
   <data name="lblSetting.Text" xml:space="preserve">
-    <value>Chọn cấu hình</value>
+    <value>Danh Mục/Cấu Hình</value>
   </data>
 </root>

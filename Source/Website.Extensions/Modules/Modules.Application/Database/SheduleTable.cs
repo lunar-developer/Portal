@@ -2,6 +2,7 @@
 {
     public static class SheduleTable
     {
+        public const string ScheduleCode = "ScheduleCode";
         public const string ScheduleName = "ScheduleName";
         public const string StartTime = "StartTime";
         public const string EndTime = "EndTime";

@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.Linq;
+using System.Web.UI;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.Application.Business;
 using Modules.Application.Database;
+using Modules.Application.DataTransfer;
 using Modules.Application.Enum;
 using Modules.Application.Global;
 using Telerik.Web.UI;
 using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
+using Website.Library.Extension;
 using Website.Library.Global;
 
 namespace DesktopModules.Modules.Application
@@ -33,6 +37,11 @@ namespace DesktopModules.Modules.Application
             }
         }
 
+
+        protected override void OnLoad(EventArgs e)
+        {
+            SectionCustomerInfo.Callback = SynchronizeCustomerInfo;
+        }
 
         protected override void OnPreRender(EventArgs e)
         {
@@ -143,11 +152,13 @@ namespace DesktopModules.Modules.Application
             string actionCode = ctrlRoute.SelectedItem.Attributes[ApplicationTable.ActionCode];
             switch (actionCode)
             {
-                case "Accept":
+                case "ACCEPT":
+                case "LOCK":
+                case "UNLOCK":
                     nextUserID = UserInfo.UserID;
                     break;
 
-                case "Return":
+                case "RETURN":
                     int.TryParse(ctrlPreviousUserID.Value, out nextUserID);
                     break;
 
@@ -196,9 +207,9 @@ namespace DesktopModules.Modules.Application
         private void AddDefaultValues(IDictionary<string, string> fieldDictionary)
         {
             string applicationTypeID = SectionApplicationInfo.ControlApplicationTypeID.SelectedValue;
-            string processID = applicationTypeID == ApplicationTypeEnum.Personal
-                ? ProcessEnum.Personal
-                : ProcessEnum.PreApprove;
+            ApplicationTypeProcessData cacheItem = CacheBase.Receive<ApplicationTypeProcessData>(applicationTypeID);
+            string processID = cacheItem?.ProcessID ?? ProcessEnum.Personal;
+
             fieldDictionary.Add(ApplicationTable.UniqueID, string.Empty);
             fieldDictionary.Add(ApplicationTable.ProcessID, processID);
             fieldDictionary.Add(ApplicationTable.PhaseID, PhaseEnum.New);
@@ -410,7 +421,7 @@ namespace DesktopModules.Modules.Application
                 #region ASSESSMENT INFO
 
                 { ApplicationTable.DecisionCode, SectionAssessmentInfo.ControlDecisionCode.SelectedValue },
-                { ApplicationTable.DecisionReason, SectionAssessmentInfo.ControlDecisionReason.SelectedValue },
+                { ApplicationTable.DecisionReason, GetRadComboBoxSelectedValues(SectionAssessmentInfo.ControlDecisionReason) },
                 { ApplicationTable.AssessmentContent, SectionAssessmentInfo.ControlAssessmentContent.Text.Trim() },
                 { ApplicationTable.AssessmentDisplayContent, SectionAssessmentInfo.ControlAssessmentDisplayContent.Text.Trim() },
                 { ApplicationTable.ProposeLimit, SectionAssessmentInfo.ControlProposeLimit.Text.Trim() },
@@ -542,7 +553,7 @@ namespace DesktopModules.Modules.Application
             SectionAutoPayInfo.ControlPaymentCIFNo.Text = row[ApplicationTable.PaymentCIFNo].ToString();
             SectionAutoPayInfo.ControlPaymentAccountName.Text = row[ApplicationTable.PaymentAccountName].ToString();
 
-            SectionAutoPayInfo.ControlPaymentAccountNo.SelectedValue = row[ApplicationTable.PaymentAccountNo].ToString();
+            BindCurrentValue(SectionAutoPayInfo.ControlPaymentAccountNo, row[ApplicationTable.PaymentAccountNo].ToString());
             SectionAutoPayInfo.ControlPaymentBankCode.Text = row[ApplicationTable.PaymentBankCode].ToString();
             SectionAutoPayInfo.ControlAutoPayIndicator.SelectedValue = row[ApplicationTable.AutoPayIndicator].ToString();
 
@@ -660,8 +671,11 @@ namespace DesktopModules.Modules.Application
 
             #region ASSESSMENT INFO
 
-            SectionAssessmentInfo.ControlDecisionCode.SelectedValue = row[ApplicationTable.DecisionCode].ToString();
-            SectionAssessmentInfo.ControlDecisionReason.SelectedValue = row[ApplicationTable.DecisionReason].ToString();
+            string decisionCode = row[ApplicationTable.DecisionCode].ToString();
+            string decisionReason = row[ApplicationTable.DecisionReason].ToString();
+            SectionAssessmentInfo.ControlDecisionCode.SelectedValue = decisionCode;
+            BindDecisionReason(decisionReason);
+
             SectionAssessmentInfo.ControlAssessmentContent.Text = row[ApplicationTable.AssessmentContent].ToString();
             SectionAssessmentInfo.ControlAssessmentDisplayContent.Text = row[ApplicationTable.AssessmentDisplayContent].ToString();
             SectionAssessmentInfo.ControlProposeLimit.Text = row[ApplicationTable.ProposeLimit].ToString();
@@ -691,6 +705,7 @@ namespace DesktopModules.Modules.Application
             ctrlApplicationStatus.Value = "";
             ctrlCurrentUserID.Value = "";
             ctrlPreviousUserID.Value = "";
+            ctrlIsRequireUpdate.Value = "0";
 
             #endregion
 
@@ -726,14 +741,14 @@ namespace DesktopModules.Modules.Application
 
             SectionCustomerInfo.ControlLanguage.SelectedValue = "1";
             SectionCustomerInfo.ControlNationality.SelectedValue = "VN";
-            SectionCustomerInfo.ControlBirthDate.SelectedDate = new DateTime(DateTime.Now.Year - 30, 1, 1);
+            SectionCustomerInfo.ControlBirthDate.SelectedDate = new DateTime(DateTime.Now.Year - 20, 1, 1);
             SectionCustomerInfo.ControlMobile01.Text = "";
             SectionCustomerInfo.ControlMobile02.Text = "";
             SectionCustomerInfo.ControlEmail01.Text = "";
             SectionCustomerInfo.ControlEmail02.Text = "";
             SectionCustomerInfo.ControlCorporateCardIndicator.SelectedValue = "I";
             SectionCustomerInfo.ControlCustomerType.SelectedValue = "CONSUMER";
-            SectionCustomerInfo.ControlCustomerClass.SelectedValue = "THUONG";
+            SectionCustomerInfo.ControlCustomerClass.SelectedValue = "B";
 
             #endregion
 
@@ -893,7 +908,7 @@ namespace DesktopModules.Modules.Application
 
             #region ASSESSMENT INFO
 
-            SectionAssessmentInfo.ControlDecisionCode.SelectedIndex = 0;
+            SectionAssessmentInfo.ControlDecisionCode.SelectedIndex = -1;
             SectionAssessmentInfo.ControlDecisionReason.ClearCheckedItems();
             SectionAssessmentInfo.ControlAssessmentContent.Text = "";
             SectionAssessmentInfo.ControlAssessmentDisplayContent.Text = "";
@@ -925,6 +940,118 @@ namespace DesktopModules.Modules.Application
             ctrlUser.SelectedIndex = 0;
 
             ctrlRemark.Text = string.Empty;
+
+            #endregion
+        }
+
+
+        private void SynchronizeCustomerInfo(InsensitiveDictionary<string> customerInfo)
+        {
+            // RESET VALUE
+            #region CUSTOMER INFO
+
+            SectionCustomerInfo.ControlIdentityTypeCode.SelectedIndex = 0;
+            SectionCustomerInfo.ControlCIFNo.Text = "";
+            SectionCustomerInfo.ControlFullName.Text = "";
+            SectionCustomerInfo.ControlEmbossName.Text = "";
+            SectionCustomerInfo.ControlOldCustomerID.Text = "";
+            SectionCustomerInfo.ControlGender.SelectedValue = "M";
+            SectionCustomerInfo.ControlTitleOfAddress.SelectedValue = "MR";
+
+            SectionCustomerInfo.ControlNationality.SelectedValue = CountryEnum.VietNam;
+            SectionCustomerInfo.ControlBirthDate.SelectedDate = new DateTime(DateTime.Now.Year - 20, 1, 1);
+            SectionCustomerInfo.ControlMobile01.Text = "";
+            SectionCustomerInfo.ControlEmail01.Text = "";
+            SectionCustomerInfo.ControlCustomerClass.SelectedIndex = 0;
+
+            #endregion
+
+            #region CONTACT INFO
+
+            SectionContactInfo.ControlHomeAddress01.Text = "";
+            SectionContactInfo.ControlHomeAddress02.Text = "";
+            SectionContactInfo.ControlHomeCountry.SelectedIndex = 0;
+            SectionContactInfo.ControlHomeState.SelectedIndex = 0;
+            SectionContactInfo.ControlHomeCity.SelectedIndex = 0;
+            SectionContactInfo.ControlHomeAddress03.Text = "";
+            SectionContactInfo.ControlHomePhone01.Text = "";
+
+            #endregion
+
+            #region AUTO PAY
+
+            SectionAutoPayInfo.ControlPaymentCIFNo.Text = "";
+            SectionAutoPayInfo.ControlPaymentAccountNo.ClearSelection();
+            SectionAutoPayInfo.ControlPaymentAccountNo.Items.Clear();
+            SectionAutoPayInfo.ControlPaymentAccountName.Text = "";
+            SectionAutoPayInfo.ControlPaymentBankCode.Text = "";
+
+            #endregion
+
+
+            // SYNC DATA
+            #region CUSTOMER INFO
+
+            SectionCustomerInfo.ControlIdentityTypeCode.SelectedValue =
+                customerInfo.GetValue(ApplicationTable.IdentityTypeCode)?.Trim();
+            SectionCustomerInfo.ControlCIFNo.Text = customerInfo.GetValue(ApplicationTable.CIFNo)?.Trim();
+            SectionCustomerInfo.ControlFullName.Text = customerInfo.GetValue(ApplicationTable.FullName)?.Trim();
+            SectionCustomerInfo.ControlEmbossName.Text =
+                ApplicationBusiness.GetEmbossingName(SectionCustomerInfo.ControlFullName.Text);
+            SectionCustomerInfo.ControlOldCustomerID.Text =
+                customerInfo.GetValue(ApplicationTable.OldCustomerID)?.Trim();
+            SectionCustomerInfo.ControlGender.SelectedValue = customerInfo.GetValue(ApplicationTable.Gender)?.Trim();
+            SectionCustomerInfo.ControlTitleOfAddress.SelectedValue =
+                SectionCustomerInfo.ControlGender.SelectedValue == "M" ? "MR" : "MS";
+
+            SectionCustomerInfo.ControlNationality.SelectedValue =
+                customerInfo.GetValue(ApplicationTable.Nationality)?.Trim();
+
+            DateTime birthdate;
+            if (DateTime.TryParseExact(
+                customerInfo.GetValue(ApplicationTable.BirthDate)?.Trim(), PatternEnum.Date,
+                CultureInfo.CurrentCulture, DateTimeStyles.None,
+                out birthdate))
+            {
+                SectionCustomerInfo.ControlBirthDate.SelectedDate = birthdate;
+            }
+
+            SectionCustomerInfo.ControlMobile01.Text = customerInfo.GetValue(ApplicationTable.Mobile01)?.Trim();
+            SectionCustomerInfo.ControlEmail01.Text = customerInfo.GetValue(ApplicationTable.Email01)?.Trim();
+            SectionCustomerInfo.ControlCustomerClass.SelectedValue =
+                customerInfo.GetValue(ApplicationTable.CustomerClass)?.Trim();
+
+            #endregion
+
+            #region CONTACT INFO
+
+            SectionContactInfo.ControlHomeAddress01.Text =
+                customerInfo.GetValue(ApplicationTable.HomeAddress01)?.Trim();
+            SectionContactInfo.ControlHomeAddress02.Text =
+                customerInfo.GetValue(ApplicationTable.HomeAddress02)?.Trim();
+
+            string countryCode = customerInfo.GetValue(ApplicationTable.HomeCountry)?.Trim();
+            SectionContactInfo.ControlHomeCountry.SelectedValue = countryCode;
+            BindState(SectionContactInfo.ControlHomeCountry);
+
+            SectionContactInfo.ControlHomeState.SelectedValue =
+                customerInfo.GetValue(ApplicationTable.HomeState)?.Trim();
+            BindCity(countryCode, SectionContactInfo.ControlHomeState);
+
+            SectionContactInfo.ControlHomeCity.SelectedValue =
+                customerInfo.GetValue(ApplicationTable.HomeCity)?.Trim();
+
+            SectionContactInfo.ControlHomeAddress03.Text =
+                customerInfo.GetValue(ApplicationTable.HomeAddress03)?.Trim();
+            SectionContactInfo.ControlHomePhone01.Text = customerInfo.GetValue(ApplicationTable.HomePhone01)?.Trim();
+
+            UpdateContent(SectionContactInfo);
+            #endregion
+
+            #region AUTO PAY
+
+            SectionAutoPayInfo.ControlPaymentCIFNo.Text = SectionCustomerInfo.ControlCIFNo.Text;
+            UpdateContent(SectionAutoPayInfo);
 
             #endregion
         }
@@ -1018,6 +1145,26 @@ namespace DesktopModules.Modules.Application
             {
                 SectionContactInfo.ProcessOnSelectState(comboboxState, null);
             }
+        }
+
+        private static void BindCurrentValue(RadComboBox comboBox, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+            comboBox.Items.Add(new RadComboBoxItem(value, value));
+        }
+
+        private void BindDecisionReason(string selectedValues)
+        {
+            List<string> listSelectedValues = selectedValues.Split(',').ToList();
+            SectionAssessmentInfo.LoadDecisionReason(listSelectedValues);
+        }
+
+        private static void UpdateContent(Control control)
+        {
+            (control.Parent.Parent as UpdatePanel)?.Update();
         }
     }
 }

@@ -32,6 +32,13 @@ namespace Modules.Disbursement.DataAccess
             return value;
         }
 
+        public DataTable GetTopOne()
+        {
+            const string sql = "SELECT Top 1 Cast(RateLDR as decimal) as RateLDR, Room, Rate, CreatedBy, CreatedAt FROM dbo.DB_Room ORDER BY ID DESC";
+            Connector.ExecuteSql(sql, out DataTable result);
+            return result;
+        }
+
         public DataTable GetTop500RecentChanges()
         {
             const string sql = "SELECT Top 500 Cast(RateLDR as decimal) as RateLDR, Room, Rate, CreatedBy, CreatedAt FROM dbo.DB_Room ORDER BY ID DESC";

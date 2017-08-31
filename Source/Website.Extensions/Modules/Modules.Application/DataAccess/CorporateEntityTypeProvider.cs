@@ -11,14 +11,14 @@ namespace Modules.Application.DataAccess
         public List<CorporateEntityTypeData> GetAllCorporateEntityType()
         {
             Connector.ExecuteProcedure<CorporateEntityTypeData, List<CorporateEntityTypeData>>(
-                CorporateEntityTypeTable.StoreProcedure, out List<CorporateEntityTypeData> list);
+                "dbo.APP_SP_GetCorporateEntityType", out List<CorporateEntityTypeData> list);
             return list;
         }
         
         public CorporateEntityTypeData GetCorporateEntityType(string corporateEntityTypeCode)
         {
             Connector.AddParameter(CorporateEntityTypeTable.CorporateEntityTypeCode, SqlDbType.VarChar, corporateEntityTypeCode);
-            Connector.ExecuteProcedure(CorporateEntityTypeTable.StoreProcedure, out CorporateEntityTypeData result);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetCorporateEntityType", out CorporateEntityTypeData result);
             return result;
         }
     }

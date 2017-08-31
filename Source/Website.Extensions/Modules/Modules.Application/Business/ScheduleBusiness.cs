@@ -11,9 +11,9 @@ namespace Modules.Application.Business
             return new ScheduleProvider().GetAllScheduleData();
         }
 
-        public static ScheduleData GetScheduleData(string scheduleName)
+        public static ScheduleData GetScheduleData(string scheduleCode)
         {
-            return new ScheduleProvider().GetScheduleData(scheduleName);
+            return new ScheduleProvider().GetScheduleData(scheduleCode);
         }
     }
 }

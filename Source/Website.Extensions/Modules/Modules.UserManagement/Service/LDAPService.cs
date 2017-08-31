@@ -57,11 +57,11 @@ namespace Modules.UserManagement.Service
             Dictionary<string, string> dictionary = new Dictionary<string, string>
             {
                 { "UserName", userName },
-                { "Password", SecurityBase.Encrypt(LDAPServiceKey, password) },
+                { "Password", CryptographyBase.EncryptSymmetric(LDAPServiceKey, password) },
                 { "LoginProvider", "LDAP" }
             };
             string json = FunctionBase.Serialize(dictionary);
-            await Task.FromResult(Post("Authenticate", json));
+            await Task.FromResult(Post("UserAuthenticate", json));
             return GetResponseCode();
         }
     }

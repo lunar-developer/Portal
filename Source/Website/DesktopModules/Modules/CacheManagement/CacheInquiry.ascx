@@ -27,6 +27,7 @@
                                 ID="btnReload"
                                 OnClick="Reload"
                                 runat="server"
+                                Visible="False"
                                 Text="Reload" />
                 </div>
             </div>

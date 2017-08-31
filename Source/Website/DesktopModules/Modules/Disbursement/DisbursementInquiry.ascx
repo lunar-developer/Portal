@@ -5,8 +5,17 @@
 <%@ Register Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
-<%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
-
+<%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4" %>
+<style>
+    .RadGrid tr.rgRow td, .RadGrid tr.rgRow td:hover
+    {
+        border: 0.8px dotted #cfd8dc;
+    }
+    .RadGrid tr.rgAltRow td,.RadGrid tr.rgAltRow td:hover
+    {
+        border: 0.8px dotted #cfd8dc;
+    }
+</style>
 <asp:UpdatePanel ID="updatePanel"
                  runat="server">
 <Triggers>
@@ -54,7 +63,7 @@
                 <div class="form-group">
                     <div class="col-sm-4 control-label">
                         <dnn:Label runat="server"
-                                   Text="Ngày xử lý" />
+                                   Text="Ngày duyệt hồ sơ" />
                     </div>
                     <div class="col-sm-8">
                         <dnn:DnnDatePicker Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
@@ -122,6 +131,13 @@
                             OnClick="Export"
                             runat="server"
                             Text="Export" />
+                <asp:Button 
+                            ID="btnUpload"
+                            Visible="false"
+                            CssClass="btn btn-default"
+                            runat="server" 
+                            Text="import kết quả GN"
+                            OnClick="Upload"/>
             </div>
         </div>
     </fieldset>
@@ -168,12 +184,12 @@
                             ID="btnApprove"
                             OnClick="Submit"
                             runat="server"
-                            Text="Duyệt" />
+                            Text="SME Duyệt" />
                 <asp:Button CssClass="btn btn-primary"
                             ID="btnCancel"
                             OnClick="Submit"
                             runat="server"
-                            Text="Duyệt" />
+                            Text="Duyệt Hủy" />
             </div>
         </div>
     </fieldset>
@@ -181,29 +197,29 @@
 
 
 <div class="c-margin-t-20 form-group table-responsive">
-    <control:Grid AllowMultiRowSelection="True"
-                  AllowPaging="true"
-                  AutoGenerateColumns="False"
-                  CssClass="dnnGrid"
-                  EnableViewState="true"
-                  ID="gridData"
-                  OnPageIndexChanged="OnPageIndexChanging"
-                  OnPageSizeChanged="OnPageSizeChanging"
-                  runat="server"
-                  Visible="false">
+    <control:Grid 
+        ID="gridData" 
+        runat="server"
+        PageSize="10"
+        AutoGenerateColumns="False" 
+        AllowFilteringByColumn="True"
+        OnNeedDataSource="Grid_OnNeedDataSource" 
+        Width="100%"
+        Visible="false">
         <ClientSettings>
-            <Selecting AllowRowSelect="True"
-                       EnableDragToSelectRows="True">
+            <Selecting AllowRowSelect="False"
+                       EnableDragToSelectRows="False">
             </Selecting>
         </ClientSettings>
         <MasterTableView DataKeyNames="DisbursementID"
                          TableLayout="Fixed">
             <Columns>
-                <telerik:GridClientSelectColumn HeaderText="#">
+                <%--<telerik:GridClientSelectColumn HeaderText="#">
                     <HeaderStyle Width="40px" />
-                </telerik:GridClientSelectColumn>
+                </telerik:GridClientSelectColumn>--%>
                 <telerik:GridTemplateColumn HeaderText="Chi nhánh">
-                    <HeaderStyle Width="180px" />
+                    <HeaderStyle Width="180px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="180px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <%#UserManagementModuleBase.FormatBranchID(Eval(DisbursementTable.BranchID).ToString()) %>
                     </ItemTemplate>
@@ -211,11 +227,13 @@
                 
                 <telerik:GridBoundColumn DataField="CustomerName"
                                          HeaderText="Tên khách hàng">
-                    <HeaderStyle Width="200px" />
+                    <HeaderStyle Width="200px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="200px"  HorizontalAlign="Left"/>
                 </telerik:GridBoundColumn>
 
-                <telerik:GridTemplateColumn HeaderText="Mã khách hàng">
-                    <HeaderStyle Width="140px" />
+                <telerik:GridTemplateColumn HeaderText="Mã KHCN">
+                    <HeaderStyle Width="140px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="140px"  HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <asp:LinkButton CommandArgument="<%#Eval(DisbursementTable.DisbursementID).ToString() %>"
                                         CssClass="c-edit-link c-theme-color"
@@ -225,10 +243,24 @@
                         </asp:LinkButton>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
+
+                <telerik:GridTemplateColumn HeaderText="Mã KHDN">
+                    <HeaderStyle Width="140px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="140px"  HorizontalAlign="Center"/>
+                    <ItemTemplate>
+                        <asp:LinkButton CommandArgument="<%#Eval(DisbursementTable.DisbursementID).ToString() %>"
+                                        CssClass="c-edit-link c-theme-color"
+                                        OnClick="Edit"
+                                        runat="server">
+                            <%#Eval(DisbursementTable.OrganizationID).ToString() %>
+                        </asp:LinkButton>
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
                 
                 <telerik:GridTemplateColumn DataField="Amount"
                                             HeaderText="Số tiền">
-                    <HeaderStyle Width="120px" />
+                    <HeaderStyle Width="120px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="120px"  HorizontalAlign="Right"/>
                     <ItemTemplate>
                         <%#FunctionBase.FormatDecimal(Eval(DisbursementTable.Amount).ToString()) %>
                     </ItemTemplate>
@@ -236,7 +268,8 @@
 
                 <telerik:GridTemplateColumn DataField="CurrencyCode"
                                             HeaderText="Loại tiền">
-                    <HeaderStyle Width="80px" />
+                    <HeaderStyle Width="80px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="80px"  HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <%#FormatCurrency(Eval(DisbursementTable.CurrencyCode).ToString()) %>
                     </ItemTemplate>
@@ -244,63 +277,83 @@
 
                 <telerik:GridTemplateColumn DataField="CurrencyCode"
                                             HeaderText="Lãi suất">
-                    <HeaderStyle Width="80px" />
+                    <HeaderStyle Width="80px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="80px"  HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <%#decimal.Parse(Eval(DisbursementTable.InterestRate).ToString()) %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn  DataField="LoanExpire"
                                          HeaderText="Thời hạn vay">
-                    <HeaderStyle Width="150px" />
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <%#FunctionBase.FormatDate(Eval(DisbursementTable.LoanExpire).ToString()) %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridBoundColumn DataField="DisbursementPurpose"
                                          HeaderText="Mục đích">
-                    <HeaderStyle Width="300px" />
+                    <HeaderStyle Width="300px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="300px"  HorizontalAlign="Left"/>
                 </telerik:GridBoundColumn>
                 <telerik:GridBoundColumn DataField="LoanMethod"
                                          HeaderText="Phương thức vay">
-                    <HeaderStyle Width="100px" />
+                    <HeaderStyle Width="100px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="100px"  HorizontalAlign="Left"/>
                 </telerik:GridBoundColumn>
                 <telerik:GridTemplateColumn DataField="DisbursementDate"
                                             HeaderText="Ngày ĐK">
-                    <HeaderStyle Width="150px" />
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <%#FunctionBase.FormatDate(Eval(DisbursementTable.CreateDateTime).ToString()) %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn DataField="DisbursementDate"
                                             HeaderText="Ngày Giải Ngân">
-                    <HeaderStyle Width="150px" />
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <%#FunctionBase.FormatDate(Eval(DisbursementTable.DisbursementDate).ToString()) %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
-                <telerik:GridBoundColumn DataField="DisbursementMethod"
-                                         HeaderText="Hình thức GN">
-                    <HeaderStyle Width="100px" />
-                </telerik:GridBoundColumn>
+                <telerik:GridTemplateColumn HeaderText="Hình thức GN">
+                    <HeaderStyle Width="110px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="110px"  HorizontalAlign="Left"/>
+                    <ItemTemplate>
+                        <%#"CK".Equals(Eval(DisbursementTable.DisbursementMethod).ToString()) ? "Chuyển khoản":"Tiền mặt" %>
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn DataField="CustomerType"
                                             HeaderText="Loại KH">
-                    <HeaderStyle Width="100px" />
+                    <HeaderStyle Width="110px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="110px"  HorizontalAlign="Center"/>
                     <ItemTemplate>
                         <%#"E".Equals(Eval(DisbursementTable.CustomerType).ToString()) ? "Hiện hữu" : "Mới" %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn DataField="DisbursementStatus"
                                             HeaderText="Trạng thái">
-                    <HeaderStyle Width="150px" />
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
                         <%#GetStatusDescription(Eval(DisbursementTable.DisbursementStatus).ToString()) %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
                 <telerik:GridTemplateColumn  DataField="Note"
                                          HeaderText="Ghi chú">
-                    <HeaderStyle Width="150px" />
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Left"/>
                     <ItemTemplate>
-                        <%#"0".Equals(Eval(DisbursementTable.Note).ToString()) ? "GN & TN trong ngày":"GN nội bộ" %>
+                        <%#"0".Equals(Eval(DisbursementTable.Note).ToString()) ? "GN & TN trong ngày": ("2".Equals(Eval(DisbursementTable.Note).ToString())? "Khác": "GN trong hệ thống")  %>
+                    </ItemTemplate>
+                </telerik:GridTemplateColumn>
+                <telerik:GridTemplateColumn  DataField="Note"
+                                         HeaderText="Tuân thủ thông báo">
+                    <HeaderStyle Width="150px" HorizontalAlign="Center"/>
+                    <ItemStyle  Width="150px"  HorizontalAlign="Center"/>
+                    <ItemTemplate>
+                        <%#"Y".Equals(Eval(DisbursementTable.ViolateFlag).ToString()) ? "Vi phạm": "Tuân thủ"  %>
                     </ItemTemplate>
                 </telerik:GridTemplateColumn>
             </Columns>
@@ -336,10 +389,9 @@
 </style>
 <script type="text/javascript">
     addPageLoaded(function()
-        {
-            $(".dnnPanels").dnnPanels({
-                defaultState: "open"
-            });
-        },
-        true);
+    {
+        $(".dnnPanels").dnnPanels({
+            defaultState: "open"
+        });
+    }, true);
 </script>

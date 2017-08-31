@@ -17,7 +17,7 @@ namespace Modules.EmployeeManagement.Business
             return result;
         }
 
-        public static DataTable SearchEmployee(Dictionary<string, SQLParameterData> parameterDictionary)
+        public static DataSet SearchEmployee(Dictionary<string, SQLParameterData> parameterDictionary)
         {
             return new EmployeeProvider().SearchEmployee(parameterDictionary);
         }
@@ -45,6 +45,11 @@ namespace Modules.EmployeeManagement.Business
         public static DataTable GetEmployeeEmail(string email)
         {
             return new EmployeeProvider().GetEmployeeEmail(email);
+        }
+
+        public static List<EmployeeBranchData> GetAllBranch()
+        {
+            return new EmployeeProvider().GetAllBranch();
         }
     }
 }

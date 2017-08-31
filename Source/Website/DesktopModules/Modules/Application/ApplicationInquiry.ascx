@@ -108,6 +108,7 @@
                     <control:Grid
                         AutoGenerateColumns="True"
                         ID="gridData"
+                        OnNeedDataSource="OnNeedDataSource"
                         runat="server"
                         Visible="false">
                         <MasterTableView>

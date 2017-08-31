@@ -25,6 +25,7 @@
         public const string FieldName = "FieldName";
         public const string FieldLabel = "FieldLabel";
         public const string Tooltip = "Tooltip";
+        public const string PlaceHolder = "PlaceHolder";
         public const string InputType = "InputType";
         public const string DataType = "DataType";
         public const string DefaultValue = "DefaultValue";
@@ -42,7 +43,13 @@
         public const string IsDisableOnInsert = "IsDisableOnInsert";
         public const string IsDisableOnUpdate = "IsDisableOnUpdate";
 
-        public const string ModifyUserID = "ModifyUserID";
-        public const string ModifyDateTime = "ModifyDateTime";
+
+        public const string ClassName = "ClassName";
+        public const string FunctionName = "FunctionName";
+
+
+        public const string UserIDModify = "UserIDModify";
+        public const string DateTimeModify = "DateTimeModify";
+        public const string RoleID = "RoleID";
     }
 }

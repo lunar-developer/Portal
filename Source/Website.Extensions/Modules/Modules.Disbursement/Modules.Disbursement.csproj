@@ -49,6 +49,7 @@
     <Compile Include="DataAccess\DisbursementRoomProvider.cs" />
     <Compile Include="Database\DisbursementRoomTable.cs" />
     <Compile Include="Database\DisbursementTable.cs" />
+    <Compile Include="DataTransfer\CoreBankData.cs" />
     <Compile Include="DataTransfer\DisbursementData.cs" />
     <Compile Include="DataTransfer\DisbursementRoomData.cs" />
     <Compile Include="Enum\CurrencyEnum.cs" />

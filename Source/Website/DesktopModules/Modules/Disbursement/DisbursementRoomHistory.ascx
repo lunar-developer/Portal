@@ -27,10 +27,10 @@
                                  Visible="false">
                         <MasterTableView>
                             <Columns>
-                                <dnn:DnnGridBoundColumn  HeaderText="Room" DataField="Room" >
+                                <dnn:DnnGridBoundColumn  HeaderText="RateLDR" DataField="Room" >
                                     <HeaderStyle Width="25%" />
                                 </dnn:DnnGridBoundColumn>
-                                <dnn:DnnGridTemplateColumn HeaderText="RateLDR">
+                                <dnn:DnnGridTemplateColumn HeaderText="Room">
                                     <ItemTemplate>
                                         <%#FunctionBase.FormatDecimal(Eval(DisbursementRoomTable.RateLdr).ToString())%>
                                     </ItemTemplate>

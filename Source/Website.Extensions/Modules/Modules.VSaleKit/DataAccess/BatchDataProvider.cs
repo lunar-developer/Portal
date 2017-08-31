@@ -11,73 +11,53 @@ namespace Modules.VSaleKit.DataAccess
 {
     public class BatchDataProvider : DataProvider
     {
-        private static readonly string ScriptInsert = $@"
-            insert into dbo.{BatchDataTable.TableName}(
-                {BatchDataTable.ApplicID},
-                {BatchDataTable.ApplicationTypeID},
-                {BatchDataTable.PolicyID},
-                {BatchDataTable.LegalType},
-                {BatchDataTable.CustomerID},
-                {BatchDataTable.CustomerName},
-                {BatchDataTable.CreditLimit},
-                {BatchDataTable.Priority},
-                {BatchDataTable.UserName},
-                {BatchDataTable.Description},
-                {BatchDataTable.ImportUserID},
-                {BatchDataTable.ImportDateTime},
-                {BatchDataTable.ProcessStatus},
-                {BatchDataTable.ProcessCode})";
+        private const string ScriptInsert = @"
+            begin transaction
+            begin try
+                {0}
+                commit transaction
+                select 1
+            end try
+            begin catch
+                rollback transaction
+                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                values(Error_Number(), Error_Message(), 'BatchDataProvider.Insert', dbo.SYS_FN_GetCurrentDateTime())
+                select -1
+            end catch";
+
+        // ApplicID, ApplicationTypeID, PolicyID, LegalType, CustomerID, CustomerName, CreditLimit, Priority,
+        // UserName, Description, ImportUserID, ImportDateTime, ProcessStatus, ProcessCode
+        private const string ScriptExecute = @"
+            execute dbo.VSK_SP_InsertBatchData 
+                NULL, {0}, {1}, '{2}', '{3}', N'{4}', {5}, '{6}',
+                '{7}', N'{8}', {9}, {10}, {11}, '{12}';
+            ";
+
         public DataTable Insert(List<BatchData> listData, Dictionary<string, string> dictionary)
         {
             // Build insert script
-            StringBuilder script = new StringBuilder();
-            List<string> listSQL = new List<string>();
-            const string sql = @"
-                begin transaction
-                begin try
-                    {0}
-                    commit transaction
-                    select 1
-                end try
-                begin catch
-                    rollback transaction
-                    select 0
-                end catch";
-
+            StringBuilder batch = new StringBuilder();
             // Create insert script
             string applicationTypeID = dictionary[BatchDataTable.ApplicationTypeID];
             string policyID = dictionary[BatchDataTable.PolicyID];
             string importUserID = dictionary[BatchDataTable.ImportUserID];
             string importDateTime = DateTime.Now.ToString(PatternEnum.DateTime);
+
             foreach (BatchData data in listData)
             {
-                listSQL.Add($@"(
-                    '', {applicationTypeID}, {policyID}, '{data.LegalType}',
-                    '{data.CustomerID}', N'{data.CustomerName}', {data.CreditLimit},
-                    {data.Priority}, '{data.UserName}', N'{data.Description}',
-                    {importUserID}, {importDateTime}, 0, '')");
-
-                if (listSQL.Count < 1000)
-                {
-                    continue;
-                }
-                script.Append($"{ScriptInsert} values {string.Join(",", listSQL.ToArray())};");
-                listSQL = new List<string>();
+                batch.AppendLine(string.Format(ScriptExecute,
+                    applicationTypeID, policyID, data.IdentityTypeCode, data.CustomerID, data.CustomerName, data.CreditLimit, data.Priority,
+                    data.UserName, data.Description, importUserID, importDateTime, 0, string.Empty));
             }
-            script.Append($"{ScriptInsert} values {string.Join(",", listSQL.ToArray())};");
-
-
-            string result;
-            Connector.ExecuteSql(string.Format(sql, script), out result);
+            Connector.ExecuteSql(string.Format(ScriptInsert, batch), out string result);
             if (result == "0")
             {
                 return new DataTable();
             }
 
-            DataTable dtResult;
             Connector.AddParameter(BatchDataTable.ImportUserID, SqlDbType.Int, importUserID);
             Connector.AddParameter(BatchDataTable.ImportDateTime, SqlDbType.BigInt, importDateTime);
-            Connector.ExecuteProcedure("dbo.VSK_ProcessBatchUpload", out dtResult);
+            Connector.ExecuteProcedure("dbo.VSK_SP_ProcessBatchUpload", out DataTable dtResult);
             return dtResult;
         }
     }

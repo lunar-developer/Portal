@@ -59,9 +59,9 @@ namespace Modules.Disbursement.Global
             return IsInRole(RoleEnum.Revise);
         }
 
-        protected bool IsRolePreapprove()
+        protected bool IsRoleALM()
         {
-            return IsInRole(RoleEnum.Preapprove);
+            return IsInRole(RoleEnum.Alm);
         }
 
         protected bool IsRoleApprove()
@@ -71,7 +71,7 @@ namespace Modules.Disbursement.Global
 
         protected bool IsAdministrator()
         {
-            return IsRolePreapprove() || IsRoleApprove();
+            return IsRoleApprove() || IsRoleALM();// || 
         }
 
         protected string FormatCurrency(string currencyCode)
@@ -89,32 +89,36 @@ namespace Modules.Disbursement.Global
         private static readonly Dictionary<string, string> ActionDictionary = new Dictionary<string, string>
         {
             { DisbursementStatusEnum.New, "Thêm mới" },
-            { DisbursementStatusEnum.Submited, "Chuyển phê duyệt" },
-            { DisbursementStatusEnum.Revised, "Duyệt yêu cầu" },
+            { DisbursementStatusEnum.Submited, "Chuyển TDV chi nhánh" },
+            { DisbursementStatusEnum.Revised, "TDV chi nhánh duyệt" },
             { DisbursementStatusEnum.Preapproved, "Nhận xử lý" },
-            { DisbursementStatusEnum.Approved, "Duyệt yêu cầu" },
-            { DisbursementStatusEnum.Disbursed, "Hoàn tất" },
+            { DisbursementStatusEnum.Approved, "SME duyệt" },
+            { DisbursementStatusEnum.Disbursed, "Cập nhật kết quả" },
 
             { DisbursementStatusEnum.Rejected, "Từ chối yêu cầu" },
 
             { DisbursementStatusEnum.RequestCancel, "Yêu cầu Hủy" },
             { DisbursementStatusEnum.RequestApproved, "Duyệt yêu cầu Hủy" },
-            { DisbursementStatusEnum.Canceled, "Hủy yêu cầu" }
+            { DisbursementStatusEnum.Canceled, "Hủy yêu cầu" },
+            { DisbursementStatusEnum.Updated, "Điều chỉnh yêu cầu" },
+            { DisbursementStatusEnum.ApplyResult, "Cập nhật kết quả" }
         };
         private static readonly Dictionary<string, string> StatusDictionary = new Dictionary<string, string>
         {
             { DisbursementStatusEnum.New, "Mới tạo" },
-            { DisbursementStatusEnum.Submited, "Chờ phê duyệt" },
+            { DisbursementStatusEnum.Submited, "Chờ TDV chi nhánh duyệt" },
             { DisbursementStatusEnum.Revised, "Đã chuyển đến Phòng SME" },
             { DisbursementStatusEnum.Preapproved, "Phòng SME đang xử lý" },
             { DisbursementStatusEnum.Approved, "Phòng SME đã duyệt" },
-            { DisbursementStatusEnum.Disbursed, "Đã Giải Ngân" },
+            { DisbursementStatusEnum.Disbursed, "Hoàn tất Giải Ngân" },
 
             { DisbursementStatusEnum.Rejected, "Bị từ chối" },
 
             { DisbursementStatusEnum.RequestCancel, "Yêu cầu Hủy" },
             { DisbursementStatusEnum.RequestApproved, "Chờ Phòng SME Hủy yêu cầu" },
-            { DisbursementStatusEnum.Canceled, "Đã hủy" }
+            { DisbursementStatusEnum.Canceled, "Đã hủy" },
+            { DisbursementStatusEnum.Updated, "Đã cập nhật" },
+            { DisbursementStatusEnum.ApplyResult, "Cập nhật kết quả" }
         };
 
         protected string GetAction(string status)

@@ -2,14 +2,28 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 using Website.Library.Enum;
 
 namespace Website.Library.Global
 {
     public class ServiceBase
     {
+        protected static readonly string UserName;
+        protected static readonly string Password;
+        protected static readonly string BasicAuthentication;
+
         private readonly string ServiceUrl;
         private Dictionary<string, string> Dictionary = new Dictionary<string, string>();
+
+
+        static ServiceBase()
+        {
+            UserName = FunctionBase.GetConfiguration(ConfigEnum.BasicAuthenticationUserName);
+            Password = FunctionBase.GetConfiguration(ConfigEnum.BasicAuthenticationPassword);
+            string credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{UserName}:{Password}"));
+            BasicAuthentication = $"Basic {credentials}";
+        }
 
 
         public ServiceBase(string url)
@@ -24,6 +38,7 @@ namespace Website.Library.Global
             httpWebRequest.ContentType = ContentEnum.Json;
             httpWebRequest.Method = HTTPMethodEnum.Post;
             httpWebRequest.Timeout = 60 * UnitEnum.Second;
+            httpWebRequest.Headers.Add("Authorization", BasicAuthentication);
 
             // Send Request
             using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))

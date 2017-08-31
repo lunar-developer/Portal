@@ -5,7 +5,7 @@
         public const string ColumnAtLineEmpty = "{0} tại dòng {1} không được RỖNG. Vui lòng cập nhật lại.";
 
         public const string ColumnAtLineIsNotDateFormat =
-            "{0} tại dòng {1} không đúng định dạng ngày tháng (dd/mm/yyyy). Vui lòng cập nhật lại.";
+            "{0} tại dòng {1} không đúng định dạng ngày tháng (yyyyMMdd). Vui lòng cập nhật lại.";
 
         public const string FileExceedSize = "File vượt quá kích thước cho phép (5MB).";
 

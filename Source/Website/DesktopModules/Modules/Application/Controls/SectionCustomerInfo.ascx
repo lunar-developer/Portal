@@ -25,7 +25,8 @@
                 CssClass="btn btn-primary c-margin-0" 
                 TabIndex="-1"
                 ID="ctrlQueryCustomer"
-                OnClientClick="return alertOnConstruct()"
+                OnClick="QueryCustomer"
+                OnClientClick="return onBeforeQueryCustomer();"
                 runat="server"
                 Text="Tìm" />
         </div>
@@ -122,7 +123,7 @@
             <asp:TextBox
                 CssClass="form-control c-theme"
                 ID="ctrlEmbossName"
-                MaxLength="26"
+                MaxLength="20"
                 placeholder="Tên dập trên thẻ"
                 runat="server" />
         </div>
@@ -163,7 +164,8 @@
                 Text="Giới tính" />
         </div>
         <div class="col-sm-3">
-            <control:AutoComplete ID="ctrlGender" runat="server" ClientIDMode="Static">
+            <control:AutoComplete ID="ctrlGender" runat="server" ClientIDMode="Static"
+                OnClientSelectedIndexChanged="onSelectGender">
                 <Items>
                     <control:ComboBoxItem Value="M" Text="Nam"/>
                     <control:ComboBoxItem Value="F" Text="Nữ"/>
@@ -177,11 +179,13 @@
                 Text="Danh xưng" />
         </div>
         <div class="col-sm-3">
-            <control:AutoComplete ID="ctrlTitleOfAddress" runat="server" ClientIDMode="Static">
+            <control:AutoComplete
+                ID="ctrlTitleOfAddress"
+                runat="server"
+                ClientIDMode="Static">
                 <Items>
                     <control:ComboBoxItem Value="MR" Text="Ông"/>
-                    <control:ComboBoxItem Value="MRS" Text="Bà"/>
-                    <control:ComboBoxItem Value="MS" Text="Cô"/>
+                    <control:ComboBoxItem Value="MS" Text="Bà"/>
                 </Items>
             </control:AutoComplete>
         </div>

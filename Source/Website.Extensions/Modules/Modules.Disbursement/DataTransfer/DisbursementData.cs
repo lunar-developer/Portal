@@ -6,6 +6,7 @@ namespace Modules.Disbursement.DataTransfer
         public string DisbursementID;
         public string BranchID;
         public string CustomerID;
+        public string OrganizationID;
         public string CustomerName;
         public string CurrencyCode;
         public string Amount;
@@ -34,6 +35,7 @@ namespace Modules.Disbursement.DataTransfer
         public string CustomerType;
         public string InterestRate;
         public string Note;
+        public string ModifyTimeWhenView;
 
         public bool Equals(DisbursementData data)
         {

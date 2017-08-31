@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AutoComplete.cs" />
     <Compile Include="ComboBoxItem.cs" />
+    <Compile Include="FileUpload.cs" />
     <Compile Include="Label.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

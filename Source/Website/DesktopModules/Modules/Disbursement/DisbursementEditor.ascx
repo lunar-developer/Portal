@@ -29,18 +29,31 @@
                 <div class="dnnClear"
                     id="DivInfo">
                     <div class="form-group">
-                        <div class="col-sm-2 control-label">
-                            <control:Label ID="Identifier"
-                                IsRequire="True"
-                                runat="server" />
+                        <div  class="col-sm-6">
+                            <div class="col-sm-4 control-label">
+                                <control:Label ID="PersonalNumber"
+                                    runat="server" />
+                            </div>
+                            <div class="col-sm-3">
+                                <asp:TextBox CssClass="form-control"
+                                    ID="tbIdentifier"
+                                    MaxLength="20"
+                                    placeholder="PersNbr"
+                                    runat="server" />
+                            </div>
+                            <div class="col-sm-2 control-label">
+                                <control:Label ID="OrganizationNumber"
+                                    runat="server" />
+                            </div>
+                            <div class="col-sm-3">
+                                <asp:TextBox CssClass="form-control c-theme"
+                                    ID="tbOrgNumber"
+                                    MaxLength="20"
+                                    placeholder="OrgNbr"
+                                    runat="server" />
+                            </div>
                         </div>
-                        <div class="col-sm-4">
-                            <asp:TextBox CssClass="form-control c-theme"
-                                ID="tbIdentifier"
-                                MaxLength="20"
-                                placeholder="Số CMND/Mã số thuế"
-                                runat="server" />
-                        </div>
+                        
                         <div class="col-sm-2 control-label">
                             <control:Label ID="BranchID"
                                 runat="server" />
@@ -135,25 +148,28 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-2 control-label">
-                            <control:Label ID="LoanMethod"
+                            <control:Label 
+                                ID="LoanMethod"
+                                IsRequire="true"
                                 runat="server" />
                         </div>
                         <div class="col-sm-4">
                             <asp:TextBox CssClass="form-control c-theme"
                                 ID="tbLoanMethod"
                                 MaxLength="20"
-                                placeholder="Phương thức vay"
+                                placeholder="Trung dài hạn/ngắn hạn"
                                 runat="server" />
                         </div>
                         <div class="col-sm-2 control-label">
                             <control:Label HelpText="Lãi suất (ví dụ: 0.08)"
                                 runat="server"
+                                IsRequire="true"
                                 Text="Lãi suất" />
                         </div>
                         <div class="col-sm-4">
                             <asp:TextBox autocomplete="off"
                                 CssClass="form-control c-theme"
-                                placeHolder="Lãi suất"
+                                placeHolder="Lãi suất (ví dụ: 0.08)"
                                 ID="tbInterestRate"
                                 runat="server" />
                         </div>
@@ -196,12 +212,50 @@
                                 CssClass="form-control c-theme"
                                 ID="ddlNote"
                                 runat="server" >
+                                <asp:ListItem Text="Khác" Value="2" />
                                 <asp:ListItem Text="KH giải ngân và thu nợ trong ngày" Value="0" />
-                                <asp:ListItem Text="KH giải ngân nội bộ" Value="1" />
+                                <asp:ListItem Text="KH giải ngân trong hệ thống" Value="1" />
                             </asp:DropDownList>
                         </div>
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Hạn mức hiện tại của ROOM do ALM nhập"
+                                runat="server"
+                                Id="roomLimitLabel"
+                                Text="Room" />
+                        </div>
+                        <div class="col-sm-4 control-value">
+                            <asp:Label CssClass="c-font-bold"
+                                runat="server"
+                                Id="roomLimit"
+                                Text="" />
+                        </div>
                     </div>
-
+                     <div class="form-group">
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Tỉ lệ LDR do phòng SLM nhập"
+                                runat="server"
+                                Id="roomLdrRateLabel"
+                                Text="Tỉ lệ LDR" />
+                        </div>
+                        <div class="col-sm-4 control-value">
+                           <asp:Label CssClass="c-font-bold"
+                                runat="server"
+                                Id="roomLdrRate"
+                                Text="" />
+                        </div>
+                        <div class="col-sm-2 control-label">
+                            <control:Label HelpText="Tỷ giá do phòng SLM nhập"
+                                runat="server"
+                                Id="roomRateLabel"
+                                Text="Tỷ lệ" />
+                        </div>
+                        <div class="col-sm-4 control-value">
+                            <asp:Label CssClass="c-font-bold"
+                                runat="server"
+                                Id="roomRate"
+                                Text="" />
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-sm-2 control-label">
                             <control:Label ID="DisbursementPurpose"
@@ -306,13 +360,28 @@
             <asp:HiddenField ID="hidDisbursementID"
                 runat="server"
                 Visible="False" />
+            <asp:HiddenField ID="hidLastModifiedAt"
+                runat="server"
+                Visible="False" />
+            <asp:HiddenField ID="hidIdentifyId"
+                runat="server"
+                Visible="false" />
+            <asp:HiddenField ID="hidOrgId"
+                runat="server"
+                Visible="false" />
+            <asp:HiddenField ID="hidCurrencyCodeId"
+                runat="server"
+                Visible="false" />
+            <asp:HiddenField ID="hidCustomerName"
+                runat="server"
+                Visible="false" />
         </div>
     </ContentTemplate>
 </asp:UpdatePanel>
 
 <script type="text/javascript">
     function validate() {
-        var array = ["tbIdentifier", "tbCustomerName", "tbAmount", "tbDisbursementPurpose"];
+        var array = ["tbCustomerName", "tbAmount", "tbDisbursementPurpose", "tbInterestRate", "tbLoanMethod"];
         return validateInputArray(array);
     }
 

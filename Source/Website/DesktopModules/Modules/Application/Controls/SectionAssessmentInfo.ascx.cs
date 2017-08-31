@@ -22,13 +22,7 @@ namespace DesktopModules.Modules.Application.Controls
 
         public void ProcessOnSelectDecisionCode(object sender, EventArgs e)
         {
-            string decisionCode = ctrlDecisionCode.SelectedValue;
-            CleanUp();
-            if (string.IsNullOrWhiteSpace(decisionCode))
-            {
-                return;
-            }
-            BindDecisionReasonData(ctrlDecisionReason, decisionCode);
+            LoadDecisionReason();
         }
 
         public void ProcessOnSelectDecisionReason(object sender, EventArgs e)
@@ -50,6 +44,19 @@ namespace DesktopModules.Modules.Application.Controls
             ctrlAssessmentDisplayContent.Text = remarkBuilder.ToString();
         }
 
+        public void LoadDecisionReason(List<string> listSelectedValues = null)
+        {
+            CleanUp();
+
+            // Rebind
+            string decisionCode = ctrlDecisionCode.SelectedValue;
+            if (string.IsNullOrWhiteSpace(decisionCode))
+            {
+                return;
+            }
+            BindDecisionReasonData(ctrlDecisionReason, decisionCode, listSelectedValues);
+        }
+
         private void CleanUp()
         {
             ctrlDecisionReason.ClearSelection();
@@ -57,7 +64,7 @@ namespace DesktopModules.Modules.Application.Controls
             ctrlDecisionReason.Items.Clear();
             ctrlAssessmentContent.Text = string.Empty;
             ctrlAssessmentDisplayContent.Text = string.Empty;
-        }
+        }        
 
 
         #region PUBLIC PROPERTY

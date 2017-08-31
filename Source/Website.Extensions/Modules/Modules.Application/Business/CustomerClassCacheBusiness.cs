@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Modules.Application.DataTransfer;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
+using Website.Library.Global;
 using Website.Library.Interface;
 
 namespace Modules.Application.Business
@@ -27,6 +30,12 @@ namespace Modules.Application.Business
         public CacheData Reload(string key)
         {
             return CustomerClassBusiness.GetCustomerClass(key);
+        }
+
+        public List<string> Arrange()
+        {
+            List<CustomerClassData> list = CacheBase.Receive<CustomerClassData>();
+            return list.OrderBy(item => int.Parse(item.SortOrder)).Select(item => item.CustomerClassCode).ToList();
         }
     }
 }

@@ -11,6 +11,7 @@ using Modules.EmployeeManagement.Enum;
 using Modules.EmployeeManagement.Global;
 using OfficeOpenXml;
 using Website.Library.Enum;
+using Website.Library.Global;
 
 namespace DesktopModules.Modules.EmployeeManagement
 {
@@ -26,22 +27,22 @@ namespace DesktopModules.Modules.EmployeeManagement
             return listColumn.All(column => type.GetField(column) != null);
         }
 
-        private List<EmployeeData> ImportExcel(ExcelPackage package, out string msg)
+        private static List<EmployeeData> ImportExcel(ExcelPackage package, out string message)
         {
-            msg = string.Empty;
+            message = string.Empty;
             ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
             List<EmployeeData> listEmployeeData = new List<EmployeeData>();
             List<string> listColumn = new List<string>();
             int line = 1;
             
-            /*get Header*/
+            // Get Header
             foreach (ExcelRangeBase firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
             {
                 listColumn.Add(firstRowCell.Text);
             }
             if (CheckTemplateFormat(listColumn) == false)
             {
-                msg = MessageDefinitionEnum.FileNotFollowTemplate;
+                message = MessageDefinitionEnum.FileNotFollowTemplate;
                 return null;
             }
             /*get Body*/
@@ -56,33 +57,41 @@ namespace DesktopModules.Modules.EmployeeManagement
                 {
                     string column = listColumn[columnNumber - 1];
                     string currentCell = workSheet.Cells[rowNumber, columnNumber].Text;
-                    if (columnNumber == ImportColumnEnum.EmployeeID || columnNumber == ImportColumnEnum.FullName)
+                    if (FunctionBase.IsInArray(columnNumber, ImportColumnEnum.EmployeeID, ImportColumnEnum.FullName))
+                    {
                         if (string.IsNullOrWhiteSpace(currentCell))
                         {
-                            msg = string.Format(MessageDefinitionEnum.ColumnAtLineEmpty, column, line);
+                            message = string.Format(MessageDefinitionEnum.ColumnAtLineEmpty, column, line);
                             break;
                         }
+                    }
 
-                    if (columnNumber == ImportColumnEnum.DateOfBirth || columnNumber == ImportColumnEnum.BeginWorkDate || columnNumber == ImportColumnEnum.ContractDate || columnNumber == ImportColumnEnum.DateOfIssue)
+                    if (FunctionBase.IsInArray(columnNumber,
+                        ImportColumnEnum.DateOfBirth,
+                        ImportColumnEnum.BeginWorkDate,
+                        ImportColumnEnum.ContractDate,
+                        ImportColumnEnum.DateOfIssue))
                     {
                         string dateFormat = null;
-                        if (!string.IsNullOrWhiteSpace(currentCell))
+                        if (string.IsNullOrWhiteSpace(currentCell) == false)
                         {
                             DateTime parsedDate;
-                            string[] arrayDateFormat = { "dd/MM/yyyy", "dd/M/yyyy", "d/MM/yyyy", "d/M/yyyy" };
-                            bool isDate = DateTime.TryParseExact(currentCell, arrayDateFormat, 
+                            bool isDate = DateTime.TryParseExact(currentCell, PatternEnum.Date,
                                 CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate);
-                            if (!isDate)
+                            if (isDate == false)
                             {
-                                msg = string.Format(MessageDefinitionEnum.ColumnAtLineIsNotDateFormat, column, line);
+                                message = string.Format(MessageDefinitionEnum.ColumnAtLineIsNotDateFormat, column, line);
                                 break;
                             }
                             dateFormat = parsedDate.ToString(PatternEnum.Date);
                         }
                         type.GetField(column).SetValue(employeeData, dateFormat);
                     }
-                    else 
-                        type.GetField(column).SetValue(employeeData, workSheet.Cells[rowNumber, columnNumber].Text.Trim());
+                    else
+                    {
+                        string value = workSheet.Cells[rowNumber, columnNumber].Text.Trim().Replace("'", "\"");
+                        type.GetField(column).SetValue(employeeData, value);
+                    }
                 }
                 listEmployeeData.Add(employeeData);
             }

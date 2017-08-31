@@ -20,6 +20,13 @@ namespace Modules.MasterData.DataAccess
             return result;
         }
 
+        public DataTable LoadTableFieldSetting(string tableID)
+        {
+            Connector.AddParameter(MasterDataTable.TableID, SqlDbType.Int, tableID);
+            Connector.ExecuteProcedure("dbo.MD_SP_LoadTableFieldSetting", out DataTable result);
+            return result;
+        }
+
         public DataTable LoadTablePermission(int userID, string tableID)
         {
             Connector.AddParameter(MasterDataTable.UserID, SqlDbType.Int, userID);
@@ -86,6 +93,8 @@ namespace Modules.MasterData.DataAccess
         public DataSet LoadData(string databaseName, string schemaName, string tableName,
             Dictionary<string, string> dictionary)
         {
+            Connector.AllowDbNull = true;   // Avoid NULL auto convert to Zero (0)
+
             // Field Info
             string script = string.Format(ScriptQueryField, databaseName, tableName);
 
@@ -101,7 +110,7 @@ namespace Modules.MasterData.DataAccess
                 script = script + string.Format(ScriptQueryData,
                     databaseName, schemaName, tableName, string.Join(" And ", list));
             }
-
+            
             Connector.ExecuteSql(script, out DataSet result);
             return result;
         }

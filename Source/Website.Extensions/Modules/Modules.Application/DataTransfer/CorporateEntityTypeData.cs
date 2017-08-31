@@ -6,6 +6,7 @@ namespace Modules.Application.DataTransfer
     {
         public string CorporateEntityTypeCode { get; set; }
         public string CorporateEntityTypeName { get; set; }
+        public string SortOrder { get; set; }
         public string IsDisable { get; set; }
     }
 }

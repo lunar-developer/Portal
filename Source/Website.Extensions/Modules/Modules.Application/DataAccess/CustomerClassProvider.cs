@@ -8,24 +8,17 @@ namespace Modules.Application.DataAccess
 {
     public class CustomerClassProvider : DataProvider
     {
-        private static readonly string ScriptGetAllCustomerClass =
-            $"Select * from dbo.{CustomerClassTable.TableName} with(nolock)";
-
         public List<CustomerClassData> GetAllCustomerClass()
         {
-            Connector.ExecuteSql<CustomerClassData, List<CustomerClassData>>(ScriptGetAllCustomerClass,
+            Connector.ExecuteSql<CustomerClassData, List<CustomerClassData>>("dbo.APP_SP_GetCustomerClass",
                 out List<CustomerClassData> result);
             return result;
         }
 
-        private static readonly string ScriptGetCustomerClass = $@"
-            {ScriptGetAllCustomerClass}
-            where {CustomerClassTable.CustomerClassCode} = @{CustomerClassTable.CustomerClassCode}";
-
         public CustomerClassData GetCustomerClass(string code)
         {
             Connector.AddParameter(CustomerClassTable.CustomerClassCode, SqlDbType.VarChar, code);
-            Connector.ExecuteSql(ScriptGetCustomerClass, out CustomerClassData result);
+            Connector.ExecuteSql("dbo.APP_SP_GetCustomerClass", out CustomerClassData result);
             return result;
         }
     }

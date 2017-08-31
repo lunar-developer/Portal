@@ -11,14 +11,14 @@ namespace Modules.Application.DataAccess
         public List<ContractTypeData> GetAllContractType()
         {
             Connector.ExecuteProcedure<ContractTypeData, List<ContractTypeData>>(
-                ContractTypeTable.StoreProcedure, out List<ContractTypeData> list);
+                "dbo.APP_SP_GetContractType", out List<ContractTypeData> list);
             return list;
         }
         
         public ContractTypeData GetContractType(string contractTypeCode)
         {
             Connector.AddParameter(ContractTypeTable.ContractTypeCode, SqlDbType.VarChar, contractTypeCode);
-            Connector.ExecuteProcedure(ContractTypeTable.StoreProcedure, out ContractTypeData result);
+            Connector.ExecuteProcedure("dbo.APP_SP_GetContractType", out ContractTypeData result);
             return result;
         }
     }

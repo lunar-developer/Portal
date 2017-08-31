@@ -47,9 +47,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ResultBusiness.cs" />
+    <Compile Include="Business\SummerPromotionBusiness.cs" />
     <Compile Include="DataAccess\ResultProvider.cs" />
+    <Compile Include="DataAccess\SummerPromotionProvider.cs" />
     <Compile Include="Database\ResultTable.cs" />
+    <Compile Include="Database\SummerPromotionTable.cs" />
     <Compile Include="DataTransfer\ResultData.cs" />
+    <Compile Include="DataTransfer\SummerPromotionData.cs" />
     <Compile Include="Enum\ReportTypeEnum.cs" />
     <Compile Include="Global\MarketingCampaignBase.cs">
       <SubType>ASPXCodeBehind</SubType>

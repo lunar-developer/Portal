@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblBranchCode.Help" xml:space="preserve">
-    <value>Nhập Mã đơn vị để tìm kiếm</value>
+    <value>Nhập Mã trung tâm kinh doanh để tìm kiếm</value>
   </data>
   <data name="lblBranchCode.Text" xml:space="preserve">
-    <value>Mã đơn vị</value>
+    <value>Mã trung tâm kinh doanh</value>
   </data>
 </root>

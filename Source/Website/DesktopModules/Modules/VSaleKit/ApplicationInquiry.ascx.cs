@@ -7,8 +7,9 @@ using Modules.VSaleKit.Database;
 using Modules.VSaleKit.Global;
 using Telerik.Web.UI;
 using Website.Library.Database;
+using Website.Library.DataTransfer;
 using Website.Library.Enum;
-using Website.Library.Global;
+using PermissionEnum = Modules.VSaleKit.Enum.PermissionEnum;
 
 namespace DesktopModules.Modules.VSaleKit
 {
@@ -16,36 +17,65 @@ namespace DesktopModules.Modules.VSaleKit
     {
         protected override void OnLoad(EventArgs e)
         {
-            try
+            if (IsPostBack)
             {
-                if (IsPostBack)
-                {
-                    return;
-                }
+                return;
+            }
+            AutoWire();
+            BindData();
+        }
 
-                AutoWire();
-                BindData();
-            }
-            catch (Exception exception)
-            {
-                FunctionBase.LogError(exception);
-            }
-            finally
-            {
-                SetPermission();
-            }
+        private void BindData()
+        {
+            calFromDate.SelectedDate = DateTime.Now.AddDays(-7);
+            calFromDate.MinDate = DateTime.Now.AddDays(-30);
+            calFromDate.MaxDate = DateTime.Now;
+
+            calToDate.SelectedDate = DateTime.Now;
+            calToDate.MaxDate = DateTime.Now;
+
+            BindBranchData(ddlBranch, new RadComboBoxItem("Tất cả", "-2"));
+            ddlBranch.SelectedIndex = 0;
+
+            btnAdd.Visible = IsHasPermission(PermissionEnum.Add);
         }
 
         protected void Search(object sender, EventArgs e)
         {
-            hidFromDate.Value = dpFromDate.SelectedDate?.ToString(PatternEnum.Date);
+            hidFromDate.Value = calFromDate.SelectedDate?.ToString(PatternEnum.Date);
+            hidToDate.Value = calToDate.SelectedDate?.ToString(PatternEnum.Date);
             hidCustomerInfo.Value = txtCustomerInfo.Text.Trim();
-            hidBranchCode.Value = ddlBranch.SelectedValue;
+            hidBranchID.Value = ddlBranch.SelectedValue;
             hidFilterFlag.Value = ddlFilterFlag.SelectedValue;
+
+            if (hidFilterFlag.Value == "0")
+            {
+                if (string.IsNullOrWhiteSpace(hidCustomerInfo.Value))
+                {
+                    if(string.IsNullOrWhiteSpace(hidFromDate.Value) || string.IsNullOrWhiteSpace(hidToDate.Value))
+                    {
+                        ShowAlertDialog("Vui lòng nhập thông tin khách hàng hoặc thời gian tìm kiếm");
+                        return;
+                    }
+                }
+            }
             BindGrid();
+            gridData.Visible = true;
+            gridData.LocalResourceFile = LocalResourceFile;
+            gridData.DataBind();
         }
 
-        protected void EditUser(object sender, EventArgs e)
+        private void BindGrid()
+        {
+             gridData.DataSource = GetData();
+        }
+
+        protected void OnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            gridData.DataSource = GetData();
+        }
+
+        protected void ViewApplication(object sender, EventArgs e)
         {
             LinkButton button = sender as LinkButton;
             if (button == null)
@@ -61,55 +91,24 @@ namespace DesktopModules.Modules.VSaleKit
             RegisterScript(script);
         }
 
-        protected void Export(object sender, EventArgs e)
-        {
-            ExportToExcel(GetData());
-        }
-
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid();
-        }
-
-        private void BindData()
-        {
-            BindBranchData(ddlBranch);
-            ddlBranch.SelectedIndex = 0;
-
-            dpFromDate.SelectedDate = DateTime.Now;
-            dpFromDate.MinDate = DateTime.Now.AddDays(-30);
-            dpFromDate.MaxDate = DateTime.Now;
-        }
-
-        private void BindGrid(int pageIndex = 0)
-        {
-            gridData.Visible = true;
-            gridData.CurrentPageIndex = pageIndex;
-            gridData.DataSource = GetData();
-            gridData.DataBind();
-        }
-
         private DataTable GetData()
         {
-            Dictionary<string, string> dictionary = new Dictionary<string, string>
+            Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { BaseTable.UserName, UserInfo.Username },
-                { BaseTable.FromDate, hidFromDate.Value },
-                { "CustomerInfo", hidCustomerInfo.Value },
-                { ApplicationFormTable.BranchCode, hidBranchCode.Value },
-                { "FilterFlag", hidFilterFlag.Value }
+                { BaseTable.UserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.FromDate, new SQLParameterData(hidFromDate.Value, SqlDbType.VarChar) },
+                { BaseTable.ToDate, new SQLParameterData(hidToDate.Value, SqlDbType.VarChar) },
+                { "CustomerInfo", new SQLParameterData(hidCustomerInfo.Value, SqlDbType.NVarChar) },
+                { "BranchID", new SQLParameterData(hidBranchID.Value, SqlDbType.VarChar) },
+                { "FilterFlag", new SQLParameterData(hidFilterFlag.Value, SqlDbType.Int) }
             };
             return ApplicationFormBusiness.SearchApplication(dictionary);
         }
 
-        private void SetPermission()
+        protected void AddApplication(object sender, EventArgs e)
         {
-            btnExport.Visible = UserInfo.IsSuperUser;
+            string script = GetWindowOpenScript(ApplicationUrl, null);
+            RegisterScript(script);
         }
     }
 }

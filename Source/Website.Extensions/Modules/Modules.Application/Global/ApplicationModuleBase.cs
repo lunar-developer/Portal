@@ -25,7 +25,7 @@ namespace Modules.Application.Global
             return item;
         }
 
-        private static void BindItems(RadComboBox dropDownList, RadComboBoxItem[] additionalItems)
+        protected static void BindItems(RadComboBox dropDownList, RadComboBoxItem[] additionalItems)
         {
             dropDownList.ClearSelection();
             dropDownList.ClearCheckedItems();
@@ -36,7 +36,7 @@ namespace Modules.Application.Global
             }
         }
 
-        private static RadComboBoxItem CreateItem(string text, string value, string isDisable = "0")
+        protected static RadComboBoxItem CreateItem(string text, string value, string isDisable = "0")
         {
             RadComboBoxItem item = new RadComboBoxItem(text, value)
             {
@@ -115,7 +115,7 @@ namespace Modules.Application.Global
         protected void BindBranchData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
         {
             dropDownList.Items.AddRange(additionalItems);
-            if (IsRoleAssessment())
+            if (IsCreditUser())
             {
                 BindAllBranchData(dropDownList);
             }
@@ -270,13 +270,14 @@ namespace Modules.Application.Global
             BindItems(dropDownList, additionalItems);
             foreach (PolicyData cacheData in CacheBase.Receive<PolicyData>())
             {
-                string text = $"{cacheData.PolicyCode} - {cacheData.Name}";
+                string text = PolicyBusiness.GetDisplayName(cacheData);
                 string value = cacheData.PolicyCode;
                 dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
             }
         }
 
         protected static void BindDecisionReasonData(RadComboBox dropDownList, string decisionReasonType,
+            List<string> listSelectedValues = null,
             params RadComboBoxItem[] additionalItems)
         {
             dropDownList.ClearSelection();
@@ -287,7 +288,9 @@ namespace Modules.Application.Global
             {
                 string text = $"{cacheData.DecisionReasonCode} - {cacheData.HiddenRemark}";
                 string value = cacheData.DecisionReasonCode;
-                dropDownList.Items.Add(CreateItem(text, value, cacheData.IsDisable));
+                RadComboBoxItem item = CreateItem(text, value, cacheData.IsDisable);
+                item.Checked = listSelectedValues != null && listSelectedValues.Contains(value);
+                dropDownList.Items.Add(item);
             }
         }
 
@@ -305,13 +308,101 @@ namespace Modules.Application.Global
         protected static void BindUserApproval(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
         {
             BindItems(dropDownList, additionalItems);
-            foreach (UserData userInfo in ApplicationBusiness.GetListUserApprover())
+            foreach (UserData userInfo in ApplicationBusiness.GetListUserApproval())
             {
                 string text = $"{userInfo.DisplayName} ({userInfo.UserName})";
                 string value = userInfo.UserID;
                 dropDownList.Items.Add(CreateItem(text, value));
             }
         }
+
+        protected static void BindScheduleData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (ScheduleData cacheData in CacheBase.Receive<ScheduleData>())
+            {
+                string text = cacheData.ScheduleName;
+                string value = cacheData.ScheduleCode;
+                dropDownList.Items.Add(CreateItem(text, value));
+            }
+        }
+
+        protected static void BindPhaseData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (PhaseData cacheData in CacheBase.Receive<PhaseData>())
+            {
+                string text = cacheData.Name;
+                string value = cacheData.PhaseID;
+                dropDownList.Items.Add(CreateItem(text, value));
+            }
+        }
+
+        protected static void BindAssignmentPhaseData(RadComboBox dropDownList,
+            params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (PhaseData cacheData in CacheBase.Receive<PhaseData>())
+            {
+                string text = cacheData.Name;
+                string value = cacheData.PhaseID;
+
+                switch (value)
+                {
+                    case PhaseEnum.New:
+                    case PhaseEnum.WaitForInput:
+                    case PhaseEnum.WaitForAccept:
+                    case PhaseEnum.WaitForValidate:
+                    case PhaseEnum.WaitForAssesst:
+                    case PhaseEnum.WaitForApprove:
+                    case PhaseEnum.WaitForPreApprove:
+                    case PhaseEnum.WaitForSupply:
+                    case PhaseEnum.Approved:
+                    case PhaseEnum.Incomplete:
+                    case PhaseEnum.Closed:
+                        continue;
+
+                    default:
+                        dropDownList.Items.Add(CreateItem(text, value));
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region ListBox Data Bind
+
+        protected void BindListPolicy(RadListBox listSource, RadListBox listTarget, List<string> listPolicyCode)
+        {
+            foreach (PolicyData policyData in CacheBase.Receive<PolicyData>())
+            {
+                string text = $"{policyData.PolicyCode} - {policyData.Name}";
+                string value = policyData.PolicyCode;
+                RadListBoxItem item = new RadListBoxItem(text, value);
+
+                if (listPolicyCode.Contains(policyData.PolicyCode))
+                {
+                    listTarget.Items.Add(item);
+                }
+                else
+                {
+                    listSource.Items.Add(item);
+                }
+            }
+        }
+
+        protected void BindListPolicy(RadListBox listBox)
+        {
+            foreach (PolicyData policyData in CacheBase.Receive<PolicyData>())
+            {
+                string text = $"{policyData.PolicyCode} - {policyData.Name}";
+                string value = policyData.PolicyCode;
+                RadListBoxItem item = new RadListBoxItem(text, value);
+                listBox.Items.Add(item);
+            }
+        }
+
         #endregion
 
         #region Permission
@@ -333,14 +424,23 @@ namespace Modules.Application.Global
             return IsInRole(RoleEnum.Input);
         }
 
+        protected bool IsRoleInput(int userID)
+        {
+            return IsInRole(RoleEnum.Input, userID);
+        }
+
         protected bool IsRoleAssessment()
         {
             return IsInRole(RoleEnum.Assessment);
         }
 
-        protected bool IsRoleApproval()
+        protected bool IsRoleApproval(int userID = 0)
         {
-            return IsInRole(RoleEnum.Approval);
+            if (userID == 0)
+            {
+                userID = UserInfo.UserID;
+            }
+            return IsInRole(RoleEnum.Approval, userID);
         }
 
         protected bool IsRoleConfiguration()
@@ -551,9 +651,34 @@ namespace Modules.Application.Global
         protected string AddIcon => $"{Request.ApplicationPath}/images/add.gif".Replace(@"//", "/");
 
 
-        protected string FormatStatus(string status)
+        public static string FormatStatus(string status)
         {
             return ApplicationStatusEnum.GetStatusDescription(status);
+        }
+
+        public static string FormatPhase(string phaseID)
+        {
+            return PhaseBussiness.GetPhaseName(phaseID);
+        }
+
+        public static string FormatProcess(string processID)
+        {
+            return ProcessBusiness.GetProcessName(processID);
+        }
+
+        public static string FormatRoute(string routeID)
+        {
+            return RouteBusiness.GetRouteName(routeID);
+        }
+
+        public static string FormatApplicationType(string applicationTypeID)
+        {
+            return ApplicationTypeBusiness.GetName(applicationTypeID);
+        }
+
+        public static string FormatState(string stateCode)
+        {
+            return StateBusiness.GetStateName(stateCode);
         }
     }
 }

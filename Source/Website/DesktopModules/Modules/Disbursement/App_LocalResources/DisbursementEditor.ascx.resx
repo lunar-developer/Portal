@@ -189,17 +189,23 @@
   <data name="DisbursementStatus.Text" xml:space="preserve">
     <value>Trạng thái</value>
   </data>
-  <data name="Identifier.Help" xml:space="preserve">
-    <value>Phương thức định danh khách hàng</value>
-  </data>
-  <data name="Identifier.Text" xml:space="preserve">
-    <value>Mã khách hàng</value>
-  </data>
   <data name="LoanMethod.Help" xml:space="preserve">
     <value>Phương thức vay</value>
   </data>
   <data name="LoanMethod.Text" xml:space="preserve">
     <value>Phương thức vay</value>
+  </data>
+  <data name="OrganizationNumber.Help" xml:space="preserve">
+    <value>Mã doanh nghiệp</value>
+  </data>
+  <data name="OrganizationNumber.Text" xml:space="preserve">
+    <value>OrgNbr</value>
+  </data>
+  <data name="PersonalNumber.Help" xml:space="preserve">
+    <value>Mã định danh khách hàng cá nhân</value>
+  </data>
+  <data name="PersonalNumber.Text" xml:space="preserve">
+    <value>Personal Number</value>
   </data>
   <data name="ProcessDate.Help" xml:space="preserve">
     <value>Ngày thực hiện</value>

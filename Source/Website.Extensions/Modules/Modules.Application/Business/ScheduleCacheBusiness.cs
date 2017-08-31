@@ -19,7 +19,7 @@ namespace Modules.Application.Business
                 new OrderedConcurrentDictionary<string, CacheData>();
             foreach (ScheduleData item in ScheduleBusiness.GetAllScheduleData())
             {
-                dictionary.TryAdd(item.ScheduleName, item);
+                dictionary.TryAdd(item.ScheduleCode, item);
             }
             return dictionary;
         }

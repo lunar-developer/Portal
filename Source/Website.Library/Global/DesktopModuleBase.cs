@@ -16,6 +16,7 @@ using DotNetNuke.Entities.Users;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.UI.Skins;
 using DotNetNuke.UI.Skins.Controls;
+using Telerik.Web.UI;
 using Website.Library.Enum;
 
 namespace Website.Library.Global
@@ -39,6 +40,13 @@ namespace Website.Library.Global
             }
         }
 
+
+        protected string GetRadComboBoxSelectedValues(RadComboBox combobox, string separator = ",")
+        {
+            return combobox.CheckedItems.Count == 0
+                ? string.Empty 
+                : string.Join(separator, combobox.CheckedItems.Select(item => item.Value).ToList());
+        }
 
         protected string GetResource(string key)
         {
@@ -133,36 +141,25 @@ namespace Website.Library.Global
             Response.End();
         }
 
-        protected string EditUrl(string controlKey, int width, int height, bool isReload, string keyName = "",
-            string keyValue = "",
-            string closingUrl = null, params string[] additionalParameters)
+        protected string EditUrl(string controlKey, int width, int height,
+            bool isReload, bool isFullScreen = true,
+            string closingUrl = null,
+            params string[] additionalParameters)
         {
             string moduleIdParam = $"mid={ModuleId}";
-            string[] parameters;
-            if (string.IsNullOrEmpty(keyName) == false
-                && string.IsNullOrEmpty(keyValue) == false)
-            {
-                parameters = new string[2 + additionalParameters.Length];
-                parameters[0] = moduleIdParam;
-                parameters[1] = $"{keyName}={keyValue}";
-                Array.Copy(additionalParameters, 0, parameters, 2, additionalParameters.Length);
-            }
-            else
-            {
-                parameters = new string[1 + additionalParameters.Length];
-                parameters[0] = moduleIdParam;
-                Array.Copy(additionalParameters, 0, parameters, 1, additionalParameters.Length);
-            }
+            var parameters = new string[1 + additionalParameters.Length];
+            parameters[0] = moduleIdParam;
+            Array.Copy(additionalParameters, 0, parameters, 1, additionalParameters.Length);
 
             int tabId = PortalSettings.ActiveTab.TabID;
-            var isSuperTab = TestableGlobals.Instance.IsHostTab(tabId);
-            var settings = PortalController.Instance.GetCurrentPortalSettings();
-            var language = Thread.CurrentThread.CurrentCulture.Name;
-            var url = TestableGlobals.Instance.NavigateURL(tabId, isSuperTab, settings, controlKey, language,
+            bool isSuperTab = TestableGlobals.Instance.IsHostTab(tabId);
+            PortalSettings settings = PortalController.Instance.GetCurrentPortalSettings();
+            string language = Thread.CurrentThread.CurrentCulture.Name;
+            string url = TestableGlobals.Instance.NavigateURL(tabId, isSuperTab, settings, controlKey, language,
                 Globals.glbDefaultPage, parameters);
 
             return UrlUtils.PopUpUrl(url, null, PortalSettings, false, false, height, width, isReload, closingUrl)
-                + GetPopUpMaximumScript();
+                + (isFullScreen ? GetPopUpMaximumScript() : string.Empty);
         }
 
         protected string EditUrl(string url, int width, int height, bool isReload,

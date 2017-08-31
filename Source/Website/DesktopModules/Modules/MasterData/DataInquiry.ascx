@@ -2,6 +2,12 @@
 <%@ Register TagPrefix="dnn" Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
+<style type="text/css">
+    .btnDelete
+    {
+        display: block;
+    }
+</style>
 
 <asp:UpdatePanel ID="UpdatePanel"
     runat="server">
@@ -22,7 +28,7 @@
                 <div class="col-sm-4">
                     <control:AutoComplete
                         ID="ddlDataTable"
-                        EmptyMessage="Chọn Cấu hình"
+                        EmptyMessage="Danh Mục/Cấu Hình"
                         runat="server"
                         OnClientSelectedIndexChanged="processOnChange"
                         Width="300px" />
@@ -37,12 +43,12 @@
                         OnClientClick="return processOnLoad();"
                         runat="server"
                         Text="Xem" />
-                    <asp:Button CssClass="btn btn-primary"
+                    <asp:Button CssClass="btn btn-success"
                         ID="btnAdd"
-                        OnClick="Create"
+                        OnClick="CreateData"
                         runat="server"
                         Text="Thêm" />
-                    <asp:Button CssClass="btn btn-primary"
+                    <asp:Button CssClass="btn btn-default"
                         ID="btnExport"
                         OnClick="Export"
                         runat="server"
@@ -56,31 +62,73 @@
                 </div>
             </div>
             <div class="c-margin-t-50 form-group table-responsive">
-                <control:Grid AutoGenerateColumns="true"
+                <control:Grid
                     ID="gridData"
+                    AutoGenerateColumns="true"
                     AllowFilteringByColumn="True"
-                    OnItemCommand="GridOnItemCommand"
-                    OnItemDataBound="OnGridDataBound"
-                    OnNeedDataSource="OnNeedDataSource"
+                    OnItemCommand="ProcessGridDataOnItemCommand"
+                    OnItemDataBound="ProcessGridDataOnItemDataBound"
+                    OnNeedDataSource="ProcessGridDataOnNeedDataSource"
+                    OnColumnCreated="ProcessGridDataOnColumnCreated"
                     runat="server"
                     Visible="False">
                     <MasterTableView>
                         <Columns>
-                            <dnn:DnnGridImageCommandColumn
+                            <dnn:DnnGridTemplateColumn
                                 AllowFiltering="False"
-                                CommandName="EditRow"
-                                IconKey="Edit"
                                 UniqueName="EditButton">
                                 <HeaderStyle Width="30" />
-                            </dnn:DnnGridImageCommandColumn>
-                            <dnn:DnnGridImageCommandColumn
+                                <ItemTemplate>
+                                    <asp:LinkButton runat="server" CommandName="EditRow">
+                                        <i class="fa fa-pencil icon-primary"></i>
+                                    </asp:LinkButton>
+                                </ItemTemplate>
+                            </dnn:DnnGridTemplateColumn>
+                            <dnn:DnnGridTemplateColumn
                                 AllowFiltering="False"
-                                CommandName="Delete"
-                                IconKey="Delete"
                                 UniqueName="DeleteButton">
-                                <ItemStyle CssClass="btnDelete" />
                                 <HeaderStyle Width="30" />
-                            </dnn:DnnGridImageCommandColumn>
+                                <ItemTemplate>
+                                    <asp:LinkButton runat="server" class="btnDelete" CommandName="DeleteRow">
+                                        <i class="fa fa-trash-o icon-danger"></i>
+                                    </asp:LinkButton>
+                                </ItemTemplate>
+                            </dnn:DnnGridTemplateColumn>
+                        </Columns>
+                    </MasterTableView>
+                </control:Grid>
+                <control:Grid
+                    ID="gridDataReserve"
+                    AutoGenerateColumns="true"
+                    AllowFilteringByColumn="True"
+                    OnItemCommand="ProcessGridDataOnItemCommand"
+                    OnItemDataBound="ProcessGridDataOnItemDataBound"
+                    OnNeedDataSource="ProcessGridDataOnNeedDataSource"
+                    OnColumnCreated="ProcessGridDataOnColumnCreated"
+                    runat="server"
+                    Visible="False">
+                    <MasterTableView>
+                        <Columns>
+                            <dnn:DnnGridTemplateColumn
+                                AllowFiltering="False"
+                                UniqueName="EditButton">
+                                <HeaderStyle Width="30" />
+                                <ItemTemplate>
+                                    <asp:LinkButton runat="server" CommandName="EditRow">
+                                        <i class="fa fa-pencil icon-primary"></i>
+                                    </asp:LinkButton>
+                                </ItemTemplate>
+                            </dnn:DnnGridTemplateColumn>
+                            <dnn:DnnGridTemplateColumn
+                                AllowFiltering="False"
+                                UniqueName="DeleteButton">
+                                <HeaderStyle Width="30" />
+                                <ItemTemplate>
+                                    <asp:LinkButton runat="server" class="btnDelete" CommandName="DeleteRow">
+                                        <i class="fa fa-trash-o icon-danger"></i>
+                                    </asp:LinkButton>
+                                </ItemTemplate>
+                            </dnn:DnnGridTemplateColumn>
                         </Columns>
                     </MasterTableView>
                 </control:Grid>
@@ -115,13 +163,15 @@
             runat="server"
             Visible="False" />
 
+        <asp:HiddenField runat="server" ID="hidGridID"/>
+
     </ContentTemplate>
 </asp:UpdatePanel>
 
 <script type="text/javascript">
     function processOnLoad()
     {
-        return validateOption(getControl("ddlDataTable"));
+        return validateRadOption("ddlDataTable");
     }
 
     function processOnChange()
@@ -137,6 +187,6 @@
 
     addPageLoaded(function ()
     {
-        confirmMessage("td.btnDelete input", "Bạn có chắc muốn <b>XÓA</b> thông tin này?");
+        confirmMessage("a.btnDelete", "Bạn có chắc muốn <b>XÓA</b> thông tin này?");
     }, true);
 </script>

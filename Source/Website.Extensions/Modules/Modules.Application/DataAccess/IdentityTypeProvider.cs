@@ -8,24 +8,17 @@ namespace Modules.Application.DataAccess
 {
     public class IdentityTypeProvider : DataProvider
     {
-        private static readonly string ScriptGetAllIdentityType =
-            $"select * from dbo.{IdentityTypeTable.TableName} with(nolock)";
-
         public List<IdentityTypeData> GetAllIdentityType()
         {
-            Connector.ExecuteSql<IdentityTypeData, List<IdentityTypeData>>(ScriptGetAllIdentityType,
+            Connector.ExecuteSql<IdentityTypeData, List<IdentityTypeData>>("dbo.APP_SP_GetIdentityType",
                 out List<IdentityTypeData> result);
             return result;
         }
 
-        private static readonly string ScriptGetIdentityType = $@"
-            {ScriptGetAllIdentityType}
-            where {IdentityTypeTable.IdentityTypeID} = @{IdentityTypeTable.IdentityTypeID}";
-
         public IdentityTypeData GetIdentityType(string identityTypeID)
         {
             Connector.AddParameter(IdentityTypeTable.IdentityTypeID, SqlDbType.TinyInt, identityTypeID);
-            Connector.ExecuteSql(ScriptGetIdentityType, out IdentityTypeData result);
+            Connector.ExecuteSql("dbo.APP_SP_GetIdentityType", out IdentityTypeData result);
             return result;
         }
     }

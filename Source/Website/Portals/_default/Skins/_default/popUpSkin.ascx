@@ -6,7 +6,7 @@
 
 <div class="c-popup">
     <div class = "c-bg-white c-content-box c-padding-tb-10">
-        <div class = "container">
+        <div class = "container-fluid">
             <div class = "row">
                 <div class = "col-sm-12">
                     <div id = "ContentPane"

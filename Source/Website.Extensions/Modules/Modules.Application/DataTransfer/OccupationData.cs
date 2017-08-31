@@ -6,6 +6,7 @@ namespace Modules.Application.DataTransfer
     {
         public string OccupationCode { get; set; }
         public string OccupationName { get; set; }
+        public string SortOrder { get; set; }
         public string IsDisable { get; set; }
     }
 }

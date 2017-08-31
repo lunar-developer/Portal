@@ -133,16 +133,16 @@
     <value>CMND/Hộ chiếu</value>
   </data>
   <data name="lblCustomerName.Help" xml:space="preserve">
-    <value>Họ và tên Khách hàng</value>
+    <value>Họ và Tên</value>
   </data>
   <data name="lblCustomerName.Text" xml:space="preserve">
     <value>Họ và Tên</value>
   </data>
   <data name="lblIdentityType.Help" xml:space="preserve">
-    <value>Loại giấy tờ (CMND/Hộ chiếu)</value>
+    <value>Loại chứng từ (CMND/Hộ chiếu)</value>
   </data>
   <data name="lblIdentityType.Text" xml:space="preserve">
-    <value>Loại giấy tờ</value>
+    <value>Loại chứng từ</value>
   </data>
   <data name="lblIsHighPriority.Help" xml:space="preserve">
     <value>Hồ sơ gấp</value>
@@ -151,7 +151,7 @@
     <value>Hồ sơ gấp</value>
   </data>
   <data name="lblMobileNumber.Help" xml:space="preserve">
-    <value>Số điện thoại Khách hàng</value>
+    <value>Số điện thoại</value>
   </data>
   <data name="lblMobileNumber.Text" xml:space="preserve">
     <value>Số điện thoại</value>
@@ -161,9 +161,6 @@
   </data>
   <data name="lblPolicy.Text" xml:space="preserve">
     <value>Chính sách</value>
-  </data>
-  <data name="lblProcess.Help" xml:space="preserve">
-    <value>Xử lý hồ sơ</value>
   </data>
   <data name="lblProcess.Text" xml:space="preserve">
     <value>Xử lý</value>

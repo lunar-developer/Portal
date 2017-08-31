@@ -39,7 +39,7 @@ body > form > .rcbSlide {
 }
 
 .control-label .dnnLabel {
-    margin-top: -2px;
+    margin-top: 0;
     margin-right: 0;
     padding-right: 10px;
     width: 100%;
@@ -589,23 +589,23 @@ ul#ControlBar_Module_ModulePosition li {
     padding-top: 16px;
 }
 
-.RadGrid input.rgFilter:hover {
-    -ms-background-attachment: scroll;
-    background-attachment: scroll;
-    -ms-background-clip: border-box;
-    background-clip: border-box;
-    background-color: rgba(0, 0, 0, 0);
-    background-image: url("../images/filter-icon.png");
-    background-origin: padding-box;
-    -ms-background-position: 0 0;
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    -ms-background-size: 14px auto;
-    background-size: 14px auto;
-    box-shadow: none;
-    height: 0;
-    padding-top: 16px;
-}
+    .RadGrid input.rgFilter:hover {
+        -ms-background-attachment: scroll;
+        background-attachment: scroll;
+        -ms-background-clip: border-box;
+        background-clip: border-box;
+        background-color: rgba(0, 0, 0, 0);
+        background-image: url("../images/filter-icon.png");
+        background-origin: padding-box;
+        -ms-background-position: 0 0;
+        background-position: 0 0;
+        background-repeat: no-repeat;
+        -ms-background-size: 14px auto;
+        background-size: 14px auto;
+        box-shadow: none;
+        height: 0;
+        padding-top: 16px;
+    }
 
 .RadGrid .rgFooterDiv, .RadGrid_Default .rgFooter {
     background: #f7fafb none repeat scroll 0 0;
@@ -735,6 +735,7 @@ ul#ControlBar_Module_ModulePosition li {
 .RadGrid .rgPagerLabel, .RadGrid .rgPager .RadComboBox, .RadGrid .rgPager .RadInput {
     margin: 0 8px 0 0;
     vertical-align: middle;
+    width: 70px !important;
 }
 
 .RadGrid .rgPager .riSingle .riTextBox {
@@ -1154,3 +1155,62 @@ ul#ControlBar_Module_ModulePosition li {
         }
 /*EndTelerik Grid - Edit Skin */
 /******************************/
+
+
+.RadUpload .ruFileWrap
+{
+    width: 300px;
+    height: 34px;
+    font-size: 14px;
+}
+.RadUpload .ruRemove
+{
+    font-size: 14px;
+    padding-left: 20px;
+    padding-bottom: 6px;
+    background: url("../../../../../images/red-error_16px.gif") no-repeat !important;
+}
+.RadUpload .ruFakeInput
+{
+    background: white none repeat scroll 0 0;
+    border-color: #d0d7de;
+    box-shadow: none;
+    font-weight: 300;
+    outline: medium none;
+    border-radius: 0;
+    font-family: "Roboto Condensed",sans-serif;
+    font-size: 16px;
+    color: #555;
+    height: 20px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.RadUpload .ruBrowse {
+    border-style: inherit;
+    border-width: inherit;
+    cursor: pointer;
+    height: inherit;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857;
+    margin: 0 0 0 10px;
+    padding: 7px 20px 5px;
+    vertical-align: top;
+    border-color: #5e9cd1;
+    color: #ffffff;
+    background: #5e9cd1;
+    font-family: inherit;
+    transition: all 0.2s ease-out 0;
+    text-transform: uppercase;
+    width: auto;
+    font-family: "Roboto Condensed", sans-serif;
+}
+
+    .RadUpload  .ruBrowse:hover {
+        border-color: #408ece;
+        color: #ffffff;
+        background: #408ece;
+        font-family: inherit;
+    }

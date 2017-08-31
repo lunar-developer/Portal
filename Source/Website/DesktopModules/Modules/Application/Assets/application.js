@@ -139,6 +139,12 @@ function processOnStaffIndicatorChange(sender)
     }
 }
 
+function onSelectGender(sender)
+{
+    var value = sender.get_value();
+    getRadCombobox("ctrlTitleOfAddress").findItemByValue(value === "M" ? "MR" : "MS").select();
+}
+
 
 // VALIDATATION
 function validateData(element)
@@ -177,7 +183,41 @@ function validateData(element)
 
 function onBeforeProcess()
 {
+    var array;
+    var combobox = getRadCombobox("ctrlRoute");
+    var actionCode = combobox.get_selectedItem().get_attributes()._data["ActionCode"];
+    switch (actionCode)
+    {
+        case "APPROVE":
+            if (validateRadOption("ctrlDecisionCode") === false || validateRadMultiSelectOption("ctrlDecisionReason") === false)
+            {
+                setRequireUpdate();
+                return false;
+            }            
+            break;
+    }
+
+    if (isRequireUpdate() === true)
+    {
+        return false;
+    }
+
     return true;
+}
+
+function onBeforeQueryCustomer()
+{
+    return validateInput(getControl("ctrlCustomerID"));
+}
+
+function onBeforeQueryAccount()
+{
+    return validateInput(getControl("ctrlPaymentCIFNo"));
+}
+
+function onBeforeQueryCollateral()
+{
+    return validateInput(getControl("ctrlCollateralID"));
 }
 
 
@@ -250,4 +290,19 @@ function getConfirmMessage()
     var combobox = getRadCombobox("ctrlRoute");
     return "Bạn có chắc muốn " +
         (combobox ? "<b>" + combobox.get_text() + "</b>?" : "tiếp tục?");
+}
+
+function setRequireUpdate()
+{
+    getJQueryControl("ctrlIsRequireUpdate").val("1");
+}
+
+function isRequireUpdate()
+{
+    if (getJQueryControl("ctrlIsRequireUpdate").val() === "1")
+    {
+        alertMessage("Vui lòng <b>CẬP NHẬT THÔNG TIN</b> trước khi tiếp tục.");
+        return true;
+    }
+    return false;
 }

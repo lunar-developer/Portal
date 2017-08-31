@@ -13,6 +13,7 @@
 <%@ Register Src="./Controls/SectionCardInfo.ascx" TagPrefix="app" TagName="SectionCardInfo" %>
 <%@ Register Src="./Controls/SectionAssessmentInfo.ascx" TagPrefix="app" TagName="SectionAssessmentInfo" %>
 <%@ Register Src="./Controls/SectionHistoryInfo.ascx" TagPrefix="app" TagName="SectionHistoryInfo" %>
+<%@ Register Src="./Controls/SectionFileInfo.ascx" TagPrefix="app" TagName="SectionFileInfo" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
 <dnn:DnnJsInclude FilePath="~/DesktopModules/Modules/Application/Assets/application.js"
@@ -32,7 +33,9 @@
             <div class="form-group">
                 <asp:PlaceHolder ID="phMessage" runat="server" />
             </div>
-
+            
+            <div class="col-sm-12">
+            <div class="column-left1">
             <div class="dnnPanels" clientidmode="Static" id="ApplicationInfo" runat="server">
                 <h2 class="dnnFormSectionHead">
                     <span tabindex="0"></span>
@@ -278,7 +281,19 @@
                     </div>
                 </fieldset>
             </div>
-
+            </div>
+            </div>
+            
+            <div class="col-sm-6" runat="server" Visible="False">
+                <asp:UpdatePanel runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <app:SectionFileInfo
+                            ClientIDMode="Static"
+                            ID="SectionFileInfo"
+                            runat="server" />
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
 
             <div class="menu-bar">
                 <div class="container menu-bar-container">
@@ -331,6 +346,11 @@
                 ID="ctrlPreviousUserID"
                 runat="server"
                 Visible="False" />
+            
+            <asp:HiddenField
+                ID="ctrlIsRequireUpdate"
+                ClientIDMode="Static"
+                runat="server" />
         </div>
     </ContentTemplate>
 </asp:UpdatePanel>

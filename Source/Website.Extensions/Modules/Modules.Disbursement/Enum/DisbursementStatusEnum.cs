@@ -14,5 +14,7 @@
         public const string RequestCancel = "12";
         public const string RequestApproved = "13";
         public const string Canceled = "14";
+        public const string Updated = "99";
+        public const string ApplyResult = "88";
     }
 }

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="DisbursementRoom.ascx.cs" Inherits="DesktopModules.Modules.Disbursement.DisbursementRoom" %>
+﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="DisbursementRoom.ascx.cs" Inherits="DesktopModules.Modules.Disbursement.DisbursementCreateRoom" %>
 <%@ Register Assembly="DotNetNuke.Web.Deprecated" Namespace="DotNetNuke.Web.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Src="~/controls/LabelControl.ascx" TagName="Label" TagPrefix="dnn" %>
 
@@ -12,27 +12,27 @@
         <div class="form-horizontal">
             <div class="form-group">
                 <div class="col-sm-3 control-label">
-                    <dnn:Label ID="RateLDR"
+                    <dnn:Label ID="Room"
                                runat="server" />
                 </div>
                 <div class="col-sm-9">
                     <asp:TextBox CssClass="form-control"
                                  ID="tbRateLDR"
                                  MaxLength="20"
-                                 placeholder="Tỷ lệ LDR"
+                                 placeholder="Room"
                                  runat="server" />
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-3 control-label">
-                    <dnn:Label ID="Room"
+                    <dnn:Label ID="RateLDR"
                                runat="server" />
                 </div>
                 <div class="col-sm-9">
                     <asp:TextBox CssClass="form-control"
                                  ID="tbRoom"
                                  MaxLength="100"
-                                 placeholder="Tên Room"
+                                 placeholder="Tỷ lệ LDR"
                                  runat="server" />
                 </div>
             </div>

@@ -19,7 +19,7 @@
 <header class="c-layout-header c-layout-header-4 c-layout-header-default-mobile"
         data-minimize-offset="80" <%#SetHeaderMargin() %>>
     <div class="c-navbar">
-        <div class="container">
+        <div class="container-fluid">
             <div class="clearfix c-navbar-wrapper">
                 <div class="c-brand c-pull-left">
                     <a class="c-logo"
@@ -74,7 +74,7 @@
 
     <div class="c-bg-white c-content-box c-size-md"
          id="Solutions">
-        <div class="container">
+        <div class="container-fluid">
             <div class="c-content-feature-10">
 
                 <div class="c-content-title-1">
@@ -244,7 +244,7 @@
         </div>
     </div>--%>
     <div class="c-postfooter">
-        <div class="container">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 col-sm-6">
                     <p class="c-copyright c-font-14">

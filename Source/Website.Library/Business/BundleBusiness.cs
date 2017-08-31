@@ -23,6 +23,7 @@ namespace Website.Library.Business
             BundleData styleBundle = new BundleData(FolderEnum.BaseStyleBundle, false);
             styleBundle.Include(FolderEnum.BaseStyleFolder, new List<string>
             {
+                "Telerik.Web.UI.WebResource.css",
                 "font-awesome.min.css",
                 "font-roboto.min.css",
                 "bootstrap.min.css",
@@ -34,6 +35,7 @@ namespace Website.Library.Business
             BundleData scriptBundle = new BundleData(FolderEnum.BaseScriptBundle);
             scriptBundle.Include(FolderEnum.BaseScriptFolder, new List<string>
             {
+                "Telerik.Web.UI.WebResource.js",
                 "jquery.hoverIntent.min.js",
                 "dnn.jquery.js",
                 "dnn.js",

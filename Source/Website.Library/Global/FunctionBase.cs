@@ -5,14 +5,19 @@ using System.Data;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI.WebControls;
 using ClosedXML.Excel;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Instrumentation;
+using DotNetNuke.Security.Roles;
+using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Social.Notifications;
+using OfficeOpenXml;
 using ServiceStack.Text;
 using Website.Library.Enum;
 
@@ -21,6 +26,8 @@ namespace Website.Library.Global
     public static class FunctionBase
     {
         private static readonly ILog Logger;
+        private static readonly string GrantImage = "/images/grant.gif";
+        private static readonly string ErrorImage = "/images/red-error_16px.gif";
 
 
         static FunctionBase()
@@ -34,7 +41,6 @@ namespace Website.Library.Global
                 // ignored
             }
         }
-
 
 
         public static bool ConvertToBool(string value)
@@ -76,6 +82,11 @@ namespace Website.Library.Global
                 : string.Empty;
         }
 
+        public static string FormatUser(string userName, string displayName)
+        {
+            return $"{displayName} ({userName})";
+        }
+
         public static string FormatUserID(string value)
         {
             if (int.TryParse(value, out int userId) == false || userId <= 0)
@@ -96,6 +107,20 @@ namespace Website.Library.Global
 
             UserInfo userInfo = UserController.GetUserByName(value);
             return userInfo == null ? value : $"{userInfo.DisplayName} ({userInfo.Username})";
+        }
+
+        public static string FormatRoleID(string value)
+        {
+            if (int.TryParse(value, out int roleID) == false
+                || roleID <= 0)
+            {
+                return string.Empty;
+            }
+
+            RoleInfo roleInfo = RoleController.Instance.GetRoleById(0, roleID);
+            return roleInfo != null
+                ? $"{roleInfo.RoleName} - {roleInfo.Description}"
+                : value;
         }
 
         public static string FormatCurrency(string value, string currencyCode = CurrencyEnum.VND)
@@ -121,6 +146,20 @@ namespace Website.Library.Global
                 return value.Substring(0, 4) + " " + value.Substring(4, 3) + " " + value.Substring(7);
             }
             return value;
+        }
+
+        public static string FormatHourAndMinutes(string value)
+        {
+            return value.Length == 4
+                ? $"{Left(value, 2)}:{Right(value, 2)}"
+                : value;
+        }
+
+        public static string FormatState(string status, bool expected = true)
+        {
+            const string img = @"<img src=""{0}""/>";
+            bool result = ConvertToBool(status);
+            return result == expected ? string.Format(img, GrantImage) : string.Format(img, ErrorImage);
         }
         #endregion
 
@@ -170,6 +209,19 @@ namespace Website.Library.Global
         {
             return UserController.GetUserByName(PortalSettings.Current.PortalId, userName);
         }
+
+        public static Type GetAssemblyType(string assemblyName, string className)
+        {
+            try
+            {
+                return Type.GetType($"{className}, {assemblyName}");
+            }
+            catch (Exception exception)
+            {
+                LogError(exception);
+                return null;
+            }
+        }
         #endregion
 
         #region IMPORT
@@ -208,7 +260,7 @@ namespace Website.Library.Global
                     }
 
                     // Read data
-                    T instance = (T) Activator.CreateInstance(type);
+                    T instance = (T)Activator.CreateInstance(type);
                     for (int i = 0; i < listFields.Count; i++)
                     {
                         string field = listFields[i];
@@ -221,6 +273,43 @@ namespace Website.Library.Global
                     }
                     listResult.Add(instance);
                 }
+            }
+
+            return listResult;
+        }
+
+        public static List<T> ImportExcel<T>(Stream stream) where T : class
+        {
+            Type type = typeof(T);
+            List<T> listResult = new List<T>();
+            ExcelPackage package = new ExcelPackage(stream);
+            ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+            int totalColumns = workSheet.Dimension.End.Column;
+            List<string> listFields = workSheet
+                .Cells[1, 1, 1, totalColumns]
+                .Select(cell => cell.Text).ToList();
+
+            for (int rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
+            {
+                ExcelRange row = workSheet.Cells[rowNumber, 1, rowNumber, totalColumns];
+                T instance = (T)Activator.CreateInstance(type);
+                List<string> listData = new List<string>();
+
+                for (int columnNumber = 1; columnNumber <= totalColumns; columnNumber++)
+                {
+                    listData.Add(row[rowNumber, columnNumber].Text);
+                }
+                for (int i = 0; i < listFields.Count; i++)
+                {
+                    string field = listFields[i];
+                    if (string.IsNullOrWhiteSpace(field))
+                    {
+                        continue;
+                    }
+                    type.GetField(field)?.SetValue(instance, listData[i]);
+                    type.GetProperty(field)?.SetValue(instance, listData[i]);
+                }
+                listResult.Add(instance);
             }
 
             return listResult;
@@ -293,6 +382,48 @@ namespace Website.Library.Global
             }
             return string.Empty;
         }
+
+        public static string GetASCIIString(string value, bool isUpperCase = true)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+            value = RemoveUnicode(value.Trim()).Replace(CharacterEnum.DoubleSpace, CharacterEnum.Space);
+            return isUpperCase ? value.ToUpper() : value;
+        }
+
+        public static string RemoveUnicode(string value)
+        {
+            string normalizedString = value.Normalize(NormalizationForm.FormD);
+            StringBuilder stringBuilder = new StringBuilder();
+
+            foreach (char c in normalizedString)
+            {
+                UnicodeCategory unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+        public static string GetRandomGuid()
+        {
+            return Guid.NewGuid().ToString(PatternEnum.GuidDigits);
+        }
+
+        public static string SeparateCapitalLetters(string value, string separated = CharacterEnum.Space)
+        {
+            Regex regex = new Regex(@"
+                (?<=[A-Z])(?=[A-Z][a-z]) |
+                (?<=[^A-Z])(?=[A-Z]) |
+                (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+
+            return regex.Replace(value, separated);
+        }
         #endregion
 
         #region VALIDATION
@@ -322,6 +453,11 @@ namespace Website.Library.Global
         }
 
         public static bool IsInArray(string value, params string[] arrayData)
+        {
+            return arrayData.Any(data => value == data);
+        }
+
+        public static bool IsInArray(int value, params int[] arrayData)
         {
             return arrayData.Any(data => value == data);
         }

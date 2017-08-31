@@ -6,6 +6,7 @@ namespace Modules.Application.DataTransfer
     {
         public string CorporateSizeCode { get; set; }
         public string CorporateSizeName { get; set; }
+        public string SortOrder { get; set; }
         public string IsDisable { get; set; }
     }
 }

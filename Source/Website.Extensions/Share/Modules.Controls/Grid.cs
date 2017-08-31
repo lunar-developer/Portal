@@ -31,7 +31,7 @@ namespace Modules.Controls
             RenderMode = RenderMode.Lightweight;
             SortingSettings.EnableSkinSortStyles = true;
 
-
+            
             #region Pager Style
             PagerStyle.Mode = GridPagerMode.Advanced;
             PagerStyle.Position = GridPagerPosition.Bottom;
@@ -93,8 +93,16 @@ namespace Modules.Controls
         }
 
         protected override void OnDataBinding(EventArgs e)
-        {
+        {            
             base.OnDataBinding(e);
+            foreach (GridColumn column in Columns)
+            {
+                string header = Localization.GetString(column.HeaderText + ".Header", LocalResourceFile);
+                if (string.IsNullOrWhiteSpace(header) == false)
+                {
+                    column.HeaderText = header;
+                }
+            }
             MasterTableView.FilterExpression = string.Empty;
             MasterTableView.SortExpressions.Clear();
         }
@@ -193,13 +201,11 @@ namespace Modules.Controls
 
 
             RadNumericTextBox goToPageText = (RadNumericTextBox)gridPagerItem.FindControl("GoToPageTextBox");
-            goToPageText.Width = Unit.Pixel(70);
             goToPageText.ShowSpinButtons = true;
 
 
             RadNumericTextBox changePageSizeTextBox = (RadNumericTextBox)gridPagerItem.FindControl("ChangePageSizeTextBox");
             changePageSizeTextBox.IncrementSettings.Step = 10;
-            changePageSizeTextBox.Width = Unit.Pixel(70);
             changePageSizeTextBox.ShowSpinButtons = true;
         }
 
@@ -273,13 +279,8 @@ namespace Modules.Controls
             }
         }
 
-        private void SetColumnFilterSetting(GridColumn column)
+        private static void SetColumnFilterSetting(GridColumn column)
         {
-            string header = Localization.GetString(column.HeaderText + ".Header", LocalResourceFile);
-            if (string.IsNullOrWhiteSpace(header) == false)
-            {
-                column.HeaderText = header;
-            }
             if (Math.Abs(column.HeaderStyle.Width.Value) <= 0)
             {
                 column.HeaderStyle.Width = 200;

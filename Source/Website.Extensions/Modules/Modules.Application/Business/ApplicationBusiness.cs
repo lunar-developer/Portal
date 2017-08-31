@@ -31,7 +31,7 @@ namespace Modules.Application.Business
             ScheduleTimer = new Timer(ProcessOnSchedule, null, period, period);
 
             // Register Queue Auto Receive
-            MessageQueueBusiness.InjectConsumer(ConfigurationBase.QueuePortalIn, ProcessOnQueueReceive);
+            MessageQueueBusiness.InjectConsumer(ConfigurationBase.QueuePortalIn, ProcessOnQueueReceive, "Portal.In");
         }
 
         public static void Initialize()
@@ -130,21 +130,21 @@ namespace Modules.Application.Business
 
 
         private const string LogTemplate = @"
-            <table border=""1"" cellpadding=""5"" style=""border-collapse: collapse"">
+            <table class=""ScheduleLogTable"">
                 <tr>
                     <td colspan=""4"">GIAI ĐOẠN: <b>{0}</b></td>
                 </tr>
                 <tr>
                     <td colspan=""4"">
-                        Total Applications: <b>{1}</b><br>
-                        Total Users: <b>{2}</b>
+                        Tổng số hồ sơ: <b>{1}</b><br>
+                        Tổng số Users: <b>{2}</b>
                     </td>
                 </tr>
                 <tr>
                     <th></th>
                     <th>User</th>
-                    <th>Current</th>
-                    <th>Assigned</th>
+                    <th>Đang Xử Lý</th>
+                    <th>Nhận Thêm</th>
                 </tr>
                 {3}
             </table>
@@ -197,7 +197,21 @@ namespace Modules.Application.Business
                 {
                     string applicationID = application[ApplicationTable.ApplicationID].ToString();
                     string policyCode = application[ApplicationTable.PolicyCode].ToString();
+                    string previousUserID = application[ApplicationTable.PreviousUserID].ToString();
 
+                    // Try to assign to previous user
+                    if (previousUserID != "0")
+                    {
+                        UserAssignData userData =
+                            listUserAssignData.FirstOrDefault(item => item.UserID == previousUserID);
+                        if (userData != null && userData.Contain(policyCode))
+                        {
+                            userData.Assign(applicationID);
+                            continue;
+                        }
+                    }
+                    
+                    // Pick user has minimum applications
                     int index = -1;
                     int total = int.MaxValue;
                     for (int i = 0; i < listUserAssignData.Count; i++)
@@ -229,7 +243,7 @@ namespace Modules.Application.Business
                     int current = userAssignData.TotalApplications;
                     int totalAssigned = userAssignData.TotalAssigned;
                     count += totalAssigned;
-                    listLog.Add($"<tr><td>{i}</td><td>{userName}</td><td>{current}</td><td>{totalAssigned}</td></tr>");
+                    listLog.Add($"<tr><td>{i + 1}</td><td>{userName}</td><td>{current}</td><td>{totalAssigned}</td></tr>");
                 }
                 listLog.Add($"<tr><td>#</td><td>Un-Assign</td><td>{listApplications.Length - count}</td><td>0</td></tr>");
                 logMessage = string.Format(LogTemplate,
@@ -323,9 +337,55 @@ namespace Modules.Application.Business
         }
 
 
-        public static List<UserData> GetListUserApprover()
+        public static List<UserData> GetListUserApproval()
         {
             return UserBusiness.GetUsersHaveRoles(RoleEnum.UserCredit, RoleEnum.Approval);
+        }
+
+        public static List<UserData> GetListUserAssessment()
+        {
+            return UserBusiness.GetUsersHaveRoles(RoleEnum.Assessment);
+        }
+
+        public static List<UserData> GetListUserCredit()
+        {
+            return UserBusiness.GetUsersHaveRoles(RoleEnum.UserCredit);
+        }
+
+        public static string GetEmbossingName(string value, int maxLength = 20)
+        {
+            value = FunctionBase.GetASCIIString(value);
+            if (value.Length <= maxLength)
+            {
+                return value;
+            }
+
+            string[] array = value.Split(' ');
+            if (array.Length == 1)
+            {
+                value = FunctionBase.Right(value, maxLength);
+            }
+            else
+            {
+                // Keep the First and Last word
+                int length = value.Length;
+                for (int i = 1; i < array.Length - 1; i++)
+                {
+                    length -= array[i].Length - 1;
+                    array[i] = array[i][0].ToString();
+
+                    if (length <= maxLength)
+                    {
+                        break;
+                    }
+                }
+                value = string.Join(CharacterEnum.Space, array);
+                if (value.Length > maxLength)
+                {
+                    value = FunctionBase.Right(value, maxLength);
+                }
+            }
+            return value;
         }
 
 
@@ -335,21 +395,36 @@ namespace Modules.Application.Business
             InsensitiveDictionary<string> dataDictionary =
                 FunctionBase.Deserialize<InsensitiveDictionary<string>>(requestData.Data);
 
-            switch (requestData.Function)
+            string uniqueID = dataDictionary["ApplicID"];
+            string functionName = requestData.Function;
+            switch (functionName)
             {
+                case FunctionEnum.SupplyDocument:
+                    SupplyDocument(uniqueID);
+                    break;
+
                 default:
-                    string applicID = dataDictionary["ApplicID"];
-                    DataTable dtResult = new ApplicationProvider().GetVSaleKitApplication(applicID);
-                    CreateApplication(dtResult);
+                    
+                    LinkApplication(uniqueID);
                     break;
             }
         }
 
-        private static void CreateApplication(DataTable dtResult)
+        public static void LinkApplication(string uniqueID)
+        {
+            DataTable dtResult = new ApplicationProvider().GetVSaleKitApplication(uniqueID);
+            long result = CreateApplication(dtResult);
+            if (result > 0)
+            {
+                new ApplicationProvider().LinkApplication(uniqueID, FunctionEnum.CreateApplication, result.ToString());
+            }
+        }
+
+        private static long CreateApplication(DataTable dtResult)
         {
             if (dtResult.Rows.Count == 0)
             {
-                return;
+                return 0;
             }
 
             Dictionary<string, string> fieldDictionary = new Dictionary<string, string>();
@@ -382,9 +457,123 @@ namespace Modules.Application.Business
             fieldDictionary.Add(ApplicationTable.ProposeLimit, row[ApplicationTable.CreditLimit].ToString());
             fieldDictionary.Add(ApplicationTable.CreditLimit, row[ApplicationTable.CreditLimit].ToString());
             fieldDictionary.Add(ApplicationTable.Priority, row[ApplicationTable.Priority].ToString());
+            fieldDictionary.Add(ApplicationTable.Mobile01, row[ApplicationTable.Mobile01].ToString());
 
             // Insert Application
-            InsertApplication(userID, fieldDictionary);
+            return InsertApplication(userID, fieldDictionary);
+        }
+
+        public static void SupplyDocument(string uniqueID)
+        {
+            new ApplicationProvider().SupplyDocument(uniqueID, FunctionEnum.SupplyDocument);
+        }
+
+        public static string SendToQueue(
+            string functionName, 
+            string data, 
+            ref string contentType,
+            out string responseData,
+            int timeout = 10)
+        {
+            try
+            {
+                MessageQueueData messageData = new MessageQueueData(functionName, data, timeout);
+                MessageQueueBusiness.SendToQueue(ConfigurationBase.QueuePortalServiceIn, ref messageData);
+                messageData.AutoEvent.WaitOne();
+                contentType = messageData.ContentType;
+                responseData = messageData.ResponseData;
+                return messageData.ResponseCode;
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                responseData = ResponseEnum.GetDescription(ResponseEnum.Error);
+                return ResponseEnum.Error;
+            }
+        }
+
+        public static InsensitiveDictionary<string> QueryCustomerByIDNo(string customerID, out string message)
+        {
+            InsensitiveDictionary<string> dataDictionary = new InsensitiveDictionary<string>
+            {
+                { ApplicationTable.CustomerID, customerID }
+            };
+            string contentType = ContentEnum.Json;
+            string requestData = FunctionBase.Serialize(dataDictionary, contentType);
+            string responseCode = SendToQueue(FunctionEnum.QueryCustomerByID, requestData, ref contentType, out string responseData);
+            switch (responseCode)
+            {
+                case ResponseEnum.Success:
+                    dataDictionary = FunctionBase.Deserialize<InsensitiveDictionary<string>>(responseData);
+                    if (dataDictionary == null || dataDictionary.Count == 0)
+                    {
+                        message = "Không tìm thấy thông tin khách hàng.";
+                        return null;
+                    }
+
+                    message = string.Empty;
+                    return dataDictionary;
+
+                default:
+                    message = responseData;
+                    return null;
+            }
+        }
+
+        public static CustomerData QueryAccount(string cifNo, out string message)
+        {
+            InsensitiveDictionary<string> dataDictionary = new InsensitiveDictionary<string>
+            {
+                { ApplicationTable.CIFNo, cifNo }
+            };
+            string contentType = ContentEnum.Json;
+            string requestData = FunctionBase.Serialize(dataDictionary, contentType);
+            string responseCode = SendToQueue(FunctionEnum.QueryAccount, requestData, ref contentType, out string responseData);
+            switch (responseCode)
+            {
+                case ResponseEnum.Success:
+                    CustomerData customer = FunctionBase.Deserialize<CustomerData>(responseData);
+                    if (customer == null)
+                    {
+                        message = "Không tìm thấy thông tin khách hàng.";
+                        return null;
+                    }
+
+                    message = string.Empty;
+                    return customer;
+
+                default:
+                    message = responseData;
+                    return null;
+            }
+        }
+
+        public static InsensitiveDictionary<string> QueryCollateral(string collateralID, out string message)
+        {
+            InsensitiveDictionary<string> dataDictionary = new InsensitiveDictionary<string>
+            {
+                { ApplicationTable.CollateralID, collateralID }
+            };
+            string contentType = ContentEnum.Json;
+            string requestData = FunctionBase.Serialize(dataDictionary, contentType);
+            string responseCode = SendToQueue(FunctionEnum.QueryCollateral, requestData, ref contentType, out string responseData);
+            switch (responseCode)
+            {
+                case ResponseEnum.Success:
+                    dataDictionary = FunctionBase.Deserialize<InsensitiveDictionary<string>>(responseData);
+                    if (dataDictionary == null || dataDictionary.Count == 0)
+                    {
+                        message = "Không tìm thấy thông tin tài sản đảm bảo.";
+                        return null;
+                    }
+
+                    message = string.Empty;
+                    return dataDictionary;
+
+                default:
+                    message = responseData;
+                    return null;
+            }
         }
     }
 }

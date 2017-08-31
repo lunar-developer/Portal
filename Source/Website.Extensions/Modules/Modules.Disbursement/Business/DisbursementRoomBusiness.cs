@@ -17,5 +17,10 @@ namespace Modules.Disbursement.Business
         public static DataTable GetTop500RecentChanges() {
             return new DisbursementRoomProvider().GetTop500RecentChanges();
         }
+
+        public static DataTable GetTopOne()
+        {
+            return new DisbursementRoomProvider().GetTopOne();
+        }
     }
 }
