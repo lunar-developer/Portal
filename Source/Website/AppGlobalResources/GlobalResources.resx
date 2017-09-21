@@ -1084,7 +1084,11 @@ Sincerely,
   <data name="//Admin//Taxonomy.String" xml:space="preserve">
     <value>Taxonomy</value>
   </data>
+
     
+    <data name="//SignIn.String" xml:space="preserve">
+        <value>Đăng Nhập</value>
+    </data>
     
     <data name="//Home.String" xml:space="preserve">
         <value>Trang Chủ</value>
@@ -1137,6 +1141,10 @@ Sincerely,
     <data name="//Application//VietBankSaleKit//ApplicationDetail.String" xml:space="preserve">
         <value>Thêm Mới Hồ Sơ</value>
     </data>
+    <data name="//Application//VietBankSaleKit//CommissionInquiry.String" xml:space="preserve">
+        <value>Thông tin Hoa Hồng</value>
+    </data>
+    
 
     <data name="//Application//Credit.String" xml:space="preserve">
         <value>Thẻ Tín Dụng</value>
@@ -1172,6 +1180,26 @@ Sincerely,
     <data name="//Business.String" xml:space="preserve">
         <value>Nghiệp Vụ</value>
     </data>
+        <data name="//Business//ForeignExchange.String" xml:space="preserve">
+            <value>Kinh Doanh Ngoại Hối</value>
+        </data>
+        <data name="//Business//ForeignExchange//TransactionInitial.String" xml:space="preserve">
+            <value>Yêu Cầu Giá</value>
+        </data>
+        <data name="//Business//ForeignExchange//TransactionManagement.String" xml:space="preserve">
+            <value>Quản Lý Giao Dịch</value>
+        </data>
+        <data name="//Business//ForeignExchange//BidManagement.String" xml:space="preserve">
+            <value>Quản Lý Chào Giá</value>
+        </data>
+        <data name="//Business//ForeignExchange//ExchangeRate.String" xml:space="preserve">
+            <value>Bảng Tỷ Giá</value>
+        </data>
+        <data name="//Business//ForeignExchange//ExchangeRateManagement.String" xml:space="preserve">
+            <value>Quản Lý Tỷ Giá</value>
+        </data>
+    
+
         <data name="//Business//Marketing.String" xml:space="preserve">
             <value>Ấn Phẩm Quảng Cáo</value>
         </data>
@@ -1191,6 +1219,7 @@ Sincerely,
         <data name="//Business//Disbursement//DisbursementLimit.String" xml:space="preserve">
             <value>Hạn Mức Giải Ngân</value>
         </data>
+    
     
     <data name="//Management.String" xml:space="preserve">
         <value>Quản Trị</value>
@@ -1213,6 +1242,9 @@ Sincerely,
     <data name="//Management//Users//RoleGroupSetting.String" xml:space="preserve">
         <value>Cấu hình Nhóm Quyền</value>
     </data>
+    <data name="//Management//Users//ContactInformation.String" xml:space="preserve">
+        <value>Thông Tin Liên Lạc</value>
+    </data>
 
     <data name="//Management//Settings.String" xml:space="preserve">
         <value>Cấu Hình</value>
@@ -1234,7 +1266,7 @@ Sincerely,
         <value>Quản Lý Danh Bạ</value>
     </data>
     <data name="//Management//System//ContactEditor.String" xml:space="preserve">
-        <value>Điều Chỉnh Thông Tin Danh Bạ</value>
+        <value>Upload Hình Ảnh Danh Bạ</value>
     </data>
 
     <data name="//Management//Reports.String" xml:space="preserve">

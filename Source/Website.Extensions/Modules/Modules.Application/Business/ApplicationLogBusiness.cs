@@ -27,7 +27,7 @@ namespace Modules.Application.Business
             }
             foreach (DataRow row in dataTable.Rows)
             {
-                string time = row[BaseTable.ModifyDateTime].ToString();
+                string time = row[BaseTable.DateTimeModify].ToString();
                 versions.Add(row[ApplicationLogTable.ApplicationLogID].ToString(), FunctionBase.FormatDate(time));
             }
             return versions;

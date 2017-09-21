@@ -7,9 +7,9 @@ using Website.Library.DataAccess;
 
 namespace Modules.Survey.DataAcess
 {
-    class SvResultProvider : DataProvider
+    internal class SvResultProvider : DataProvider
     {
-        public int AddResult(int idSurvey, string RequestID, Dictionary<string, string> result)
+        public int AddResult(int idSurvey, string requestID, Dictionary<string, string> result)
         {
             try
             {
@@ -26,11 +26,11 @@ namespace Modules.Survey.DataAcess
                 {
                     if (item.Value.Count == 1)
                     {
-                        listAdd.Add($@"('{idSurvey}','{RequestID}',N'{item.Key}',N'{item.Value[0].Replace("[", String.Empty).Replace("]", String.Empty)}','{DateTime.Now:yyyyMMddHHmmss}','')");
+                        listAdd.Add($@"('{idSurvey}','{requestID}',N'{item.Key}',N'{item.Value[0].Replace("[", string.Empty).Replace("]", string.Empty)}','{DateTime.Now:yyyyMMddHHmmss}','')");
                     }
                     else
                     {
-                        listAdd.Add($@"('{idSurvey}','{RequestID}',N'{item.Key}',N'{item.Value[0].Replace("[", String.Empty).Replace("]", String.Empty)}','{DateTime.Now:yyyyMMddHHmmss}',N'" + item.Value[1] + "')");
+                        listAdd.Add($@"('{idSurvey}','{requestID}',N'{item.Key}',N'{item.Value[0].Replace("[", string.Empty).Replace("]", string.Empty)}','{DateTime.Now:yyyyMMddHHmmss}',N'" + item.Value[1] + "')");
                     }
                     
                      
@@ -39,22 +39,22 @@ namespace Modules.Survey.DataAcess
                 sqlAdd += string.Join(",", listAdd.ToArray());
                 return Connector.ExecuteSql(sqlAdd);
             }
-            catch (Exception e)
+            catch
             {
                 return 0;
             }
         }
-        public bool CheckSurveyForClient(int idSurvey,string RequestID)
+        public bool CheckSurveyForClient(int idSurvey,string requestID)
         {
             try
             {
-                string sqlCheck = $@"SELECT * FROM {SvResultTable.TableNameRoot} WHERE {SvResultTable.IdSurvey} = {idSurvey} AND {SvResultTable.RequestID} = '{RequestID}';";
+                string sqlCheck = $@"SELECT * FROM {SvResultTable.TableNameRoot} WHERE {SvResultTable.IdSurvey} = {idSurvey} AND {SvResultTable.RequestID} = '{requestID}';";
                 List<SvResultData> rs; 
                 Connector.ExecuteSql<SvResultData,List<SvResultData>>(sqlCheck,out rs);
 
                 return rs.Count > 0;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -70,7 +70,7 @@ namespace Modules.Survey.DataAcess
                 Connector.ExecuteSql(sqlCheck, out rs);
                 return rs != null;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -81,18 +81,19 @@ namespace Modules.Survey.DataAcess
         {
             IEnumerable<KeyValuePair<string, string>> ls = dictionary.Where(x => x.Key.EndsWith("-Comment"));
             Dictionary<string, string> lstemp = new Dictionary<string, string>();
-            KeyValuePair<string, string>[] ls1 = ls.ToArray();
+            IEnumerable<KeyValuePair<string, string>> keyValuePairs = ls as KeyValuePair<string, string>[] ?? ls.ToArray();
+            KeyValuePair<string, string>[] pair = keyValuePairs.ToArray();
 
 
-            foreach (var item in ls)
+            foreach (var item in keyValuePairs)
             {
-                string key = item.Key.Replace("-Comment", String.Empty);
+                string key = item.Key.Replace("-Comment", string.Empty);
                 if (dictionary.ContainsKey(key))
                 {
                     lstemp.Add(key, item.Value);
                 }
             }
-            foreach (KeyValuePair<string, string> item in ls1)
+            foreach (KeyValuePair<string, string> item in pair)
             {
                 dictionary.Remove(item.Key);
             }

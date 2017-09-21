@@ -92,7 +92,15 @@ namespace Modules.MasterData.Global
                 type.GetProperty(field.Key)?.SetValue(dataOject, field.Value);
             }
 
-            string id = dataDictionary[cacheID];
+            // Query Cache ID Value
+            string id = dataDictionary.ContainsKey(cacheID)
+                ? dataDictionary[cacheID]
+                : type.GetProperty(cacheID)?.GetValue(dataOject) + string.Empty;
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return;
+            }
+
             MethodInfo method = typeof(CacheBase).GetMethod("Update").MakeGenericMethod(type);
             method.Invoke(null, new[] { id, dataOject });
         }
@@ -119,6 +127,30 @@ namespace Modules.MasterData.Global
         {
             MethodInfo method = typeof(CacheBase).GetMethod("Receive", new Type[0]).MakeGenericMethod(type);
             return ((IEnumerable<object>) method.Invoke(null, new object[0])).ToList();
+        }
+
+        public string GetCacheIDValue(string assemblyName, string cacheName, string cacheID,
+            Dictionary<string, string> dataDictionary)
+        {
+            if (FunctionBase.IsNullOrWhiteSpace(assemblyName, cacheName, cacheID))
+            {
+                return string.Empty;
+            }
+
+            // Validate Assembly
+            Type type = Type.GetType($"{cacheName}, {assemblyName}");
+            if (type == null)
+            {
+                return string.Empty;
+            }
+
+            object dataOject = Activator.CreateInstance(type);
+            foreach (KeyValuePair<string, string> field in dataDictionary)
+            {
+                type.GetField(field.Key)?.SetValue(dataOject, field.Value);
+                type.GetProperty(field.Key)?.SetValue(dataOject, field.Value);
+            }
+            return type.GetProperty(cacheID)?.GetValue(dataOject) + string.Empty;
         }
     }
 }

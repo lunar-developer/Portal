@@ -9,5 +9,7 @@ namespace Modules.Application.DataTransfer
         public string Name { get; set; }
         public string Remark { get; set; }
         public string IsDisable { get; set; }
+
+        public string DisplayName => $"{PolicyCode} - {Name}";
     }
 }

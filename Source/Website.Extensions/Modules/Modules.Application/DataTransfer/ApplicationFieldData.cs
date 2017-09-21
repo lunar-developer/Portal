@@ -5,6 +5,7 @@ namespace Modules.Application.DataTransfer
     public class ApplicationFieldData : CacheData
     {
         public string FieldName { get; set; }
+        public string FieldLabel { get; set; }
         public string TableName { get; set; }
         public string DataType { get; set; }
         public string IsExport { get; set; }
@@ -15,5 +16,7 @@ namespace Modules.Application.DataTransfer
         public string FieldValue { get; set; }
         public string NextFieldName { get; set; }
         public string IsDisable { get; set; }
+
+        public string DisplayName => $"{FieldName} - {FieldLabel}";
     }
 }

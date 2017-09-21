@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Website.Library.Enum;
@@ -11,6 +12,8 @@ namespace Website.Library.Global
         private readonly ConnectionFactory LocalConnectionFactory;
         private IConnection LocalConnection;
         private IModel LocalModel;
+        private string LocalClientName;
+        private string LocalQueueName;
         private Action<string, string> LocalCallback;
 
 
@@ -19,7 +22,8 @@ namespace Website.Library.Global
             int port = 5672,
             string virtualHost = "/",
             string userName = "guest",
-            string password = "guest")
+            string password = "guest",
+            ushort heartBeat = 30)
         {
             LocalConnectionFactory = new ConnectionFactory
             {
@@ -27,19 +31,14 @@ namespace Website.Library.Global
                 Password = password,
                 VirtualHost = virtualHost,
                 HostName = hostName,
-                Port = port
+                Port = port,
+                RequestedHeartbeat = heartBeat
             };
         }
 
         public RabbitMessageQueueBase(ConnectionFactory connectionFactory)
         {
             LocalConnectionFactory = connectionFactory;
-        }
-
-        ~RabbitMessageQueueBase()
-        {
-            LocalConnection?.Dispose();
-            LocalModel?.Dispose();
         }
 
 
@@ -68,27 +67,14 @@ namespace Website.Library.Global
             }
         }
 
-        public override void ReceiveFromQueue(
-            string queueName,
-            Action<string, string> callback,
-            string clientName = "Portal")
+        public override void ReceiveFromQueue(string queueName, Action<string, string> callback, string clientName = "Portal")
         {
-            try
-            {
-                LocalCallback = callback;
-                LocalConnection = LocalConnectionFactory.CreateConnection(clientName);
-                LocalModel = LocalConnection.CreateModel();
-                EventingBasicConsumer consumer = new EventingBasicConsumer(LocalModel);
-                consumer.Received += ProcessOnQueueReceive;
-                LocalModel.BasicConsume(queueName, true, consumer);
-            }
-            catch (Exception exception)
-            {
-                FunctionBase.LogError(exception);
+            LocalClientName = clientName;
+            LocalQueueName = queueName;
+            LocalCallback = callback;
 
-                LocalConnection?.Dispose();
-                LocalModel?.Dispose();
-            }
+            OpenConnection();
+            RegisterConsumer();
         }
 
         public override MessageQueueBase Clone()
@@ -103,6 +89,55 @@ namespace Website.Library.Global
             string contentType = eventArgs.BasicProperties.ContentType;
             string message = Encoding.UTF8.GetString(body);
             LocalCallback(message, contentType);
+        }
+
+        private void ProcessOnConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+            // Domain unload => Exit
+            if (e.Initiator == ShutdownInitiator.Application)
+            {
+                return;
+            }
+
+            // Try to reconnect
+            OpenConnection();
+            RegisterConsumer();
+        }
+
+        private void OpenConnection()
+        {
+            while (true)
+            {
+                try
+                {
+                    LocalConnection = LocalConnectionFactory.CreateConnection(LocalClientName);
+                    LocalConnection.ConnectionShutdown += ProcessOnConnectionShutdown;
+                    break;
+                }
+                catch (Exception exception)
+                {
+                    FunctionBase.LogError(exception);
+                    Thread.Sleep(10000);
+                }
+            }
+        }
+
+        private void RegisterConsumer()
+        {
+            try
+            {
+                LocalModel = LocalConnection.CreateModel();
+                EventingBasicConsumer consumer = new EventingBasicConsumer(LocalModel);
+                consumer.Received += ProcessOnQueueReceive;
+                LocalModel.BasicConsume(LocalQueueName, true, consumer);
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+
+                LocalModel?.Dispose();
+                LocalConnection?.Dispose();
+            }
         }
     }
 }

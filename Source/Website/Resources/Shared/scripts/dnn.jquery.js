@@ -168,16 +168,16 @@
     };
 
     $.fn.dnnConfirm.defaultOptions = {
-        text: 'Are you sure?',
-        yesText: 'Yes',
-        noText: 'No',
+        text: "Bạn có muốn chắc tiếp tục?",  //'Are you sure?',
+        yesText: "Đồng ý",  //'Yes',
+        noText: "Hủy",  //'No',
         buttonYesClass: 'dnnPrimaryAction',
         buttonNoClass: 'dnnSecondaryAction',
         actionUrl: window.location.href,
         autoOpen: false,
         resizable: false,
         modal: true,
-        title: 'Confirm',
+        title: "Xác Nhận",  //'Confirm',
         dialogClass: 'dnnFormPopup dnnClear',
         isButton: false
     };

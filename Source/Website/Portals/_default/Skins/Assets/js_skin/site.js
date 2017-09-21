@@ -21,6 +21,11 @@ function initialize()
     {
         // Loading Panel
         injectLoading();
+
+        // Menu Handlers
+        renderMenu();
+
+        // Register Request Handlers
         addBeginRequest(showLoading);
         addEndRequest(function ()
         {
@@ -136,7 +141,7 @@ function confirmMessage(jquery, message, title, yesText, noText, callbackTrue, c
 {
     if (typeof title === "undefined" || title === "")
     {
-        title = "Xác nhận";
+        title = "Xác Nhận";
     }
     if (typeof yesText === "undefined" || yesText === "")
     {
@@ -175,7 +180,7 @@ function registerConfirm(option)
 
     if (typeof title === "undefined" || title === "")
     {
-        title = "Xác nhận";
+        title = "Xác Nhận";
     }
     if (typeof yesText === "undefined" || yesText === "")
     {
@@ -202,7 +207,9 @@ function registerConfirm(option)
         isButton: isButton,
         callbackTrue: option.callbackTrue,
         callbackFalse: option.callbackFalse,
-        onBeforeOpen: option.onBeforeOpen
+        onBeforeOpen: option.onBeforeOpen,
+        isUseRuntimeMessage: option.isUseRuntimeMessage,
+        getRunTimeMessage: option.getRunTimeMessage
     });
 }
 
@@ -240,6 +247,28 @@ function hideLoading()
 {
     $(".dnnPanelLoading").hide();
 }
+
+function renderMenu()
+{
+    $(".c-search-toggler").on("click", function ()
+    {
+        $("body").toggleClass("c-layout-quick-search-shown");
+    });
+    $("#GlobalButtonQuickSearch").on("click", function ()
+    {
+        $("body").removeClass("c-layout-quick-search-shown");
+    });
+}
+
+function ProcessOnGlobalSearchMenuChange(combobox)
+{
+    var url = combobox.get_value();
+    if (typeof url !== "undefined" && url !== null && url !== "")
+    {
+        window.location.href = url;
+    }
+}
+
 
 function replaceAll(source, oldString, newString)
 {
@@ -713,4 +742,47 @@ function declareVariable(key, value)
     }
     
     window[key] = value;
+}
+
+function executeSafeFunction(method)
+{
+    try
+    {
+        eval(method);
+    }
+    catch (e)
+    {
+        log(e);
+    }
+}
+
+function bindOptions(combobox, options)
+{
+    if (typeof combobox !== "object" || combobox === null)
+    {
+        return;
+    }
+
+    for (var i = 0; i < options.length; i++)
+    {
+        var item = options[i];
+        var comboItem = new Telerik.Web.UI.RadComboBoxItem();
+        comboItem.set_text(item.text);
+        comboItem.set_value(item.value);
+        combobox.get_items().add(comboItem);
+
+        if (item.selected)
+        {
+            comboItem.select();
+            addPageLoaded(function()
+            {
+                combobox.get_events()._list.selectedIndexChanged[0]();
+            }, false);
+        }
+        if (item.disabled)
+        {
+            comboItem.disable();
+        }
+    }
+    combobox.commitChanges();
 }

@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.UserManagement.Business
 {
-    public class BranchManagerCacheBusiness<T> : ICache where T : BranchManagerData
+    public class BranchManagerCacheBusiness<T> : BasicCacheBusiness<T> where T : BranchManagerData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-        
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             List<BranchManagerData> listBranchManagerData = BindData(BranchBusiness.GetBranchManager());
             OrderedConcurrentDictionary<string, CacheData> dictionary =
@@ -29,13 +23,13 @@ namespace Modules.UserManagement.Business
             return dictionary;
         }
 
-        public CacheData Reload(string branchID)
+        public override CacheData Reload(string branchID)
         {
             List<BranchManagerData> listBranchManagerData = BindData(BranchBusiness.GetBranchManager(branchID));
             return listBranchManagerData.Count == 1 ? listBranchManagerData[0] : null;
         }
 
-        private List<BranchManagerData> BindData(DataTable dataTable)
+        private static List<BranchManagerData> BindData(DataTable dataTable)
         {
             List<BranchManagerData> listBranchManagerData = new List<BranchManagerData>();
             foreach (DataRow row in dataTable.Rows)

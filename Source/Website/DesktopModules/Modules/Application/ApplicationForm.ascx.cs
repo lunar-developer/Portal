@@ -460,8 +460,8 @@ namespace DesktopModules.Modules.Application
 
             SectionApplicationInfo.ControlApplicationStatus.Text = FormatStatus(row[ApplicationTable.ApplicationStatus].ToString());
             SectionApplicationInfo.ControlDecisionCode.Text = row[ApplicationTable.DecisionCode].ToString();
-            SectionApplicationInfo.ControlModifyUserID.Text = FunctionBase.FormatUserID(row[BaseTable.ModifyUserID].ToString());
-            SectionApplicationInfo.ControlModifyDateTime.Text = FunctionBase.FormatDate(row[BaseTable.ModifyDateTime].ToString());
+            SectionApplicationInfo.ControlModifyUserID.Text = FunctionBase.FormatUserID(row[BaseTable.UserIDModify].ToString());
+            SectionApplicationInfo.ControlModifyDateTime.Text = FunctionBase.FormatDate(row[BaseTable.DateTimeModify].ToString());
 
             SectionApplicationInfo.ControlApplicationRemark.Text = row[ApplicationTable.ApplicationRemark].ToString();
 

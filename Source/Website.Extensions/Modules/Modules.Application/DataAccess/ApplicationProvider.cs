@@ -92,16 +92,16 @@ namespace Modules.Application.DataAccess
                         {ApplicationLogTable.Remark},
                         {ApplicationLogTable.IsHasLogDetail},
                         {ApplicationLogTable.IsSensitiveInfo},
-                        {BaseTable.ModifyUserID},
-                        {BaseTable.ModifyDateTime}) 
+                        {BaseTable.UserIDModify},
+                        {BaseTable.DateTimeModify}) 
                     values (
                         @{ApplicationTable.ApplicationID},
                         N'Thêm mới',
                         '',
                         0,
                         0,
-                        @{BaseTable.ModifyUserID},
-                        @{BaseTable.ModifyDateTime})
+                        @{BaseTable.UserIDModify},
+                        @{BaseTable.DateTimeModify})
                     set @{ApplicationLogTable.ApplicationLogID} = @@identity
 
 
@@ -120,7 +120,7 @@ namespace Modules.Application.DataAccess
                     select
                         {ApplicationTable.ApplicationID}, {ApplicationTable.ProcessID}, {ApplicationTable.PhaseID},
                         0, '',
-                        @{BaseTable.ModifyUserID}, @{BaseTable.ModifyDateTime}
+                        @{BaseTable.UserIDModify}, @{BaseTable.DateTimeModify}
                     from
                         dbo.{ApplicationTable.TableName} with(nolock)               
                     where
@@ -138,7 +138,7 @@ namespace Modules.Application.DataAccess
                         Error_Number(), 
                         Error_Message(), 
                         'ApplicationProvider.InsertApplication - ' + @Step,
-                        @{BaseTable.ModifyDateTime}
+                        @{BaseTable.DateTimeModify}
 
                     select -1
                 end catch";
@@ -223,16 +223,16 @@ namespace Modules.Application.DataAccess
                         {ApplicationLogTable.Remark},
                         {ApplicationLogTable.IsHasLogDetail},
                         {ApplicationLogTable.IsSensitiveInfo},
-                        {BaseTable.ModifyUserID},
-                        {BaseTable.ModifyDateTime}) 
+                        {BaseTable.UserIDModify},
+                        {BaseTable.DateTimeModify}) 
                     values (
                         @{ApplicationTable.ApplicationID},
                         N'Cập nhật',
                         '',
                         1,
                         0,
-                        @{BaseTable.ModifyUserID},
-                        @{BaseTable.ModifyDateTime})
+                        @{BaseTable.UserIDModify},
+                        @{BaseTable.DateTimeModify})
                     set @ApplicationLogID = @@identity
 
 
@@ -252,7 +252,7 @@ namespace Modules.Application.DataAccess
                     rollback transaction
 
                     insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
-                    select Error_Number(), Error_Message(), 'ApplicationProvider.InsertApplication', @{BaseTable.ModifyDateTime}
+                    select Error_Number(), Error_Message(), 'ApplicationProvider.InsertApplication', @{BaseTable.DateTimeModify}
 
                     select -1
                 end catch";
@@ -430,8 +430,8 @@ namespace Modules.Application.DataAccess
                 listUnicodeString.Count, BuildScript(listUnicodeString),
                 BuildLogScript(listLog));
 
-            Connector.AddParameter(BaseTable.ModifyUserID, SqlDbType.Int, userID);
-            Connector.AddParameter(BaseTable.ModifyDateTime, SqlDbType.BigInt,
+            Connector.AddParameter(BaseTable.UserIDModify, SqlDbType.Int, userID);
+            Connector.AddParameter(BaseTable.DateTimeModify, SqlDbType.BigInt,
                 DateTime.Now.ToString(PatternEnum.DateTime));
             Connector.ExecuteSql(script, out string result);
             return long.Parse(result);
@@ -462,8 +462,8 @@ namespace Modules.Application.DataAccess
                 BuildLogScript(listLog));
 
             Connector.AddParameter(ApplicationTable.ApplicationID, SqlDbType.BigInt, applicationID);
-            Connector.AddParameter(BaseTable.ModifyUserID, SqlDbType.Int, userID);
-            Connector.AddParameter(BaseTable.ModifyDateTime, SqlDbType.BigInt,
+            Connector.AddParameter(BaseTable.UserIDModify, SqlDbType.Int, userID);
+            Connector.AddParameter(BaseTable.DateTimeModify, SqlDbType.BigInt,
                 DateTime.Now.ToString(PatternEnum.DateTime));
             Connector.ExecuteSql(script, out string result);
             return long.Parse(result);

@@ -30,7 +30,7 @@
     </div>
     <div class="form-group">
         <div class="col-sm-4 control-label">
-            <label class="dnnLabel">Ưu tiên</label>
+            <label class="dnnLabel">Độ ưu tiên</label>
         </div>
         <div class="col-sm-8">
             <control:AutoComplete ID="ctrlPriority" runat="server" ClientIDMode="Static">

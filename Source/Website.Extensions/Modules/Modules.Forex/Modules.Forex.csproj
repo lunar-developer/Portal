@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{EB69C809-B9A6-4BBE-B085-278CBB390F5B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Modules.Forex</RootNamespace>
+    <AssemblyName>Modules.Forex</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DotNetNuke">
+      <HintPath>..\..\..\Website\Bin\DotNetNuke.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetNuke.Web.Deprecated, Version=8.0.2.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="LunarSoft.SqlServerConnector, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b5cabe615762e631, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Library\LunarSoft.SqlServerConnector.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Business\CurrencyRateBusiness.cs" />
+    <Compile Include="Business\CurrencyRateCacheBusiness.cs" />
+    <Compile Include="Business\CustomerTypeBusiness.cs" />
+    <Compile Include="Business\CustomerTypeCacheBusiness.cs" />
+    <Compile Include="Business\ExchangeRateBusiness.cs" />
+    <Compile Include="Business\ExchangeGridCacheBusiness.cs" />
+    <Compile Include="Business\ReasonBusiness.cs" />
+    <Compile Include="Business\ReasonCacheBusiness.cs" />
+    <Compile Include="Business\TransactionBusiness.cs" />
+    <Compile Include="Business\ActionBusiness.cs" />
+    <Compile Include="Business\WorkflowStatusCacheBusiness.cs" />
+    <Compile Include="Business\WorkflowStatusBusiness.cs" />
+    <Compile Include="Business\RequestTypeBusiness.cs" />
+    <Compile Include="Business\TransactionTypeBusiness.cs" />
+    <Compile Include="Business\TransactionTypeCacheBusiness.cs" />
+    <Compile Include="DataAccess\CurrencyRateProvider.cs" />
+    <Compile Include="DataAccess\CustomerTypeProvider.cs" />
+    <Compile Include="DataAccess\ExchangeRateProvider.cs" />
+    <Compile Include="DataAccess\ReasonProvider.cs" />
+    <Compile Include="DataAccess\TransactionProvider.cs" />
+    <Compile Include="DataAccess\ActionProvider.cs" />
+    <Compile Include="DataAccess\WorkflowStatusProvider.cs" />
+    <Compile Include="DataAccess\RequestTypeProvider.cs" />
+    <Compile Include="DataAccess\TransactionTypeProvider.cs" />
+    <Compile Include="Database\CustomerTypeTable.cs" />
+    <Compile Include="Database\ExchangeRateTable.cs" />
+    <Compile Include="Database\ReasonTable.cs" />
+    <Compile Include="Database\ActionTable.cs" />
+    <Compile Include="Database\WorkflowStatusTable.cs" />
+    <Compile Include="Database\TransactionTable.cs" />
+    <Compile Include="Database\RequestTypeTable.cs" />
+    <Compile Include="Database\TransactionTypeTable.cs" />
+    <Compile Include="DataTransfer\ActionData.cs" />
+    <Compile Include="DataTransfer\CurrencyRateData.cs" />
+    <Compile Include="DataTransfer\CustomerTypeData.cs" />
+    <Compile Include="DataTransfer\ExchangeRateData.cs" />
+    <Compile Include="DataTransfer\ExchangeRateGridData.cs" />
+    <Compile Include="DataTransfer\ReasonData.cs" />
+    <Compile Include="DataTransfer\TransactionData.cs" />
+    <Compile Include="DataTransfer\WorkflowStatusData.cs" />
+    <Compile Include="DataTransfer\RequestTypeData.cs" />
+    <Compile Include="DataTransfer\TransactionTypeData.cs" />
+    <Compile Include="Database\CurrencyRateTable.cs" />
+    <Compile Include="Enum\ActionCodeEnum.cs" />
+    <Compile Include="Enum\CommandTypeEnum.cs" />
+    <Compile Include="Enum\ConfigurationEnum.cs" />
+    <Compile Include="Enum\ExchangeRateGridFieldEnum.cs" />
+    <Compile Include="Enum\ExchangeRateStatusEnum.cs" />
+    <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\WorkflowStatusEnum.cs" />
+    <Compile Include="Enum\RequestTypeEnum.cs" />
+    <Compile Include="Enum\TransactionTypeEnum.cs" />
+    <Compile Include="Global\ForexModulesBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global\TransactionCreationBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Global\TransactionManagementBase.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Website.Library\Website.Library.csproj">
+      <Project>{DCD19ECA-8265-45E8-81E0-02705B776097}</Project>
+      <Name>Website.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Modules.UserManagement\Modules.UserManagement.csproj">
+      <Project>{A573178E-F590-46FC-87CA-0F976AAD7A68}</Project>
+      <Name>Modules.UserManagement</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

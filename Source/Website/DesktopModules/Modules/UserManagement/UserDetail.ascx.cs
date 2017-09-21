@@ -373,7 +373,7 @@ namespace DesktopModules.Modules.UserManagement
                         </td>
                     </tr>");
             }
-            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
         private string RenderOtherRoles(int roleGroupID, string roleGroupName, bool isEnable,
@@ -444,7 +444,7 @@ namespace DesktopModules.Modules.UserManagement
                         </td>
                     </tr>");
             }
-            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
         private void LoadHistory(DataTable dtUserLog)

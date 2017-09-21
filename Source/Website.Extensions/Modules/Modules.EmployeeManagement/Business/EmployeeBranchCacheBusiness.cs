@@ -1,36 +1,25 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using Modules.EmployeeManagement.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
-using System.Collections.Generic;
 
 namespace Modules.EmployeeManagement.Business
 {
-    public class EmployeeBranchCacheBusiness<T> : ICache where T : EmployeeBranchData
+    public class EmployeeBranchCacheBusiness<T> : BasicCacheBusiness<T> where T : EmployeeBranchData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string,CacheData> Load()
+        public override OrderedConcurrentDictionary<string,CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
 
-            List<EmployeeBranchData> listBranch = EmployeeBusiness.GetAllBranch();
+            List<EmployeeBranchData> listBranch = EmployeeBusiness.LoadEmployeeBranch();
             for (int i = 0; i < listBranch.Count; i++)
             {
                 EmployeeBranchData branch = listBranch[i];
                 dictionary.TryAdd((i + 1).ToString(), branch);
             }
             return dictionary;
-        }
-
-        public CacheData Reload(string key)
-        {
-            return null;
         }
     }
 }

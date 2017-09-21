@@ -1,6 +1,6 @@
-#region Copyright
+﻿#region Copyright
 // 
-// DotNetNuke� - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -725,6 +725,11 @@ namespace DotNetNuke.Framework
                 DNNClientAPI.SetScrollTop(Page);
                 ScrollTop.Value = ScrollTop.Value;
             }
+
+            if (IsPostBack == false)
+            {
+                ProcessOnKickOutLoginSession();
+            }
         }
 
         protected override void OnPreRender(EventArgs evt)
@@ -789,5 +794,106 @@ namespace DotNetNuke.Framework
 
         #endregion
 
+
+        private void ProcessOnKickOutLoginSession()
+        {
+            Dictionary<string, string> loginInfoDictionary =
+                (Dictionary<string, string>) HttpContext.Current.Cache[Session.SessionID];
+            if (loginInfoDictionary == null)
+            {
+                return;
+            }
+
+            string ipAddress = loginInfoDictionary.ContainsKey("IPAddress")
+                ? loginInfoDictionary["IPAddress"]
+                : string.Empty;
+            string computerName = loginInfoDictionary.ContainsKey("ComputerName")
+                ? loginInfoDictionary["ComputerName"]
+                : string.Empty;
+            string browser = loginInfoDictionary.ContainsKey("Browser")
+                ? loginInfoDictionary["Browser"]
+                : string.Empty;
+            string loginDateTime = loginInfoDictionary.ContainsKey("DateTime")
+                ? loginInfoDictionary["DateTime"]
+                : string.Empty;
+
+            string scriptBody = $@"
+                <div style='overflow: hidden'>
+                    <div class='form-group'>
+	                    <div class='dnnFormMessage dnnFormWarning'>
+		                    <span>
+                                Tài khoản của bạn vừa được đăng nhập ở một nơi khác. Vui lòng kiểm tra lại thông tin bên dưới.<br>
+                                Nếu thông tin bên dưới không phải của bạn, vui lòng thay đổi mật khẩu ngay.
+                            </span>
+	                    </div>
+                    </div>
+                    <div class='form-horizontal'>
+	                    <div class='form-group'>
+		                    <div class='col-sm-2 control-label'>
+			                    <div class='dnnLabel'>    
+				                    <label>
+				                    <span>IP</span>   
+			                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-4 control-value'>                
+			                    <div class=''>
+				                    <label>
+					                    <span>{ipAddress}</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+                            <div class='col-sm-2 control-label'>  
+			                    <div class='dnnLabel'>    
+				                    <label>
+					                    <span>PC Name</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-4'>
+			                    <div class='control-value'>    
+				                    <label>
+					                    <span>{computerName}</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+	                    </div>
+	                    <div class='form-group'>
+		                    <div class='col-sm-2 control-label'>        
+			                    <div class='dnnLabel'>    
+				                    <label>
+					                    <span>Trình duyệt</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-4'>
+			                    <div class='control-value'>    
+				                    <label>
+					                    <span>{browser}</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+                            <div class='col-sm-2 control-label'>
+			                    <div class='dnnLabel'>    
+				                    <label>
+					                    <span>Ngày giờ</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-4'>
+			                    <div class='control-value'>    
+				                    <label>
+					                    <span>{loginDateTime}</span>
+                                    </label>
+			                    </div>
+		                    </div>
+	                    </div>
+                    </div>
+                </div>
+            ";
+
+            ScriptManager.RegisterStartupScript(Page, GetType(), "Warning", $"alertMessage(\"{scriptBody.Replace("\r\n", "")}\");", true);
+            HttpContext.Current.Cache.Remove(Session.SessionID);
+        }
     }
 }

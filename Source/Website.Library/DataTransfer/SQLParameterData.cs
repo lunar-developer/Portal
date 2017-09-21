@@ -11,7 +11,7 @@ namespace Website.Library.DataTransfer
         {
         }
 
-        public SQLParameterData(object parameterValue, SqlDbType parameterType)
+        public SQLParameterData(object parameterValue, SqlDbType parameterType = SqlDbType.VarChar)
         {
             ParameterValue = parameterValue;
             ParameterType = parameterType;

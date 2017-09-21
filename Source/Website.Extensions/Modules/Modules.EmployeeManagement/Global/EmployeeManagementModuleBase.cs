@@ -16,8 +16,10 @@ namespace Modules.EmployeeManagement.Global
         private const int ScaleMaxHeight = 250;
         private const int ScaleMaxWidth = 150;
 
-        private static readonly string TemplateFolder = FunctionBase.GetConfiguration(ConfigEnum.SiteFolder) +
-            FunctionBase.GetConfiguration("EM_TemplateFolder");
+        private static readonly string TemplateFolder = FunctionBase.GetConfiguration("EM_TemplateFolder");
+
+        private static readonly string AssetFolder =
+            FunctionBase.GetConfiguration(ConfigEnum.SiteFolder) + TemplateFolder;
 
         private static readonly string TemplateUrl =
             FunctionBase.GetAbsoluteUrl($"/{TemplateFolder}{FunctionBase.GetConfiguration("EM_UploadTemplate")}");
@@ -27,15 +29,15 @@ namespace Modules.EmployeeManagement.Global
         protected static readonly string VCardTemplate;
 
         protected static string DefaultMaleImage =
-            ImageBusiness.GetImageFromFile($"{TemplateFolder}{FunctionBase.GetConfiguration("EM_MaleImage")}");
+            ImageBusiness.GetImageFromFile($"{AssetFolder}{FunctionBase.GetConfiguration("EM_MaleImage")}");
 
         protected static string DefaultFemaleImage =
-            ImageBusiness.GetImageFromFile($"{TemplateFolder}{FunctionBase.GetConfiguration("EM_FemaleImage")}");
+            ImageBusiness.GetImageFromFile($"{AssetFolder}{FunctionBase.GetConfiguration("EM_FemaleImage")}");
 
 
         static EmployeeManagementModuleBase()
         {
-            string fileTemplate = TemplateFolder + FunctionBase.GetConfiguration("EM_VCardTemplate");
+            string fileTemplate = AssetFolder + FunctionBase.GetConfiguration("EM_VCardTemplate");
             VCardTemplate = FunctionBase.ReadFile(fileTemplate);
         }
 

@@ -1,20 +1,14 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using Modules.Application.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.Application.Business
 {
-    public class UserPhaseCacheBusiness<T> : ICache where T : UserPhaseData
+    public class UserPhaseCacheBusiness<T> : BasicCacheBusiness<T> where T : UserPhaseData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
@@ -28,7 +22,7 @@ namespace Modules.Application.Business
             return dictionary;
         }
 
-        public CacheData Reload(string key)
+        public override CacheData Reload(string key)
         {
             string[] arrayValues = key.Split('-');
             if (arrayValues.Length != 2)

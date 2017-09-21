@@ -27,16 +27,16 @@ namespace Website.UnitTest
         {
             try
             {
-                var r = new Regex(@"
-                (?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) |
-                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
+                //var r = new Regex(@"
+                //(?<=[A-Z])(?=[A-Z][a-z]) |
+                // (?<=[^A-Z])(?=[A-Z]) |
+                // (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
 
 
-                string s = "TodayILiveInTheUSAWithSimon";
-                Console.WriteLine(r.Replace(s, " "));
+                //string s = "TodayILiveInTheUSAWithSimon";
+                //Console.WriteLine(r.Replace(s, " "));
 
-                return;
+                //return;
 
                 //using (IConnection connection = LocalConnectionFactory.CreateConnection("Portal Client"))
                 //{
@@ -64,16 +64,16 @@ namespace Website.UnitTest
 
 
 
-                //using (IConnection connection = LocalConnectionFactory.CreateConnection("Portal Client"))
-                //{
-                //    using (IModel channel = connection.CreateModel())
-                //    {
-                //        EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
-                //        consumer.Received += AutoReceive;
-                //        channel.BasicConsume("mq:RequestData.inq", true, consumer);
-                //        System.Threading.Thread.Sleep(10000000);
-                //    }
-                //}
+                using (IConnection connection = LocalConnectionFactory.CreateConnection("Portal Client"))
+                {
+                    using (IModel channel = connection.CreateModel())
+                    {
+                        EventingBasicConsumer consumer = new EventingBasicConsumer(channel);
+                        consumer.Received += AutoReceive;
+                        channel.BasicConsume("mq:RequestData.inq", true, consumer);
+                        System.Threading.Thread.Sleep(10000000);
+                    }
+                }
             }
             catch (Exception exception)
             {
@@ -91,7 +91,7 @@ namespace Website.UnitTest
             string data;
             switch (request.Function)
             {
-                case "QueryCustomer":
+                case "QueryCustomerByIDNo":
                     data = QueryCustomer(request.Data);
                     break;
 

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Modules.Application.Business;
 using Modules.Application.DataTransfer;
 using Modules.Application.Global;
+using Modules.MasterData.Database;
 using Telerik.Web.UI;
+using Website.Library.Enum;
 using Website.Library.Global;
 
 namespace DesktopModules.Modules.Application
@@ -30,14 +33,16 @@ namespace DesktopModules.Modules.Application
         private const string HtmlStringResult = @"
             <table class=""table c-margin-t-10"">
                 <colgroup>
+                    <col width=""5%"" />
                     <col width=""10%"" />
                     <col width=""10%"" />
                     <col width=""10%"" />
                     <col width=""20%"" />
-                    <col width=""50%"" />
+                    <col width=""45%"" />
                 </colgroup>
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Bắt đầu</th>
                         <th>Kết thúc</th>
                         <th>Chu kỳ</th>
@@ -66,8 +71,20 @@ namespace DesktopModules.Modules.Application
             string info = string.Empty;
             if (scheduleData != null)
             {
+                Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                dictionary.Add(MasterDataTable.UniqueID, "40");
+                dictionary.Add(MasterDataTable.FieldList, "ScheduleID");
+                dictionary.Add("ScheduleID", scheduleData.ScheduleID);
+                string url = EditUrl(ActionEnum.Edit);
+                string script = EditUrl(url, 800, 400, true, dictionary, "refresh");
+
                 info = $@"
                     <tr>
+                        <td>
+                            <a href=""javascript:;"" onclick=""{script}"">
+                                <i class=""fa fa-pencil icon-primary""></i>
+                            </a>
+                        </td>
                         <td>{FunctionBase.FormatHourAndMinutes(scheduleData.StartTime)}</td>
                         <td>{FunctionBase.FormatHourAndMinutes(scheduleData.EndTime)}</td>
                         <td>{scheduleData.Period.PadLeft(2, '0')} phút</td>
@@ -95,8 +112,7 @@ namespace DesktopModules.Modules.Application
 
         protected void Refresh(object sender, EventArgs e)
         {
-            GridData.DataSource = ScheduleLogBusiness.GetList(ddlSchedule.SelectedValue);
-            GridData.DataBind();
+            OnSelectedIndexChanged(null, null);
         }
 
         protected void ClearLog(object sender, EventArgs e)

@@ -150,7 +150,7 @@
             <control:DoubleLabel
                 runat="server"
                 SubText="Address 1 (Alternative 1)"
-                Text="Dòng thứ 1" />
+                Text="Địa chỉ dòng thứ 1" />
         </div>
         <div class="col-sm-12">
             <asp:TextBox
@@ -164,7 +164,7 @@
             <control:DoubleLabel
                 runat="server"
                 SubText="Address 2 (Alternative 1)"
-                Text="Dòng thứ 2" />
+                Text="Địa chỉ dòng thứ 2" />
         </div>
         <div class="col-sm-12">
             <asp:TextBox
@@ -275,7 +275,7 @@
             <control:DoubleLabel
                 runat="server"
                 SubText="Address 1 (Alternative 2)"
-                Text="Dòng thứ 1" />
+                Text="Địa chỉ dòng thứ 1" />
         </div>
         <div class="col-sm-12">
             <asp:TextBox
@@ -289,7 +289,7 @@
             <control:DoubleLabel
                 runat="server"
                 SubText="Address 2 (Alternative 2)"
-                Text="Dòng thứ 2" />
+                Text="Địa chỉ dòng thứ 2" />
         </div>
         <div class="col-sm-12">
             <asp:TextBox

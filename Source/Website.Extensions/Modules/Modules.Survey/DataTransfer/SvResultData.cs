@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Modules.Survey.DataTransfer
+﻿namespace Modules.Survey.DataTransfer
 {
-    class SvResultData
+    public class SvResultData
     {
         public string Id;
         public string IdSurvey;

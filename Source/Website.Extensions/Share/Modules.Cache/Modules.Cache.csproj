@@ -43,14 +43,6 @@
       <Project>{045302fc-989d-4bb1-b40c-ea323d50e402}</Project>
       <Name>Modules.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Modules\Modules.EmployeeManagement\Modules.EmployeeManagement.csproj">
-      <Project>{d0698063-c92d-4377-99d9-12ed48a7f22c}</Project>
-      <Name>Modules.EmployeeManagement</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Modules\Modules.UserManagement\Modules.UserManagement.csproj">
-      <Project>{a573178e-f590-46fc-87ca-0f976aad7a68}</Project>
-      <Name>Modules.UserManagement</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Skins\Modules.Skins.Jango\Modules.Skins.Jango.csproj">
       <Project>{1baafc5a-786a-4b8b-9c15-114bfbb13784}</Project>
       <Name>Modules.Skins.Jango</Name>

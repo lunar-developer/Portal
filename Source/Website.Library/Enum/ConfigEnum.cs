@@ -21,6 +21,7 @@
         public static string QueueRabbitServiceVirtualHost = "QueueRabbitServiceVirtualHost";
         public static string QueueRabbitServiceUserName = "QueueRabbitServiceUserName";
         public static string QueueRabbitServicePassword = "QueueRabbitServicePassword";
+        public static string QueueRabbitServiceHeartbeat = "QueueRabbitServiceHeartbeat";
 
         public static string QueuePortalServiceIn = "QueuePortalServiceIn";
         public static string QueuePortalServiceOut = "QueuePortalServiceOut";

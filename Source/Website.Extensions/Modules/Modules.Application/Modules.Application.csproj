@@ -60,6 +60,8 @@
     <Compile Include="Business\PolicyDocumentCacheBusiness.cs" />
     <Compile Include="Business\DocumentTypeCacheBusiness.cs" />
     <Compile Include="Business\PolicyDocumentBusiness.cs" />
+    <Compile Include="Business\PolicyFieldBusiness.cs" />
+    <Compile Include="Business\PolicyFieldCacheBusiness.cs" />
     <Compile Include="Business\ProcessBusiness.cs" />
     <Compile Include="Business\RouteCacheBusiness.cs" />
     <Compile Include="Business\ProcessCacheBusiness.cs" />
@@ -113,6 +115,8 @@
     <Compile Include="Business\SICCacheBusiness.cs" />
     <Compile Include="Business\StateBusiness.cs" />
     <Compile Include="Business\StateCacheBusiness.cs" />
+    <Compile Include="Business\WardBusiness.cs" />
+    <Compile Include="Business\WardCacheBusiness.cs" />
     <Compile Include="DataAccess\ApplicationFieldProvider.cs" />
     <Compile Include="DataAccess\ApplicationLogProvider.cs" />
     <Compile Include="DataAccess\ApplicationStatusProvider.cs" />
@@ -120,6 +124,7 @@
     <Compile Include="DataAccess\DocumentTypeProvider.cs" />
     <Compile Include="DataAccess\PhaseProvider.cs" />
     <Compile Include="DataAccess\PolicyDocumentProvider.cs" />
+    <Compile Include="DataAccess\PolicyFieldProvider.cs" />
     <Compile Include="DataAccess\ProcessProvider.cs" />
     <Compile Include="DataAccess\RouteProvider.cs" />
     <Compile Include="DataAccess\ScheduleLogProvider.cs" />
@@ -138,6 +143,7 @@
     <Compile Include="DataAccess\OccupationProvider.cs" />
     <Compile Include="DataAccess\PositionProvider.cs" />
     <Compile Include="DataAccess\SICProvider.cs" />
+    <Compile Include="DataAccess\WardProvider.cs" />
     <Compile Include="Database\ApplicationLogDetailTable.cs" />
     <Compile Include="Database\ApplicationProcessTable.cs" />
     <Compile Include="Database\ApplicationStatusTable.cs" />
@@ -155,6 +161,7 @@
     <Compile Include="Database\OccupationTable.cs" />
     <Compile Include="Database\PhaseTable.cs" />
     <Compile Include="Database\PolicyDocumentTable.cs" />
+    <Compile Include="Database\PolicyFieldTable.cs" />
     <Compile Include="Database\PositionTable.cs" />
     <Compile Include="Database\ProcessTable.cs" />
     <Compile Include="Database\RouteTable.cs" />
@@ -162,6 +169,7 @@
     <Compile Include="Database\SheduleTable.cs" />
     <Compile Include="Database\SICTable.cs" />
     <Compile Include="Database\UserPhaseTable.cs" />
+    <Compile Include="Database\WardTable.cs" />
     <Compile Include="DataTransfer\ApplicationFieldData.cs" />
     <Compile Include="DataAccess\ApplicationProvider.cs" />
     <Compile Include="DataAccess\CityProvider.cs" />
@@ -216,6 +224,7 @@
     <Compile Include="DataTransfer\PhaseData.cs" />
     <Compile Include="DataTransfer\PolicyData.cs" />
     <Compile Include="DataTransfer\PolicyDocumentData.cs" />
+    <Compile Include="DataTransfer\PolicyFieldData.cs" />
     <Compile Include="DataTransfer\PositionData.cs" />
     <Compile Include="DataTransfer\ProcessData.cs" />
     <Compile Include="DataTransfer\RouteData.cs" />
@@ -225,6 +234,7 @@
     <Compile Include="DataTransfer\StateData.cs" />
     <Compile Include="DataTransfer\UserAssignData.cs" />
     <Compile Include="DataTransfer\UserPhaseData.cs" />
+    <Compile Include="DataTransfer\WardData.cs" />
     <Compile Include="Enum\ApplicationFieldNameEnum.cs" />
     <Compile Include="Enum\ApplicationFieldTypeEnum.cs" />
     <Compile Include="Enum\ApplicationStatusEnum.cs" />

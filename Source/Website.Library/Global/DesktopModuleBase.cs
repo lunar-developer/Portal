@@ -41,6 +41,13 @@ namespace Website.Library.Global
         }
 
 
+        protected void ClearSelection(RadComboBox comboBox)
+        {
+            comboBox.Text = string.Empty;
+            comboBox.ClearSelection();
+        }
+
+
         protected string GetRadComboBoxSelectedValues(RadComboBox combobox, string separator = ",")
         {
             return combobox.CheckedItems.Count == 0
@@ -77,10 +84,10 @@ namespace Website.Library.Global
                     '{(isUseResource ? GetResource(message) : message)}',
 			        '{
                         (string.IsNullOrWhiteSpace(title)
-                            ? GetSharedResource("System.Text")
+                            ? "Thông báo"
                             : (isUseResource ? GetResource(title) : title))
                     }',
-                    '{GetSharedResource("Ok.Text")}',
+                    '{"Đồng ý"}',
                     {callback});";
         }
 
@@ -90,9 +97,9 @@ namespace Website.Library.Global
                 confirmMessage(
                     '{jquery}',
                     '{(isUseResource ? GetResource(message) : message)}',
-			        '{GetSharedResource("Confirm.Text")}',
-                    '{GetSharedResource("Yes.Text")}',
-			        '{GetSharedResource("No.Text")}');";
+			        '{"Xác Nhận"}',
+                    '{"Đồng ý"}',
+			        '{"Hủy"}');";
         }
 
         protected string GetPopUpMaximumScript()
@@ -177,17 +184,27 @@ namespace Website.Library.Global
         }
 
 
-        protected T FindControl<T>() where T : Control
+        protected T FindControl<T>(Control parentControl = null) where T : Control
         {
-            List<T> list = FindControls<T>(false);
+            if (parentControl == null)
+            {
+                parentControl = Control;
+            }
+
+            List<T> list = FindControls<T>(parentControl, false);
             return list.Count > 0 ? list[0] : null;
         }
 
-        protected List<T> FindControls<T>(bool isRepeatUntilEnd = true) where T : Control
+        protected List<T> FindControls<T>(Control parentControl = null, bool isRepeatUntilEnd = true) where T : Control
         {
+            if (parentControl == null)
+            {
+                parentControl = Control;
+            }
+
             List<T> listResult = new List<T>();
             Queue<Control> queueControl = new Queue<Control>();
-            queueControl.Enqueue(Control);
+            queueControl.Enqueue(parentControl);
 
             while (queueControl.Count > 0)
             {

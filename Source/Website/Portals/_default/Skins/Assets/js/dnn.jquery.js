@@ -11,7 +11,7 @@
         $wrap.each(function () {
             var showEvent, cookieId;
             if (this.id) {
-                cookieId = 'dnnTabs-' + this.id;
+                cookieId = "dnnTabs-" + this.id;
                 if (opts.selected === -1) {
                     var cookieValue = dnn.dom.getCookie(cookieId);
                     if (cookieValue) {
@@ -23,7 +23,7 @@
                 }
                 showEvent = (function (cid) {
                     return function (event, ui) {
-                        dnn.dom.setCookie(cid, ui.newTab.index(), opts.cookieDays, '/', '', false, opts.cookieMilleseconds);
+                        dnn.dom.setCookie(cid, ui.newTab.index(), opts.cookieDays, "/", "", false, opts.cookieMilleseconds);
                     };
                 })(cookieId);
             } else {
@@ -41,13 +41,13 @@
                 }
             });
 
-            if (window.location.hash && window.location.hash != '#') {
+            if (window.location.hash && window.location.hash !== "#") {
                 var substr = window.location.hash.substr(0, 50);
-                $('a[href="' + encodeURI(substr) + '"]', $wrap).trigger('click');
+                $('a[href="' + encodeURI(substr) + '"]', $wrap).trigger("click");
             }
 
             // page validation integration - select tab that contain tripped validators
-            if (typeof window.Page_ClientValidate != "undefined" && $.isFunction(window.Page_ClientValidate)) {
+            if (typeof window.Page_ClientValidate !== "undefined" && $.isFunction(window.Page_ClientValidate)) {
                 $wrap.find(opts.validationTriggerSelector).click(function () {
                     if (!window.Page_ClientValidate(opts.validationGroup)) {
                         var invalidControl = $wrap.find(opts.invalidItemSelector).eq(0);
@@ -65,12 +65,12 @@
     };
 
     $.fn.dnnTabs.defaultOptions = {
-        opacity: 'toggle',
-        duration: 'fast',
-        validationTriggerSelector: '.dnnPrimaryAction',
-        validationGroup: '',
+        opacity: "toggle",
+        duration: "fast",
+        validationTriggerSelector: ".dnnPrimaryAction",
+        validationGroup: "",
         invalidItemSelector: '.dnnFormError[style*="inline"]',
-        regionToToggleSelector: 'fieldset',
+        regionToToggleSelector: "fieldset",
         selected: -1,
         cookieDays: 0,
         cookieMilleseconds: 1200000 // twenty minutes
@@ -84,7 +84,7 @@
         $wrap = this;
         $wrap.each(function () {
             var $this = $(this),
-                defaultAction = $this.attr('href'),
+                defaultAction = $this.attr("href"),
                 $dnnDialog;
 
             if (defaultAction || opts.isButton)
@@ -99,12 +99,19 @@
                         return false;
                     }
 
+                    if (opts.isUseRuntimeMessage === true && typeof opts.getRunTimeMessage === "function")
+                    {
+                        var runtimeMessage = opts.getRunTimeMessage();
+                        $dnnDialog.html(runtimeMessage);
+                    }
+                   
+
                     if (isTrigger) 
                     {
                         return true;
                     }
 
-                    if ($dnnDialog.is(':visible')) 
+                    if ($dnnDialog.is(":visible")) 
                     {
                         $dnnDialog.dialog("close");
                         return true;
@@ -117,7 +124,7 @@
 
                     $dnnDialog.dialog({
                         open: function () {
-                            $('.ui-dialog-buttonpane').find('button:contains("' + opts.noText + '")').addClass('dnnConfirmCancel');
+                            $(".ui-dialog-buttonpane").find('button:contains("' + opts.noText + '")').addClass("dnnConfirmCancel");
                         },
                         draggable: opts.draggable,
                         buttons: [
@@ -158,7 +165,7 @@
                         }
                         ]
                     });
-                    $dnnDialog.dialog('open');
+                    $dnnDialog.dialog("open");
                     e.preventDefault();
                     return false;
                 });
@@ -168,17 +175,17 @@
     };
 
     $.fn.dnnConfirm.defaultOptions = {
-        text: 'Are you sure?',
-        yesText: 'Yes',
-        noText: 'No',
-        buttonYesClass: 'dnnPrimaryAction',
-        buttonNoClass: 'dnnSecondaryAction',
+        text: "Bạn có muốn chắc tiếp tục?",  //'Are you sure?',
+        yesText: "Đồng ý",  //'Yes',
+        noText: "Hủy",  //'No',
+        buttonYesClass: "dnnPrimaryAction",
+        buttonNoClass: "dnnSecondaryAction",
         actionUrl: window.location.href,
         autoOpen: false,
         resizable: false,
         modal: true,
-        title: 'Confirm',
-        dialogClass: 'dnnFormPopup dnnClear',
+        title: "Xác Nhận",  //'Confirm',
+        dialogClass: "dnnFormPopup dnnClear",
         isButton: false
     };
 
@@ -188,7 +195,7 @@
     if ($.dnnConfirm) return;
 
     $.dnnConfirm = function (opts) {
-        var defaultAction = opts.actionUrl ? opts.actionUrl : 'javascript:void(0);';
+        var defaultAction = opts.actionUrl ? opts.actionUrl : "javascript:void(0);";
         var shadowLink = $('<a href="' + defaultAction + '" />');
         shadowLink.dnnConfirm(opts).click();
     };
@@ -214,16 +221,16 @@
                 }
             ]
         });
-        $dnnDialog.dialog('open');
+        $dnnDialog.dialog("open");
     };
 
     $.dnnAlert.defaultOptions = {
-        okText: 'Ok',
+        okText: "Ok",
         autoOpen: false,
         resizable: false,
         modal: true,
-        buttonOkClass: 'dnnPrimaryAction',
-        dialogClass: 'dnnFormPopup dnnClear'
+        buttonOkClass: "dnnPrimaryAction",
+        dialogClass: "dnnFormPopup dnnClear"
     };
 
 })(jQuery);
@@ -236,20 +243,20 @@
         $wrap.each(function () {
             var $this = $(this);
             if (typeof (opts.onExpand) === "function") {
-                $this.bind('onExpand', opts.onExpand);
+                $this.bind("onExpand", opts.onExpand);
             }
             if (typeof (opts.onHide) === "function") {
-                $this.bind('onHide', opts.onHide);
+                $this.bind("onHide", opts.onHide);
             }
             // wire up click event to perform slide toggle
             $this.find(opts.clickToToggleSelector).click(function (e) {
                 var toggle = $(this).toggleClass(opts.toggleClass).parent().next(opts.regionToToggleSelector).slideToggle(function () {
-                    var visible = $(this).is(':visible');
+                    var visible = $(this).is(":visible");
                     if (opts.saveState) {
                         var id = $(toggle.context.parentNode).attr("id");
-                        var cookieId = id ? id.replace(/[^a-zA-Z0-9\-]+/g, "") : '';
+                        var cookieId = id ? id.replace(/[^a-zA-Z0-9\-]+/g, "") : "";
                         if (cookieId) {
-                            dnn.dom.setCookie(cookieId, visible, opts.cookieDays, '/', '', false, opts.cookieMilleseconds);
+                            dnn.dom.setCookie(cookieId, visible, opts.cookieDays, "/", "", false, opts.cookieMilleseconds);
                         }
                     }
                     if (visible) {
@@ -281,8 +288,8 @@
             $this.find(opts.sectionHeadSelector).each(function (indexInArray, valueOfElement) {
                 var $self = $(valueOfElement),
                     elementId = $self.attr("id"),
-                    cookieId = elementId ? elementId.replace(/[^a-zA-Z0-9\-]+/g, "") : '',
-                    cookieValue = cookieId ? dnn.dom.getCookie(cookieId) : '',
+                    cookieId = elementId ? elementId.replace(/[^a-zA-Z0-9\-]+/g, "") : "",
+                    cookieValue = cookieId ? dnn.dom.getCookie(cookieId) : "",
                     $clicker = $self.find(opts.clickToToggleIsolatedSelector),
                     $region = $self.next(opts.regionToToggleSelector),
                     $parentSeparator = $self.parents(opts.panelSeparatorSelector),
@@ -290,17 +297,17 @@
 
                 // default value
                 var isOpen = false;
-                if ((indexInArray === 0 && opts.defaultState == "first") || // cookie set to true OR first panel
-                    ($parentSeparator.size() > 0 && groupPanelIndex === 0 && opts.defaultState == "first") || // grouping is used & its the first panel in its group
-                    (opts.defaultState == "open"))  // default open
+                if ((indexInArray === 0 && opts.defaultState === "first") || // cookie set to true OR first panel
+                    ($parentSeparator.size() > 0 && groupPanelIndex === 0 && opts.defaultState === "first") || // grouping is used & its the first panel in its group
+                    (opts.defaultState === "open"))  // default open
                 {
                     isOpen = true;
                 }
                 if (opts.saveState) {
-                    if (cookieValue == "true") {
+                    if (cookieValue === "true") {
                         isOpen = true;
                     }
-                    else if (cookieValue == "false") {
+                    else if (cookieValue === "false") {
                         isOpen = false;
                     }
                 }
@@ -315,11 +322,11 @@
 
             // page validation integration - expand collapsed panels that contain tripped validators
             $this.find(opts.validationTriggerSelector).click(function () {
-                if (typeof window.Page_ClientValidate != "undefined" && $.isFunction(window.Page_ClientValidate)) {
+                if (typeof window.Page_ClientValidate !== "undefined" && $.isFunction(window.Page_ClientValidate)) {
                     if (!window.Page_ClientValidate(opts.validationGroup)) {
                         $this.find(opts.invalidItemSelector).each(function () {
                             var $parent = $(this).closest(opts.regionToToggleSelector);
-                            if ($parent.is(':hidden')) {
+                            if ($parent.is(":hidden")) {
                                 $parent.prev(opts.sectionHeadSelector).find(opts.clickToToggleIsolatedSelector).click();
                             }
                         });
@@ -331,19 +338,19 @@
     };
 
     $.fn.dnnPanels.defaultOptions = {
-        clickToToggleSelector: 'h2.dnnFormSectionHead a',
-        sectionHeadSelector: '.dnnFormSectionHead',
-        regionToToggleSelector: 'fieldset',
-        toggleClass: 'dnnSectionExpanded',
-        clickToToggleIsolatedSelector: 'a',
-        validationTriggerSelector: '.dnnPrimaryAction',
+        clickToToggleSelector: "h2.dnnFormSectionHead a",
+        sectionHeadSelector: ".dnnFormSectionHead",
+        regionToToggleSelector: "fieldset",
+        toggleClass: "dnnSectionExpanded",
+        clickToToggleIsolatedSelector: "a",
+        validationTriggerSelector: ".dnnPrimaryAction",
         invalidItemSelector: '.dnnFormError[style*="inline"]',
-        validationGroup: '',
-        panelSeparatorSelector: '.ui-tabs-panel',
+        validationGroup: "",
+        panelSeparatorSelector: ".ui-tabs-panel",
         cookieDays: 0,
         cookieMilleseconds: 1200000, // twenty minutes
         saveState: true,
-        defaultState: 'first' // open | closed | first
+        defaultState: "first" // open | closed | first
     };
 
 })(jQuery);
@@ -364,8 +371,8 @@
                     var skinComboBox = $find(opts.skinSelector);
                     var containerComboBox = $find(opts.containerSelector);
 
-                    skin = skinComboBox ? skinComboBox.get_value() : '';
-                    container = containerComboBox ? containerComboBox.get_value() : '';
+                    skin = skinComboBox ? skinComboBox.get_value() : "";
+                    container = containerComboBox ? containerComboBox.get_value() : "";
                 }
                 else {
                     skin = $this.find(opts.skinSelector).val();
@@ -387,8 +394,8 @@
                         params += "ModuleID=" + opts.ModuleId;
                     }
                 }
-                if (params != "?") {
-                    window.open(encodeURI(opts.baseUrl + params.replace(/.ascx/gi, '')), "skinpreview");
+                if (params !== "?") {
+                    window.open(encodeURI(opts.baseUrl + params.replace(/.ascx/gi, "")), "skinpreview");
                 }
                 else {
                     $.dnnAlert({ text: opts.noSelectionMessage, okText: opts.alertOkText, closeText: opts.alertCloseText });
@@ -401,12 +408,12 @@
 
     $.fn.dnnPreview.defaultOptions = {
         baseUrl: window.location.protocol + "//" + window.location.host + window.location.pathname,
-        linkSelector: 'a.dnnSecondaryAction',
-        skinSelector: '',
-        containerSelector: '',
-        noSelectionMessage: 'Please select a preview option.',
-        alertOkText: 'Ok',
-        alertCloseText: 'close',
+        linkSelector: "a.dnnSecondaryAction",
+        skinSelector: "",
+        containerSelector: "",
+        noSelectionMessage: "Please select a preview option.",
+        alertOkText: "Ok",
+        alertCloseText: "close",
         useComboBox: false
     };
 
@@ -417,22 +424,22 @@
         var opts = $.extend({}, $.fn.dnnExpandAll.defaultOptions, options),
         $elem = this;
 
-        if (($(opts.targetArea).find(opts.targetSelector + ':visible').length ===
-            $(opts.targetArea).find(opts.targetSelector + opts.targetExpandedSelector + ':visible').length)
-            && !$(this).hasClass('expanded')) {
-            $(this).addClass('expanded').text(opts.collapseText);
+        if (($(opts.targetArea).find(opts.targetSelector + ":visible").length ===
+            $(opts.targetArea).find(opts.targetSelector + opts.targetExpandedSelector + ":visible").length)
+            && !$(this).hasClass("expanded")) {
+            $(this).addClass("expanded").text(opts.collapseText);
         }
 
         $elem.click(function (e) {
             e.preventDefault();
             var $this = $(this);
-            if ($this.hasClass('expanded')) {
-                $this.removeClass('expanded').text(opts.expandText);
-                $(opts.targetArea).find(opts.targetSelector + opts.targetExpandedSelector + ':visible').click();
+            if ($this.hasClass("expanded")) {
+                $this.removeClass("expanded").text(opts.expandText);
+                $(opts.targetArea).find(opts.targetSelector + opts.targetExpandedSelector + ":visible").click();
             }
             else {
-                $this.addClass('expanded').text(opts.collapseText);
-                $(opts.targetArea).find(opts.targetSelector + ':visible').not(opts.targetExpandedSelector).click();
+                $this.addClass("expanded").text(opts.collapseText);
+                $(opts.targetArea).find(opts.targetSelector + ":visible").not(opts.targetExpandedSelector).click();
             }
 
             //stop event from called again
@@ -442,11 +449,11 @@
         return $elem;
     };
     $.fn.dnnExpandAll.defaultOptions = {
-        expandText: 'Expand All',
-        collapseText: 'Collapse All',
-        targetArea: '#dnnHostSettings',
-        targetSelector: 'h2.dnnFormSectionHead a',
-        targetExpandedSelector: '.dnnSectionExpanded'
+        expandText: "Expand All",
+        collapseText: "Collapse All",
+        targetArea: "#dnnHostSettings",
+        targetSelector: "h2.dnnFormSectionHead a",
+        targetExpandedSelector: ".dnnSectionExpanded"
     };
 })(jQuery);
 
@@ -458,13 +465,13 @@
         $wrap.each(function () {
             var $this = $(this),
                 dnnFormHelp = $this.prev();
-            if ($this.data('initialized')) return;
-            dnnFormHelp.on('click', function (e) {
+            if ($this.data("initialized")) return;
+            dnnFormHelp.on("click", function (e) {
                 e.preventDefault();
             });
             var helpSelector = $this.find(opts.helpSelector);
-            $this.parent().css({ position: 'relative' });
-            $this.css({ position: 'absolute', right: '-29%' });
+            $this.parent().css({ position: "relative" });
+            $this.css({ position: "absolute", right: "-29%" });
             var hoverOnToolTip = false, hoverOnPd = false;
 
             dnnFormHelp.hoverIntent({
@@ -473,21 +480,21 @@
                     var tooltipHeight = helpSelector.height();
                     var top = -(tooltipHeight + 30);
                     if ((tooltipHeight + 30) <= $this.parent().offset().top) {
-                        helpSelector.parent().css({ top: top + 'px' });
+                        helpSelector.parent().css({ top: top + "px" });
                         $this.find("div.dnnFormHelpContent span").addClass("bottomArrow");
                         $this.find("div.dnnFormHelpContent span").removeClass("topArrow");
 
                     } else {
-                        helpSelector.parent().css({ top: 30 + 'px' });                  
+                        helpSelector.parent().css({ top: 30 + "px" });                  
                         $this.find("div.dnnFormHelpContent span").addClass("topArrow");
                         $this.find("div.dnnFormHelpContent span").removeClass("bottomArrow");
                     }
-                    helpSelector.css('visibility', 'visible');
+                    helpSelector.css("visibility", "visible");
                 },
                 out: function () {
                     hoverOnPd = false;
                     if (!$this.hasClass(opts.pinnedClass) && !hoverOnToolTip) {
-                        helpSelector.css('visibility', 'hidden');
+                        helpSelector.css("visibility", "hidden");
                     }
                 },
                 timeout: 200,
@@ -497,18 +504,18 @@
             helpSelector.hover(function () { hoverOnToolTip = true; }, function () {
                 hoverOnToolTip = false;
                 if (!$this.hasClass(opts.pinnedClass) && !hoverOnPd) {
-                    helpSelector.css('visibility', 'hidden');
+                    helpSelector.css("visibility", "hidden");
                 }
             });
 
             var pinHelper = helpSelector.find(opts.pinSelector);
 
-            pinHelper.on('click', function (e) {
+            pinHelper.on("click", function (e) {
                 e.preventDefault();
                 if ($this.hasClass(opts.pinnedClass)) {
-                    helpSelector.css({ "left": '0', "top": '0' })
-                        .css('visibility', 'hidden')
-                        .draggable('destroy');
+                    helpSelector.css({ "left": "0", "top": "0" })
+                        .css("visibility", "hidden")
+                        .draggable("destroy");
                     $this.removeClass(opts.pinnedClass);
                 }
                 else {
@@ -520,16 +527,16 @@
                 }
             });
 
-            $this.data('initialized', 1);
+            $this.data("initialized", 1);
         });
 
         return $wrap;
     };
 
     $.fn.dnnTooltip.defaultOptions = {
-        pinSelector: 'a.pinHelp',
-        helpSelector: '.dnnFormHelpContent',
-        pinnedClass: 'dnnTooltipPinned'
+        pinSelector: "a.pinHelp",
+        helpSelector: ".dnnFormHelpContent",
+        pinnedClass: "dnnTooltipPinned"
     };
 
 })(jQuery);
@@ -544,8 +551,8 @@
     /* DNN customized checkbox/radiobox */
     $.fn.dnnCheckbox = function (options) {
         var settings = {
-            cls: 'dnnCheckbox'  /* checkbox  */
-            , labelClass: 'dnnBoxLabel'
+            cls: "dnnCheckbox"  /* checkbox  */
+            , labelClass: "dnnBoxLabel"
         };
         settings = $.extend(settings, options || {});
 
@@ -559,10 +566,10 @@
 
             object.stateInterval = setInterval(
                 function () {
-                    if (object.disabled != disabled)
-                        $object.trigger((disabled = !!object.disabled) ? 'disable' : 'enable');
-                    if (object.checked != checked)
-                        $object.trigger((checked = !!object.checked) ? 'check' : 'uncheck');
+                    if (object.disabled !== disabled)
+                        $object.trigger((disabled = !!object.disabled) ? "disable" : "enable");
+                    if (object.checked !== checked)
+                        $object.trigger((checked = !!object.checked) ? "check" : "uncheck");
                 },
                 10 /* in miliseconds.*/
             );
@@ -577,30 +584,30 @@
             }
             $(ch).data("checkBoxWrapped", true);
 
-            if ($(this).hasClass('normalCheckBox') || $(this).hasClass('normalRadioButton')) return;
-            var parentCheckBoxHolder = $(this).closest('.normalCheckBox');
-            var parentRadioButtonHolder = $(this).closest('.normalRadioButton');
+            if ($(this).hasClass("normalCheckBox") || $(this).hasClass("normalRadioButton")) return;
+            var parentCheckBoxHolder = $(this).closest(".normalCheckBox");
+            var parentRadioButtonHolder = $(this).closest(".normalRadioButton");
             if (parentCheckBoxHolder.length || parentRadioButtonHolder.length) return;
             var $ch = addEvents(ch);
             if (ch.wrapper) ch.wrapper.remove();
             ch.wrapper = $('<span class="' + settings.cls + '"><span class="mark"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAMSURBVHjaYmAACDAAAAIAAU9tWeEAAAAASUVORK5CYII=" alt="checkbox" /></span></span>');
-            ch.wrapperInner = ch.wrapper.children('span:eq(0)');
+            ch.wrapperInner = ch.wrapper.children("span:eq(0)");
             ch.wrapper.hover(
-                function (e) { ch.wrapperInner.addClass(settings.cls + '-hover'); cb(e); },
-                function (e) { ch.wrapperInner.removeClass(settings.cls + '-hover'); cb(e); }
+                function (e) { ch.wrapperInner.addClass(settings.cls + "-hover"); cb(e); },
+                function (e) { ch.wrapperInner.removeClass(settings.cls + "-hover"); cb(e); }
             );
 
-            $ch.css({ position: 'absolute', zIndex: -1, opacity: 0 }).after(ch.wrapper);
+            $ch.css({ position: "absolute", zIndex: -1, opacity: 0 }).after(ch.wrapper);
 
             var label, parentLabel = false;
-            label = $ch.closest('label');
+            label = $ch.closest("label");
             if (!label.length)
                 label = false;
             else
                 parentLabel = true;
 
-            if (!label && $ch.attr('id')) {
-                label = $('label[for="' + $ch.attr('id') + '"]');
+            if (!label && $ch.attr("id")) {
+                label = $('label[for="' + $ch.attr("id") + '"]');
                 if (!label.length) label = false;
             }
 
@@ -615,7 +622,7 @@
                 else {
                     label.children().each(function () {
                         var $this = $(this);
-                        if ($this.is('input')) return;
+                        if ($this.is("input")) return;
 
                         $this.click(function (e) {
                             clickHandler(e);
@@ -633,25 +640,25 @@
             }
 
             function clickHandler(e) {
-                $ch.triggerHandler('focus');
+                $ch.triggerHandler("focus");
                 var previousChecked = ch.checked;
                 ch.click();
-                if (ch.checked == previousChecked && ch.type == 'checkbox') {
+                if (ch.checked === previousChecked && ch.type === "checkbox") {
                     ch.checked = !ch.checked;  //Fix for Firefox browser
                 }
-                $ch.trigger('change', [e]);
+                $ch.trigger("change", [e]);
                 cb(e);
             }
 
-            $ch.bind('disable', function () { ch.wrapperInner.addClass(settings.cls + '-disabled'); }).bind('enable', function () { ch.wrapperInner.removeClass(settings.cls + '-disabled'); });
-            $ch.bind('check', function () { ch.wrapper.addClass(settings.cls + '-checked'); }).bind('uncheck', function () { ch.wrapper.removeClass(settings.cls + '-checked'); });
-            $ch.bind('focus', function (e) { if (!e.isTrigger) ch.wrapper.addClass(settings.cls + '-focus'); }).bind('blur', function () { ch.wrapper.removeClass(settings.cls + '-focus'); });
+            $ch.bind("disable", function () { ch.wrapperInner.addClass(settings.cls + "-disabled"); }).bind("enable", function () { ch.wrapperInner.removeClass(settings.cls + "-disabled"); });
+            $ch.bind("check", function () { ch.wrapper.addClass(settings.cls + "-checked"); }).bind("uncheck", function () { ch.wrapper.removeClass(settings.cls + "-checked"); });
+            $ch.bind("focus", function (e) { if (!e.isTrigger) ch.wrapper.addClass(settings.cls + "-focus"); }).bind("blur", function () { ch.wrapper.removeClass(settings.cls + "-focus"); });
 
             /* Applying checkbox state */
             if (ch.checked)
-                ch.wrapper.addClass(settings.cls + '-checked');
+                ch.wrapper.addClass(settings.cls + "-checked");
             if (ch.disabled)
-                ch.wrapperInner.addClass(settings.cls + '-disabled');
+                ch.wrapperInner.addClass(settings.cls + "-disabled");
 
         });
     };
@@ -667,9 +674,9 @@
 
     $.fn.dnnHelperTip = function (options) {
         var settings = {
-            cls: 'dnnHelperTip',
+            cls: "dnnHelperTip",
             helpContent: "This is hover helper tooltip",
-            holderId: '',
+            holderId: "",
             show: false // immediately show tooltip after call
         };
         settings = $.extend(settings, options || {});
@@ -678,27 +685,27 @@
                 $pd = $(this);
             if (pd.tooltipWrapper) pd.tooltipWrapper.remove();
 
-            pd.tooltipWrapper = $('<div class="' + settings.cls + '" data-tipholder="' + settings.holderId + '"> <div class="dnnFormHelpContent dnnClear"><span class="dnnHelpText">' + settings.helpContent + '</span></div></div>');
-            $('body').append(pd.tooltipWrapper);
-            pd.tooltipWrapper.css({ position: 'absolute' });
-            pd.tooltipWrapperInner = $('.dnnFormHelpContent', pd.tooltipWrapper);
+            pd.tooltipWrapper = $('<div class="' + settings.cls + '" data-tipholder="' + settings.holderId + '"> <div class="dnnFormHelpContent dnnClear"><span class="dnnHelpText">' + settings.helpContent + "</span></div></div>");
+            $("body").append(pd.tooltipWrapper);
+            pd.tooltipWrapper.css({ position: "absolute" });
+            pd.tooltipWrapperInner = $(".dnnFormHelpContent", pd.tooltipWrapper);
 
             var tooltipHeight = pd.tooltipWrapperInner.height();
-            pd.tooltipWrapperInner.css({ left: '-10px', top: -(tooltipHeight + 30) + 'px' });
+            pd.tooltipWrapperInner.css({ left: "-10px", top: -(tooltipHeight + 30) + "px" });
             var hoverOnPd = false;
             $pd.hover(
                 function () {
                     hoverOnPd = true;
                     setTimeout(function () {
                         if (hoverOnPd)
-                            pd.tooltipWrapperInner.css('visibility', 'visible');
+                            pd.tooltipWrapperInner.css("visibility", "visible");
                     }, 400);
                 },
                 function () {
                     hoverOnPd = false;
                     setTimeout(function () {
                         if (!hoverOnPd)
-                            pd.tooltipWrapperInner.css('visibility', 'hidden');
+                            pd.tooltipWrapperInner.css("visibility", "hidden");
                     }, 400);
 
                 });
@@ -706,15 +713,15 @@
             if (settings.show) {
                 hoverOnPd = true;
                 setTimeout(function () {
-                    pd.tooltipWrapperInner.css('visibility', 'visible');
+                    pd.tooltipWrapperInner.css("visibility", "visible");
                 }, 400);
             }
 
-            $pd.bind('mousemove', function (e) {
+            $pd.bind("mousemove", function (e) {
                 var x = e.pageX; var y = e.pageY;
-                var pos = $('body').css('position');
-                if (pos == 'relative') y -= 38;
-                pd.tooltipWrapper.css({ left: x + 'px', top: y + 'px', 'z-index': '99999' });
+                var pos = $("body").css("position");
+                if (pos === "relative") y -= 38;
+                pd.tooltipWrapper.css({ left: x + "px", top: y + "px", 'z-index': "99999" });
             });
         });
     };
@@ -725,23 +732,23 @@
 
         if (pd.tooltipWrapper) pd.tooltipWrapper.remove();
         pd.tooltipWrapper = $('<div class="dnnTooltip"> <div class="dnnFormHelpContent dnnClear"><span class="dnnHelpText"></span></div></div>').insertAfter($pd);
-        pd.tooltipWrapperInner = $('.dnnFormHelpContent', pd.tooltipWrapper);
-        pd.tooltipWrapperInner.css({ width: '32px', padding: '7px' });
-        $pd.parent().css({ position: 'relative' });
+        pd.tooltipWrapperInner = $(".dnnFormHelpContent", pd.tooltipWrapper);
+        pd.tooltipWrapperInner.css({ width: "32px", padding: "7px" });
+        $pd.parent().css({ position: "relative" });
 
         var hoverOnToolTip = false, hoverOnPd = false;
         $pd.hoverIntent({
             over: function () {
                 hoverOnPd = true;
-                var val = $(this).children(':first').progressbar('value');
+                var val = $(this).children(":first").progressbar("value");
                 pd.update(val);
-                pd.tooltipWrapperInner.css('visibility', 'visible');
+                pd.tooltipWrapperInner.css("visibility", "visible");
 
             },
             out: function () {
                 hoverOnPd = false;
                 if (!hoverOnToolTip) {
-                    pd.tooltipWrapperInner.css('visibility', 'hidden');
+                    pd.tooltipWrapperInner.css("visibility", "hidden");
                 }
             },
             timeout: 200,
@@ -756,13 +763,13 @@
         });
 
         pd.update = function (value) {
-            pd.tooltipWrapperInner.find('span').html(value + ' %');
+            pd.tooltipWrapperInner.find("span").html(value + " %");
             var pdTop = $pd.position().top,
 			    tooltipHeight = pd.tooltipWrapperInner.height();
 
             pdTop -= (tooltipHeight + 10);
-            var pdLeft = value > 50 ? (value - 4) + '%' : value > 0 ? (value - 2) + '%' : '10px';
-            pd.tooltipWrapper.css({ position: 'absolute', left: pdLeft, top: pdTop + 'px' });
+            var pdLeft = value > 50 ? (value - 4) + "%" : value > 0 ? (value - 2) + "%" : "10px";
+            pd.tooltipWrapper.css({ position: "absolute", left: pdLeft, top: pdTop + "px" });
         };
 
         return this;
@@ -770,15 +777,15 @@
 
     $.fn.dnnSpinner = function (options) {
         var opt = $.extend({
-            type: 'range',
-            typedata: '',
-            width: '150px',
+            type: "range",
+            typedata: "",
+            width: "150px",
             looping: false
         }, options);
 
         var otypedata;
 
-        if (options != null && options.typedata != null) {
+        if (options !== null && options.typedata !== null) {
             otypedata = $.extend({
                 min: 1,
                 max: 10,
@@ -797,27 +804,27 @@
         opt.typedata = otypedata;
 
         var inputControl = this;
-        if (!inputControl.is(':text'))
+        if (!inputControl.is(":text"))
             return inputControl;
 
-        if (inputControl.hasClass('dnnSpinnerInput')) {
+        if (inputControl.hasClass("dnnSpinnerInput")) {
             return inputControl;
         }
         else {
-            inputControl.addClass('dnnSpinnerInput');
+            inputControl.addClass("dnnSpinnerInput");
         }
 
-        var strContainerDiv = '';
+        var strContainerDiv = "";
         strContainerDiv += '<div class="dnnSpinner">';
         strContainerDiv += '<div class="dnnSpinnerDisplay"></div>';
         strContainerDiv += '<div class="dnnSpinnerCtrl">';
         strContainerDiv += '<a class="dnnSpinnerTopButton"></a>';
         strContainerDiv += '<a class="dnnSpinnerBotButton"></a>';
-        strContainerDiv += '</div></div>';
+        strContainerDiv += "</div></div>";
         var objContainerDiv = $(strContainerDiv).insertAfter(inputControl);
         inputControl.insertAfter($("div.dnnSpinnerDisplay", objContainerDiv));
         $("div.dnnSpinnerDisplay", objContainerDiv).click(function () {
-            if (opt.type == 'range') {
+            if (opt.type === "range") {
                 var displayCtrl = $(this);
                 var innerInput = $('input[type="text"]', displayCtrl);
                 if (innerInput.length < 1) {
@@ -849,12 +856,12 @@
                 innerInput.focus();
             }
 
-            inputControl.triggerHandler('focus');
+            inputControl.triggerHandler("focus");
         });
-        inputControl.css('display', 'none');
+        inputControl.css("display", "none");
 
         switch (opt.type) {
-            case 'range':
+            case "range":
                 if (opt.defaultVal < opt.typedata.min || opt.defaultVal > opt.typedata.max) {
                     opt.defaultVal = opt.typedata.min;
                 }
@@ -876,7 +883,7 @@
                             ($("div.dnnSpinnerDisplay", objContainerDiv)).html(valueData);
                             inputControl.val(valueData);
                         }
-                        inputControl.triggerHandler('focus');
+                        inputControl.triggerHandler("focus");
                         return false;
                     });
 
@@ -890,18 +897,18 @@
                             ($("div.dnnSpinnerDisplay", objContainerDiv)).html(valueData);
                             inputControl.val(valueData);
                         }
-                        inputControl.triggerHandler('focus');
+                        inputControl.triggerHandler("focus");
                         return false;
                     });
                 }
 
                 break;
-            case 'list':
-                if (!opt.typedata.list || opt.typedata.list.lenght == 0) {
+            case "list":
+                if (!opt.typedata.list || opt.typedata.list.lenght === 0) {
                     return inputControl;
                 }
 
-                var listItems = opt.typedata.list.split(',');
+                var listItems = opt.typedata.list.split(",");
                 var selectedIndex = jQuery.inArray(opt.defaultVal, listItems);
                 if (selectedIndex < 0) {
                     selectedIndex = 0;
@@ -915,7 +922,7 @@
                     // attach events;
                     $("a.dnnSpinnerBotButton", objContainerDiv).click(function () {
                         if (selectedIndex < (listItems.length - 1) || opt.looping) {
-                            if (selectedIndex == listItems.length - 1) {
+                            if (selectedIndex === listItems.length - 1) {
                                 selectedIndex = -1;
                             }
                             selectedIndex++;
@@ -923,13 +930,13 @@
                             ($("div.dnnSpinnerDisplay", objContainerDiv)).html(valueData);
                             inputControl.val(valueData);
                         }
-                        inputControl.triggerHandler('focus');
+                        inputControl.triggerHandler("focus");
                         return false;
                     });
 
                     $("a.dnnSpinnerTopButton", objContainerDiv).click(function () {
                         if (selectedIndex > 0 || opt.looping) {
-                            if (selectedIndex == 0) {
+                            if (selectedIndex === 0) {
                                 selectedIndex = listItems.length;
                             }
                             selectedIndex--;
@@ -937,7 +944,7 @@
                             ($("div.dnnSpinnerDisplay", objContainerDiv)).html(valueData);
                             inputControl.val(valueData);
                         }
-                        inputControl.triggerHandler('focus');
+                        inputControl.triggerHandler("focus");
                         return false;
                     });
                 }
@@ -955,14 +962,14 @@
             url = options;
             options = arguments[1];
             options.url = url;
-        } else if (typeof options === 'string') {
+        } else if (typeof options === "string") {
             url = options;
             options = { url: url };
         }
         var opts = $.extend({}, $.fn.dnnAutocomplete.defaults, options);
         return this.each(function () {
             var $this = $(this);
-            $this.data('autocompleter', new $.dnnAutocompleter(
+            $this.data("autocompleter", new $.dnnAutocompleter(
                 $this,
                 $.meta ? $.extend({}, opts, $this.data()) : opts
             ));
@@ -970,16 +977,16 @@
     };
 
     $.fn.dnnAutocomplete.defaults = {
-        inputClass: 'dnn_acInput',
-        loadingClass: 'dnn_acLoading',
-        resultsClass: 'dnn_acResults',
-        selectClass: 'dnn_acSelect',
-        queryParamName: 'q',
-        contentTypeParamName: 'contentTypeId',
+        inputClass: "dnn_acInput",
+        loadingClass: "dnn_acLoading",
+        resultsClass: "dnn_acResults",
+        selectClass: "dnn_acSelect",
+        queryParamName: "q",
+        contentTypeParamName: "contentTypeId",
         extraParams: {},
         remoteDataType: false,
-        lineSeparator: '\n',
-        cellSeparator: '|',
+        lineSeparator: "\n",
+        cellSeparator: "|",
         minChars: 2,
         maxItemsToShow: 10,
         delay: 400,
@@ -1003,9 +1010,9 @@
         onFinish: null,
         matchStringConverter: null,
         beforeUseConverter: null,
-        autoWidth: 'min-width',
+        autoWidth: "min-width",
         useDelimiter: false,
-        delimiterChar: ',',
+        delimiterChar: ",",
         delimiterKeyCode: 188,
         processData: null,
         onError: null,
@@ -1015,18 +1022,18 @@
     var sanitizeResult = function (result) {
         var value, data;
         var type = typeof result;
-        if (type === 'string') {
+        if (type === "string") {
             value = result;
             data = {};
         } else if ($.isArray(result)) {
             value = result[0];
             data = result.slice(1);
-        } else if (type === 'object') {
+        } else if (type === "object") {
             value = result.value;
             data = result.data;
-        } else value = '';
+        } else value = "";
         value = String(value);
-        if (typeof data !== 'object') {
+        if (typeof data !== "object") {
             data = {};
         }
         return {
@@ -1045,7 +1052,7 @@
     };
 
     var makeUrlParam = function (name, value) {
-        return [name, encodeURIComponent(value)].join('=');
+        return [name, encodeURIComponent(value)].join("=");
     };
 
     var makeUrl = function (url, params) {
@@ -1054,8 +1061,8 @@
             urlAppend.push(makeUrlParam(index, value));
         });
         if (urlAppend.length) {
-            url += url.indexOf('?') === -1 ? '?' : '&';
-            url += urlAppend.join('&');
+            url += url.indexOf("?") === -1 ? "?" : "&";
+            url += urlAppend.join("&");
         }
         return url;
     };
@@ -1078,15 +1085,15 @@
 
     $.dnnAutocompleter = function ($elem, options) {
 
-        if (!$elem || !($elem instanceof $) || $elem.length !== 1 || $elem.get(0).tagName.toUpperCase() !== 'INPUT') {
-            throw new Error('Invalid parameter for dnnAutocompleter, jQuery object with one element with INPUT tag expected.');
+        if (!$elem || !($elem instanceof $) || $elem.length !== 1 || $elem.get(0).tagName.toUpperCase() !== "INPUT") {
+            throw new Error("Invalid parameter for dnnAutocompleter, jQuery object with one element with INPUT tag expected.");
         }
 
         var self = this;
         this.options = options;
         this.cacheData_ = {};
         this.cacheLength_ = 0;
-        this.selectClass_ = 'jquery-autocomplete-selected-item';
+        this.selectClass_ = "jquery-autocomplete-selected-item";
         this.keyTimeout_ = null;
         this.finishTimeout_ = null;
         this.lastKeyPressed_ = null;
@@ -1099,20 +1106,20 @@
         this.options.maxItemsToShow = sanitizeInteger(this.options.maxItemsToShow, $.fn.dnnAutocomplete.defaults.maxItemsToShow, { min: 0 });
         this.options.maxCacheLength = sanitizeInteger(this.options.maxCacheLength, $.fn.dnnAutocomplete.defaults.maxCacheLength, { min: 1 });
         this.options.delay = sanitizeInteger(this.options.delay, $.fn.dnnAutocomplete.defaults.delay, { min: 0 });
-        if (this.options.preventDefaultReturn != 2) {
+        if (this.options.preventDefaultReturn !== 2) {
             this.options.preventDefaultReturn = this.options.preventDefaultReturn ? 1 : 0;
         }
-        if (this.options.preventDefaultTab != 2) {
+        if (this.options.preventDefaultTab !== 2) {
             this.options.preventDefaultTab = this.options.preventDefaultTab ? 1 : 0;
         }
 
         this.dom = {};
         this.dom.$elem = $elem;
-        this.dom.$elem.attr('autocomplete', 'off').addClass(this.options.inputClass);
-        this.dom.$results = $('<div></div>').hide().addClass(this.options.resultsClass).css({
-            position: 'absolute'
+        this.dom.$elem.attr("autocomplete", "off").addClass(this.options.inputClass);
+        this.dom.$results = $("<div></div>").hide().addClass(this.options.resultsClass).css({
+            position: "absolute"
         });
-        $('body').append(this.dom.$results);
+        $("body").append(this.dom.$results);
         $elem.keydown(function (e) {
             self.lastKeyPressed_ = e.keyCode;
             switch (self.lastKeyPressed_) {
@@ -1202,7 +1209,7 @@
             }
         });
 
-        $elem.parents('form').on('submit', onBlurFunction);
+        $elem.parents("form").on("submit", onBlurFunction);
 
     };
 
@@ -1349,8 +1356,8 @@
                         ajaxCallback(false);
                     }
                 },
-                type: 'GET',
-                dataType: 'json',
+                type: "GET",
+                dataType: "json",
                 contentType: "application/json"
             });
         }
@@ -1378,8 +1385,8 @@
 
     $.dnnAutocompleter.prototype.parseRemoteData = function (remoteData) {
         var data = remoteData;
-        if (typeof data['d'] != 'undefined') {
-            data = $.parseJSON(data['d']);
+        if (typeof data["d"] !== "undefined") {
+            data = $.parseJSON(data["d"]);
         }
         return data;
     };
@@ -1465,7 +1472,7 @@
 
     $.dnnAutocompleter.prototype.createItemFromResult = function (result, filter) {
         var self = this;
-        var $li = $('<li>' + this.showResult(result.value, result.data, filter) + '</li>');
+        var $li = $("<li>" + this.showResult(result.value, result.data, filter) + "</li>");
         $li.data({ value: result.value, data: result.data })
             .click(function () {
                 self.selectItem($li);
@@ -1477,13 +1484,13 @@
     };
 
     $.dnnAutocompleter.prototype.getItems = function () {
-        return $('>ul>li', this.dom.$results);
+        return $(">ul>li", this.dom.$results);
     };
 
     $.dnnAutocompleter.prototype.showResults = function (results, filter) {
         var numResults = results.length;
         var self = this;
-        var $ul = $('<ul></ul>');
+        var $ul = $("<ul></ul>");
         var i, result, $li, autoWidth, first = false, $first = false;
 
         if (numResults) {
@@ -1533,9 +1540,9 @@
             return this.options.showResult(value, data);
         } else {
             // add highlight keywords
-            var regex = new RegExp('(' + filter + ')', 'gi');
+            var regex = new RegExp("(" + filter + ")", "gi");
             return value.replace(regex, function ($0, $1) {
-                return ('<b>' + $1 + '</b>');
+                return ("<b>" + $1 + "</b>");
             });
         }
     };
@@ -1549,7 +1556,7 @@
             filterLength = filter.length;
             if (lcValue.substr(0, filterLength) === lcFilter) {
                 var d = this.getDelimiterOffsets();
-                var pad = d.start ? ' ' : ''; // if there is a preceding delimiter
+                var pad = d.start ? " " : ""; // if there is a preceding delimiter
                 this.setValue(pad + value);
                 var start = filterLength + d.start + pad.length;
                 var end = valueLength + d.start + pad.length;
@@ -1586,7 +1593,7 @@
         var $item, $items = this.getItems();
         if ($items.length) {
             $items.removeClass(this.selectClass_).removeClass(this.options.selectClass);
-            if (typeof item === 'number') {
+            if (typeof item === "number") {
                 if (item < 0) {
                     item = 0;
                 } else if (item >= $items.length) {
@@ -1603,7 +1610,7 @@
     };
 
     $.dnnAutocompleter.prototype.selectCurrent = function () {
-        var $item = $('li.' + this.selectClass_, this.dom.$results);
+        var $item = $("li." + this.selectClass_, this.dom.$results);
         if ($item.length === 1) {
             this.selectItem($item);
         } else {
@@ -1612,8 +1619,8 @@
     };
 
     $.dnnAutocompleter.prototype.selectItem = function ($li) {
-        var value = $li.data('value');
-        var data = $li.data('data');
+        var value = $li.data("value");
+        var data = $li.data("data");
         var displayValue = this.displayValue(value, data);
         var processedDisplayValue = this.beforeUseConverter(displayValue);
         this.lastProcessedValue_ = processedDisplayValue;
@@ -1624,11 +1631,11 @@
         var extraCaretPos = 0;
         if (this.options.useDelimiter) {
             // if there is a preceding delimiter, add a space after the delimiter
-            if (elem.val().substring(d.start - 1, d.start) == delimiter && delimiter != ' ') {
-                displayValue = ' ' + displayValue;
+            if (elem.val().substring(d.start - 1, d.start) === delimiter && delimiter !== " ") {
+                displayValue = " " + displayValue;
             }
             // if there is not already a delimiter trailing this value, add it
-            if (elem.val().substring(d.end, d.end + 1) != delimiter && this.lastKeyPressed_ != this.options.delimiterKeyCode) {
+            if (elem.val().substring(d.end, d.end + 1) !== delimiter && this.lastKeyPressed_ !== this.options.delimiterKeyCode) {
                 displayValue = displayValue + delimiter;
             } else {
                 // move the cursor after the existing trailing delimiter
@@ -1637,9 +1644,9 @@
         }
         this.setValue(displayValue);
         this.setCaret(d.start + displayValue.length + extraCaretPos);
-        this.callHook('onItemSelect', { value: value, data: data });
+        this.callHook("onItemSelect", { value: value, data: data });
         this.deactivate(true);
-        elem.trigger('result', value);
+        elem.trigger("result", value);
     };
 
     $.dnnAutocompleter.prototype.displayValue = function (value, data) {
@@ -1663,12 +1670,12 @@
         if (finish) {
             if (this.lastProcessedValue_ !== this.lastSelectedValue_) {
                 if (this.options.mustMatch) {
-                    this.setValue('');
+                    this.setValue("");
                 }
-                this.callHook('onNoMatch');
+                this.callHook("onNoMatch");
             }
             if (this.active_) {
-                this.callHook('onFinish');
+                this.callHook("onFinish");
             }
             this.lastKeyPressed_ = null;
             this.lastProcessedValue_ = null;
@@ -1686,8 +1693,8 @@
         } else if (input.createTextRange) {
             var range = input.createTextRange();
             range.collapse(true);
-            range.moveEnd('character', end);
-            range.moveStart('character', start);
+            range.moveEnd("character", end);
+            range.moveStart("character", start);
             range.select();
         }
     };
@@ -1701,19 +1708,19 @@
         if (!$.support.cssFloat) {
             // ie
             var selection = document.selection;
-            if (elem[0].tagName.toLowerCase() != 'textarea') {
+            if (elem[0].tagName.toLowerCase() !== "textarea") {
                 var val = elem.val();
                 range = selection.createRange().duplicate();
-                range.moveEnd('character', val.length);
-                s = (range.text == '' ? val.length : val.lastIndexOf(range.text));
+                range.moveEnd("character", val.length);
+                s = (range.text === "" ? val.length : val.lastIndexOf(range.text));
                 range = selection.createRange().duplicate();
-                range.moveStart('character', -val.length);
+                range.moveStart("character", -val.length);
                 e = range.text.length;
             } else {
                 range = selection.createRange();
                 var storedRange = range.duplicate();
                 storedRange.moveToElementText(elem[0]);
-                storedRange.setEndPoint('EndToEnd', range);
+                storedRange.setEndPoint("EndToEnd", range);
                 s = storedRange.text.length - range.text.length;
                 e = s + range.text.length;
             }
@@ -1757,7 +1764,7 @@
             var start = preCaretVal.lastIndexOf(this.options.delimiterChar) + 1;
             var postCaretVal = val.substring(this.getCaret().start);
             var end = postCaretVal.indexOf(this.options.delimiterChar);
-            if (end == -1) end = val.length;
+            if (end === -1) end = val.length;
             end += this.getCaret().start;
         } else {
             start = 0;
@@ -1775,16 +1782,16 @@
     var delimiter = new Array();
     var tagsCallbacks = new Array();
     $.fn.dnnDoAutosize = function (o) {
-        var minWidth = $(this).data('minwidth'),
-            maxWidth = $(this).data('maxwidth'),
-            val = '',
+        var minWidth = $(this).data("minwidth"),
+            maxWidth = $(this).data("maxwidth"),
+            val = "",
             input = $(this),
-            testSubject = $('#' + $(this).data('tester_id'));
+            testSubject = $("#" + $(this).data("tester_id"));
 
         if (val === (val = input.val())) { return; }
 
         // Enter new content into testSubject
-        var escaped = val.replace(/&/g, '&amp;').replace(/\s/g, ' ').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        var escaped = val.replace(/&/g, "&amp;").replace(/\s/g, " ").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         testSubject.html(escaped);
         // Calculate new width + whether to change
         var testerWidth = testSubject.width(),
@@ -1800,12 +1807,12 @@
     };
 
     $.fn.dnnResetAutosize = function (options) {
-	    var minWidth = $(this).data('minwidth') || options.minInputWidth || $(this).width(),
-	        maxWidth = $(this).data('maxwidth') || options.maxInputWidth || ($(this).closest('.dnnTagsInput').width() - options.inputPadding),
+	    var minWidth = $(this).data("minwidth") || options.minInputWidth || $(this).width(),
+	        maxWidth = $(this).data("maxwidth") || options.maxInputWidth || ($(this).closest(".dnnTagsInput").width() - options.inputPadding),
 	        $input = $(this);
 
 		var left = 0;
-		var $lastSpan = $(this).closest('.dnnTagsInput').find('> span').last();
+		var $lastSpan = $(this).closest(".dnnTagsInput").find("> span").last();
 		if ($lastSpan.length > 0) {
 			left = $lastSpan.offset().left - $lastSpan.parent().offset().left + $lastSpan.outerWidth();
 		}
@@ -1814,62 +1821,62 @@
 		    availableWidth = maxWidth;
 	    }
 
-        $input.css('width', availableWidth);
+        $input.css("width", availableWidth);
     };
 
     $.fn.dnnAddTag = function (value, options) {
         options = jQuery.extend({ focus: false, callback: true }, options);
         this.each(function () {
-            var id = $(this).attr('id');
+            var id = $(this).attr("id");
             var tagslist = $(this).val().split(delimiter[id]);
-            if (tagslist[0] == '') {
+            if (tagslist[0] === "") {
                 tagslist = new Array();
             }
-			value = value.replace(/<.*?>/g, '');
+			value = value.replace(/<.*?>/g, "");
             value = jQuery.trim(value);
             var skipTag;
             if (options.unique) {
                 skipTag = $(this).dnnTagExist(value);
-                if (skipTag == true) {
+                if (skipTag === true) {
                     //Marks fake input as not_valid to let styling it
-                    $('#' + id + '_tag').addClass('dnnTagsInvalid');
+                    $("#" + id + "_tag").addClass("dnnTagsInvalid");
                 }
                 else
-                    $('#' + id + '_tag').removeClass('dnnTagsInvalid');
+                    $("#" + id + "_tag").removeClass("dnnTagsInvalid");
             } else {
                 skipTag = false;
-                $('#' + id + '_tag').removeClass('dnnTagsInvalid');
+                $("#" + id + "_tag").removeClass("dnnTagsInvalid");
             }
 
-            if (value != '' && skipTag != true) {
-                $('<span>').addClass('tag').append(
-                    $('<span>').text(value).append('&nbsp;&nbsp;'),
-                    $('<a>', {
-                        href: '#',
-                        title: 'Removing tag'
+            if (value !== "" && skipTag !== true) {
+                $("<span>").addClass("tag").append(
+                    $("<span>").text(value).append("&nbsp;&nbsp;"),
+                    $("<a>", {
+                        href: "#",
+                        title: "Removing tag"
                     }).click(function () {
-                        return $('#' + id).dnnRemoveTag(escape(value));
+                        return $("#" + id).dnnRemoveTag(escape(value));
                     })
-                ).insertBefore('#' + id + '_addTag');
+                ).insertBefore("#" + id + "_addTag");
 
                 tagslist.push(value);
 
-                $('#' + id + '_tag').val('');
+                $("#" + id + "_tag").val("");
                 if (options.focus) {
-                    $('#' + id + '_tag').focus();
+                    $("#" + id + "_tag").focus();
                 } else {
-                    $('#' + id + '_tag').blur();
+                    $("#" + id + "_tag").blur();
                 }
 
                 $.fn.dnnTagsInput.updateTagsField(this, tagslist);
                 var f;
-                if (options.callback && tagsCallbacks[id] && tagsCallbacks[id]['onAddTag']) {
-                    f = tagsCallbacks[id]['onAddTag'];
+                if (options.callback && tagsCallbacks[id] && tagsCallbacks[id]["onAddTag"]) {
+                    f = tagsCallbacks[id]["onAddTag"];
                     f.call(this, value);
                 }
-                if (tagsCallbacks[id] && tagsCallbacks[id]['onChange']) {
+                if (tagsCallbacks[id] && tagsCallbacks[id]["onChange"]) {
                     var i = tagslist.length;
-                    f = tagsCallbacks[id]['onChange'];
+                    f = tagsCallbacks[id]["onChange"];
                     f.call(this, $(this), tagslist[i - 1]);
                 }
             }
@@ -1880,18 +1887,18 @@
     $.fn.dnnRemoveTag = function (value) {
         value = unescape(value);
         this.each(function () {
-            var id = $(this).attr('id');
+            var id = $(this).attr("id");
             var old = $(this).val().split(delimiter[id]);
-            $('#' + id + '_tagsinput .tag').remove();
-            var str = '';
+            $("#" + id + "_tagsinput .tag").remove();
+            var str = "";
             for (var i = 0; i < old.length; i++) {
-                if (old[i] != value) {
+                if (old[i] !== value) {
                     str = str + delimiter[id] + old[i];
                 }
             }
             $.fn.dnnTagsInput.importTags(this, str);
-            if (tagsCallbacks[id] && tagsCallbacks[id]['onRemoveTag']) {
-                var f = tagsCallbacks[id]['onRemoveTag'];
+            if (tagsCallbacks[id] && tagsCallbacks[id]["onRemoveTag"]) {
+                var f = tagsCallbacks[id]["onRemoveTag"];
                 f.call(this, value);
             }
         });
@@ -1900,14 +1907,14 @@
     };
 
     $.fn.dnnTagExist = function (val) {
-        var id = $(this).attr('id'),
+        var id = $(this).attr("id"),
             tagslist = $(this).val().split(delimiter[id]);
         return (jQuery.inArray(val, tagslist) >= 0);
     };
 
     $.fn.dnnImportTags = function (str) {
-        var id = $(this).attr('id');
-        $('#' + id + '_tagsinput .tag').remove();
+        var id = $(this).attr("id");
+        $("#" + id + "_tagsinput .tag").remove();
         $.fn.dnnTagsInput.importTags(this, str);
     };
 
@@ -1923,16 +1930,16 @@
         };
         var settings = jQuery.extend({
             interactive: true,
-            defaultText: 'Add a tag',
+            defaultText: "Add a tag",
             minChars: 0,
             maxChars: 50,
             maxTags: 16,
-            lessThanMinCharsErrorText: 'A tag cannot be less than {0} characters long',
-            lessThanMinCharsErrorTitle: 'Tag Length Not Reached',
-            moreThanMaxCharsErrorText: 'A tag cannot be more than {0} characters long',
-            moreThanMaxCharsErrorTitle: 'Tag Length Exceeded',
-            moreThanMaxTagsErrorText: 'A maximum of {0} tags can be attached here',
-            moreThanMaxTagsErrorTitle: 'Tags limit exceeded',
+            lessThanMinCharsErrorText: "A tag cannot be less than {0} characters long",
+            lessThanMinCharsErrorTitle: "Tag Length Not Reached",
+            moreThanMaxCharsErrorText: "A tag cannot be more than {0} characters long",
+            moreThanMaxCharsErrorTitle: "Tag Length Exceeded",
+            moreThanMaxTagsErrorText: "A maximum of {0} tags can be attached here",
+            moreThanMaxTagsErrorTitle: "Tags limit exceeded",
             onErrorLessThanMinChars: function () { // can be customised by module dev
                 $.dnnAlert({ text: String.format(settings.lessThanMinCharsErrorText, settings.minChars), title: settings.lessThanMinCharsErrorTitle });
             },
@@ -1943,14 +1950,14 @@
                 $.dnnAlert({ text: String.format(settings.moreThanMaxTagsErrorText, settings.maxTags), title: settings.moreThanMaxTagsErrorTitle });
             },
 
-            width: '45%',
+            width: "45%",
             autocomplete: { selectFirst: false },
             'hide': true,
-            'delimiter': ',',
+            'delimiter': ",",
             'unique': true,
             removeWithBackspace: true,
-            placeholderColor: '#999',
-            normalColor: '#666',
+            placeholderColor: "#999",
+            normalColor: "#666",
             autosize: true,
             comfortZone: 20,
             inputPadding: 6 * 2
@@ -1958,32 +1965,32 @@
         }, options);
 
         this.each(function () {
-            var instance = $(this).data('dnnTagInput');
+            var instance = $(this).data("dnnTagInput");
             if (instance) return this;
             if (settings.hide) {
                 $(this).hide();
             }
-            var id = $(this).attr('id');
-            if (!id || delimiter[$(this).attr('id')]) {
-                id = $(this).attr('id', 'tags' + new Date().getTime()).attr('id');
+            var id = $(this).attr("id");
+            if (!id || delimiter[$(this).attr("id")]) {
+                id = $(this).attr("id", "tags" + new Date().getTime()).attr("id");
             }
             var data = jQuery.extend({
                 pid: id,
-                real_input: '#' + id,
-                holder: '#' + id + '_tagsinput',
-                input_wrapper: '#' + id + '_addTag',
-                fake_input: '#' + id + '_tag'
+                real_input: "#" + id,
+                holder: "#" + id + "_tagsinput",
+                input_wrapper: "#" + id + "_addTag",
+                fake_input: "#" + id + "_tag"
             }, settings);
 
-            $(this).data('dnnTagInput', data);
+            $(this).data("dnnTagInput", data);
 
             delimiter[id] = data.delimiter;
 
             if (settings.onAddTag || settings.onRemoveTag || settings.onChange) {
                 tagsCallbacks[id] = new Array();
-                tagsCallbacks[id]['onAddTag'] = settings.onAddTag;
-                tagsCallbacks[id]['onRemoveTag'] = settings.onRemoveTag;
-                tagsCallbacks[id]['onChange'] = settings.onChange;
+                tagsCallbacks[id]["onAddTag"] = settings.onAddTag;
+                tagsCallbacks[id]["onRemoveTag"] = settings.onRemoveTag;
+                tagsCallbacks[id]["onChange"] = settings.onChange;
             }
 
             var markup = '<div id="' + id + '_tagsinput" class="dnnTagsInput">';
@@ -1993,7 +2000,7 @@
                 markup += '<input id="' + id + '_tag" value="" data-default="' + settings.defaultText + '" autocomplete="off" />';
             }
 
-            markup += '</div>';
+            markup += "</div>";
             markup = markup + '<div class="dnnTagsClear"></div></div>';
 
             $(markup).insertAfter(this);
@@ -2005,7 +2012,7 @@
 
             $(data.fake_input).attr("maxlength", settings.maxChars);
 
-            if ($(data.real_input).val() != '') {
+            if ($(data.real_input).val() !== "") {
                 $.fn.dnnTagsInput.importTags($(data.real_input), $(data.real_input).val());
             }
             if (settings.interactive) {
@@ -2015,28 +2022,28 @@
                 });
 
                 $(data.fake_input).dnnResetAutosize(settings);
-                $(data.holder).bind('click', data, function (event) {
-                    $(event.data.real_input).triggerHandler('focus');
-                    $(event.data.fake_input).triggerHandler('focus');
+                $(data.holder).bind("click", data, function (event) {
+                    $(event.data.real_input).triggerHandler("focus");
+                    $(event.data.fake_input).triggerHandler("focus");
                     return false;
                 });
-                if (settings.autocomplete_url != undefined) {
+                if (settings.autocomplete_url !== undefined) {
                     if ($.dnnAutocompleter !== undefined) {
                         if (settings.advanced && settings.advanced.length) {
                             settings.autocomplete.advanced = settings.advanced;
                         }
 
                         $(data.fake_input).dnnAutocomplete(settings.autocomplete_url, settings.autocomplete);
-                        $(data.fake_input).bind('result', data, function (event, tag) {
+                        $(data.fake_input).bind("result", data, function (event, tag) {
                             if (tag) {
                                 var tagslist = $(event.data.real_input).val().split(delimiter[id]);
-                                if (tagslist[0] == '') {
+                                if (tagslist[0] === "") {
                                     tagslist = new Array();
                                 }
                                 if (event.data.maxTags <= tagslist.length) {
                                     if (event.data.onErrorMoreThanMaxTags)
                                         triggerOnError(event.data.onErrorMoreThanMaxTags);
-                                    $(data.fake_input).val('');
+                                    $(data.fake_input).val("");
                                 }
                                 else
                                     $(event.data.real_input).dnnAddTag(tag, { focus: true, unique: (settings.unique) });
@@ -2046,27 +2053,27 @@
                 } else {
                     // if a user tabs out of the field, create a new tag
                     // this is only available if autocomplete is not used.
-                    $(data.fake_input).bind('blur', data, function (event) {
-                        var d = $(this).attr('data-default');
+                    $(data.fake_input).bind("blur", data, function (event) {
+                        var d = $(this).attr("data-default");
                         var tagslist = $(event.data.real_input).val().split(delimiter[id]);
-                        if (tagslist[0] == '') {
+                        if (tagslist[0] === "") {
                             tagslist = new Array();
                         }
-                        if ($(event.data.fake_input).val() != '' && $(event.data.fake_input).val() != d) {
+                        if ($(event.data.fake_input).val() !== "" && $(event.data.fake_input).val() !== d) {
                             if (event.data.minChars > $(event.data.fake_input).val().length) {
                                 if (event.data.onErrorLessThanMinChars)
                                     triggerOnError(event.data.onErrorLessThanMinChars);
-                                $(data.fake_input).val('');
+                                $(data.fake_input).val("");
                             }
                             else if (event.data.maxChars < $(event.data.fake_input).val().length) {
                                 if (event.data.onErrorMoreThanMaxChars)
                                     triggerOnError(event.data.onErrorMoreThanMaxChars);
-                                $(data.fake_input).val('');
+                                $(data.fake_input).val("");
                             }
                             else if (event.data.maxTags <= tagslist.length) {
                                 if (event.data.onErrorMoreThanMaxTags)
                                     triggerOnError(event.data.onErrorMoreThanMaxTags);
-                                $(data.fake_input).val('');
+                                $(data.fake_input).val("");
                             }
                             else{
 								var tags = $(event.data.fake_input).val().split(delimiter[id]);
@@ -2084,23 +2091,23 @@
 
                 function tagItems(data, event) {
                         var tagslist = $(event.data.real_input).val().split(delimiter[id]);
-                        if (tagslist[0] == '') {
+                        if (tagslist[0] === "") {
                             tagslist = new Array();
                         }
                         if (event.data.minChars > $(event.data.fake_input).val().length) {
                             if (event.data.onErrorLessThanMinChars)
                                 triggerOnError(event.data.onErrorLessThanMinChars);
-                            $(data.fake_input).val('');
+                            $(data.fake_input).val("");
                         }
                         else if (event.data.maxChars < $(event.data.fake_input).val().length) {
                             if (event.data.onErrorMoreThanMaxChars)
                                 triggerOnError(event.data.onErrorMoreThanMaxChars);
-                            $(data.fake_input).val('');
+                            $(data.fake_input).val("");
                         }
                         else if (event.data.maxTags <= tagslist.length) {
                             if (event.data.onErrorMoreThanMaxTags)
                                 triggerOnError(event.data.onErrorMoreThanMaxTags);
-                            $(data.fake_input).val('');
+                            $(data.fake_input).val("");
                         }
                         else {
                             var tags = $(event.data.fake_input).val().split(delimiter[id]);
@@ -2116,22 +2123,22 @@
                 var clickedOnAutoComplete = false;
 
                 $(document).mousedown(function (e) {
-                    if ($(e.target).hasClass("dnn_acSelect") || $(e.target).parent().hasClass('dnn_acSelect')) {
+                    if ($(e.target).hasClass("dnn_acSelect") || $(e.target).parent().hasClass("dnn_acSelect")) {
                         clickedOnAutoComplete = true;
                     }
                 });
 
-                var tagTooLongErrMsg = $('<span class="dnnFormError dnnFormMessage">' + String.format(settings.moreThanMaxCharsErrorText, settings.maxChars) + '</span>');
+                var tagTooLongErrMsg = $('<span class="dnnFormError dnnFormMessage">' + String.format(settings.moreThanMaxCharsErrorText, settings.maxChars) + "</span>");
                 // if user types a comma, create a new tag
-                $(data.fake_input).bind('keypress keydown blur', data, function (event) {
+                $(data.fake_input).bind("keypress keydown blur", data, function (event) {
                     if ($(this).val() === "" || clickedOnAutoComplete) {
                         return;
                     }
                     var currValLength = $(this).val().length;
-                    if ((currValLength >= settings.maxChars) && !(event.which == event.data.delimiter.charCodeAt(0) || event.which == 13 || event.which == 9)) {
+                    if ((currValLength >= settings.maxChars) && !(event.which === event.data.delimiter.charCodeAt(0) || event.which === 13 || event.which === 9)) {
                         tagTooLongErrMsg.insertAfter($(this)).show().delay(1500).fadeOut(1000);
                     }
-                    if (event.which == event.data.delimiter.charCodeAt(0) || event.which == 13 || event.which == 9 || event.type == "blur") {
+                    if (event.which === event.data.delimiter.charCodeAt(0) || event.which === 13 || event.which === 9 || event.type === "blur") {
                         event.preventDefault();
                         if (!clickedOnAutoComplete) {
                             tagItems(data, event);
@@ -2143,14 +2150,14 @@
                     return true;
                 });
                 //Delete last tag on backspace
-                data.removeWithBackspace && $(data.fake_input).bind('keydown', function (event) {
-                    if (event.keyCode == 8 && $(this).val() == '') {
+                data.removeWithBackspace && $(data.fake_input).bind("keydown", function (event) {
+                    if (event.keyCode === 8 && $(this).val() === "") {
                         event.preventDefault();
-                        var lastTag = $(this).closest('.dnnTagsInput').find('.tag:last').text();
-                        var lastTagId = $(this).attr('id').replace(/_tag$/, '');
-                        lastTag = lastTag.replace(/[\s]+$/, '');
-                        $('#' + lastTagId).dnnRemoveTag(escape(lastTag));
-                        $(this).trigger('focus');
+                        var lastTag = $(this).closest(".dnnTagsInput").find(".tag:last").text();
+                        var lastTagId = $(this).attr("id").replace(/_tag$/, "");
+                        lastTag = lastTag.replace(/[\s]+$/, "");
+                        $("#" + lastTagId).dnnRemoveTag(escape(lastTag));
+                        $(this).trigger("focus");
                     }
                 });
                 $(data.fake_input).blur();
@@ -2158,8 +2165,8 @@
                 //Removes the not_valid class when user changes the value of the fake input
                 if (data.unique) {
                     $(data.fake_input).keydown(function (event) {
-                        if (event.keyCode == 8 || String.fromCharCode(event.which).match(/\w+|[áéíóúÁÉÍÓÚñÑ,/]+/)) {
-                            $(this).removeClass('dnnTagsInvalid');
+                        if (event.keyCode === 8 || String.fromCharCode(event.which).match(/\w+|[áéíóúÁÉÍÓÚñÑ,/]+/)) {
+                            $(this).removeClass("dnnTagsInvalid");
                         }
                     });
                 }
@@ -2171,67 +2178,67 @@
     };
 
     $.fn.dnnTagsInput.updateTagsField = function (obj, tagslist) {
-        var id = $(obj).attr('id');
+        var id = $(obj).attr("id");
         $(obj).val(tagslist.join(delimiter[id]));
     };
 
     $.fn.dnnTagsInput.importTags = function (obj, val) {
-        $(obj).val('');
-        var id = $(obj).attr('id');
+        $(obj).val("");
+        var id = $(obj).attr("id");
         var tags = val.split(delimiter[id]);
         for (var i = 0; i < tags.length; i++) {
             $(obj).dnnAddTag(tags[i], { focus: false, callback: false });
         }
-        if (tagsCallbacks[id] && tagsCallbacks[id]['onChange']) {
-            var f = tagsCallbacks[id]['onChange'];
+        if (tagsCallbacks[id] && tagsCallbacks[id]["onChange"]) {
+            var f = tagsCallbacks[id]["onChange"];
             f.call(obj, obj, tags[i]);
         }
     };
 
     $.fn.dnnPlaceholder = function (options) {
 	    options = $.extend({}, {
-	    	cssClass: 'dnnPlaceholder',
+	    	cssClass: "dnnPlaceholder",
 			color: []
 	    }, options);
 
 	    this.each(function () {
 		    var $this = $(this);
-			var instance = $this.data('dnnPlaceHolder');
+			var instance = $this.data("dnnPlaceHolder");
 			if (instance) return true;
-			$this.data('dnnPlaceHolder', true);
+			$this.data("dnnPlaceHolder", true);
 
-			var placeholderSupported = ('placeholder' in $this[0]);
+			var placeholderSupported = ("placeholder" in $this[0]);
             if (placeholderSupported)
-                $this.attr('placeholder', $this.attr('data-default'));
+                $this.attr("placeholder", $this.attr("data-default"));
             else {
             	var $fakeInput = $('<input type="text" />')
-					.attr('class', $this.attr('class'))
-					.attr('style', $this.attr('style'))
-					.val($this.attr('data-default'));
+					.attr("class", $this.attr("class"))
+					.attr("style", $this.attr("style"))
+					.val($this.attr("data-default"));
 
             	$this.hide().after($fakeInput);
 				if (options.color.length === 2) {
-					$fakeInput.css('color', options.color[1]);
-					$this.css('color', options.color[0]);
+					$fakeInput.css("color", options.color[1]);
+					$this.css("color", options.color[0]);
 				} else {
 					$fakeInput.addClass(options.cssClass);
 				}
 
 
-	            $fakeInput.on('focus', function(event) {
+	            $fakeInput.on("focus", function() {
 		            $fakeInput.hide();
 		            $this.show().focus();
 	            });
 
-				$this.on('blur', function (event) {
-					var d = $this.attr('data-default');
-					if ($this.val() === '') {
+				$this.on("blur", function () {
+					var d = $this.attr("data-default");
+					if ($this.val() === "") {
 						$this.hide();
 						$fakeInput.show();
 					}
 				});
 
-				var events = $._data(this, 'events')['blur'];
+				var events = $._data(this, "events")["blur"];
 				var first = events.pop();
 				events.splice(0, 0, first);
             }
@@ -2256,60 +2263,60 @@
         options = $.extend(defaultOptions, options);
 
         return this.each(function () {
-            var dnnFormItem = $(this).closest('.dnnFormItem');
+            var dnnFormItem = $(this).closest(".dnnFormItem");
             if (options.show) {
-                var errorSpan = dnnFormItem.find('span.dnnFormMessage.' + options.errorCls);
+                var errorSpan = dnnFormItem.find("span.dnnFormMessage." + options.errorCls);
                 if (errorSpan.length) {
                     errorSpan.html(options.errorMessage);
                 } else {
-                    errorSpan = $('<span class="dnnFormMessage ' + options.errorCls + '">' + options.errorMessage + '</span>');
+                    errorSpan = $('<span class="dnnFormMessage ' + options.errorCls + '">' + options.errorMessage + "</span>");
                     dnnFormItem.append(errorSpan);
                 }
 
-                if (this.tagName.toLowerCase() == 'div') {
+                if (this.tagName.toLowerCase() === "div") {
                     // customised controls
-                    if ($(this).hasClass('RadComboBox')) {
+                    if ($(this).hasClass("RadComboBox")) {
                         // RadComboBox
-                        $(this).addClass('dnnError');
+                        $(this).addClass("dnnError");
                     }
                 }
                 else {
-                    if ($(this).parent().hasClass('RadPicker')) {
+                    if ($(this).parent().hasClass("RadPicker")) {
                         // RadDate Picker
-                        $(this).parent().find('input.riTextBox').css('border', '1px solid red');
+                        $(this).parent().find("input.riTextBox").css("border", "1px solid red");
                     }
-                    else if ($(this).hasClass('dnnSpinnerInput')) {
+                    else if ($(this).hasClass("dnnSpinnerInput")) {
                         // Spinner
-                        $(this).parent().css('border', '1px solid red');
+                        $(this).parent().css("border", "1px solid red");
                     }
                     else {
                         // normal ctrl
-                        $(this).css('border', '1px solid red');
+                        $(this).css("border", "1px solid red");
                     }
                 }
             }
             else {
                 if (options.removeErrorMessage)
-                    dnnFormItem.find('span.' + options.errorCls).remove();
+                    dnnFormItem.find("span." + options.errorCls).remove();
                 else
-                    dnnFormItem.find('span.' + options.errorCls).hide();
+                    dnnFormItem.find("span." + options.errorCls).hide();
 
-                if (this.tagName.toLowerCase() == 'div') {
+                if (this.tagName.toLowerCase() === "div") {
                     // customised controls
-                    if ($(this).hasClass('RadComboBox')) {
+                    if ($(this).hasClass("RadComboBox")) {
                         // RadComboBox
-                        $(this).removeClass('dnnError');
+                        $(this).removeClass("dnnError");
 
                     }
                 }
                 else {
-                    if ($(this).hasClass('dnnSpinnerInput')) {
+                    if ($(this).hasClass("dnnSpinnerInput")) {
                         // Spinner
-                        $(this).parent().css('border', '1px solid #ccc');
+                        $(this).parent().css("border", "1px solid #ccc");
                     }
                     else {
                         // normal ctrl
-                        $(this).css('border', '1px solid #ccc');
+                        $(this).css("border", "1px solid #ccc");
                     }
                 }
             }
@@ -2326,7 +2333,7 @@
             $(this).click(function () {
                 var formValidate = true;
                 for (var i = 0; i < options.validates.length; i++) {
-                    var ele = $('#' + options.validates[i].ele);
+                    var ele = $("#" + options.validates[i].ele);
                     var func = options.validates[i].func;
                     if (ele.length) {
                         var eleVal = ele.val();
@@ -2344,7 +2351,7 @@
                             $(this).toggleErrorMessage({ show: false });
                         };
 
-                        ele.unbind('focus', hideErrorInfo).bind('focus', hideErrorInfo);
+                        ele.unbind("focus", hideErrorInfo).bind("focus", hideErrorInfo);
                     }
                 }
 
@@ -2361,17 +2368,17 @@
         };
         var dnnRadPickerPopupFix = function () {
             if ($.support.cssFloat) {
-                var id = $(this).attr('id');
-                var popupId = id.replace('popupButton', 'calendar_wrapper');
-                var popupElement = $('#' + popupId);
-                var wrapperId = id.replace('popupButton', 'wrapper');
-                var wrapperElement = $('#' + wrapperId);
+                var id = $(this).attr("id");
+                var popupId = id.replace("popupButton", "calendar_wrapper");
+                var popupElement = $("#" + popupId);
+                var wrapperId = id.replace("popupButton", "wrapper");
+                var wrapperElement = $("#" + wrapperId);
 
                 var popupElementTop = popupElement.parent().position().top;
                 var wrapperElementTop = wrapperElement.offset().top;
-                var popupTbl = popupElement.find('.RadCalendar_Default');
+                var popupTbl = popupElement.find(".RadCalendar_Default");
                 var nextEle = popupTbl.next();
-                if (nextEle.hasClass('RadCalendar_Default_PopupArrow_Down') || nextEle.hasClass('RadCalendar_Default_PopupArrow_Up'))
+                if (nextEle.hasClass("RadCalendar_Default_PopupArrow_Down") || nextEle.hasClass("RadCalendar_Default_PopupArrow_Up"))
                     nextEle.remove();
 
                 if (popupElementTop < wrapperElementTop) { // popup above the calendar ctrl, so show arrow down
@@ -2384,39 +2391,39 @@
 
             $(this).toggleErrorMessage({ show: false, removeErrorMessage: false });
         };
-        $('.RadPicker_Default a.rcCalPopup').unbind('click', dnnRadPickerPopupFix).bind('click', dnnRadPickerPopupFix);
-        $('.RadPicker_Default .riTextBox').unbind('focus', hideErrorInfo).bind('focus', hideErrorInfo);
+        $(".RadPicker_Default a.rcCalPopup").unbind("click", dnnRadPickerPopupFix).bind("click", dnnRadPickerPopupFix);
+        $(".RadPicker_Default .riTextBox").unbind("focus", hideErrorInfo).bind("focus", hideErrorInfo);
     };
 
     // remove combobox inline style
     $.dnnComboBoxLoaded = function (sender) {
-        if (sender.constructor.__typeName == "Telerik.Web.UI.RadComboBox") {
+        if (sender.constructor.__typeName === "Telerik.Web.UI.RadComboBox") {
             $(sender._inputDomElement).closest(".RadComboBox").removeAttr("style");
         }
     };
 
     //fix combobox hide error info
     $.dnnComboBoxHack = function (sender) {
-        $(('#' + sender._clientStateFieldID).replace('_ClientState', '')).toggleErrorMessage({ show: false, removeErrorMessage: false });
+        $(("#" + sender._clientStateFieldID).replace("_ClientState", "")).toggleErrorMessage({ show: false, removeErrorMessage: false });
     };
 
     //fix combobox scroll
     $.dnnComboBoxScroll = function (sender) {
         if ($.support.cssFloat) {
-            var container = $(('#' + sender._clientStateFieldID + ' .rcbScroll').replace('ClientState', 'DropDown'));
-            if (container.data('scrollPane')) {
-                container.data('scrollPane').data('jsp').reinitialise();
+            var container = $(("#" + sender._clientStateFieldID + " .rcbScroll").replace("ClientState", "DropDown"));
+            if (container.data("scrollPane")) {
+                container.data("scrollPane").data("jsp").reinitialise();
             } else {
-                container.data('scrollPane', container.jScrollPane());
+                container.data("scrollPane", container.jScrollPane());
             }
         }
     };
 
     $.dnnComboBoxItemRequested = function (sender) {
         setTimeout(function() {
-            var container = $(('#' + sender._clientStateFieldID + ' .rcbScroll').replace('ClientState', 'DropDown'));
-            if (container.data('scrollPane')) {
-                container.data('scrollPane').data('jsp').reinitialise();
+            var container = $(("#" + sender._clientStateFieldID + " .rcbScroll").replace("ClientState", "DropDown"));
+            if (container.data("scrollPane")) {
+                container.data("scrollPane").data("jsp").reinitialise();
             }
         }, 0);
     };
@@ -2424,16 +2431,16 @@
     // fix grid issues 
     $.dnnGridCreated = function (sender) {
         var clientId = sender.ClientID;
-        var $grid = $('#' + clientId);
-        $('input.rgSortDesc, input.rgSortAsc', $grid).click(function () {
-            var href = $(this).parent().find('a').get(0).href;
+        var $grid = $("#" + clientId);
+        $("input.rgSortDesc, input.rgSortAsc", $grid).click(function () {
+            var href = $(this).parent().find("a").get(0).href;
             window.location = href;
             return false;
         });
 
-        if ($grid.hasClass('dnnTooltipGrid')) {
+        if ($grid.hasClass("dnnTooltipGrid")) {
             $grid.dnnHelperTipDestroy();
-            $('.rgRow, .rgAltRow', $grid).each(function () {
+            $(".rgRow, .rgAltRow", $grid).each(function () {
                 var info = "Here is some text will show up and explian more about this information";
                 $(this).dnnHelperTip({ helpContent: info, holderId: clientId });
             });
@@ -2442,7 +2449,7 @@
         var grid = $find(clientId);
 
         // while using customised checkbox - remove onclick event then attach onchange
-        var headerCheck = $('.rgCheck', $grid);
+        var headerCheck = $(".rgCheck", $grid);
         if (headerCheck.length) {
             headerCheck.each(function () {
                 var checkbox = $(this).find('input[type="checkbox"]').get(0);
@@ -2454,7 +2461,7 @@
             // when use customised scrollbar and customised checkbox, the row cannot be correctly selected
             $('.rgDataDiv input[type="checkbox"]', $grid).change(function () {
                 var masterTable = grid.get_masterTableView();
-                var rowIndex = $(this).closest('tr').get(0).rowIndex;
+                var rowIndex = $(this).closest("tr").get(0).rowIndex;
                 var checked = this.checked;
                 if (checked)
                     masterTable.selectItem(rowIndex);
@@ -2464,14 +2471,14 @@
         }
 
         // initialize dnnGrid customised scrollbar
-        $('.rgDataDiv').each(function () {
+        $(".rgDataDiv").each(function () {
             var $this = $(this);
             var ele = $this.get(0);
             ele.scrollPane = $this.jScrollPane();
-            var api = ele.scrollPane.data('jsp');
+            var api = ele.scrollPane.data("jsp");
             var throttleTimeout;
             $(window).bind(
-                'resize',
+                "resize",
                 function () {
                     if (!$.support.cssFloat) {
                         if (throttleTimeout) {
@@ -2499,7 +2506,7 @@
 })(jQuery);
 
 (function ($) {
-    var types = ['DOMMouseScroll', 'mousewheel'];
+    var types = ["DOMMouseScroll", "mousewheel"];
     if ($.event.fixHooks) {
         for (var i = types.length; i;) {
             $.event.fixHooks[types[--i]] = $.event.mouseHooks;
@@ -2576,7 +2583,7 @@
 
         return this.each(function () {
             var $ctrl = $(this);
-            if ($ctrl.hasClass('normalFileUpload')) return;
+            if ($ctrl.hasClass("normalFileUpload")) return;
 
             if (this.wrapper)
                 return;
@@ -2586,13 +2593,13 @@
                 return;
 
             // if this.wrapper is undefined, then we check if parent node is a wrapper
-            if (this.parentNode && this.parentNode.tagName.toLowerCase() == 'span' && $ctrl.parent().hasClass('dnnInputFileWrapper')) {
+            if (this.parentNode && this.parentNode.tagName.toLowerCase() === "span" && $ctrl.parent().hasClass("dnnInputFileWrapper")) {
                 return;
             }
 
             this.wrapper = $("<span class='dnnInputFileWrapper " + opts.buttonClass + "'></span>");
-            var text = $ctrl.data('text');
-            text = text || 'Choose File';
+            var text = $ctrl.data("text");
+            text = text || "Choose File";
             this.wrapper.text(text);
             $ctrl.wrap(this.wrapper);
             $ctrl.data("wrapper", $ctrl.parent());
@@ -2600,8 +2607,8 @@
             if (opts.showSelectedFileNameAsButtonText) {
                 $ctrl.change(function () {
                     var val = $(this).val();
-                    if (val != '') {
-                        var lastIdx = val.lastIndexOf('\\') + 1;
+                    if (val !== "") {
+                        var lastIdx = val.lastIndexOf("\\") + 1;
                         val = val.substring(lastIdx, val.length);
                     } else {
                         val = text;
@@ -2613,7 +2620,7 @@
     };
 
     $.fn.dnnFileInput.defaultOptions = {
-        buttonClass: 'dnnSecondaryAction',
+        buttonClass: "dnnSecondaryAction",
         showSelectedFileNameAsButtonText: true
     };
 })(jQuery);
@@ -2621,20 +2628,20 @@
 (function ($) {
     var supportAjaxUpload = function () {
         var xhr = new XMLHttpRequest;
-        return !!(xhr && ('upload' in xhr) && ('onprogress' in xhr.upload));
+        return !!(xhr && ("upload" in xhr) && ("onprogress" in xhr.upload));
     };
     $.fn.dnnFileUpload = function (settings) {
         return this.each(function () {
             // set scope and settings, service
-            var scope = $(this).attr('id');
+            var scope = $(this).attr("id");
             window.dnn.dnnFileUpload.setSettings(scope, settings);
             var service = $.dnnSF();
 
             // hide progress
-            $('#' + settings.progressBarId).parent().hide();
+            $("#" + settings.progressBarId).parent().hide();
             // detect draggable support or not
-            var droppableSpan = $('#' + settings.dropZoneId + '>span');
-            if ('draggable' in document.createElement('span')) {
+            var droppableSpan = $("#" + settings.dropZoneId + ">span");
+            if ("draggable" in document.createElement("span")) {
                 droppableSpan.show();
             }
             else {
@@ -2642,44 +2649,44 @@
             }
 
             // set file upload
-            var url = service.getServiceRoot('internalservices') + 'fileupload/postfile';
+            var url = service.getServiceRoot("internalservices") + "fileupload/postfile";
             if (!supportAjaxUpload()) {
                 var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
-                url += '?__RequestVerificationToken=' + antiForgeryToken;
+                url += "?__RequestVerificationToken=" + antiForgeryToken;
             }
 
-            $('#' + scope + ' input[type="file"]').fileupload({
+            $("#" + scope + ' input[type="file"]').fileupload({
                 url: url,
                 beforeSend: service.setModuleHeaders,
-                dropZone: $('#' + settings.dropZoneId),
+                dropZone: $("#" + settings.dropZoneId),
                 replaceFileInput: false,
                 submit: function (e, data) {
-                    data.formData = { folder: settings.folder, filter: settings.fileFilter, overwrite: 'true' };
+                    data.formData = { folder: settings.folder, filter: settings.fileFilter, overwrite: "true" };
                     return true;
                 },
                 progressall: function (e, data) {
                     var progress = parseInt(data.loaded / data.total * 100, 10);
                     if (progress < 100) {
-                        $('#' + settings.progressBarId).parent().show();
-                        $('#' + settings.progressBarId + '>div').css('width', progress + '%');
+                        $("#" + settings.progressBarId).parent().show();
+                        $("#" + settings.progressBarId + ">div").css("width", progress + "%");
                     }
                     else
-                        $('#' + settings.progressBarId).parent().hide();
+                        $("#" + settings.progressBarId).parent().hide();
                 },
                 done: function (e, data) {
-                    $('#' + settings.progressBarId).parent().hide();
+                    $("#" + settings.progressBarId).parent().hide();
                     var img = new Image();
                     $(img).load(function () {
-                        $('#' + settings.dropZoneId + ' img').remove();
-                        $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($('#' + settings.dropZoneId + ' span'));
+                        $("#" + settings.dropZoneId + " img").remove();
+                        $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($("#" + settings.dropZoneId + " span"));
                     });
                     var src;
-                    if (data.dataType && typeof(data.result) == "object" && data.result.length) {
+                    if (data.dataType && typeof(data.result) === "object" && data.result.length) {
                         data.result = JSON.parse(data.result.text());
                     } else {
                         data.result = JSON.parse(data.result);
                     }
-                    var testContent = $('<pre>' + data.result.FilePath + '</pre>');
+                    var testContent = $("<pre>" + data.result.FilePath + "</pre>");
                     if (testContent.length) {
                         src = testContent.text();
                     }
@@ -2688,9 +2695,9 @@
 
                     if (src && $.trim(src)) {
                         img.src = src;
-                        var fileName = data.result.FilePath.replace('\\', '/');
-                        if (fileName.indexOf('/') > -1) {
-                            fileName = fileName.split('/')[fileName.split('/').length - 1];
+                        var fileName = data.result.FilePath.replace("\\", "/");
+                        if (fileName.indexOf("/") > -1) {
+                            fileName = fileName.split("/")[fileName.split("/").length - 1];
                         }
                         
                         dnn[settings.filesComboId].refresh(dnn[settings.foldersComboId].selectedItem().key);
@@ -2698,17 +2705,17 @@
                     }
                 },
                 fail: function (e, data) {
-                    $('#' + settings.progressBarId).parent().hide();
+                    $("#" + settings.progressBarId).parent().hide();
                     var resp = JSON.parse(data.jqXHR.responseText);
                     alert(resp.Message);
                 }
             });
 
-            $('#' + scope + ' input[name=uploadFileButton]').click(function() {
+            $("#" + scope + " input[name=uploadFileButton]").click(function() {
                 var instance = dnn[settings.fileUploadId];
                 
                 var options = instance.options;
-                if (dnn[settings.foldersComboId].selectedItem() != null) {
+                if (dnn[settings.foldersComboId].selectedItem() !== null) {
                     instance.options.folderPicker.initialState.selectedItem = dnn[settings.foldersComboId].selectedItem();
                     instance.options.folderPath = window.dnn.dnnFileUpload.getSelectedPath(dnn[settings.foldersComboId]);
                 }
@@ -2718,7 +2725,7 @@
                 window.dnn.dnnFileUpload.updateExpandPath(dnn[settings.foldersComboId], instance._panel._folderPicker.id());
                 
                 instance._panel.$element.on("onfileuploadcomplete", function (event, data) {
-                    if (typeof data == "string") {
+                    if (typeof data === "string") {
 						// for modern browsers
                         data = JSON.parse(data);
                     }else{
@@ -2744,18 +2751,18 @@
                 dnn[settings.filesComboId].options.services.parameters.parentId = settings.selectedFolderId;
                 var filesCombo = dnn[settings.filesComboId];
                 var selectedFileId = filesCombo.selectedItem() ? filesCombo.selectedItem().key : null;
-                url = service.getServiceRoot('internalservices') + 'fileupload/loadimage';
+                url = service.getServiceRoot("internalservices") + "fileupload/loadimage";
              	var fileId  = selectedFileId ? parseInt(selectedFileId) : 0;
                 if (fileId > 0) {
                     $.ajax({
                         url: url,
-                        type: 'GET',
+                        type: "GET",
                         data: { fileId: selectedFileId },
                         success: function (d) {
                             var img = new Image();
                             $(img).load(function () {
-                                $('#' + settings.dropZoneId + ' img').remove();
-                                $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($('#' + settings.dropZoneId + ' span'));
+                                $("#" + settings.dropZoneId + " img").remove();
+                                $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($("#" + settings.dropZoneId + " span"));
                             });
                             img.src = d;
                         },
@@ -2767,14 +2774,14 @@
         });
     };
 
-    if (typeof window.dnn === 'undefined') window.dnn = {};
+    if (typeof window.dnn === "undefined") window.dnn = {};
     window.dnn.dnnFileUpload = window.dnn.dnnFileUpload || {};
     window.dnn.dnnFileUpload.settings = {};
     window.dnn.dnnFileUpload.setSettings = function (scope, settings) {
         window.dnn.dnnFileUpload.settings[scope] = settings;
     };
     window.dnn.dnnFileUpload.getSettings = function (sender) {
-        var scope = sender.closest('.dnnFileUploadScope').attr('id');
+        var scope = sender.closest(".dnnFileUploadScope").attr("id");
         return window.dnn.dnnFileUpload.settings[scope];
     };
     window.dnn.dnnFileUpload.Folders_Changed = function (node, sender) {
@@ -2797,7 +2804,7 @@
 
             dnn[settings.filesComboId].refresh(node.key);
             dnn[settings.filesComboId].selectedItem(null);
-            window.dnn.dnnFileUpload.Files_Changed({ key: null }, $('#' + settings.filesComboId));
+            window.dnn.dnnFileUpload.Files_Changed({ key: null }, $("#" + settings.filesComboId));
         }
     };
     window.dnn.dnnFileUpload.Files_Changed = function (node, sender) {
@@ -2807,17 +2814,17 @@
         if (node) {
             var fileId = node.key;
             var service = $.dnnSF();
-            var url = service.getServiceRoot('internalservices') + 'fileupload/loadimage';
+            var url = service.getServiceRoot("internalservices") + "fileupload/loadimage";
             if (fileId) {
                 $.ajax({
                     url: url,
-                    type: 'GET',
+                    type: "GET",
                     data: { fileId: fileId },
                     success: function (d) {
                         var img = new Image();
                         $(img).load(function () {
-                            $('#' + settings.dropZoneId + ' img').remove();
-                            $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($('#' + settings.dropZoneId + ' span'));
+                            $("#" + settings.dropZoneId + " img").remove();
+                            $(img).css({ 'max-width': 180, 'max-height': 150 }).insertBefore($("#" + settings.dropZoneId + " span"));
                         });
                         img.src = d;
                     },
@@ -2826,19 +2833,19 @@
                 });
             }
             else
-                $('#' + settings.dropZoneId + ' img').remove();
+                $("#" + settings.dropZoneId + " img").remove();
         }
     };
     window.dnn.dnnFileUpload.updateExpandPath = function(dropDownList, targetId) {
         //set expand path
         var selectedPaths = dropDownList.selectedPath();
         var expandPath = "";
-        if (selectedPaths.length == 0) { //which means the tree view hasn't opened.
-            expandPath = dnn.getVar(dropDownList.id() + '_expandPath');
+        if (selectedPaths.length === 0) { //which means the tree view hasn't opened.
+            expandPath = dnn.getVar(dropDownList.id() + "_expandPath");
         }
         else if (selectedPaths.length > 1) {
             for (var i = 0; i < selectedPaths.length - 1; i++) {
-                if (expandPath == "") {
+                if (expandPath === "") {
                     expandPath = selectedPaths[i].id;
                 } else {
                     expandPath = expandPath + "," + selectedPaths[i].id;
@@ -2846,8 +2853,8 @@
             }
         }
         
-        if (expandPath != "") {
-            dnn.setVar(targetId + '_expandPath', expandPath);
+        if (expandPath !== "") {
+            dnn.setVar(targetId + "_expandPath", expandPath);
         }
     };
     window.dnn.dnnFileUpload.getSelectedPath = function(dropDownList) {
@@ -2879,14 +2886,14 @@
 				reinitialiseInterval, originalPadding, originalPaddingTotalWidth, previousContentWidth,
 				wasAtTop = true, wasAtLeft = true, wasAtBottom = false, wasAtRight = false,
 				originalElement = elem.clone(false, false).empty(),
-				mwEvent = $.fn.mwheelIntent ? 'mwheelIntent.jsp' : 'mousewheel.jsp';
+				mwEvent = $.fn.mwheelIntent ? "mwheelIntent.jsp" : "mousewheel.jsp";
 
-            originalPadding = elem.css('paddingTop') + ' ' +
-								elem.css('paddingRight') + ' ' +
-								elem.css('paddingBottom') + ' ' +
-								elem.css('paddingLeft');
-            originalPaddingTotalWidth = (parseInt(elem.css('paddingLeft'), 10) || 0) +
-										(parseInt(elem.css('paddingRight'), 10) || 0);
+            originalPadding = elem.css("paddingTop") + " " +
+								elem.css("paddingRight") + " " +
+								elem.css("paddingBottom") + " " +
+								elem.css("paddingLeft");
+            originalPaddingTotalWidth = (parseInt(elem.css("paddingLeft"), 10) || 0) +
+										(parseInt(elem.css("paddingRight"), 10) || 0);
 
             function initialise(s) {
 
@@ -2902,7 +2909,7 @@
 
                     elem.css(
 						{
-						    overflow: 'hidden',
+						    overflow: "hidden",
 						    padding: 0
 						}
 					);
@@ -2913,11 +2920,11 @@
 
                     elem.width(paneWidth);
 
-                    pane = $('<div class="jspPane" />').css('padding', originalPadding).append(elem.children());
+                    pane = $('<div class="jspPane" />').css("padding", originalPadding).append(elem.children());
                     container = $('<div class="jspContainer" />')
 						.css({
-						    'width': paneWidth + 'px',
-						    'height': paneHeight + 'px'
+						    'width': paneWidth + "px",
+						    'height': paneHeight + "px"
 						}
 					).append(pane).appendTo(elem);
 
@@ -2936,43 +2943,43 @@
 					lastChild.css('margin-bottom', 0);
 					*/
                 } else {
-                    elem.css('width', '');
+                    elem.css("width", "");
 
                     maintainAtBottom = settings.stickToBottom && isCloseToBottom();
                     maintainAtRight = settings.stickToRight && isCloseToRight();
 
-                    hasContainingSpaceChanged = elem.innerWidth() + originalPaddingTotalWidth != paneWidth || elem.outerHeight() != paneHeight;
+                    hasContainingSpaceChanged = elem.innerWidth() + originalPaddingTotalWidth !== paneWidth || elem.outerHeight() !== paneHeight;
 
                     if (hasContainingSpaceChanged) {
                         paneWidth = elem.innerWidth() + originalPaddingTotalWidth;
                         paneHeight = elem.innerHeight();
                         container.css({
-                            width: paneWidth + 'px',
-                            height: paneHeight + 'px'
+                            width: paneWidth + "px",
+                            height: paneHeight + "px"
                         });
                     }
 
                     // If nothing changed since last check...
-                    if (!hasContainingSpaceChanged && previousContentWidth == contentWidth && pane.outerHeight() == contentHeight) {
+                    if (!hasContainingSpaceChanged && previousContentWidth === contentWidth && pane.outerHeight() === contentHeight) {
                         elem.width(paneWidth);
                         return;
                     }
                     previousContentWidth = contentWidth;
 
-                    pane.css('width', '');
+                    pane.css("width", "");
                     elem.width(paneWidth);
 
-                    container.find('>.jspVerticalBar,>.jspHorizontalBar').remove().end();
+                    container.find(">.jspVerticalBar,>.jspHorizontalBar").remove().end();
                 }
 
-                pane.css('overflow', 'auto');
+                pane.css("overflow", "auto");
                 if (s.contentWidth) {
                     contentWidth = s.contentWidth;
                 } else {
                     contentWidth = pane[0].scrollWidth;
                 }
                 contentHeight = pane[0].scrollHeight;
-                pane.css('overflow', '');
+                pane.css("overflow", "");
 
                 percentInViewH = contentWidth / paneWidth;
                 percentInViewV = contentHeight / paneHeight;
@@ -2981,7 +2988,7 @@
                 isScrollableH = percentInViewH > 1;
 
                 if (!(isScrollableH || isScrollableV)) {
-                    elem.removeClass('jspScrollable');
+                    elem.removeClass("jspScrollable");
                     pane.css({
                         top: 0,
                         width: container.width() - originalPaddingTotalWidth
@@ -2991,7 +2998,7 @@
                     removeKeyboardNav();
                     removeClickOnTrack();
                 } else {
-                    elem.addClass('jspScrollable');
+                    elem.addClass("jspScrollable");
 
                     isMaintainingPositon = settings.maintainPosition && (verticalDragPosition || horizontalDragPosition);
                     if (isMaintainingPositon) {
@@ -3039,7 +3046,7 @@
                 originalScrollTop && elem.scrollTop(0) && scrollToY(originalScrollTop, false);
                 originalScrollLeft && elem.scrollLeft(0) && scrollToX(originalScrollLeft, false);
 
-                elem.trigger('jsp-initialised', [isScrollableH || isScrollableV]);
+                elem.trigger("jsp-initialised", [isScrollableH || isScrollableV]);
             }
 
             function initialiseVerticalScroll() {
@@ -3058,27 +3065,27 @@
 						)
 					);
 
-                    verticalBar = container.find('>.jspVerticalBar');
-                    verticalTrack = verticalBar.find('>.jspTrack');
-                    verticalDrag = verticalTrack.find('>.jspDrag');
+                    verticalBar = container.find(">.jspVerticalBar");
+                    verticalTrack = verticalBar.find(">.jspTrack");
+                    verticalDrag = verticalTrack.find(">.jspDrag");
 
                     if (settings.showArrows) {
                         arrowUp = $('<a class="jspArrow jspArrowUp" />').bind(
-							'mousedown.jsp', getArrowScroll(0, -1)
-						).bind('click.jsp', nil);
+							"mousedown.jsp", getArrowScroll(0, -1)
+						).bind("click.jsp", nil);
                         arrowDown = $('<a class="jspArrow jspArrowDown" />').bind(
-							'mousedown.jsp', getArrowScroll(0, 1)
-						).bind('click.jsp', nil);
+							"mousedown.jsp", getArrowScroll(0, 1)
+						).bind("click.jsp", nil);
                         if (settings.arrowScrollOnHover) {
-                            arrowUp.bind('mouseover.jsp', getArrowScroll(0, -1, arrowUp));
-                            arrowDown.bind('mouseover.jsp', getArrowScroll(0, 1, arrowDown));
+                            arrowUp.bind("mouseover.jsp", getArrowScroll(0, -1, arrowUp));
+                            arrowDown.bind("mouseover.jsp", getArrowScroll(0, 1, arrowDown));
                         }
 
                         appendArrows(verticalTrack, settings.verticalArrowPositions, arrowUp, arrowDown);
                     }
 
                     verticalTrackHeight = paneHeight;
-                    container.find('>.jspVerticalBar>.jspCap:visible,>.jspVerticalBar>.jspArrow').each(
+                    container.find(">.jspVerticalBar>.jspCap:visible,>.jspVerticalBar>.jspArrow").each(
 						function () {
 						    verticalTrackHeight -= $(this).outerHeight();
 						}
@@ -3087,27 +3094,27 @@
 
                     verticalDrag.hover(
 						function () {
-						    verticalDrag.addClass('jspHover');
+						    verticalDrag.addClass("jspHover");
 						},
 						function () {
-						    verticalDrag.removeClass('jspHover');
+						    verticalDrag.removeClass("jspHover");
 						}
 					).bind(
-						'mousedown.jsp',
+						"mousedown.jsp",
 						function (e) {
 						    // Stop IE from allowing text selection
-						    $('html').bind('dragstart.jsp selectstart.jsp', nil);
+						    $("html").bind("dragstart.jsp selectstart.jsp", nil);
 
-						    verticalDrag.addClass('jspActive');
+						    verticalDrag.addClass("jspActive");
 
 						    var startY = e.pageY - verticalDrag.position().top;
 
-						    $('html').bind(
-								'mousemove.jsp',
+						    $("html").bind(
+								"mousemove.jsp",
 								function (e) {
 								    positionDragY(e.pageY - startY, false);
 								}
-							).bind('mouseup.jsp mouseleave.jsp', cancelDrag);
+							).bind("mouseup.jsp mouseleave.jsp", cancelDrag);
 						    return false;
 						}
 					);
@@ -3116,7 +3123,7 @@
             }
 
             function sizeVerticalScrollbar() {
-                verticalTrack.height(verticalTrackHeight + 'px');
+                verticalTrack.height(verticalTrackHeight + "px");
                 verticalDragPosition = 0;
                 scrollbarWidth = settings.verticalGutter + verticalTrack.outerWidth();
 
@@ -3127,7 +3134,7 @@
                 // the scrollbar on the left or right set it's left or right property in CSS)
                 try {
                     if (verticalBar.position().left === 0) {
-                        pane.css('margin-left', scrollbarWidth + 'px');
+                        pane.css("margin-left", scrollbarWidth + "px");
                     }
                 } catch (err) {
                 }
@@ -3149,47 +3156,47 @@
 						)
 					);
 
-                    horizontalBar = container.find('>.jspHorizontalBar');
-                    horizontalTrack = horizontalBar.find('>.jspTrack');
-                    horizontalDrag = horizontalTrack.find('>.jspDrag');
+                    horizontalBar = container.find(">.jspHorizontalBar");
+                    horizontalTrack = horizontalBar.find(">.jspTrack");
+                    horizontalDrag = horizontalTrack.find(">.jspDrag");
 
                     if (settings.showArrows) {
                         arrowLeft = $('<a class="jspArrow jspArrowLeft" />').bind(
-							'mousedown.jsp', getArrowScroll(-1, 0)
-						).bind('click.jsp', nil);
+							"mousedown.jsp", getArrowScroll(-1, 0)
+						).bind("click.jsp", nil);
                         arrowRight = $('<a class="jspArrow jspArrowRight" />').bind(
-							'mousedown.jsp', getArrowScroll(1, 0)
-						).bind('click.jsp', nil);
+							"mousedown.jsp", getArrowScroll(1, 0)
+						).bind("click.jsp", nil);
                         if (settings.arrowScrollOnHover) {
-                            arrowLeft.bind('mouseover.jsp', getArrowScroll(-1, 0, arrowLeft));
-                            arrowRight.bind('mouseover.jsp', getArrowScroll(1, 0, arrowRight));
+                            arrowLeft.bind("mouseover.jsp", getArrowScroll(-1, 0, arrowLeft));
+                            arrowRight.bind("mouseover.jsp", getArrowScroll(1, 0, arrowRight));
                         }
                         appendArrows(horizontalTrack, settings.horizontalArrowPositions, arrowLeft, arrowRight);
                     }
 
                     horizontalDrag.hover(
 						function () {
-						    horizontalDrag.addClass('jspHover');
+						    horizontalDrag.addClass("jspHover");
 						},
 						function () {
-						    horizontalDrag.removeClass('jspHover');
+						    horizontalDrag.removeClass("jspHover");
 						}
 					).bind(
-						'mousedown.jsp',
+						"mousedown.jsp",
 						function (e) {
 						    // Stop IE from allowing text selection
-						    $('html').bind('dragstart.jsp selectstart.jsp', nil);
+						    $("html").bind("dragstart.jsp selectstart.jsp", nil);
 
-						    horizontalDrag.addClass('jspActive');
+						    horizontalDrag.addClass("jspActive");
 
 						    var startX = e.pageX - horizontalDrag.position().left;
 
-						    $('html').bind(
-								'mousemove.jsp',
+						    $("html").bind(
+								"mousemove.jsp",
 								function (e) {
 								    positionDragX(e.pageX - startX, false);
 								}
-							).bind('mouseup.jsp mouseleave.jsp', cancelDrag);
+							).bind("mouseup.jsp mouseleave.jsp", cancelDrag);
 						    return false;
 						}
 					);
@@ -3199,13 +3206,13 @@
             }
 
             function sizeHorizontalScrollbar() {
-                container.find('>.jspHorizontalBar>.jspCap:visible,>.jspHorizontalBar>.jspArrow').each(
+                container.find(">.jspHorizontalBar>.jspCap:visible,>.jspHorizontalBar>.jspArrow").each(
 					function () {
 					    horizontalTrackWidth -= $(this).outerWidth();
 					}
 				);
 
-                horizontalTrack.width(horizontalTrackWidth + 'px');
+                horizontalTrack.width(horizontalTrackWidth + "px");
                 horizontalDragPosition = 0;
             }
 
@@ -3214,7 +3221,7 @@
                     var horizontalTrackHeight = horizontalTrack.outerHeight(),
 						verticalTrackWidth = verticalTrack.outerWidth();
                     verticalTrackHeight -= horizontalTrackHeight;
-                    $(horizontalBar).find('>.jspCap:visible,>.jspArrow').each(
+                    $(horizontalBar).find(">.jspCap:visible,>.jspArrow").each(
 						function () {
 						    horizontalTrackWidth += $(this).outerWidth();
 						}
@@ -3223,14 +3230,14 @@
                     paneHeight -= verticalTrackWidth;
                     paneWidth -= horizontalTrackHeight;
                     horizontalTrack.parent().append(
-						$('<div class="jspCorner" />').css('width', horizontalTrackHeight + 'px')
+						$('<div class="jspCorner" />').css("width", horizontalTrackHeight + "px")
 					);
                     sizeVerticalScrollbar();
                     sizeHorizontalScrollbar();
                 }
                 // reflow content
                 if (isScrollableH) {
-                    pane.width((container.outerWidth() - originalPaddingTotalWidth) + 'px');
+                    pane.width((container.outerWidth() - originalPaddingTotalWidth) + "px");
                 }
                 contentHeight = pane.outerHeight();
                 percentInViewV = contentHeight / paneHeight;
@@ -3242,7 +3249,7 @@
                     } else if (horizontalDragWidth < settings.horizontalDragMinWidth) {
                         horizontalDragWidth = settings.horizontalDragMinWidth;
                     }
-                    horizontalDrag.width(horizontalDragWidth + 'px');
+                    horizontalDrag.width(horizontalDragWidth + "px");
                     dragMaxX = horizontalTrackWidth - horizontalDragWidth;
                     _positionDragX(horizontalDragPosition); // To update the state for the arrow buttons
                 }
@@ -3253,7 +3260,7 @@
                     } else if (verticalDragHeight < settings.verticalDragMinHeight) {
                         verticalDragHeight = settings.verticalDragMinHeight;
                     }
-                    verticalDrag.height(verticalDragHeight + 'px');
+                    verticalDrag.height(verticalDragHeight + "px");
                     dragMaxY = verticalTrackHeight - verticalDragHeight;
                     _positionDragY(verticalDragPosition); // To update the state for the arrow buttons
                 }
@@ -3264,12 +3271,12 @@
 
                 // Sniff for mac... Is there a better way to determine whether the arrows would naturally appear
                 // at the top or the bottom of the bar?
-                if (p == "os") {
+                if (p === "os") {
                     p = /Mac/.test(navigator.platform) ? "after" : "split";
                 }
-                if (p == p1) {
+                if (p === p1) {
                     p2 = p;
-                } else if (p == p2) {
+                } else if (p === p2) {
                     p1 = p;
                     aTemp = a1;
                     a1 = a2;
@@ -3288,7 +3295,7 @@
             }
 
             function arrowScroll(dirX, dirY, arrow, ele) {
-                arrow = $(arrow).addClass('jspActive');
+                arrow = $(arrow).addClass("jspActive");
 
                 var eve,
 					scrollTimeout,
@@ -3306,12 +3313,12 @@
 
                 doScroll();
 
-                eve = ele ? 'mouseout.jsp' : 'mouseup.jsp';
-                ele = ele || $('html');
+                eve = ele ? "mouseout.jsp" : "mouseup.jsp";
+                ele = ele || $("html");
                 ele.bind(
 					eve,
 					function () {
-					    arrow.removeClass('jspActive');
+					    arrow.removeClass("jspActive");
 					    scrollTimeout && clearTimeout(scrollTimeout);
 					    scrollTimeout = null;
 					    ele.unbind(eve);
@@ -3323,9 +3330,9 @@
                 removeClickOnTrack();
                 if (isScrollableV) {
                     verticalTrack.bind(
-						'mousedown.jsp',
+						"mousedown.jsp",
 						function (e) {
-						    if (e.originalTarget === undefined || e.originalTarget == e.currentTarget) {
+						    if (e.originalTarget === undefined || e.originalTarget === e.currentTarget) {
 						        var clickedTrack = $(this),
 									offset = clickedTrack.offset(),
 									direction = e.pageY - offset.top - verticalDragPosition,
@@ -3358,10 +3365,10 @@
 									cancelClick = function () {
 									    scrollTimeout && clearTimeout(scrollTimeout);
 									    scrollTimeout = null;
-									    $(document).unbind('mouseup.jsp', cancelClick);
+									    $(document).unbind("mouseup.jsp", cancelClick);
 									};
 						        doScroll();
-						        $(document).bind('mouseup.jsp', cancelClick);
+						        $(document).bind("mouseup.jsp", cancelClick);
 						        return false;
 						    }
 						}
@@ -3370,9 +3377,9 @@
 
                 if (isScrollableH) {
                     horizontalTrack.bind(
-						'mousedown.jsp',
+						"mousedown.jsp",
 						function (e) {
-						    if (e.originalTarget === undefined || e.originalTarget == e.currentTarget) {
+						    if (e.originalTarget === undefined || e.originalTarget === e.currentTarget) {
 						        var clickedTrack = $(this),
 									offset = clickedTrack.offset(),
 									direction = e.pageX - offset.left - horizontalDragPosition,
@@ -3405,10 +3412,10 @@
 									cancelClick = function () {
 									    scrollTimeout && clearTimeout(scrollTimeout);
 									    scrollTimeout = null;
-									    $(document).unbind('mouseup.jsp', cancelClick);
+									    $(document).unbind("mouseup.jsp", cancelClick);
 									};
 						        doScroll();
-						        $(document).bind('mouseup.jsp', cancelClick);
+						        $(document).bind("mouseup.jsp", cancelClick);
 						        return false;
 						    }
 						}
@@ -3418,21 +3425,21 @@
 
             function removeClickOnTrack() {
                 if (horizontalTrack) {
-                    horizontalTrack.unbind('mousedown.jsp');
+                    horizontalTrack.unbind("mousedown.jsp");
                 }
                 if (verticalTrack) {
-                    verticalTrack.unbind('mousedown.jsp');
+                    verticalTrack.unbind("mousedown.jsp");
                 }
             }
 
             function cancelDrag() {
-                $('html').unbind('dragstart.jsp selectstart.jsp mousemove.jsp mouseup.jsp mouseleave.jsp');
+                $("html").unbind("dragstart.jsp selectstart.jsp mousemove.jsp mouseup.jsp mouseleave.jsp");
 
                 if (verticalDrag) {
-                    verticalDrag.removeClass('jspActive');
+                    verticalDrag.removeClass("jspActive");
                 }
                 if (horizontalDrag) {
-                    horizontalDrag.removeClass('jspActive');
+                    horizontalDrag.removeClass("jspActive");
                 }
             }
 
@@ -3451,9 +3458,9 @@
                     animate = settings.animateScroll;
                 }
                 if (animate) {
-                    jsp.animate(verticalDrag, 'top', destY, _positionDragY);
+                    jsp.animate(verticalDrag, "top", destY, _positionDragY);
                 } else {
-                    verticalDrag.css('top', destY);
+                    verticalDrag.css("top", destY);
                     _positionDragY(destY);
                 }
 
@@ -3468,19 +3475,19 @@
                 verticalDragPosition = destY;
 
                 var isAtTop = verticalDragPosition === 0,
-					isAtBottom = verticalDragPosition == dragMaxY,
+					isAtBottom = verticalDragPosition === dragMaxY,
 					percentScrolled = destY / dragMaxY,
 					destTop = -percentScrolled * (contentHeight - paneHeight);
 
-                if (wasAtTop != isAtTop || wasAtBottom != isAtBottom) {
+                if (wasAtTop !== isAtTop || wasAtBottom !== isAtBottom) {
                     wasAtTop = isAtTop;
                     wasAtBottom = isAtBottom;
-                    elem.trigger('jsp-arrow-change', [wasAtTop, wasAtBottom, wasAtLeft, wasAtRight]);
+                    elem.trigger("jsp-arrow-change", [wasAtTop, wasAtBottom, wasAtLeft, wasAtRight]);
                 }
 
                 updateVerticalArrows(isAtTop, isAtBottom);
-                pane.css('top', destTop);
-                elem.trigger('jsp-scroll-y', [-destTop, isAtTop, isAtBottom]).trigger('scroll');
+                pane.css("top", destTop);
+                elem.trigger("jsp-scroll-y", [-destTop, isAtTop, isAtBottom]).trigger("scroll");
             }
 
             function positionDragX(destX, animate) {
@@ -3497,9 +3504,9 @@
                     animate = settings.animateScroll;
                 }
                 if (animate) {
-                    jsp.animate(horizontalDrag, 'left', destX, _positionDragX);
+                    jsp.animate(horizontalDrag, "left", destX, _positionDragX);
                 } else {
-                    horizontalDrag.css('left', destX);
+                    horizontalDrag.css("left", destX);
                     _positionDragX(destX);
                 }
             }
@@ -3513,32 +3520,32 @@
                 horizontalDragPosition = destX;
 
                 var isAtLeft = horizontalDragPosition === 0,
-					isAtRight = horizontalDragPosition == dragMaxX,
+					isAtRight = horizontalDragPosition === dragMaxX,
 					percentScrolled = destX / dragMaxX,
 					destLeft = -percentScrolled * (contentWidth - paneWidth);
 
-                if (wasAtLeft != isAtLeft || wasAtRight != isAtRight) {
+                if (wasAtLeft !== isAtLeft || wasAtRight !== isAtRight) {
                     wasAtLeft = isAtLeft;
                     wasAtRight = isAtRight;
-                    elem.trigger('jsp-arrow-change', [wasAtTop, wasAtBottom, wasAtLeft, wasAtRight]);
+                    elem.trigger("jsp-arrow-change", [wasAtTop, wasAtBottom, wasAtLeft, wasAtRight]);
                 }
 
                 updateHorizontalArrows(isAtLeft, isAtRight);
-                pane.css('left', destLeft);
-                elem.trigger('jsp-scroll-x', [-destLeft, isAtLeft, isAtRight]).trigger('scroll');
+                pane.css("left", destLeft);
+                elem.trigger("jsp-scroll-x", [-destLeft, isAtLeft, isAtRight]).trigger("scroll");
             }
 
             function updateVerticalArrows(isAtTop, isAtBottom) {
                 if (settings.showArrows) {
-                    arrowUp[isAtTop ? 'addClass' : 'removeClass']('jspDisabled');
-                    arrowDown[isAtBottom ? 'addClass' : 'removeClass']('jspDisabled');
+                    arrowUp[isAtTop ? "addClass" : "removeClass"]("jspDisabled");
+                    arrowDown[isAtBottom ? "addClass" : "removeClass"]("jspDisabled");
                 }
             }
 
             function updateHorizontalArrows(isAtLeft, isAtRight) {
                 if (settings.showArrows) {
-                    arrowLeft[isAtLeft ? 'addClass' : 'removeClass']('jspDisabled');
-                    arrowRight[isAtRight ? 'addClass' : 'removeClass']('jspDisabled');
+                    arrowLeft[isAtLeft ? "addClass" : "removeClass"]("jspDisabled");
+                    arrowRight[isAtRight ? "addClass" : "removeClass"]("jspDisabled");
                 }
             }
 
@@ -3571,7 +3578,7 @@
                 // loop through parents adding the offset top of any elements that are relatively positioned between
                 // the focused element and the jspPane so we can get the true distance from the top
                 // of the focused element to the top of the scrollpane...
-                while (!e.is('.jspPane')) {
+                while (!e.is(".jspPane")) {
                     eleTop += e.position().top;
                     eleLeft += e.position().left;
                     e = e.offsetParent();
@@ -3630,7 +3637,7 @@
 					    var dX = horizontalDragPosition, dY = verticalDragPosition;
 					    jsp.scrollBy(deltaX * settings.mouseWheelSpeed, -deltaY * settings.mouseWheelSpeed, false);
 					    // return true if there was no movement so rest of screen can scroll
-					    return dX == horizontalDragPosition && dY == verticalDragPosition;
+					    return dX === horizontalDragPosition && dY === verticalDragPosition;
 					}
 				);
             }
@@ -3644,8 +3651,8 @@
             }
 
             function initFocusHandler() {
-                pane.find(':input,a').unbind('focus.jsp').bind(
-					'focus.jsp',
+                pane.find(":input,a").unbind("focus.jsp").bind(
+					"focus.jsp",
 					function (e) {
 					    scrollToElement(e.target, false);
 					}
@@ -3653,7 +3660,7 @@
             }
 
             function removeFocusHandler() {
-                pane.find(':input,a').unbind('focus.jsp');
+                pane.find(":input,a").unbind("focus.jsp");
             }
 
             function initKeyboardNav() {
@@ -3668,10 +3675,10 @@
 					}
 				);
 
-                elem.attr('tabindex', 0)
-					.unbind('keydown.jsp keypress.jsp')
+                elem.attr("tabindex", 0)
+					.unbind("keydown.jsp keypress.jsp")
 					.bind(
-						'keydown.jsp',
+						"keydown.jsp",
 						function (e) {
 						    if (e.target !== this && !(validParents.length && $(e.target).closest(validParents).length)) {
 						        return;
@@ -3698,13 +3705,13 @@
 						            break;
 						    }
 
-						    elementHasScrolled = e.keyCode == keyDown && dX != horizontalDragPosition || dY != verticalDragPosition;
+						    elementHasScrolled = e.keyCode === keyDown && dX !== horizontalDragPosition || dY !== verticalDragPosition;
 						    return !elementHasScrolled;
 						}
 					).bind(
-						'keypress.jsp', // For FF/ OSX so that we can cancel the repeat key presses if the JSP scrolls...
+						"keypress.jsp", // For FF/ OSX so that we can cancel the repeat key presses if the JSP scrolls...
 						function (e) {
-						    if (e.keyCode == keyDown) {
+						    if (e.keyCode === keyDown) {
 						        keyDownHandler();
 						    }
 						    return !elementHasScrolled;
@@ -3712,14 +3719,14 @@
 					);
 
                 if (settings.hideFocus) {
-                    elem.css('outline', 'none');
-                    if ('hideFocus' in container[0]) {
-                        elem.attr('hideFocus', true);
+                    elem.css("outline", "none");
+                    if ("hideFocus" in container[0]) {
+                        elem.attr("hideFocus", true);
                     }
                 } else {
-                    elem.css('outline', '');
-                    if ('hideFocus' in container[0]) {
-                        elem.attr('hideFocus', false);
+                    elem.css("outline", "");
+                    if ("hideFocus" in container[0]) {
+                        elem.attr("hideFocus", false);
                     }
                 }
 
@@ -3747,15 +3754,15 @@
                             break;
                     }
 
-                    elementHasScrolled = dX != horizontalDragPosition || dY != verticalDragPosition;
+                    elementHasScrolled = dX !== horizontalDragPosition || dY !== verticalDragPosition;
                     return elementHasScrolled;
                 }
             }
 
             function removeKeyboardNav() {
-                elem.attr('tabindex', '-1')
-					.removeAttr('tabindex')
-					.unbind('keydown.jsp keypress.jsp');
+                elem.attr("tabindex", "-1")
+					.removeAttr("tabindex")
+					.unbind("keydown.jsp keypress.jsp");
             }
 
             function observeHash() {
@@ -3765,7 +3772,7 @@
 						hash = escape(location.hash.substr(1)) // hash must be escaped to prevent XSS
                     ;
                     try {
-                        e = $('#' + hash + ', a[name="' + hash + '"]');
+                        e = $("#" + hash + ', a[name="' + hash + '"]');
                     } catch (err) {
                         return;
                     }
@@ -3794,19 +3801,19 @@
 
             function hijackInternalLinks() {
                 // only register the link handler once
-                if ($(document.body).data('jspHijack')) {
+                if ($(document.body).data("jspHijack")) {
                     return;
                 }
 
                 // remember that the handler was bound
-                $(document.body).data('jspHijack', true);
+                $(document.body).data("jspHijack", true);
 
                 // use live handler to also capture newly created links
-                $(document.body).delegate('a[href*=#]', 'click', function (event) {
+                $(document.body).delegate("a[href*=#]", "click", function (event) {
                     // does the link point to the same page?
                     // this also takes care of cases with a <base>-Tag or Links not starting with the hash #
                     // e.g. <a href="index.html#test"> when the current url already is index.html
-                    var href = this.href.substr(0, this.href.indexOf('#')),
+                    var href = this.href.substr(0, this.href.indexOf("#")),
 						locationHref = location.href,
 						hash,
 						element,
@@ -3814,8 +3821,8 @@
 						jsp,
 						scrollTop,
 						elementTop;
-                    if (location.href.indexOf('#') !== -1) {
-                        locationHref = location.href.substr(0, location.href.indexOf('#'));
+                    if (location.href.indexOf("#") !== -1) {
+                        locationHref = location.href.substr(0, location.href.indexOf("#"));
                     }
                     if (href !== locationHref) {
                         // the link points to another page
@@ -3823,12 +3830,12 @@
                     }
 
                     // check if jScrollPane should handle this click event
-                    hash = escape(this.href.substr(this.href.indexOf('#') + 1));
+                    hash = escape(this.href.substr(this.href.indexOf("#") + 1));
 
                     // find the element on the page
                     element;
                     try {
-                        element = $('#' + hash + ', a[name="' + hash + '"]');
+                        element = $("#" + hash + ', a[name="' + hash + '"]');
                     } catch (e) {
                         // hash is not a valid jQuery identifier
                         return;
@@ -3839,8 +3846,8 @@
                         return;
                     }
 
-                    container = element.closest('.jspScrollable');
-                    jsp = container.data('jsp');
+                    container = element.closest(".jspScrollable");
+                    jsp = container.data("jsp");
 
                     // jsp might be another jsp instance than the one, that bound this event
                     // remember: this event is only bound once for all instances.
@@ -3869,8 +3876,8 @@
 					moved,
 					moving = false;
 
-                container.unbind('touchstart.jsp touchmove.jsp touchend.jsp click.jsp-touchclick').bind(
-					'touchstart.jsp',
+                container.unbind("touchstart.jsp touchmove.jsp touchend.jsp click.jsp-touchclick").bind(
+					"touchstart.jsp",
 					function (e) {
 					    var touch = e.originalEvent.touches[0];
 					    startX = contentPositionX();
@@ -3881,7 +3888,7 @@
 					    moving = true;
 					}
 				).bind(
-					'touchmove.jsp',
+					"touchmove.jsp",
 					function (ev) {
 					    if (!moving) {
 					        return;
@@ -3895,19 +3902,19 @@
 					    moved = moved || Math.abs(touchStartX - touchPos.pageX) > 5 || Math.abs(touchStartY - touchPos.pageY) > 5;
 
 					    // return true if there was no movement so rest of screen can scroll
-					    return dX == horizontalDragPosition && dY == verticalDragPosition;
+					    return dX === horizontalDragPosition && dY === verticalDragPosition;
 					}
 				).bind(
-					'touchend.jsp',
-					function (e) {
+					"touchend.jsp",
+					function () {
 					    moving = false;
 					    /*if(moved) {
 							return false;
 						}*/
 					}
 				).bind(
-					'click.jsp-touchclick',
-					function (e) {
+					"click.jsp-touchclick",
+					function () {
 					    if (moved) {
 					        moved = false;
 					        return false;
@@ -3919,7 +3926,7 @@
             function destroy() {
                 var currentY = contentPositionY(),
 					currentX = contentPositionX();
-                elem.removeClass('jspScrollable').unbind('.jsp');
+                elem.removeClass("jspScrollable").unbind(".jsp");
                 elem.replaceWith(originalElement.append(pane.children()));
                 originalElement.scrollTop(currentY);
                 originalElement.scrollLeft(currentX);
@@ -3990,14 +3997,14 @@
 				    // Scrolls the pane by the specified amount of pixels. animate is optional and if not passed then
 				    // the value of animateScroll from the settings object this jScrollPane was initialised with is used.
 				    scrollByX: function (deltaX, animate) {
-				        var destX = contentPositionX() + Math[deltaX < 0 ? 'floor' : 'ceil'](deltaX),
+				        var destX = contentPositionX() + Math[deltaX < 0 ? "floor" : "ceil"](deltaX),
 							percentScrolled = destX / (contentWidth - paneWidth);
 				        positionDragX(percentScrolled * dragMaxX, animate);
 				    },
 				    // Scrolls the pane by the specified amount of pixels. animate is optional and if not passed then
 				    // the value of animateScroll from the settings object this jScrollPane was initialised with is used.
 				    scrollByY: function (deltaY, animate) {
-				        var destY = contentPositionY() + Math[deltaY < 0 ? 'floor' : 'ceil'](deltaY),
+				        var destY = contentPositionY() + Math[deltaY < 0 ? "floor" : "ceil"](deltaY),
 							percentScrolled = destY / (contentHeight - paneHeight);
 				        positionDragY(percentScrolled * dragMaxY, animate);
 				    },
@@ -4096,19 +4103,19 @@
         settings = $.extend({}, $.fn.jScrollPane.defaults, settings);
 
         // Apply default speed
-        $.each(['mouseWheelSpeed', 'arrowButtonSpeed', 'trackClickSpeed', 'keyboardSpeed'], function () {
+        $.each(["mouseWheelSpeed", "arrowButtonSpeed", "trackClickSpeed", "keyboardSpeed"], function () {
             settings[this] = settings[this] || settings.speed;
         });
 
         return this.each(
 			function () {
-			    var elem = $(this), jspApi = elem.data('jsp');
+			    var elem = $(this), jspApi = elem.data("jsp");
 			    if (jspApi) {
 			        jspApi.reinitialise(settings);
 			    } else {
 			        $("script", elem).filter('[type="text/javascript"], :not([type])').remove();
 			        jspApi = new JScrollPane(elem, settings);
-			        elem.data('jsp', jspApi);
+			        elem.data("jsp", jspApi);
 			    }
 			}
 		);
@@ -4129,7 +4136,7 @@
         contentWidth: undefined,
         animateScroll: false,
         animateDuration: 300,
-        animateEase: 'linear',
+        animateEase: "linear",
         hijackInternalLinks: false,
         verticalGutter: 4,
         horizontalGutter: 4,
@@ -4139,8 +4146,8 @@
         arrowScrollOnHover: false,
         trackClickSpeed: 0,
         trackClickRepeatFreq: 70,
-        verticalArrowPositions: 'split',
-        horizontalArrowPositions: 'split',
+        verticalArrowPositions: "split",
+        horizontalArrowPositions: "split",
         enableKeyboardNavigation: true,
         hideFocus: false,
         keyboardSpeed: 0,
@@ -4154,16 +4161,16 @@
 (function ($) {
     $.fn.dnnSettingDropdown = function () {
         var clicked = function () {
-            if ($(this).hasClass('dnnButtonDropdown')) {
-                $(this).removeClass('dnnButtonDropdown').addClass('dnnButtonDropdown-clicked');
+            if ($(this).hasClass("dnnButtonDropdown")) {
+                $(this).removeClass("dnnButtonDropdown").addClass("dnnButtonDropdown-clicked");
                 $(this).next().show();
             }
         };
 
         var hideDropdown = function () {
-            var btn = $(this).children(':first');
-            if (btn.hasClass('dnnButtonDropdown-clicked')) {
-                btn.removeClass('dnnButtonDropdown-clicked').addClass('dnnButtonDropdown');
+            var btn = $(this).children(":first");
+            if (btn.hasClass("dnnButtonDropdown-clicked")) {
+                btn.removeClass("dnnButtonDropdown-clicked").addClass("dnnButtonDropdown");
                 btn.next().fadeOut();
             }
         };
@@ -4176,7 +4183,7 @@
         };
 
         return $(this).each(function () {
-            $(this).unbind('click', clicked).bind('click', clicked);
+            $(this).unbind("click", clicked).bind("click", clicked);
             $(this).parent().hoverIntent(hoverConfig);
         });
     };
@@ -4186,12 +4193,12 @@
     $.fn.onEnter = function (fn) {
         return this.each(function () {
             var $this = $(this);
-            $this.bind('onEnter', fn);
+            $this.bind("onEnter", fn);
             $this.keydown(function (e) {
                 if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
                     e.preventDefault();
                     e.stopPropagation();
-                    $this.trigger('onEnter');
+                    $this.trigger("onEnter");
                 }
             });
         });
@@ -4203,7 +4210,7 @@
         onAjaxError: function (jqXhr, textStatus, errorThrown) {
             var title, text;
             if (jqXhr && jqXhr.status === 401) {
-                dnnModal.show('../Login.aspx' + '?popUp=true', true, 300, 650, true, '');
+                dnnModal.show("../Login.aspx" + "?popUp=true", true, 300, 650, true, "");
                 return;
             }
             if (jqXhr && jqXhr.responseText && jqXhr.statusText) {
@@ -4230,24 +4237,24 @@
 		    $this.hide().after($slider);
 
 		    $slider.slider(sliderOptions);
-		    $slider.slider('value', value);
+		    $slider.slider("value", value);
 
 		    var $tooltip = $('<span class="dnnTooltip"><span class="dnnFormHelpContent dnnClear"><span class="dnnHelpText bottomArrow"></span></span></span>');
 
 		    var calcTooltipPosition = function () {
 			    setTimeout(function() {
-				    var left = $slider.find('.ui-slider-handle')[0].style.left;
-				    $tooltip.css('left', left);
+				    var left = $slider.find(".ui-slider-handle")[0].style.left;
+				    $tooltip.css("left", left);
 			    }, 0);
 		    };
 
-		    $tooltip.find('.dnnHelpText').html(value);
-		    $tooltip.data('initialized', true);
+		    $tooltip.find(".dnnHelpText").html(value);
+		    $tooltip.data("initialized", true);
 			$slider.append($tooltip);
 
 		    calcTooltipPosition();
-		    $slider.on('slide', function(event, ui) {
-		    	$tooltip.find('.dnnHelpText').html(ui.value);
+		    $slider.on("slide", function(event, ui) {
+		    	$tooltip.find(".dnnHelpText").html(ui.value);
 		    	$this.val(ui.value);
 			    calcTooltipPosition();
 		    });
@@ -4266,29 +4273,29 @@
     /* Start customised controls */
     var inputFocusFix = function () {
         var errorMsg = $(this).next();
-        if (errorMsg.hasClass('dnnFormError'))
+        if (errorMsg.hasClass("dnnFormError"))
             errorMsg.hide();
     };
     var throttle = null;
     var dnnInitCustomisedCtrls = function () {
-        if (throttle != null) {
+        if (throttle !== null) {
             clearTimeout(throttle);
             throttle = null;
         }
         throttle = setTimeout(function () {
             $('.dnnForm input[type="checkbox"]').dnnCheckbox();
-            $('.dnnForm input[type="radio"]').dnnCheckbox({ cls: 'dnnRadiobutton' });
-            $('.dnnTooltip').dnnTooltip();
-            $('.dnnForm input[type="text"], .dnnForm input[type="password"]').unbind('focus', inputFocusFix).bind('focus', inputFocusFix);
-            $('.dnnForm :file').dnnFileInput();
-	        $('.dnnForm input[data-default]').dnnPlaceholder();
+            $('.dnnForm input[type="radio"]').dnnCheckbox({ cls: "dnnRadiobutton" });
+            $(".dnnTooltip").dnnTooltip();
+            $('.dnnForm input[type="text"], .dnnForm input[type="password"]').unbind("focus", inputFocusFix).bind("focus", inputFocusFix);
+            $(".dnnForm :file").dnnFileInput();
+	        $(".dnnForm input[data-default]").dnnPlaceholder();
         }, 200);
         //change the window confirm style to DNN style
         $("*[onclick*='return confirm']").each(function () {
             var instance = $(this);
-            var isButton = this.nodeName.toLowerCase() == "img" || this.nodeName.toLowerCase() == "input";
+            var isButton = this.nodeName.toLowerCase() === "img" || this.nodeName.toLowerCase() === "input";
             var script = /return confirm\((['"])([\s\S]*?)\1\)/g.exec(instance.attr("onclick"));
-            if (script != null) {
+            if (script !== null) {
                 var confirmContent = script[2].split("\\" + script[1]).join(script[1]);
                 instance.attr("onclick", instance.attr("onclick").replace(script[0], "void(0)")).dnnConfirm({
                     text: confirmContent,
@@ -4299,11 +4306,11 @@
     };
     var saveRgDataDivScrollTop = function () {
         window.__rgDataDivScrollTopPersistArray = [];
-        $('.rgDataDiv').each(function () {
+        $(".rgDataDiv").each(function () {
             var $this = $(this);
             var ele = $this.get(0);
             if (ele.scrollPane) {
-                var api = ele.scrollPane.data('jsp');
+                var api = ele.scrollPane.data("jsp");
                 var y = api.getContentPositionY();
                 window.__rgDataDivScrollTopPersistArray.push(y);
             }

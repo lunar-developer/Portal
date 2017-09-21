@@ -797,11 +797,11 @@
 // RAD COMBOBOX TELERIK as AUTO COMPLETE
 $(function()
 {
-    $.prototype.autoComplete = function()
+    $.prototype.autoComplete = function(masterId)
     {
         $.each($(this), function()
         {
-            var json = window["glo_MasterData_" + this.id];
+            var json = window[masterId + this.id];
             if (typeof json === "undefined")
             {
                 return;
@@ -828,30 +828,21 @@ $(function()
                 "dropDownOpened": function() {},
                 "load": function () { },
                 "selectedIndexChanged": function()
-                {
+                {                    
                     $("#" + json.name + "_Hidden").val(combobox.get_value());
+                    if (typeof json.onChange === "string" && json.onChange.length > 0)
+                    {
+                        executeSafeFunction(json.onChange);
+                    }
                 }
             }, null, $get(this.id));
 
 
             // Render Items
-            for (var i = 0; i < json.options.length; i++)
+            if (json.lazyLoad === false)
             {
-                var item = json.options[i];
-                var comboItem = new Telerik.Web.UI.RadComboBoxItem();
-                comboItem.set_text(item.text);
-                comboItem.set_value(item.value);
-                combobox.get_items().add(comboItem);
-                if (item.selected)
-                {
-                    comboItem.select();
-                }
-                if (item.disabled)
-                {
-                    comboItem.disable();
-                }
+                bindOptions(combobox, json.options);
             }
-            combobox.commitChanges();
         });
     }
 });

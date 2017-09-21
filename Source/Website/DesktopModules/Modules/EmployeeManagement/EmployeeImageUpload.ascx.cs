@@ -32,7 +32,7 @@ namespace DesktopModules.Modules.EmployeeManagement
         private void ShowEmployeeInfo()
         {
             string email = cbxEmail.SelectedValue;
-            DataTable dtTable = EmployeeBusiness.GetEmployeeInfo(email);
+            DataTable dtTable = EmployeeBusiness.LoadEmployeeInfo(email);
 
             if (dtTable.Rows.Count == 0)
             {
@@ -44,11 +44,13 @@ namespace DesktopModules.Modules.EmployeeManagement
                 return;
             }
 
-            lblFullName.Text = dtTable.Rows[0][EmployeeTable.FullName].ToString();
-            lblBranch.Text = dtTable.Rows[0][EmployeeTable.Branch].ToString();
-            lblEmail.Text = dtTable.Rows[0][EmployeeTable.Email].ToString();
-            lblMobile.Text = dtTable.Rows[0][EmployeeTable.PhoneNumber].ToString();
-            lblPhoneExtension.Text = dtTable.Rows[0][EmployeeTable.PhoneExtendNumber].ToString();
+            DataRow row = dtTable.Rows[0];
+            lblFullName.Text = row[EmployeeTable.FullName].ToString();
+            lblBranch.Text = row[EmployeeTable.Branch].ToString();
+            lblEmail.Text = row[EmployeeTable.Email].ToString();
+            lblMobile.Text = row[EmployeeTable.PhoneNumber].ToString();
+            lblPhoneExtension.Text = row[EmployeeTable.PhoneExtendNumber].ToString();
+            imgAvatar.Src = "data:image/png;base64," + row[EmployeeTable.Image];
         }
 
         protected void BindData()
@@ -110,7 +112,7 @@ namespace DesktopModules.Modules.EmployeeManagement
             // Update to database
             Dictionary<string, SQLParameterData> dictionaryParameterData = new Dictionary<string, SQLParameterData>
             {
-                { EmployeeTable.Email, new SQLParameterData(email, SqlDbType.VarChar) },
+                { EmployeeTable.Email, new SQLParameterData(email) },
                 { EmployeeTable.Image, new SQLParameterData(base64, SqlDbType.NVarChar) }
             };
             bool result = EmployeeBusiness.UpdateEmployeeImage(dictionaryParameterData);
@@ -118,6 +120,7 @@ namespace DesktopModules.Modules.EmployeeManagement
             {
                 ShowMessage(MessageDefinitionEnum.UpdateEmployeeImageSuccess,
                     ModuleMessage.ModuleMessageType.GreenSuccess);
+                ShowEmployeeInfo();
             }
             else
             {

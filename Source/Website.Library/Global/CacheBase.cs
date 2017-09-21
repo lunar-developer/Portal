@@ -75,14 +75,18 @@ namespace Website.Library.Global
             }
 
             item = controller.Reload(key);
-            return item != null && dictionary.TryAdd(key, item);
+            return item != null
+                && dictionary.TryAdd(key, item)
+                && controller.Arrange(dictionary);
         }
 
         public static bool Insert<T>(string key, T value) where T : CacheData
         {
             string guid = GetClassGuid(typeof(T));
             OrderedConcurrentDictionary<string, CacheData> dictionary;
-            return CacheDictionary.TryGetValue(guid, out dictionary) && dictionary.TryAdd(key, value);
+            return CacheDictionary.TryGetValue(guid, out dictionary)
+                && dictionary.TryAdd(key, value)
+                && ControllerDictionary[guid].Arrange(dictionary);
         }
 
         public static bool Update<T>(string key, T value) where T : CacheData
@@ -100,7 +104,8 @@ namespace Website.Library.Global
                 return false;
             }
 
-            return dictionary.TryAdd(key, value);
+            return dictionary.TryAdd(key, value)
+                && ControllerDictionary[guid].Arrange(dictionary);
         }
 
         public static bool Remove<T>(int index) where T : CacheData
@@ -232,6 +237,19 @@ namespace Website.Library.Global
                 }
             }
             return list;
+        }
+
+        public static bool Sort<T>() where T : CacheData
+        {
+            string guid = GetClassGuid(typeof(T));
+            if (ControllerDictionary.ContainsKey(guid) == false)
+            {
+                return false;
+            }
+
+            OrderedConcurrentDictionary<string, CacheData> dictionary;
+            ICache controller = ControllerDictionary[guid];
+            return CacheDictionary.TryGetValue(guid, out dictionary) && controller.Arrange(dictionary);
         }
 
         private static string GetClassGuid(Type type)

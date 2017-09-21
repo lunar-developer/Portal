@@ -3,15 +3,15 @@
 <%@ Register Src="~/controls/Label.ascx" TagName="Label" TagPrefix="control" %>
 
 <asp:UpdatePanel ID="updatePanel"
-                 runat="server">
+    runat="server">
     <ContentTemplate>
         <div class="form-horizontal">
             <div class="form-group">
                 <asp:PlaceHolder ID="phMessage"
-                                 runat="server" />
+                    runat="server" />
             </div>
             <div id="DivEditor"
-                 runat="server">
+                runat="server">
                 <div class="dnnPanels">
                     <h2 class="dnnFormSectionHead">
                         <a href="#">THÔNG TIN CHỨC DANH</a>
@@ -21,47 +21,49 @@
                             <div class="form-group">
                                 <div class="col-md-4 control-label">
                                     <control:Label HelpText="Vị trí công việc"
-                                                   IsRequire="True"
-                                                   runat="server"
-                                                   Text="Chức Danh"
-                                                   ViewStateMode="Disabled" />
+                                        IsRequire="True"
+                                        runat="server"
+                                        Text="Chức Danh"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-md-8">
                                     <asp:TextBox CssClass="form-control c-theme"
-                                                 ID="tbTemplateName"
-                                                 placeholder="Chức Danh"
-                                                 runat="server" />
+                                        ID="tbTemplateName"
+                                        placeholder="Chức Danh"
+                                        runat="server" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-4 control-label">
                                     <control:Label HelpText="Chi Nhánh"
-                                                   runat="server"
-                                                   Text="Chi Nhánh"
-                                                   ViewStateMode="Disabled" />
+                                        IsRequire="True"
+                                        runat="server"
+                                        Text="Chi Nhánh"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-md-8">
-                                    <control:Combobox autocomplete="off"
-                                                      AutoPostBack="True"
-                                                      CssClass="form-control c-theme"
-                                                      ID="ddlBranch"
-                                                      OnSelectedIndexChanged="ProcessOnChangeBranch"
-                                                      runat="server" />
+                                    <control:AutoComplete
+                                        autocomplete="off"
+                                        AutoPostBack="True"
+                                        ID="ddlBranch"
+                                        EmptyMessage="Chi Nhánh"
+                                        OnSelectedIndexChanged="ProcessOnChangeBranch"
+                                        runat="server" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">
                                     <control:Label HelpText="Ghi chú"
-                                                   runat="server"
-                                                   Text="Ghi chú"
-                                                   ViewStateMode="Disabled" />
+                                        runat="server"
+                                        Text="Ghi chú"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-sm-8">
                                     <asp:TextBox CssClass="form-control c-theme"
-                                                 Height="100"
-                                                 ID="tbRemark"
-                                                 runat="server"
-                                                 TextMode="MultiLine">
+                                        Height="100"
+                                        ID="tbRemark"
+                                        runat="server"
+                                        TextMode="MultiLine">
                                     </asp:TextBox>
                                 </div>
                             </div>
@@ -70,42 +72,44 @@
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">
                                     <control:Label HelpText="Ngày cập nhật gần nhất"
-                                                   runat="server"
-                                                   Text="Ngày cập nhật"
-                                                   ViewStateMode="Disabled" />
+                                        runat="server"
+                                        Text="Ngày cập nhật"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-sm-8 control-value">
-                                    <asp:Label ID="lblModifyDateTime"
-                                               runat="server" />
+                                    <asp:Label ID="lblDateTimeModify"
+                                        runat="server" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">
                                     <control:Label HelpText="User cập nhật gần nhất"
-                                                   runat="server"
-                                                   Text="User cập nhật"
-                                                   ViewStateMode="Disabled" />
+                                        runat="server"
+                                        Text="User cập nhật"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-sm-8 control-value">
-                                    <asp:Label ID="lblModifyUserID"
-                                               runat="server" />
+                                    <asp:Label ID="lblUserIDModify"
+                                        runat="server" />
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-sm-4 control-label">
                                     <control:Label HelpText="Dùng trong trường hợp tạm khóa Chức danh này"
-                                                   runat="server"
-                                                   Text="Disabled"
-                                                   ViewStateMode="Disabled" />
+                                        runat="server"
+                                        Text="Disabled"
+                                        ViewStateMode="Disabled" />
                                 </div>
                                 <div class="col-sm-8">
-                                    <asp:DropDownList autocomplete="off"
-                                                      CssClass="form-control c-theme"
-                                                      ID="ddlIsDisable"
-                                                      runat="server">
-                                        <asp:ListItem Value="0">No</asp:ListItem>
-                                        <asp:ListItem Value="1">Yes</asp:ListItem>
-                                    </asp:DropDownList>
+                                    <control:AutoComplete
+                                        autocomplete="off"
+                                        ID="ddlIsDisable"
+                                        runat="server">
+                                        <Items>
+                                            <control:ComboBoxItem Value="0" Text="No" />
+                                            <control:ComboBoxItem Value="1" Text="Yes" />
+                                        </Items>
+                                    </control:AutoComplete>
                                 </div>
                             </div>
                         </div>
@@ -119,8 +123,8 @@
                     </h2>
                     <fieldset class="c-padding-20">
                         <div class="dnnPanels"
-                             id="DivRoles"
-                             runat="server">
+                            id="DivRoles"
+                            runat="server">
                         </div>
                     </fieldset>
                 </div>
@@ -129,35 +133,34 @@
                     <div class="col-md-2"></div>
                     <div class="col-md-8">
                         <asp:Button CssClass="btn btn-primary"
-                                    ID="btnSave"
-                                    OnClick="Update"
-                                    OnClientClick="return validate();"
-                                    runat="server"
-                                    Text="Cập Nhật" />
-                        <asp:Button CssClass="btn btn-primary"
-                                    ID="btnDelete"
-                                    OnClick="Delete"
-                                    runat="server"
-                                    Text="Xóa" />
+                            ID="btnSave"
+                            OnClick="Update"
+                            OnClientClick="return validate();"
+                            runat="server"
+                            Text="Cập Nhật" />
+                        <asp:Button CssClass="btn btn-danger"
+                            ID="btnDelete"
+                            OnClick="Delete"
+                            runat="server"
+                            Text="Xóa" />
                     </div>
                 </div>
             </div>
         </div>
 
         <asp:HiddenField ID="hidTemplateID"
-                         runat="server"
-                         Visible="False" />
+            runat="server"
+            Visible="False" />
     </ContentTemplate>
 </asp:UpdatePanel>
 
 <script type="text/javascript">
-    addPageLoaded(function()
-        {
-            $(".dnnPanels").dnnPanels({
-                defaultState: "open"
-            });
-        },
-        true);
+    addPageLoaded(function ()
+    {
+        $(".dnnPanels").dnnPanels({
+            defaultState: "open"
+        });
+    }, true);
 
     function toggleGroup(element, groupId)
     {
@@ -169,6 +172,6 @@
 
     function validate()
     {
-        return validateInput(getControl("tbTemplateName"));
+        return validateInput(getControl("tbTemplateName")) && validateRadOption("ddlBranch");
     }
 </script>

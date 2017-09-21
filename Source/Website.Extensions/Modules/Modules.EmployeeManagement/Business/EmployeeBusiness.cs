@@ -27,9 +27,14 @@ namespace Modules.EmployeeManagement.Business
             return new EmployeeProvider().GetAllEmployeeEmail();
         }
 
-        public static DataTable GetEmployeeInfo(string email)
+        public static DataTable LoadEmployeeInfo(string email)
         {
-            return new EmployeeProvider().GetEmployeeInfo(email);
+            return new EmployeeProvider().LoadEmployeeInfo(email);
+        }
+
+        public static bool UpdateEmployeeInfo(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            return new EmployeeProvider().UpdateEmployeeInfo(parameterDictionary);
         }
 
         public static bool UpdateEmployeeImage(Dictionary<string, SQLParameterData> parameterDictionary)
@@ -47,9 +52,9 @@ namespace Modules.EmployeeManagement.Business
             return new EmployeeProvider().GetEmployeeEmail(email);
         }
 
-        public static List<EmployeeBranchData> GetAllBranch()
+        public static List<EmployeeBranchData> LoadEmployeeBranch()
         {
-            return new EmployeeProvider().GetAllBranch();
+            return new EmployeeProvider().LoadEmployeeBranch();
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
-using System.Web.UI.WebControls;
 using DotNetNuke.Security.Roles;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.UserManagement.Business;
@@ -28,10 +27,7 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            List<string> listExclude = new List<string> { "-1" };
-            ListItem item = new ListItem("Chưa chọn", "-2");
-            item.Attributes.Add("disabled", "disabled");
-            BindBranchData(ddlBranch, listExclude, item);
+            BindBranchData(ddlBranch);
 
             btnSave.Visible = IsAdministrator();
             btnDelete.Visible = false;
@@ -45,10 +41,10 @@ namespace DesktopModules.Modules.UserManagement
         {
             tbTemplateName.Text = string.Empty;
             tbRemark.Text = string.Empty;
-            ddlBranch.SelectedIndex = 0;
+            ClearSelection(ddlBranch);
             ddlIsDisable.SelectedIndex = 0;
-            lblModifyDateTime.Text = string.Empty;
-            lblModifyUserID.Text = string.Empty;
+            lblDateTimeModify.Text = string.Empty;
+            lblUserIDModify.Text = string.Empty;
             hidTemplateID.Value = "0";
         }
 
@@ -94,8 +90,8 @@ namespace DesktopModules.Modules.UserManagement
             tbTemplateName.Text = row[RoleTemplateTable.TemplateName].ToString();
             tbRemark.Text = row[BaseTable.Remark].ToString();
             ddlIsDisable.SelectedValue = bool.Parse(row[BaseTable.IsDisable].ToString()) ? "1" : "0";
-            lblModifyDateTime.Text = FunctionBase.FormatDate(row[BaseTable.ModifyDateTime].ToString());
-            lblModifyUserID.Text = FunctionBase.FormatUserID(row[BaseTable.ModifyUserID].ToString());
+            lblDateTimeModify.Text = FunctionBase.FormatDate(row[BaseTable.DateTimeModify].ToString());
+            lblUserIDModify.Text = FunctionBase.FormatUserID(row[BaseTable.UserIDModify].ToString());
         }
 
         private void RenderRoleGroup(DataTable roleGroupTable, ICollection<int> listRoleID)
@@ -172,7 +168,7 @@ namespace DesktopModules.Modules.UserManagement
                         </td>
                     </tr>");
             }
-            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
 
@@ -187,12 +183,12 @@ namespace DesktopModules.Modules.UserManagement
                 { BranchTable.BranchID, new SQLParameterData(ddlBranch.SelectedValue, SqlDbType.Int) },
                 { BaseTable.Remark, new SQLParameterData(tbRemark.Text.Trim(), SqlDbType.NVarChar) },
                 { BaseTable.IsDisable, new SQLParameterData(ddlIsDisable.SelectedValue == "1", SqlDbType.Bit) },
-                { BaseTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    BaseTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 },
-                { "ListRoleID", new SQLParameterData(Request["Roles"], SqlDbType.VarChar) }
+                { "ListRoleID", new SQLParameterData(Request["Roles"]) }
             };
             int templateID = RoleTemplateBusiness.UpdateRoleTemplate(parameterdiDictionary);
             if (templateID > 0)
@@ -211,7 +207,8 @@ namespace DesktopModules.Modules.UserManagement
             bool result = RoleTemplateBusiness.DeleteRoleTemplate(hidTemplateID.Value);
             if (result)
             {
-                ShowMessage("Xóa thông tin thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
+                string script = $"document.location.href = \"{PortalSettings.ActiveTab.FullUrl}\";";
+                ShowAlertDialog("Xóa thông tin thành công.", null, false, script);
                 DivEditor.Visible = false;
             }
             else

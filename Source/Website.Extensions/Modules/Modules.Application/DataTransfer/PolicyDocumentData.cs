@@ -9,5 +9,7 @@ namespace Modules.Application.DataTransfer
         public string IsRequire { get; set; }
         public string OrderNo { get; set; }
         public string IsDisable { get; set; }
+
+        public string CacheID => $"{PolicyID}-{DocumentTypeID}";
     }
 }

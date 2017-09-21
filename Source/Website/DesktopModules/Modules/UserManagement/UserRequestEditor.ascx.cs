@@ -13,6 +13,8 @@ using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
 using Modules.UserManagement.Global;
+using Telerik.Web.UI;
+using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
@@ -34,17 +36,15 @@ namespace DesktopModules.Modules.UserManagement
             BindData();
         }
 
+
         private void BindData()
         {
             // Request Type
-            ListItem item = new ListItem("Chưa chọn", string.Empty);
-            item.Attributes.Add("disabled", "disabled");
-            ddlRequestType.Items.Add(item);
             foreach (FieldInfo fieldInfo in typeof(RequestTypeEnum).GetFields())
             {
                 string value = fieldInfo.GetValue(null) + string.Empty;
                 string text = RequestTypeEnum.GetDescription(value);
-                ddlRequestType.Items.Add(new ListItem(text, value));
+                ddlRequestType.Items.Add(new RadComboBoxItem(text, value));
             }
 
             // Set Default State
@@ -101,12 +101,12 @@ namespace DesktopModules.Modules.UserManagement
 
         private void LoadBranch(string branchID = null)
         {
+            ClearSelection(ddlBranch);
             ddlBranch.Items.Clear();
+
             if (string.IsNullOrWhiteSpace(branchID))
             {
-                ListItem item = new ListItem("Chưa chọn", string.Empty);
-                item.Attributes.Add("disabled", "disabled");
-                BindBranchData(ddlBranch, new List<string> { "-1" }, item);
+                BindBranchData(ddlBranch);
             }
             else
             {
@@ -117,20 +117,18 @@ namespace DesktopModules.Modules.UserManagement
                 }
 
                 string text = BranchBusiness.GetBranchName(branchID);
-                ListItem item = new ListItem(text, branchID);
+                RadComboBoxItem item = new RadComboBoxItem(text, branchID);
                 ddlBranch.Items.Add(item);
             }
         }
 
         private void LoadUsers(string userID = null)
         {
+            ClearSelection(ddlUser);
             ddlUser.Items.Clear();
+            
             if (string.IsNullOrWhiteSpace(userID))
             {
-                ListItem item = new ListItem("Chưa chọn", string.Empty);
-                item.Attributes.Add("disabled", "disabled");
-                ddlUser.Items.Add(item);
-
                 if (ddlBranch.SelectedValue == string.Empty)
                 {
                     return;
@@ -139,7 +137,7 @@ namespace DesktopModules.Modules.UserManagement
                 foreach (UserData userData in UserBusiness.GetUsersInBranch(int.Parse(ddlBranch.SelectedValue)))
                 {
                     string text = $"{userData.DisplayName} ({userData.UserName})";
-                    ddlUser.Items.Add(new ListItem(text, userData.UserID));
+                    ddlUser.Items.Add(new RadComboBoxItem(text, userData.UserID));
                 }
             }
             else
@@ -150,7 +148,7 @@ namespace DesktopModules.Modules.UserManagement
                     return;
                 }
                 string text = $"{userData.DisplayName} ({userData.UserName})";
-                ddlUser.Items.Add(new ListItem(text, userData.UserID));
+                ddlUser.Items.Add(new RadComboBoxItem(text, userData.UserID));
             }
         }
 
@@ -197,10 +195,9 @@ namespace DesktopModules.Modules.UserManagement
         private void LoadOtherBranch()
         {
             DivNewBranch.Visible = true;
+            ClearSelection(ddlNewBranch);
             ddlNewBranch.Items.Clear();
-            ListItem item = new ListItem("Chưa chọn", string.Empty);
-            item.Attributes.Add("disabled", "disabled");
-            BindAllBranchData(ddlNewBranch, false, false, new List<string> { "-1", ddlBranch.SelectedValue }, item);
+            BindAllBranchData(ddlNewBranch, false, new List<string> { ddlBranch.SelectedValue });
         }
 
         private void LoadRoles()
@@ -350,7 +347,7 @@ namespace DesktopModules.Modules.UserManagement
                         </td>
                     </tr>");
             }
-            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
         private string RenderOtherRoles(int roleGroupID, string roleGroupName, bool isEnable,
@@ -434,7 +431,7 @@ namespace DesktopModules.Modules.UserManagement
                         </td>
                     </tr>");
             }
-            return string.Format(RoleHtml, roleGroupName, checkBoxGroup, content);
+            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
         private void LoadRoleTemplate(DataTable dtRoleTemplates)
@@ -444,7 +441,11 @@ namespace DesktopModules.Modules.UserManagement
             {
                 string text = row[RoleTemplateTable.TemplateName].ToString();
                 string value = row["Roles"].ToString();
-                ddlTemplate.Items.Add(new ListItem(text, value));
+                RadComboBoxItem item = new RadComboBoxItem(text, value)
+                {
+                    Enabled = FunctionBase.ConvertToBool(row[BaseTable.IsDisable].ToString())
+                };
+                ddlTemplate.Items.Add(item);
             }
         }
 
@@ -498,14 +499,14 @@ namespace DesktopModules.Modules.UserManagement
                     UserRequestTable.RequestTypeID,
                     new SQLParameterData(ddlRequestType.SelectedValue, SqlDbType.TinyInt)
                 },
-                { UserRequestTable.RequestPermission, new SQLParameterData(roles, SqlDbType.VarChar) },
+                { UserRequestTable.RequestPermission, new SQLParameterData(roles) },
                 {
                     UserRequestTable.RequestReason,
                     new SQLParameterData(txtRequestReason.Text.Trim(), SqlDbType.NVarChar)
                 },
-                { UserRequestTable.CreateUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.UserIDCreate, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    UserRequestTable.CreateDateTime,
+                    BaseTable.DateTimeCreate,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };
@@ -519,9 +520,9 @@ namespace DesktopModules.Modules.UserManagement
                     <div id='message'>
                         Bạn đang có một yêu cầu đang chờ xử lý. 
                         Vui lòng chờ hoặc huỷ yêu cầu cũ trước khi tạo một yêu cầu mới.
-                        Click vào <a class='c-theme-color c-edit-link' href='{
+                        Click vào <b><a class='c-theme-color c-edit-link' href='{
                         url
-                    }'>đây</a> để xem chi tiết yêu cầu đang chờ xử lý.
+                    }'>đây</a></b> để xem chi tiết yêu cầu đang chờ xử lý.
                     </div>";
                 ShowMessage(message);
             }
@@ -543,14 +544,14 @@ namespace DesktopModules.Modules.UserManagement
             {
                 { UserRequestTable.UserRequestID, new SQLParameterData(hidUserRequestID.Value, SqlDbType.Int) },
                 { UserRequestTable.NewBranchID, new SQLParameterData(newBranchID, SqlDbType.Int) },
-                { UserRequestTable.RequestPermission, new SQLParameterData(roles, SqlDbType.VarChar) },
+                { UserRequestTable.RequestPermission, new SQLParameterData(roles) },
                 {
                     UserRequestTable.RequestReason,
                     new SQLParameterData(txtRequestReason.Text.Trim(), SqlDbType.NVarChar)
                 },
-                { UserRequestTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    UserRequestTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };
@@ -583,9 +584,9 @@ namespace DesktopModules.Modules.UserManagement
                     UserRequestTable.Remark,
                     new SQLParameterData(txtRemark.Text.Trim(), SqlDbType.NVarChar)
                 },
-                { UserRequestTable.ProcessUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { UserRequestTable.UserIDProcess, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    UserRequestTable.ProcessDateTime,
+                    UserRequestTable.DateTimeProcess,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };
@@ -645,10 +646,10 @@ namespace DesktopModules.Modules.UserManagement
             lblRequestStatus.Text = string.Empty;
             ddlUser.SelectedIndex = -1;
             ddlNewBranch.SelectedIndex = -1;
-            lblCreateUserID.Text = FunctionBase.FormatUserID(UserInfo.UserID.ToString());
-            lblCreateDateTime.Text = string.Empty;
+            lblUserIDCreate.Text = FunctionBase.FormatUserID(UserInfo.UserID.ToString());
+            lblDateTimeCreate.Text = string.Empty;
             txtRequestReason.Text = string.Empty;
-            lblProcessUserID.Text = lblProcessDateTime.Text = string.Empty;
+            lblUserIDProcess.Text = lblDateTimeProcess.Text = string.Empty;
             txtRequestReason.Text = string.Empty;
             txtRemark.Text = string.Empty;
 
@@ -685,11 +686,11 @@ namespace DesktopModules.Modules.UserManagement
             }
             ddlNewBranch.SelectedValue = userRequest.NewBranchID;
 
-            lblCreateUserID.Text = FunctionBase.FormatUserID(userRequest.CreateUserID);
-            lblCreateDateTime.Text = FunctionBase.FormatDate(userRequest.CreateDateTime);
+            lblUserIDCreate.Text = FunctionBase.FormatUserID(userRequest.UserIDCreate);
+            lblDateTimeCreate.Text = FunctionBase.FormatDate(userRequest.DateTimeCreate);
             txtRequestReason.Text = userRequest.RequestReason;
-            lblProcessUserID.Text = FunctionBase.FormatUserID(userRequest.ProcessUserID);
-            lblProcessDateTime.Text = FunctionBase.FormatDate(userRequest.ProcessDateTime);
+            lblUserIDProcess.Text = FunctionBase.FormatUserID(userRequest.UserIDProcess);
+            lblDateTimeProcess.Text = FunctionBase.FormatDate(userRequest.DateTimeProcess);
             txtRemark.Text = userRequest.Remark;
         }
 

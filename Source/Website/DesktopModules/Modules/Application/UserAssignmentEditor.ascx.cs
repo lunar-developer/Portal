@@ -123,11 +123,11 @@ namespace DesktopModules.Modules.Application
             {
                 { UserPhaseTable.UserID, new SQLParameterData(ddlUser.SelectedValue, SqlDbType.Int) },
                 { UserPhaseTable.PhaseID, new SQLParameterData(hidPhaseID.Value, SqlDbType.Int) },
-                { UserPhaseTable.PolicyCode, new SQLParameterData(string.Join(",", listPolicyCode), SqlDbType.VarChar) },
+                { UserPhaseTable.PolicyCode, new SQLParameterData(string.Join(",", listPolicyCode)) },
                 { UserPhaseTable.KPI, new SQLParameterData(txtKPI.Text.Trim(), SqlDbType.Int) },
                 { UserPhaseTable.IsDisable, new SQLParameterData((ddlIsDisable.SelectedValue == "1").ToString(), SqlDbType.Bit) },
-                { BaseTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                { BaseTable.ModifyDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.DateTimeModify, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
             };
 
             int userID = int.TryParse(hidUserID.Value, out userID) && userID > 0

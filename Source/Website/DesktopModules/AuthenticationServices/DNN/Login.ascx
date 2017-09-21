@@ -112,7 +112,7 @@
                             </li>
                             <li id="liPassword"
                                 runat="server">
-                                <asp:HyperLink CssClass="btn btn-warning"
+                                <asp:HyperLink CssClass="btn btn-success"
                                                ID="passwordLink"
                                                resourcekey="cmdPassword"
                                                runat="server"

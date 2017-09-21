@@ -1,12 +1,12 @@
-﻿using Modules.Application.Business;
-using Modules.Application.DataTransfer;
-using Modules.EmployeeManagement.Business;
-using Modules.EmployeeManagement.DataTransfer;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Modules.Application.Business;
 using Modules.Skins.Jango.Global;
-using Modules.UserManagement.Business;
-using Modules.UserManagement.DataTransfer;
 using Website.Library.Business;
 using Website.Library.Global;
+using Website.Library.Interface;
 
 namespace Modules.Cache.Business
 {
@@ -22,53 +22,39 @@ namespace Modules.Cache.Business
             MessageQueueBusiness.Initialize();
 
             // Caches
-            // User Management
-            CacheBase.Inject(new UserCacheBusiness<UserData>());
-            CacheBase.Inject(new BranchCacheBusiness<BranchData>());
-            CacheBase.Inject(new BranchManagerCacheBusiness<BranchManagerData>());
+            List<string> listAssemblyName = new List<string>
+            {
+                "Modules.UserManagement",
+                "Modules.EmployeeManagement",
+                "Modules.Application",
+                "Modules.Forex"
+            };
+            List<Assembly> listAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                .Where(assembly => listAssemblyName.Contains(assembly.GetName().Name)).ToList();
+            foreach (Assembly assembly in listAssembly)
+            {
+                List<Type> listCaches = assembly.ExportedTypes
+                    .Where(type =>
+                    {
+                        if (type.BaseType == null || type.BaseType.IsGenericType == false)
+                        {
+                            return false;
+                        }
+                        Type genericTypeDefinition = type.BaseType.GetGenericTypeDefinition();
+                        return genericTypeDefinition != null
+                            && genericTypeDefinition.IsAssignableFrom(typeof(BasicCacheBusiness<>));
+                    }).ToList();
 
-            // Employee
-            CacheBase.Inject(new EmployeeBranchCacheBusiness<EmployeeBranchData>());
+                foreach (Type type in listCaches)
+                {
+                    Type genericType = type.MakeGenericType(type.GetGenericArguments()[0].BaseType);
+                    ICache cache = (ICache) Activator.CreateInstance(genericType);
+                    CacheBase.Inject(cache);
+                }
+            }
 
-            // Application
-            CacheBase.Inject(new ApplicationFieldCacheBusiness<ApplicationFieldData>());
-            CacheBase.Inject(new ApplicationTypeCacheBusiness<ApplicationTypeData>());
-            CacheBase.Inject(new IdentityTypeCacheBusiness<IdentityTypeData>());
-            CacheBase.Inject(new LanguageCacheBusiness<LanguageData>());
-            CacheBase.Inject(new CountryCacheBusiness<CountryData>());
-            CacheBase.Inject(new StateCacheBusiness<StateData>());
-            CacheBase.Inject(new CityCacheBusiness<CityData>());
-            CacheBase.Inject(new CustomerClassCacheBusiness<CustomerClassData>());
-            CacheBase.Inject(new PolicyCacheBusiness<PolicyData>());
-            CacheBase.Inject(new CompanyCacheBusiness<CompanyData>());
-            CacheBase.Inject(new ContractTypeCacheBusiness<ContractTypeData>());
-            CacheBase.Inject(new CorporateEntityTypeCacheBusiness<CorporateEntityTypeData>());
-            CacheBase.Inject(new CorporateSizeCacheBusiness<CorporateSizeData>());
-            CacheBase.Inject(new CorporateStatusCacheBusiness<CorporateStatusData>());
-            CacheBase.Inject(new OccupationCacheBusiness<OccupationData>());
-            CacheBase.Inject(new SICCacheBusiness<SICData>());
-            CacheBase.Inject(new MaritalStatusCacheBusiness<MaritalStatusData>());
-            CacheBase.Inject(new HomeOwnershipCacheBussiness<HomeOwnershipData>());
-            CacheBase.Inject(new PositionCacheBusiness<PositionData>());
-            CacheBase.Inject(new EducationCacheBusiness<EducationData>());
-            CacheBase.Inject(new DecisionReasonCacheBusiness<DecisionReasonData>());
-            CacheBase.Inject(new IncompleteReasonCacheBusiness<IncompleteReasonData>());
-            CacheBase.Inject(new ProcessCacheBusiness<ProcessData>());
-            CacheBase.Inject(new PhaseCacheBussiness<PhaseData>());
-            CacheBase.Inject(new RouteCacheBusiness<RouteData>());
-            CacheBase.Inject(new ScheduleCacheBusiness<ScheduleData>());
-            CacheBase.Inject(new UserPhaseCacheBusiness<UserPhaseData>());
-            CacheBase.Inject(new DocumentTypeCacheBusiness<DocumentTypeData>());
-            CacheBase.Inject(new PolicyDocumentCacheBusiness<PolicyDocumentData>());
-            CacheBase.Inject(new ApplicationTypeProcessCacheBusiness<ApplicationTypeProcessData>());
-            CacheBase.Inject(new ApplicationStatusCacheBusiness<ApplicationStatusData>());
+            // Application (Schedules & Queue Handlers)
             ApplicationBusiness.Initialize();
-
-
-            //CacheBase.Inject(new PhaseCacheBussiness<PhaseData>());
-            //CacheBase.Inject(new PhaseMappingCacheBussiness<PhaseMappingListData>());
-            //CacheBase.Inject(new UserPhaseMappingCacheBusiness<UserPhaseMappingData>());
-            //CacheBase.Inject(new CountryCacheBusiness<CountryData>());
         }
     }
 }

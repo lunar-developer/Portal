@@ -1,6 +1,6 @@
-#region Copyright
+﻿#region Copyright
 // 
-// DotNetNuke� - http://www.dotnetnuke.com
+// DotNetNuke® - http://www.dotnetnuke.com
 // Copyright (c) 2002-2014
 // by DotNetNuke Corporation
 // 
@@ -23,14 +23,11 @@
 using System;
 using System.Collections;
 using System.Web;
-
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
-using DotNetNuke.Entities.Host;
 using DotNetNuke.Entities.Modules;
-using DotNetNuke.Entities.Users;
-using DotNetNuke.Entities.Users.Membership;
 using DotNetNuke.Entities.Portals;
+using DotNetNuke.Entities.Users;
 using DotNetNuke.Instrumentation;
 using DotNetNuke.Security;
 using DotNetNuke.Security.Membership;
@@ -38,13 +35,13 @@ using DotNetNuke.Services.Localization;
 using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Mail;
 using DotNetNuke.UI.Skins.Controls;
-
+using Modules.UserManagement.Global;
 #endregion
 
 namespace DotNetNuke.Modules.Admin.Security
 {
 
-    using Host = DotNetNuke.Entities.Host.Host;
+    using Host = Entities.Host.Host;
 
     /// <summary>
     /// The SendPassword UserModuleBase is used to allow a user to retrieve their password
@@ -72,13 +69,13 @@ namespace DotNetNuke.Modules.Admin.Security
         {
             get
             {
-                var _RedirectURL = "";
+                var redirectURL = "";
 
                 object setting = GetSetting(PortalId, "Redirect_AfterRegistration");
 
                 if (Convert.ToInt32(setting) > 0) //redirect to after registration page
                 {
-                    _RedirectURL = Globals.NavigateURL(Convert.ToInt32(setting));
+                    redirectURL = Globals.NavigateURL(Convert.ToInt32(setting));
                 }
                 else
                 {
@@ -88,34 +85,34 @@ namespace DotNetNuke.Modules.Admin.Security
                     if (Request.QueryString["returnurl"] != null)
                     {
                         //return to the url passed to register
-                        _RedirectURL = HttpUtility.UrlDecode(Request.QueryString["returnurl"]);
+                        redirectURL = HttpUtility.UrlDecode(Request.QueryString["returnurl"]);
 
                         //clean the return url to avoid possible XSS attack.
-                        _RedirectURL = UrlUtils.ValidReturnUrl(_RedirectURL);
+                        redirectURL = UrlUtils.ValidReturnUrl(redirectURL);
 
-                        if (_RedirectURL.Contains("?returnurl"))
+                        if (redirectURL.Contains("?returnurl"))
                         {
-                            string baseURL = _RedirectURL.Substring(0,
-                                _RedirectURL.IndexOf("?returnurl", StringComparison.Ordinal));
+                            string baseURL = redirectURL.Substring(0,
+                                redirectURL.IndexOf("?returnurl", StringComparison.Ordinal));
                             string returnURL =
-                                _RedirectURL.Substring(_RedirectURL.IndexOf("?returnurl", StringComparison.Ordinal) + 11);
+                                redirectURL.Substring(redirectURL.IndexOf("?returnurl", StringComparison.Ordinal) + 11);
 
-                            _RedirectURL = string.Concat(baseURL, "?returnurl", HttpUtility.UrlEncode(returnURL));
+                            redirectURL = string.Concat(baseURL, "?returnurl", HttpUtility.UrlEncode(returnURL));
                         }
                     }
-                    if (String.IsNullOrEmpty(_RedirectURL))
+                    if (String.IsNullOrEmpty(redirectURL))
                     {
                         //redirect to current page 
-                        _RedirectURL = Globals.NavigateURL();
+                        redirectURL = Globals.NavigateURL();
                     }
                 }
                 else //redirect to after registration page
                 {
-                    _RedirectURL = Globals.NavigateURL(Convert.ToInt32(setting));
+                    redirectURL = Globals.NavigateURL(Convert.ToInt32(setting));
                 }
                 }
 
-                return _RedirectURL;
+                return redirectURL;
             }
         
 		}
@@ -132,32 +129,18 @@ namespace DotNetNuke.Modules.Admin.Security
             }
         }
 
-	    protected bool UsernameDisabled
-	    {
-		    get
-		    {
-				return PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false);
-		    }
-	    }
+	    protected bool UsernameDisabled => PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false);
 
-	    private bool ShowEmailField
-	    {
-		    get
-		    {
-			    return MembershipProviderConfig.RequiresUniqueEmail || UsernameDisabled;
-		    }
-	    }
-
+        private bool ShowEmailField => MembershipProviderConfig.RequiresUniqueEmail || UsernameDisabled;
         #endregion
 
         #region Private Methods
 
         private void GetUser()
         {
-            ArrayList arrUsers;
 			if (MembershipProviderConfig.RequiresUniqueEmail && !String.IsNullOrEmpty(txtEmail.Text.Trim()) && (String.IsNullOrEmpty(txtUsername.Text.Trim()) || divUsername.Visible == false))
             {
-                arrUsers = UserController.GetUsersByEmail(PortalSettings.PortalId, txtEmail.Text, 0, Int32.MaxValue, ref _userCount);
+                ArrayList arrUsers = UserController.GetUsersByEmail(PortalSettings.PortalId, txtEmail.Text, 0, Int32.MaxValue, ref _userCount);
                 if (arrUsers != null && arrUsers.Count == 1)
                 {
                     _user = (UserInfo)arrUsers[0];
@@ -248,6 +231,16 @@ namespace DotNetNuke.Modules.Admin.Security
         /// </remarks>
         protected void OnSendPasswordClick(Object sender, EventArgs e)
         {
+            string userName = txtEmail.Text.Trim();
+            if (userName.Contains("@") == false || UserManagementModuleBase.IsLDAPEmail(userName))
+            {
+                UI.Skins.Skin.AddModuleMessage(this,
+                    "Tài khoản của bạn là tài khoản LDAP. Vui lòng liên hệ bộ phận IT để được hỗ trợ cấp lại mật khẩu.",
+                    ModuleMessage.ModuleMessageType.YellowWarning);
+                divHelp.Visible = false;
+                return;
+            }
+
             //pretty much alwasy display the same message to avoid hinting on the existance of a user name
             var message = Localization.GetString("PasswordSent", LocalResourceFile);
             var moduleMessageType = ModuleMessage.ModuleMessageType.GreenSuccess;

@@ -54,13 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Business\ApplicationFormBusiness.cs" />
-    <Compile Include="Business\ApplicController.cs" />
     <Compile Include="Business\AssignUserBusiness.cs" />
     <Compile Include="Business\BatchDataBusiness.cs" />
     <Compile Include="Business\DocumentController.cs" />
     <Compile Include="Business\UserBusiness.cs" />
     <Compile Include="DataAccess\ApplicationFormProvider.cs" />
-    <Compile Include="DataAccess\ApplicProvider.cs" />
     <Compile Include="DataAccess\AssignUserProvider.cs" />
     <Compile Include="DataAccess\BatchDataProvider.cs" />
     <Compile Include="DataAccess\DatabaseCtrl.cs" />

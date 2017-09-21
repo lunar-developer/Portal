@@ -232,16 +232,17 @@ namespace DesktopModules.Modules.MasterData
             RegisterScript(script);
         }
 
-        private void DeleteData(Dictionary<string, string> dictionary)
+        private void DeleteData(Dictionary<string, string> dataDictionary)
         {
             bool result = MasterDataBusiness.DeleteData(hidConnectionName.Value,
-                hidDatabaseName.Value, hidSchemaName.Value, hidTableName.Value, dictionary);
+                hidDatabaseName.Value, hidSchemaName.Value, hidTableName.Value, dataDictionary);
             if (result)
             {
                 // Remove Cache
-                string key = dictionary.ContainsKey(hidCacheID.Value)
-                    ? dictionary[hidCacheID.Value]
-                    : string.Empty;
+                string key = dataDictionary.ContainsKey(hidCacheID.Value)
+                    ? dataDictionary[hidCacheID.Value]
+                    : GetCacheIDValue(hidAssemblyName.Value, hidCacheName.Value, hidCacheID.Value, dataDictionary);
+
                 RemoveCache(hidAssemblyName.Value, hidCacheName.Value, key);
                 ShowMessage("Xóa thông tin thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
                 Refresh(null, null);

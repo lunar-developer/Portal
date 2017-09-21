@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.Global;
@@ -21,18 +20,7 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            List<string> listExclude = new List<string> { "-1" };
-            BindBranchData(ddlBranch, listExclude);
-        }
-
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid();
+            BindBranchData(ddlBranch);
         }
 
         protected void Search(object sender, EventArgs e)
@@ -42,16 +30,20 @@ namespace DesktopModules.Modules.UserManagement
             BindGrid();
         }
 
-        private void BindGrid(int pageIndex = 0)
+        private void BindGrid()
         {
             gridData.DataSource = RoleTemplateBusiness.GetRoleTemplate(hidBranchID.Value);
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataBind();
+        }
+
+        protected void ProcessOnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            gridData.DataSource = RoleTemplateBusiness.GetRoleTemplate(hidBranchID.Value);
         }
 
         protected string FormatState(string value)
         {
-            return FunctionBase.ConvertToBool(value) ? "Có" : "Không";
+            return FunctionBase.FormatState(value, false);
         }
 
         protected string GetUrl()

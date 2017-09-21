@@ -4,7 +4,6 @@ using Modules.Application.Business;
 using Modules.Application.Database;
 using Modules.Application.DataTransfer;
 using Modules.Application.Enum;
-using Modules.UserManagement.Business;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Global;
 using Telerik.Web.UI;
@@ -114,44 +113,13 @@ namespace Modules.Application.Global
 
         protected void BindBranchData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
         {
-            dropDownList.Items.AddRange(additionalItems);
             if (IsCreditUser())
             {
-                BindAllBranchData(dropDownList);
+                UserManagementModuleBase.BindAllBranchData(dropDownList, true, additionalItems);
             }
             else
             {
-                BindBranchData(dropDownList);
-            }
-        }
-
-        protected void BindAllBranchData(RadComboBox dropDownList)
-        {
-            foreach (BranchData branch in BranchBusiness.GetAllBranchInfo())
-            {
-                if (branch.BranchID == "-1")
-                {
-                    continue;
-                }
-
-                string text = $"{branch.BranchCode} - {branch.BranchName}";
-                string value = branch.BranchCode;
-                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
-            }
-        }
-
-        protected void BindBranchData(RadComboBox dropDownList)
-        {
-            foreach (BranchData branch in UserBusiness.GetUserBranch(UserInfo.UserID.ToString()))
-            {
-                if (branch.BranchID == "-1")
-                {
-                    continue;
-                }
-
-                string text = $"{branch.BranchCode} - {branch.BranchName}";
-                string value = branch.BranchCode;
-                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
+                UserManagementModuleBase.BindBranchData(dropDownList, UserInfo.UserID.ToString(), true, additionalItems);
             }
         }
 
@@ -458,13 +426,6 @@ namespace Modules.Application.Global
 
 
 
-
-        protected void BindBranchData(DropDownList dropDownList, bool isHasOptionAll = false, params ListItem[] additionalItems)
-        {
-            UserManagementModuleBase.BindBranchData(dropDownList, UserInfo.UserID.ToString(), true, isHasOptionAll, new List<string>(), additionalItems);
-        }
-
-        
 
 
 

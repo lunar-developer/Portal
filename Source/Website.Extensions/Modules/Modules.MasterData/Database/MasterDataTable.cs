@@ -29,6 +29,7 @@
         public const string InputType = "InputType";
         public const string DataType = "DataType";
         public const string DefaultValue = "DefaultValue";
+        public const string OnClientChange = "OnClientChange";
         public const string MinLength = "MinLength";
         public const string MaxLength = "MaxLength";
         public const string IsIdentity = "IsIdentity";
@@ -36,9 +37,11 @@
         public const string IsRequire = "IsRequire";
 
         public const string IsRunTime = "IsRunTime";
+        public const string IsLazyLoad = "IsLazyLoad";
         public const string DataSource = "DataSource";
         public const string FieldText = "FieldText";
         public const string FieldValue = "FieldValue";
+        public const string FieldGroup = "FieldGroup";
 
         public const string IsDisableOnInsert = "IsDisableOnInsert";
         public const string IsDisableOnUpdate = "IsDisableOnUpdate";

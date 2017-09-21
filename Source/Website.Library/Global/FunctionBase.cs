@@ -8,14 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.UI.WebControls;
 using ClosedXML.Excel;
 using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Instrumentation;
 using DotNetNuke.Security.Roles;
-using DotNetNuke.Services.Log.EventLog;
 using DotNetNuke.Services.Social.Notifications;
 using OfficeOpenXml;
 using ServiceStack.Text;
@@ -26,8 +24,8 @@ namespace Website.Library.Global
     public static class FunctionBase
     {
         private static readonly ILog Logger;
-        private static readonly string GrantImage = "/images/grant.gif";
-        private static readonly string ErrorImage = "/images/red-error_16px.gif";
+        private const string GrantImage = "/images/grant.gif";
+        private const string ErrorImage = "/images/red-error_16px.gif";
 
 
         static FunctionBase()

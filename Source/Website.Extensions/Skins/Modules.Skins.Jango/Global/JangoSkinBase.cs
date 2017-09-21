@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Caching;
 using DotNetNuke.Common;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
+using DotNetNuke.Security.Permissions;
+using Telerik.Web.UI;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
@@ -107,11 +111,51 @@ namespace Modules.Skins.Jango.Global
             if (Request.IsAuthenticated)
             {
                 UserInfo userInfo = UserController.Instance.GetCurrentUserInfo();
+                List<string> listUrl = new List<string>();
+
+                // PROFILE URL
                 string profileUrl =
-                    TabController.Instance.GetTabByName("User Information", PortalSettings.PortalId).FullUrl
-                    + $"/UserID/{userInfo.UserID}";
-                string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
+                    $"{FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_EditUrl"))}/UserID/{userInfo.UserID}";
+                listUrl.Add($@"
+                    <li>
+                        <a href='{profileUrl}'>
+				            Thông tin Tài khoản
+			            </a>
+                    </li>");
+
+                
+                // REQUEST URL
                 string requestUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_ManageRequestUrl"));
+                listUrl.Add($@"
+                    <li>
+                        <a href='{requestUrl}'>
+				            Thông tin Phiếu yêu cầu
+			            </a>
+                    </li>");
+
+
+                // CONTACT URL
+                string ldapEmail = FunctionBase.GetConfiguration("UM_LDAPEmail");
+                if (userInfo.Username.ToLower().EndsWith(ldapEmail))
+                {
+                    string contactInfoUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("EM_UpdateContactInfoUrl"));
+                    listUrl.Add($@"
+                        <li>
+                            <a href='{contactInfoUrl}'>
+				                Thông tin Liên lạc
+			                </a>
+                        </li>");
+                }
+
+                // LOG OFF URL
+                string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
+                listUrl.Add($@"
+                    <li>
+                        <a href='{logoffUrl}'>
+				            <i class=""fa fa-sign-out""></i> Thoát
+			            </a>
+                    </li>");
+
 
                 return $@"
                     <li class=' c-menu-type-classic'>
@@ -119,21 +163,7 @@ namespace Modules.Skins.Jango.Global
                             <i class=""fa fa-user""></i>&nbsp;{userInfo.DisplayName}<span class='c-arrow c-toggler'></span>
                         </a>
                         <ul class='c-menu-type-classic c-pull-right dropdown-menu'>
-                            <li>
-                                <a href='{profileUrl}'>
-				                    Thông tin Tài khoản
-			                    </a>
-                            </li>
-                            <li>
-                                <a href='{requestUrl}'>
-				                    Thông tin Phiếu yêu cầu
-			                    </a>
-                            </li>
-                            <li>
-                                <a href='{logoffUrl}'>
-				                    <i class=""fa fa-sign-out""></i> Thoát
-			                    </a>
-                            </li>
+                            {string.Join("", listUrl)}
                         </ul>
                     </li>";
             }
@@ -143,7 +173,7 @@ namespace Modules.Skins.Jango.Global
             string clickEvent = string.Empty;
             if (PortalSettings.EnablePopUps && PortalSettings.RegisterTabId == Null.NullInteger)
             {
-                clickEvent = $"return {UrlUtils.PopUpUrl(loginUrl, this, PortalSettings, true, false, 350, 600)}";
+                clickEvent = $@"return {UrlUtils.PopUpUrl(loginUrl, this, PortalSettings, true, false, 400, 600)}";
             }
 
             return $@"
@@ -198,6 +228,180 @@ namespace Modules.Skins.Jango.Global
             breadcrumbs.Append("</div>");
             breadcrumbs.Append("</div>");
             return breadcrumbs.ToString();
+        }
+
+
+        /*
+         * On Load Events
+         */
+        protected override void OnLoad(EventArgs e)
+        {
+            if (IsPostBack)
+            {
+                return;
+            }
+            BindSearchMenu();
+        }
+
+
+        /*
+         * Render Search Menu
+         */
+        protected void BindSearchMenu()
+        {
+            RadComboBox comboBox = FindControl("GlobalSearchMenu") as RadComboBox;
+            if (comboBox == null)
+            {
+                return;
+            }
+
+            UserInfo userInfo = UserController.Instance.GetCurrentUserInfo();
+            List<TabInfo> listTabs = userInfo == null || userInfo.UserID == -1
+                ? GetPublicTabs()
+                : GetUserTabs(userInfo);
+            BindMenuData(comboBox, listTabs);
+        }
+
+        private void BindMenuData(RadComboBox comboBox, IEnumerable<TabInfo> listTabs)
+        {
+            foreach (TabInfo tabInfo in listTabs)
+            {
+                comboBox.Items.Add(CreateItem(tabInfo));
+            }
+        }
+
+        private RadComboBoxItem CreateItem(TabInfo tabInfo)
+        {
+            RadComboBoxItem item = new RadComboBoxItem(tabInfo.IndentedTabName, tabInfo.FullUrl)
+            {
+                Enabled = tabInfo.DisableLink == false
+            };
+            if (tabInfo.TabID == PortalSettings.ActiveTab.TabID)
+            {
+                item.Selected = true;
+            }
+            return item;
+        }
+
+        private static bool IsInvalidTab(TabInfo tabInfo)
+        {
+            return 
+                tabInfo.HasBeenPublished == false ||
+                tabInfo.IsVisible == false ||
+                tabInfo.IsSuperTab ||
+                tabInfo.IsSystem ||
+                tabInfo.IsDeleted ||
+                string.IsNullOrWhiteSpace(tabInfo.FullUrl);
+        }
+
+        private List<TabInfo> GetPublicTabs()
+        {
+            List<TabInfo> listTabs;
+            const string cacheKey = "Global_Tabs_Public";
+            if (HttpContext.Current.Cache[cacheKey] == null)
+            {
+                listTabs = new List<TabInfo>();
+                TabCollection tabCollection = TabController.Instance.GetTabsByPortal(PortalSettings.PortalId);
+                foreach (TabInfo tabInfo in tabCollection.Values.OrderBy(item => item.TabPath))
+                {
+                    if (IsInvalidTab(tabInfo))
+                    {
+                        continue;
+                    }
+                    foreach (PermissionInfoBase tabPermissionItem in tabInfo.TabPermissions)
+                    {
+                        if (tabPermissionItem.PermissionKey.ToUpper().Equals(PermissionEnum.View)
+                            && tabPermissionItem.RoleName.Equals("All Users"))
+                        {
+                            listTabs.Add(tabInfo);
+                            break;
+                        }
+                    }
+                }
+
+                // Insert to Cache
+                int.TryParse(FunctionBase.GetConfiguration("Site_GlobalMenu_CacheTimeout", "60"), out int minutes);
+                HttpContext.Current.Cache.Insert(
+                    cacheKey,
+                    listTabs,
+                    null,
+                    DateTime.UtcNow.AddMinutes(minutes),
+                    Cache.NoSlidingExpiration,
+                    CacheItemPriority.NotRemovable,
+                    null);
+            }
+            else
+            {
+                listTabs = HttpContext.Current.Cache[cacheKey] as List<TabInfo>;
+            }
+            
+            return listTabs;
+        }
+
+        private List<TabInfo> GetUserTabs(UserInfo userInfo)
+        {
+            List<TabInfo> listTabs;
+            string cacheKey = $"Global_Tabs_{userInfo.UserID}";
+            TabCollection tabCollection = TabController.Instance.GetTabsByPortal(PortalSettings.PortalId);
+            List<TabInfo> listPortalTabs = tabCollection.Values.OrderBy(item => item.TabPath).ToList();
+
+            if (HttpContext.Current.Cache[cacheKey] == null)
+            {
+                #region Super User
+                if (userInfo.IsSuperUser)
+                {
+                    listTabs = listPortalTabs;
+                }
+                #endregion
+
+                #region Normal User
+                else
+                {
+                    listTabs = new List<TabInfo>();
+                    foreach (TabInfo tabInfo in listPortalTabs)
+                    {
+                        if (IsInvalidTab(tabInfo))
+                        {
+                            continue;
+                        }
+
+                        foreach (PermissionInfoBase tabPermissionItem in tabInfo.TabPermissions)
+                        {
+                            if (tabPermissionItem.PermissionKey.ToUpper().Equals(PermissionEnum.View) == false)
+                            {
+                                continue;
+                            }
+
+                            if (tabPermissionItem.RoleName.Equals("All Users")
+                                || tabPermissionItem.UserID != -1 && tabPermissionItem.UserID == userInfo.UserID
+                                || userInfo.Roles.Any(userRole => tabPermissionItem.RoleName.Equals(userRole)))
+                            {
+                                listTabs.Add(tabInfo);
+                                break;
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                // Insert to Cache
+                int.TryParse(FunctionBase.GetConfiguration("Site_GlobalUserMenu_CacheTimeout", "10"), out int minutes);
+                TimeSpan timeout = new TimeSpan(0, 0, minutes, 0, 0);
+                HttpContext.Current.Cache.Insert(
+                    cacheKey,
+                    listTabs,
+                    null,
+                    Cache.NoAbsoluteExpiration,  
+                    timeout,
+                    CacheItemPriority.NotRemovable,
+                    null);
+            }
+            else
+            {
+                listTabs = HttpContext.Current.Cache[cacheKey] as List<TabInfo>;
+            }
+           
+            return listTabs;
         }
     }
 }

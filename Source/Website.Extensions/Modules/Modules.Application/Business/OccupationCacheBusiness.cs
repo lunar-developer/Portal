@@ -1,19 +1,15 @@
-﻿using Modules.Application.DataTransfer;
-using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Modules.Application.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.Application.Business
 {
-    public class OccupationCacheBusiness<T> : ICache where T : OccupationData
+    public class OccupationCacheBusiness<T> : BasicCacheBusiness<T> where T : OccupationData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
@@ -24,9 +20,20 @@ namespace Modules.Application.Business
             return dictionary;
         }
 
-        public CacheData Reload(string occupationCode)
+        public override CacheData Reload(string occupationCode)
         {
             return OccupationBusiness.GetOccupation(occupationCode);
+        }
+
+        public override bool Arrange(OrderedConcurrentDictionary<string, CacheData> dataDictionary)
+        {
+            List<string> listOrderedKeys = dataDictionary.Values
+                .Cast<OccupationData>()
+                .OrderBy(item => int.Parse(item.SortOrder))
+                .Select(item => item.OccupationCode)
+                .ToList();
+
+            return dataDictionary.TryArrange(listOrderedKeys);
         }
     }
 }

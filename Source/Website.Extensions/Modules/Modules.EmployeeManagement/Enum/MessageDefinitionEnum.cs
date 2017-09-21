@@ -15,9 +15,12 @@
         public const string FileImportSuccess = "Bạn đã upload danh sách cán bộ nhân viên thành công.";
         public const string FileNotFollowTemplate = "File không đúng định dạng. Vui lòng sử dụng file theo mẫu.";
         public const string NoRecordFound = "(Không có kết quả nào)";
+        public const string NoDataFound = "Không tìm thấy thông tin liên lạc của bạn";
         public const string FileNotFound = "Vui lòng chọn file ảnh.";
         public const string FileNotImage = "Không phải định dạng file ảnh.";
         public const string UpdateEmployeeImageSuccess = "Cập nhật hình ảnh nhân viên thành công.";
         public const string UpdateEmployeeImageFail = "Cập nhật hình ảnh nhân viên KHÔNG thành công.";
+        public const string UpdateEmployeeSuccess = "Cập nhật thông tin cá nhân THÀNH CÔNG.";
+        public const string UpdateEmployeeFail = "Cập nhật thông tin cá nhân KHÔNG THÀNH CÔNG.";
     }
 }

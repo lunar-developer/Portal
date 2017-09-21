@@ -24,14 +24,15 @@ namespace DesktopModules.Modules.CacheManagement
             {
                 gridView.Visible = false;
                 DivControl.Visible = false;
-                lblTotal.Text = @"0";
+                lblTotalItems.Text = @"0";
                 return;
             }
 
             btnReload.Visible = true;
+            btnRefresh.Visible = true;
             gridView.Visible = true;
             DivControl.Visible = true;
-            lblTotal.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
+            lblTotalItems.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
 
             ResetFilter();
             BindDataField();
@@ -59,7 +60,12 @@ namespace DesktopModules.Modules.CacheManagement
             string guid = ddlCacheType.SelectedValue;
             CacheBase.Reload(guid);
             BindGrid();
-            lblTotal.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
+            lblTotalItems.Text = CacheBase.GetCacheCount(ddlCacheType.SelectedValue).ToString();
+        }
+
+        protected void Refresh(object sender, EventArgs e)
+        {
+            ProcessOnSelectionChange(sender, e);
         }
 
         protected void Filter(object sender, EventArgs e)
@@ -103,6 +109,7 @@ namespace DesktopModules.Modules.CacheManagement
                 ddlCacheType.Items.Add(new RadComboBoxItem(pair.Value, pair.Key));
             }
             ddlCacheType.DataBind();
+            lblTotalCaches.Text = ddlCacheType.Items.Count.ToString();
         }
 
         private void BindDataField()

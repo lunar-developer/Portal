@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="btnSubmit.Text" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="lblBigFigure.Help" xml:space="preserve">
+    <value>Giá ngoại tệ</value>
+  </data>
+  <data name="lblBigFigure.SubText" xml:space="preserve">
+    <value>Big Figure</value>
+  </data>
+  <data name="lblBigFigure.Text" xml:space="preserve">
+    <value>Giá ngoại tệ</value>
+  </data>
+  <data name="lblBuyRateCash.Help" xml:space="preserve">
+    <value>Giá mua</value>
+  </data>
+  <data name="lblBuyRateCash.SubText" xml:space="preserve">
+    <value>Tiền mặt (Bid ask Pips)</value>
+  </data>
+  <data name="lblBuyRateCash.Text" xml:space="preserve">
+    <value>Giá mua </value>
+  </data>
+  <data name="lblBuyRateFT.Help" xml:space="preserve">
+    <value>Giá mua chuyển khoản</value>
+  </data>
+  <data name="lblBuyRateFT.SubText" xml:space="preserve">
+    <value>Chuyển khoản (Bid ask Pips)</value>
+  </data>
+  <data name="lblBuyRateFT.Text" xml:space="preserve">
+    <value>Giá mua</value>
+  </data>
+  <data name="lblDealTimeBuyCash.Help" xml:space="preserve">
+    <value>Thời gian chấp nhận giá mua tiền mặt với HO (mặc định)</value>
+  </data>
+  <data name="lblDealTimeBuyCash.SubText" xml:space="preserve">
+    <value>Mua tiền mặt</value>
+  </data>
+  <data name="lblDealTimeBuyCash.Text" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="lblDealTimeBuyFT.Help" xml:space="preserve">
+    <value>Thời gian chấp nhận giá mua chuyển khoản với HO (mặc định)</value>
+  </data>
+  <data name="lblDealTimeBuyFT.SubText" xml:space="preserve">
+    <value>Mua CK</value>
+  </data>
+  <data name="lblDealTimeBuyFT.Text" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="lblDealTimeSellCash.Help" xml:space="preserve">
+    <value>Thời gian chấp nhận giá mua tiền mặt với HO (mặc định)</value>
+  </data>
+  <data name="lblDealTimeSellCash.SubText" xml:space="preserve">
+    <value>Bán tiền mặt</value>
+  </data>
+  <data name="lblDealTimeSellCash.Text" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="lblDealTimeSellFT.Help" xml:space="preserve">
+    <value>Thời gian chấp nhận giá bán chuyển khoản với HO (mặc định)</value>
+  </data>
+  <data name="lblDealTimeSellFT.SubText" xml:space="preserve">
+    <value>Bán CK</value>
+  </data>
+  <data name="lblDealTimeSellFT.Text" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="lblExchangeCode.Help" xml:space="preserve">
+    <value>Cặp tỷ giá</value>
+  </data>
+  <data name="lblExchangeCode.SubText" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="lblExchangeCode.Text" xml:space="preserve">
+    <value>Cặp tỷ giá</value>
+  </data>
+  <data name="lblFileBrowserCurrency.Help" xml:space="preserve">
+    <value>Chọn file để upload (phải theo template bên dưới)</value>
+  </data>
+  <data name="lblFileBrowserCurrency.Text" xml:space="preserve">
+    <value>Chọn file</value>
+  </data>
+  <data name="lblFileBrowserExchange.Help" xml:space="preserve">
+    <value>Chọn file để upload (phải theo template bên dưới)</value>
+  </data>
+  <data name="lblFileBrowserExchange.Text" xml:space="preserve">
+    <value>Chọn file</value>
+  </data>
+  <data name="lblLimit.Help" xml:space="preserve">
+    <value>Qui định trần sàn do NHNN qui định</value>
+  </data>
+  <data name="lblLimit.SubText" xml:space="preserve">
+    <value>Limit</value>
+  </data>
+  <data name="lblLimit.Text" xml:space="preserve">
+    <value>Biên độ NHNN</value>
+  </data>
+  <data name="lblMargin.Help" xml:space="preserve">
+    <value>Biên độ lời tối thiểu</value>
+  </data>
+  <data name="lblMargin.SubText" xml:space="preserve">
+    <value>Margin</value>
+  </data>
+  <data name="lblMargin.Text" xml:space="preserve">
+    <value>Biên độ lời tối thiểu</value>
+  </data>
+  <data name="lblMasterRate.Help" xml:space="preserve">
+    <value>Tỷ giá trung tâm do ngân hàng nhà nước qui định</value>
+  </data>
+  <data name="lblMasterRate.SubText" xml:space="preserve">
+    <value>NHNN qui định</value>
+  </data>
+  <data name="lblMasterRate.Text" xml:space="preserve">
+    <value>Tỷ giá trung tâm</value>
+  </data>
+  <data name="lblSellRateCash.Help" xml:space="preserve">
+    <value>Giá bán tiền mặt</value>
+  </data>
+  <data name="lblSellRateCash.SubText" xml:space="preserve">
+    <value>Tiền mặt (Bid ask Pips)</value>
+  </data>
+  <data name="lblSellRateCash.Text" xml:space="preserve">
+    <value>Giá bán</value>
+  </data>
+  <data name="lblSellRateFT.Help" xml:space="preserve">
+    <value>Giá bán chuyển khoản</value>
+  </data>
+  <data name="lblSellRateFT.SubText" xml:space="preserve">
+    <value>Chuyển khoản (Bid ask Pips)</value>
+  </data>
+  <data name="lblSellRateFT.Text" xml:space="preserve">
+    <value>Giá bán</value>
+  </data>
+</root>

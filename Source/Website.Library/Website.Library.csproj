@@ -81,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\BasicCacheBusiness.cs" />
     <Compile Include="Business\ImageBusiness.cs" />
     <Compile Include="Business\MessageQueueBusiness.cs" />
     <Compile Include="DataAccess\DataProvider.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="DataTransfer\MessageQueueData.cs" />
     <Compile Include="DataTransfer\RequestData.cs" />
     <Compile Include="DataTransfer\ResponseData.cs" />
+    <Compile Include="DataTransfer\SettingData.cs" />
     <Compile Include="DataTransfer\SQLParameterData.cs" />
     <Compile Include="Enum\ActionEnum.cs" />
     <Compile Include="Enum\CharacterEnum.cs" />

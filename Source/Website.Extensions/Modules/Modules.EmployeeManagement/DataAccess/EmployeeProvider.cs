@@ -28,15 +28,15 @@ namespace Modules.EmployeeManagement.DataAccess
             return dtTable;
         }
 
-        public DataTable GetEmployeeInfo(string email)
+        public DataTable LoadEmployeeInfo(string email)
         {
             Connector.AddParameter(EmployeeTable.Email, SqlDbType.VarChar, email);
-            Connector.ExecuteProcedure("dbo.EM_SP_GetEmployee", out DataTable dtResult);
+            Connector.ExecuteProcedure("dbo.EM_SP_LoadEmployeeInfo", out DataTable dtResult);
             return dtResult;
         }
 
 
-        private static readonly string InsertScript = @"
+        private const string InsertScript = @"
             begin transaction
             begin try
                 truncate table dbo.EM_Employee
@@ -47,11 +47,12 @@ namespace Modules.EmployeeManagement.DataAccess
             end try
             begin catch
                 rollback transaction
-                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                 select error_number(), error_message(), 'EmployeeProvider.InsertEmployee', dbo.SYS_FN_GetCurrentDateTime()
                 select 0
             end catch
         ";
+
         public bool InsertEmployee(List<EmployeeData> listEmployeeData, Dictionary<string, string> dictionary)
         {
             // Build insert script
@@ -83,6 +84,16 @@ namespace Modules.EmployeeManagement.DataAccess
             return dtResult;
         }
 
+        public bool UpdateEmployeeInfo(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
+            {
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
+            }
+            Connector.ExecuteProcedure("dbo.EM_SP_UpdateEmployeeInfo", out string result);
+            return result == "1";
+        }
+
         public bool UpdateEmployeeImage(Dictionary<string, SQLParameterData> parameterDictionary)
         {
             foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
@@ -105,10 +116,10 @@ namespace Modules.EmployeeManagement.DataAccess
             return result == "1";
         }
 
-        public List<EmployeeBranchData> GetAllBranch()
+        public List<EmployeeBranchData> LoadEmployeeBranch()
         {
             Connector.ExecuteProcedure<EmployeeBranchData, List<EmployeeBranchData>>(
-                "dbo.EM_SP_GetEmployeeBranch", out List<EmployeeBranchData> listBranch);
+                "dbo.EM_SP_LoadEmployeeBranch", out List<EmployeeBranchData> listBranch);
             return listBranch;
         }
     }

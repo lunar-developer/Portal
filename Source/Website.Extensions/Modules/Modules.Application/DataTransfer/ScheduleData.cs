@@ -4,6 +4,7 @@ namespace Modules.Application.DataTransfer
 {
     public class ScheduleData : CacheData
     {
+        public string ScheduleID { get; set; }
         public string ScheduleCode { get; set; }
         public string ScheduleName { get; set; }
         public string StartTime { get; set; }

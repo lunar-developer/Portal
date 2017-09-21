@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Text;
-using System.Web.UI.HtmlControls;
 using Modules.Application.Database;
 using Modules.Application.Global;
 using Website.Library.Database;
@@ -46,8 +45,8 @@ namespace DesktopModules.Modules.Application.Controls
 
                 html.Append($@"
                     <tr>
-                        <td>{FunctionBase.FormatDate(row[BaseTable.ModifyDateTime].ToString())}</td>
-                        <td>{FunctionBase.FormatUserID(row[BaseTable.ModifyUserID].ToString())}</td>
+                        <td>{FunctionBase.FormatDate(row[BaseTable.DateTimeModify].ToString())}</td>
+                        <td>{FunctionBase.FormatUserID(row[BaseTable.UserIDModify].ToString())}</td>
                         <td>{row[ApplicationLogTable.LogAction]}</td>
                         <td>{row[ApplicationLogTable.Remark]}</td>
                         <td>{link}</td>

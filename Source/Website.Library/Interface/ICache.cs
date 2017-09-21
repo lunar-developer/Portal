@@ -9,5 +9,6 @@ namespace Website.Library.Interface
         Type GetCacheType();
         OrderedConcurrentDictionary<string, CacheData> Load();
         CacheData Reload(string key);
+        bool Arrange(OrderedConcurrentDictionary<string, CacheData> cacheDictionary);
     }
 }

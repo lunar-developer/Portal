@@ -1,19 +1,13 @@
-﻿using System;
-using Modules.Application.DataTransfer;
+﻿using Modules.Application.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.Application.Business
 {
-    public class LanguageCacheBusiness<T> : ICache where T : LanguageData
+    public class LanguageCacheBusiness<T> : BasicCacheBusiness<T> where T : LanguageData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
@@ -24,7 +18,7 @@ namespace Modules.Application.Business
             return dictionary;
         }
 
-        public CacheData Reload(string key)
+        public override CacheData Reload(string key)
         {
             return LanguageBusiness.GetLanguage(key);
         }

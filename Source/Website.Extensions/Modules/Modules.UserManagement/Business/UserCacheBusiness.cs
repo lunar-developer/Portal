@@ -1,19 +1,13 @@
-﻿using System;
-using Modules.UserManagement.DataTransfer;
+﻿using Modules.UserManagement.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.UserManagement.Business
 {
-    public class UserCacheBusiness<T> : ICache where T : UserData
+    public class UserCacheBusiness<T> : BasicCacheBusiness<T> where T : UserData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary
                 = new OrderedConcurrentDictionary<string, CacheData>();
@@ -24,7 +18,7 @@ namespace Modules.UserManagement.Business
             return dictionary;
         }
 
-        public CacheData Reload(string userID)
+        public override CacheData Reload(string userID)
         {
             return UserBusiness.GetUserExtension(userID);
         }

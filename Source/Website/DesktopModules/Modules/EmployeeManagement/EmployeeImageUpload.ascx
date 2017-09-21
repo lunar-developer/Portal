@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="EmployeeImageUpload.ascx.cs" Inherits="DesktopModules.Modules.EmployeeManagement.EmployeeImageUpload" %>
-<%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4" %>
+<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <style>
     .RadComboBox_Default
     {
@@ -34,7 +34,7 @@
                         <label>Email</label>
                     </div>
                     <div class="col-sm-9">
-                        <telerik:RadComboBox AutoPostBack="True"
+                        <control:AutoComplete AutoPostBack="True"
                                              EnableLoadOnDemand="False"
                                              EnableVirtualScrolling="false"
                                              Filter="Contains"
@@ -51,7 +51,7 @@
                             <ExpandAnimation Duration="500"
                                              Type="InCubic">
                             </ExpandAnimation>
-                        </telerik:RadComboBox>
+                        </control:AutoComplete>
                     </div>
                 </div>
                 <div class="form-group">
@@ -125,6 +125,14 @@
                     <div class="col-sm-9 control-value">
                         <asp:Label ID="lblPhoneExtension"
                                    runat="server" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3 control-label">
+                        <label class="dnnLabel">Ảnh đại diện</label>
+                    </div>
+                    <div class="col-sm-9 control-value">
+                        <img id="imgAvatar" alt="" runat="server"/>
                     </div>
                 </div>
             </div>

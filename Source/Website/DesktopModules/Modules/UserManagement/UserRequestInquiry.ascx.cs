@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Reflection;
-using System.Web.UI.WebControls;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.Enum;
@@ -25,26 +24,29 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            BindBranchData(ddlBranch, UserInfo.UserID.ToString(), false, true, new List<string> { "-1" });
+            // Branch
+            BindBranchData(ddlBranch, new RadComboBoxItem("Tất cả", "-2"));
+
 
             // Request Type
-            ListItem item = new ListItem("Tất cả", "0");
+            RadComboBoxItem item = new RadComboBoxItem("Tất cả", "0");
             ddlRequestTypeID.Items.Add(item);
             foreach (FieldInfo fieldInfo in typeof(RequestTypeEnum).GetFields())
             {
                 string value = fieldInfo.GetValue(null) + string.Empty;
                 string text = RequestTypeEnum.GetDescription(value);
-                ddlRequestTypeID.Items.Add(new ListItem(text, value));
+                ddlRequestTypeID.Items.Add(new RadComboBoxItem(text, value));
             }
 
+
             // Request Status
-            item = new ListItem("Tất cả", "-1");
+            item = new RadComboBoxItem("Tất cả", "-1");
             ddlRequestStatus.Items.Add(item);
             foreach (FieldInfo fieldInfo in typeof(RequestStatusEnum).GetFields())
             {
                 string value = fieldInfo.GetValue(null) + string.Empty;
                 string text = RequestStatusEnum.GetDescription(value);
-                ddlRequestStatus.Items.Add(new ListItem(text, value));
+                ddlRequestStatus.Items.Add(new RadComboBoxItem(text, value));
             }
         }
 
@@ -65,31 +67,20 @@ namespace DesktopModules.Modules.UserManagement
             hidRequestTypeID.Value = ddlRequestTypeID.SelectedValue;
             hidRequestStatus.Value = ddlRequestStatus.SelectedValue;
             gridData.Visible = true;
-            BindGrid();
-        }
-
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid();
-        }
-
-        private void BindGrid(int pageIndex = 0)
-        {
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataSource = GetData();
             gridData.DataBind();
+        }
+
+        protected void ProcessOnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            gridData.DataSource = GetData();
         }
 
         private DataTable GetData()
         {
             Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserName, new SQLParameterData(hidUserName.Value, SqlDbType.VarChar) },
+                { UserTable.UserName, new SQLParameterData(hidUserName.Value) },
                 { UserRequestTable.BranchID, new SQLParameterData(hidBranchID.Value, SqlDbType.Int) },
                 { UserRequestTable.RequestTypeID, new SQLParameterData(hidRequestTypeID.Value, SqlDbType.Int) },
                 { UserRequestTable.RequestStatus, new SQLParameterData(hidRequestStatus.Value, SqlDbType.Int) },

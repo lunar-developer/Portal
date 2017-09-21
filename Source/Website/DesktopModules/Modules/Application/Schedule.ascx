@@ -4,6 +4,26 @@
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="Telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
+
+<style type="text/css">
+    table.ScheduleLogTable {
+        border: none !important;
+        margin-bottom: 5px !important;
+        width: 100% !important;
+                           }
+
+    table.ScheduleLogTable tbody tr th {
+        color: #69727c;
+        border-top: 0.5px dashed #F5F6F7 !important;
+        border-bottom: 0.5px dashed #F5F6F7 !important;
+        border-left: none !important;
+        border-right: none !important;
+        padding-left: 5px;
+        padding-right: 5px;
+        background-color: #F5F6F7;
+                                       }
+</style>
+
 <asp:UpdatePanel ID="updatePanel"
     runat="server">
     <ContentTemplate>
@@ -68,21 +88,9 @@
     </ContentTemplate>
 </asp:UpdatePanel>
 
-<style type="text/css">
-    table.ScheduleLogTable {
-        border: none !important;
-        margin-bottom: 5px !important;
-        width: 100% !important;
+<script type="text/javascript">
+    function refresh()
+    {
+        getJQueryControl("btnRefresh").click();
     }
-
-        table.ScheduleLogTable tbody tr th {
-            color: #69727c;
-            border-top: 0.5px dashed #F5F6F7 !important;
-            border-bottom: 0.5px dashed #F5F6F7 !important;
-            border-left: none !important;
-            border-right: none !important;
-            padding-left: 5px;
-            padding-right: 5px;
-            background-color: #F5F6F7;
-        }
-</style>
+</script>

@@ -3,6 +3,7 @@
 <%@ Register Src="~/DesktopModules/DDRMenu/Menu.ascx" TagName="Menu" TagPrefix="dnn" %>
 <%@ Register Src="~/Admin/Skins/Copyright.ascx" TagName="CopyRight" TagPrefix="dnn" %>
 <%@ Register Src="~/admin/Skins/Toast.ascx" TagPrefix="dnn" TagName="Toast" %>
+<%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
 <%@ Import Namespace="Website.Library.Enum" %>
 
@@ -41,10 +42,27 @@
                         <span class="c-line"></span>
                         <span class="c-line"></span>
                     </button>
+                    <button class="c-search-toggler" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                
+                <div class="c-quick-search">
+                    <control:AutoComplete 
+                        CssClass="form-control quickSearch-AutoComlete"
+                        ClientIDMode="Static"
+                        ID ="GlobalSearchMenu"
+                        OnClientSelectedIndexChanged="ProcessOnGlobalSearchMenuChange"
+                        runat = "server">
+                    </control:AutoComplete>
+                    <span class="c-theme-link" id="GlobalButtonQuickSearch"><i class="fa fa-times" aria-hidden="true"></i></span>
                 </div>
 
                 <nav class="c-fonts-bold c-fonts-uppercase c-mega-menu c-mega-menu-dark c-mega-menu-dark-mobile c-pull-right">
                     <ul class="c-theme-nav nav navbar-nav">
+                        <li class="c-search-toggler-wrapper">
+                            <a href="javascript:;" class="c-btn-icon c-search-toggler dropdown-toggle"><i class="fa fa-search"></i></a>
+                        </li>
                         <dnn:Menu ID="Menu"
                                   MenuStyle="Menus/MainMenu"
                                   NodeSelector="*"

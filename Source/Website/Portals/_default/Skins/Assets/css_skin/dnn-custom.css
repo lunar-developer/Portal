@@ -110,7 +110,7 @@ body > form > .rcbSlide {
 }
 
 .dnnFormWarning {
-    background-color: #f6ca2f !important;
+    background-color: #9C9B17 !important;
     background-image: url("../images/warning.png") !important;
 }
 
@@ -1214,3 +1214,9 @@ ul#ControlBar_Module_ModulePosition li {
         background: #408ece;
         font-family: inherit;
     }
+
+
+.dnnFormPopup .ui-dialog-buttonpane button.btn-default
+{
+    border: 1px solid #e1e6ee;
+}

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using Modules.MasterData.Database;
 using Website.Library.DataAccess;
 using Website.Library.Enum;
+using Website.Library.Global;
 
 namespace Modules.MasterData.DataAccess
 {
@@ -130,17 +132,25 @@ namespace Modules.MasterData.DataAccess
         public int InsertData(string databaseName, string schemaName, string tableName,
             Dictionary<string, string> dataDictionary)
         {
-            List<string> listInsert = new List<string>();
-            foreach (KeyValuePair<string, string> field in dataDictionary)
+            try
             {
-                listInsert.Add($"@{field.Key}");
-                Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
+                List<string> listInsert = new List<string>();
+                foreach (KeyValuePair<string, string> field in dataDictionary)
+                {
+                    listInsert.Add($"@{field.Key}");
+                    Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
+                }
+                string script = string.Format(ScriptInsertData, databaseName, schemaName, tableName,
+                    string.Join(", ", dataDictionary.Keys), string.Join(", ", listInsert));
+                Connector.ExecuteSql(script, out string value);
+                int.TryParse(value, out int result);
+                return result;
             }
-            string script = string.Format(ScriptInsertData, databaseName, schemaName, tableName,
-                string.Join(", ", dataDictionary.Keys), string.Join(", ", listInsert));
-            Connector.ExecuteSql(script, out string value);
-            int.TryParse(value, out int result);
-            return result;
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                return -1;
+            }
         }
 
 
@@ -156,27 +166,35 @@ namespace Modules.MasterData.DataAccess
         public bool UpdateData(string databaseName, string schemaName, string tableName,
             List<string> listKey, Dictionary<string, string> dataDictionary)
         {
-            List<string> listUpdate = new List<string>();
-            List<string> listCondition = new List<string>();
-            foreach (KeyValuePair<string, string> field in dataDictionary)
+            try
             {
-                string data = $"{field.Key} = @{field.Key}";
-                if (listKey.Contains(field.Key))
+                List<string> listUpdate = new List<string>();
+                List<string> listCondition = new List<string>();
+                foreach (KeyValuePair<string, string> field in dataDictionary)
                 {
-                    listCondition.Add(data);
-                }
-                else
-                {
-                    listUpdate.Add(data);
+                    string data = $"{field.Key} = @{field.Key}";
+                    if (listKey.Contains(field.Key))
+                    {
+                        listCondition.Add(data);
+                    }
+                    else
+                    {
+                        listUpdate.Add(data);
+                    }
+
+                    Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
                 }
 
-                Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
+                string script = string.Format(ScriptUpdateData, databaseName, schemaName, tableName,
+                    string.Join(", ", listUpdate), string.Join(" And ", listCondition));
+                Connector.ExecuteSql(script);
+                return true;
             }
-
-            string script = string.Format(ScriptUpdateData, databaseName, schemaName, tableName,
-                string.Join(", ", listUpdate), string.Join(" And ", listCondition));
-            Connector.ExecuteSql(script);
-            return true;
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                return false;
+            }
         }
 
 
@@ -190,18 +208,26 @@ namespace Modules.MasterData.DataAccess
         public bool DeleteData(string databaseName, string schemaName, string tableName,
             Dictionary<string, string> dataDictionary)
         {
-            List<string> listCondition = new List<string>();
-            foreach (KeyValuePair<string, string> field in dataDictionary)
+            try
             {
-                string data = $"{field.Key} = @{field.Key}";
-                listCondition.Add(data);
-                Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
-            }
+                List<string> listCondition = new List<string>();
+                foreach (KeyValuePair<string, string> field in dataDictionary)
+                {
+                    string data = $"{field.Key} = @{field.Key}";
+                    listCondition.Add(data);
+                    Connector.AddParameter(field.Key, SqlDbType.NVarChar, field.Value);
+                }
 
-            string script = string.Format(ScriptDeleteData, databaseName, schemaName, tableName,
-                string.Join(" And ", listCondition));
-            Connector.ExecuteSql(script);
-            return true;
+                string script = string.Format(ScriptDeleteData, databaseName, schemaName, tableName,
+                    string.Join(" And ", listCondition));
+                Connector.ExecuteSql(script);
+                return true;
+            }
+            catch (Exception exception)
+            {
+                FunctionBase.LogError(exception);
+                return false;
+            }
         }
     }
 }

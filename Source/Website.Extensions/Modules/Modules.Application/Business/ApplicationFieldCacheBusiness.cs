@@ -1,19 +1,13 @@
-﻿using System;
-using Modules.Application.DataTransfer;
+﻿using Modules.Application.DataTransfer;
+using Website.Library.Business;
 using Website.Library.DataTransfer;
 using Website.Library.Extension;
-using Website.Library.Interface;
 
 namespace Modules.Application.Business
 {
-    public class ApplicationFieldCacheBusiness<T> : ICache where T : ApplicationFieldData
+    public class ApplicationFieldCacheBusiness<T> : BasicCacheBusiness<T> where T : ApplicationFieldData
     {
-        public Type GetCacheType()
-        {
-            return typeof(T);
-        }
-
-        public OrderedConcurrentDictionary<string, CacheData> Load()
+        public override OrderedConcurrentDictionary<string, CacheData> Load()
         {
             OrderedConcurrentDictionary<string, CacheData> dictionary =
                 new OrderedConcurrentDictionary<string, CacheData>();
@@ -24,7 +18,7 @@ namespace Modules.Application.Business
             return dictionary;
         }
 
-        public CacheData Reload(string fieldName)
+        public override CacheData Reload(string fieldName)
         {
             return ApplicationFieldBusiness.GetField(fieldName);
         }

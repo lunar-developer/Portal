@@ -58,9 +58,9 @@ namespace DesktopModules.Modules.EmployeeManagement
             Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
             {
                 { "PageIndex", new SQLParameterData(hidPageIndex.Value, SqlDbType.Int) },
-                { EmployeeTable.EmployeeID, new SQLParameterData(hidEmployeeID.Value, SqlDbType.VarChar) },
+                { EmployeeTable.EmployeeID, new SQLParameterData(hidEmployeeID.Value) },
                 { EmployeeTable.FullName, new SQLParameterData(hidFullName.Value, SqlDbType.NVarChar) },
-                { EmployeeTable.Email, new SQLParameterData(hidEmail.Value, SqlDbType.VarChar) },
+                { EmployeeTable.Email, new SQLParameterData(hidEmail.Value) },
                 { EmployeeTable.Branch, new SQLParameterData(hidBranch.Value, SqlDbType.NVarChar) },
                 { EmployeeTable.Area, new SQLParameterData(hidArea.Value, SqlDbType.NVarChar) }
             };
@@ -86,6 +86,7 @@ namespace DesktopModules.Modules.EmployeeManagement
                 divResultText.InnerHtml = string.Format(HTMLSearchResultStatistic, string.Empty);
                 divResultHidden.InnerHtml = string.Format(HTMLSearchResultTemplate,
                     $"<div class='text-center c-font-bold'><i>{MessageDefinitionEnum.NoRecordFound}<i></div>");
+                divEndStatistic.InnerHtml = string.Empty;
                 btnShowMore.Visible = false;
                 return;
             }
@@ -165,8 +166,8 @@ namespace DesktopModules.Modules.EmployeeManagement
 
             int currentRecord = Math.Min(int.Parse(hidPageIndex.Value) * 10 + 10, int.Parse(hidTotalRecord.Value));
             divResultText.InnerHtml = string.Format(HTMLSearchResultStatistic, $"<br>{currentRecord} / {hidTotalRecord.Value}");
-            divEndStatistic.InnerHtml = $"<hr>{currentRecord} / {hidTotalRecord.Value}";
             divResultHidden.InnerHtml = string.Format(HTMLSearchResultTemplate, listData);
+            divEndStatistic.InnerHtml = $"<hr>{currentRecord} / {hidTotalRecord.Value}";
 
             if (employeeQRDictionary.Count > 0)
             {

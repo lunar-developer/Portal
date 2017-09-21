@@ -17,8 +17,7 @@ namespace Website.Library.Business
 
         private static readonly ConcurrentDictionary<string, MessageQueueData> MessageDictionary =
             new ConcurrentDictionary<string, MessageQueueData>();
-        private static readonly Dictionary<string, MessageQueueBase> ConsumerDictionary =
-            new Dictionary<string, MessageQueueBase>();
+        private static readonly Dictionary<string, string> ConsumerDictionary = new Dictionary<string, string>();
         private static readonly Dictionary<string, MessageQueueBase> HandlerDictionary;
 
 
@@ -35,7 +34,8 @@ namespace Website.Library.Business
                             FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServicePort)),
                         VirtualHost = FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServiceVirtualHost),
                         UserName = FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServiceUserName),
-                        Password = FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServicePassword)
+                        Password = FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServicePassword),
+                        RequestedHeartbeat = ushort.Parse(FunctionBase.GetConfiguration(ConfigEnum.QueueRabbitServiceHeartbeat, "30"))
                     })
                 }
             };
@@ -114,7 +114,7 @@ namespace Website.Library.Business
                 }
 
                 MessageQueueBase instance = messageQueue.Clone();
-                ConsumerDictionary.Add(queueName, instance);
+                ConsumerDictionary.Add(queueName, callback.GetType().FullName);
                 instance.ReceiveFromQueue(queueName, callback, clientName);
                 return true;
             }

@@ -26,7 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
+using System.Web.Caching;
 using System.Web.UI;
 using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Host;
@@ -162,7 +164,7 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                 if (PortalSettings.EnablePopUps)
                 {
                     passwordLink.Attributes.Add("onclick",
-                        "return " + UrlUtils.PopUpUrl(url, this, PortalSettings, true, false, 300, 650));
+                        "return " + UrlUtils.PopUpUrl(url, this, PortalSettings, true, false, 400, 700));
                 }
             }
             else
@@ -338,13 +340,16 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                     loginStatus != UserLoginStatus.LOGIN_USERLOCKEDOUT &&
                     PortalController.GetPortalSettingAsBoolean("Registration_UseEmailAsUserName", PortalId, false))
                 {
-                    //make sure internal username matches current e-mail address
-                    if (objUser.Username.ToLower() != objUser.Email.ToLower())
-                    {
-                        UserController.ChangeUsername(objUser.UserID, objUser.Email);
-                    }
+                    if(objUser != null)
+                    { 
+                        //make sure internal username matches current e-mail address
+                        if (objUser.Username.ToLower() != objUser.Email.ToLower())
+                        {
+                            UserController.ChangeUsername(objUser.UserID, objUser.Email);
+                        }
 
-                    Response.Cookies.Remove("USERNAME_CHANGED");
+                        Response.Cookies.Remove("USERNAME_CHANGED");
+                    }
                 }
 
 
@@ -353,12 +358,37 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                 {
                     string key = userName.ToLower();
                     TimeSpan timeOut = new TimeSpan(0, 0, HttpContext.Current.Session.Timeout, 0, 0);
+
+                    // Kickout Previous Session & Show Warning
+                    string previousSessionID = (string) HttpContext.Current.Cache[key];
+                    if (string.IsNullOrEmpty(previousSessionID) == false
+                        && previousSessionID != Session.SessionID)
+                    {
+                        List<string> computerName =
+                            Dns.GetHostEntry(Request.ServerVariables["REMOTE_HOST"]).HostName.Split('.').ToList();
+                        Dictionary<string, string> loginInfoDictionary = new Dictionary<string, string>
+                        {
+                            { "IPAddress", IPAddress },
+                            { "Browser", Request.Browser.Browser },
+                            { "DateTime", FunctionBase.FormatDate(DateTime.Now.ToString(PatternEnum.DateTime)) },
+                            { "ComputerName",  computerName.First() }
+                        };
+                        HttpContext.Current.Cache.Insert(previousSessionID,
+                            loginInfoDictionary,
+                            null,
+                            DateTime.UtcNow.AddMinutes(5),  // Expire in 5 minutes
+                            Cache.NoSlidingExpiration,
+                            CacheItemPriority.NotRemovable,
+                            null);
+                    }
+
+                    // Store Current Session into Cache
                     HttpContext.Current.Cache.Insert(key,
                         Session.SessionID,
                         null,
-                        DateTime.MaxValue,
+                        Cache.NoAbsoluteExpiration,     // Expire when hasn't any request in 20 minutes
                         timeOut,
-                        System.Web.Caching.CacheItemPriority.NotRemovable,
+                        CacheItemPriority.NotRemovable,
                         null);
                     Session["UserName"] = key;
                 }

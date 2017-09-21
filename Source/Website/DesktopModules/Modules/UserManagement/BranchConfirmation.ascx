@@ -9,12 +9,12 @@
                              runat="server" />
         </div>
         <div class="form-horizontal">
-            <div class="c-font-18 c-font-bold c-margin-b-20 form-group">
+            <div class="col-sm-12 c-font-18 c-font-bold c-margin-b-20 form-group">
                 Vui lòng xác nhận thông tin Chi nhánh nơi mà bạn đang làm việc.
             </div>
             <div class="form-group">
                 <div class="col-sm-6">
-                    <div class="form-group">
+                    <div class="form-group col-sm-12">
                         <h3>THÔNG TIN CÁ NHÂN</h3>
                     </div>
                     <div class="form-group">
@@ -62,7 +62,7 @@
                 </div>
                 <div class="col-sm-1"></div>
                 <div class="col-sm-5">
-                    <div class="form-group">
+                    <div class="form-group col-sm-12">
                         <h3>THÔNG TIN USER QUẢN LÝ CHI NHÁNH</h3>
                     </div>
                     <div class="form-group">

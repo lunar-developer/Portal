@@ -188,6 +188,7 @@ namespace DesktopModules.Modules.MasterData
             string placeHolder = fieldLabel;
             string dataType = fieldInfo[MasterDataTable.DataType].ToString();
             string inputType = InputEnum.Text;
+            string onClientChange = string.Empty;
             #endregion
 
             #region Read User Settings
@@ -234,6 +235,9 @@ namespace DesktopModules.Modules.MasterData
 
                 // Input Type
                 inputType = fieldSetting[MasterDataTable.InputType].ToString();
+
+                // On Client Change?
+                onClientChange = fieldSetting[MasterDataTable.OnClientChange].ToString();
             }
             #endregion
 
@@ -279,7 +283,9 @@ namespace DesktopModules.Modules.MasterData
                     ""options"": [
                         {{ ""text"": ""No"",  ""value"": ""0"", ""selected"": {(value == "0").ToString().ToLower()} }},
                         {{ ""text"": ""Yes"", ""value"": ""1"", ""selected"": {(value == "1").ToString().ToLower()} }}
-                    ]
+                    ],
+                    ""lazyLoad"": false,
+                    ""onChange"": """"
                 }}";
                 listScript.Add($"declareVariable(\"glo_MasterData_{fieldName}\", {options});");
                 control = RenderRadCombobox(fieldName, value, isRequire, isReadOnly);
@@ -289,7 +295,7 @@ namespace DesktopModules.Modules.MasterData
                 switch (inputType)
                 {
                     case InputEnum.Combobox:
-                        string options = RenderOption(fieldName, fieldValue, placeHolder, fieldSetting);
+                        string options = RenderOption(fieldName, fieldValue, placeHolder, fieldSetting, onClientChange);
                         listScript.Add($"declareVariable(\"glo_MasterData_{fieldName}\", {options});");
                         control = RenderRadCombobox(fieldName, fieldValue, isRequire, isReadOnly);
                         break;
@@ -303,6 +309,7 @@ namespace DesktopModules.Modules.MasterData
                                         is-require=""{isRequire}""
                                         minlength = ""{minLength}""
                                         maxlength = ""{maxLength}""
+                                        onchange = ""{onClientChange}""
                                         {(isReadOnly ? "readonly=readonly" : string.Empty)}>{fieldValue}</textarea>";
                         break;
 
@@ -317,6 +324,7 @@ namespace DesktopModules.Modules.MasterData
                                     is-require=""{isRequire}""
                                     minlength = ""{minLength}""
                                     maxlength = ""{maxLength}""
+                                    onchange = ""{onClientChange}""
                                     {(isReadOnly ? "readonly=readonly" : string.Empty)}/>";
                         break;
                 }
@@ -334,7 +342,7 @@ namespace DesktopModules.Modules.MasterData
             return $@"
                 <div class=""RadComboBox RadComboBox_Default"" id=""{fieldName}"">
                     <span class=""rcbInner {(isReadOnly ? "rcbDisabled" : string.Empty)}"">
-                        <input type=""text"" id=""{fieldName}_Input"" class=""rcbInput radPreventDecorate"" autocomplete=""off"">
+                        <input type=""text"" id=""{fieldName}_Input"" class=""rcbInput radPreventDecorate"" autocomplete=""off"" {(isReadOnly ? "disabled=\"disabled\"" : string.Empty)}>
                         <button type=""button"" class=""rcbActionButton"" tabindex=""-1"">
                             <span class=""rcbIcon rcbIconDown""></span>
                             <span class=""rcbButtonText""></span>
@@ -353,14 +361,16 @@ namespace DesktopModules.Modules.MasterData
             ";
         }
 
-        private string RenderOption(string fieldName, string selectedValue, string placeHolder, DataRow fieldSetting)
+        private string RenderOption(string fieldName, string selectedValue, string placeHolder, DataRow fieldSetting, string onClientChange)
         {
             List<Dictionary<string, object>> listOptions =  new List<Dictionary<string, object>>();
             Dictionary<string, object> dataDictionary = new Dictionary<string, object>
             {
                 { "name", fieldName },
                 { "emptyMessage", placeHolder },
-                { "options", listOptions }
+                { "options", listOptions },
+                { "lazyLoad", false },
+                { "onChange", onClientChange }
             };
 
             if (fieldSetting == null)
@@ -376,8 +386,13 @@ namespace DesktopModules.Modules.MasterData
                 goto EndPoint;
             }
 
+            // Is support Lazy Loading?
+            bool isLazyLoad = bool.Parse(fieldSetting[MasterDataTable.IsLazyLoad].ToString());
+            dataDictionary["lazyLoad"] = isLazyLoad;
+
             // Load Data
             bool isRunTime = bool.Parse(fieldSetting[MasterDataTable.IsRunTime].ToString());
+            string fieldGroup = fieldSetting[MasterDataTable.FieldGroup].ToString().Trim();
             if (isRunTime)
             {
                 Type type = Type.GetType(dataSource);
@@ -385,7 +400,7 @@ namespace DesktopModules.Modules.MasterData
                 {
                     goto EndPoint;
                 }
-
+                
                 foreach (object data in ReceiveCache(type))
                 {
                     string text = FunctionBase.GetCoalesceString(
@@ -394,6 +409,9 @@ namespace DesktopModules.Modules.MasterData
                     string value = FunctionBase.GetCoalesceString(
                         type.GetField(fieldValue)?.GetValue(data) + string.Empty,
                         type.GetProperty(fieldValue)?.GetValue(data) + string.Empty);
+                    string group = FunctionBase.GetCoalesceString(
+                        type.GetField(fieldGroup)?.GetValue(data) + string.Empty,
+                        type.GetProperty(fieldGroup)?.GetValue(data) + string.Empty);
                     string isDisable = FunctionBase.GetCoalesceString(
                         type.GetField(BaseTable.IsDisable)?.GetValue(data) + string.Empty,
                         type.GetProperty(BaseTable.IsDisable)?.GetValue(data) + string.Empty);
@@ -403,6 +421,7 @@ namespace DesktopModules.Modules.MasterData
                     {
                         { "text", text },
                         { "value", value },
+                        { "group", group },
                         { "selected", isSelected },
                         { "disabled", FunctionBase.ConvertToBool(isDisable) }
                     });
@@ -411,16 +430,19 @@ namespace DesktopModules.Modules.MasterData
             else
             {
                 DataTable dataTable = MasterDataBusiness.LoadOptionData(dataSource);
+                bool isContainGroup = dataTable.Columns.Contains(fieldGroup);
                 foreach (DataRow row in dataTable.Rows)
                 {
                     string text = row[fieldText].ToString();
                     string value = row[fieldValue].ToString();
+                    string group = isContainGroup ? row[fieldGroup].ToString() : string.Empty;
                     bool isSelected = value == selectedValue;
 
                     listOptions.Add(new Dictionary<string, object>
                     {
                         { "text", text },
                         { "value", value },
+                        { "group", group },
                         { "selected", isSelected },
                         { "disabled", false }
                     });
@@ -478,7 +500,8 @@ namespace DesktopModules.Modules.MasterData
                 hidDatabaseName.Value, hidSchemaName.Value, hidTableName.Value,
                 dataDictionary);
 
-            if (hidIdentityField.Value == string.Empty || result > 0)
+            if (result > 0
+                || result == 0 && hidIdentityField.Value == string.Empty)
             {
                 // Identity
                 if (string.IsNullOrWhiteSpace(hidIdentityField.Value) == false)
@@ -545,7 +568,7 @@ namespace DesktopModules.Modules.MasterData
                 // Remove Cache
                 string key = dataDictionary.ContainsKey(hidCacheID.Value)
                     ? dataDictionary[hidCacheID.Value]
-                    : string.Empty;
+                    : GetCacheIDValue(hidAssemblyName.Value, hidCacheName.Value, hidCacheID.Value, dataDictionary);
                 RemoveCache(hidAssemblyName.Value, hidCacheName.Value, key);
 
                 // Notify and Close

@@ -84,12 +84,12 @@
     addPageLoaded(function()
     {
         $(".dnnTooltip").dnnTooltip();
-        $(".RadComboBox").autoComplete();
+        $(".RadComboBox").autoComplete("glo_MasterData_");
     }, false);
 
     addEndRequest(function()
     {
-        $(".RadComboBox").autoComplete();
+        $(".RadComboBox").autoComplete("glo_MasterData_");
     });
 
 
@@ -118,5 +118,36 @@
             }
         }
         return true;
+    }
+
+    function loadOptions(sender, target)
+    {
+        var json = window["glo_MasterData_" + target];
+        if (typeof json === "undefined" || json == null || json.options.length === 0)
+        {
+            return;
+        }
+        
+        var value = $find(sender).get_value();
+        var options = [];
+        for (var i = 0; i < json.options.length; i++)
+        {
+            var item = json.options[i];
+            if (item.group === value)
+            {
+                options.push(item);
+            }
+        }
+
+        // Reset old values
+        var combobox = $find(target);
+        combobox.clearItems();
+        combobox.clearSelection();
+        combobox.get_events()._list.selectedIndexChanged[0]();
+
+        if (options.length > 0)
+        {
+            bindOptions(combobox, options);
+        }
     }
 </script>

@@ -52,7 +52,7 @@
             <control:DoubleLabel
                 runat="server"
                 SubText="Assessment Content"
-                Text="Nôị dung đánh giá" />
+                Text="Nội dung đánh giá" />
         </div>
         <div class="col-sm-8">
             <asp:TextBox

@@ -8,6 +8,7 @@ using DotNetNuke.Entities.Tabs;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
+using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 
@@ -59,9 +60,9 @@ namespace DesktopModules.Modules.UserManagement
             {
                 { UserTable.UserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 { BranchTable.BranchID, new SQLParameterData(ddlBranch.SelectedValue, SqlDbType.Int) },
-                { UserTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    UserTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };

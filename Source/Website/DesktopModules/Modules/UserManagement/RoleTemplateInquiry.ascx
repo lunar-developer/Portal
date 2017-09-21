@@ -6,7 +6,7 @@
 <%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
 <asp:UpdatePanel ID="updatePanel"
-                 runat="server">
+    runat="server">
     <ContentTemplate>
         <div class="form-horizontal">
             <div class="form-group">
@@ -15,9 +15,9 @@
                     <label>Chi Nhánh</label>
                 </div>
                 <div class="col-md-4">
-                    <control:Combobox CssClass="form-control c-theme"
-                                      ID="ddlBranch"
-                                      runat="server" />
+                    <control:AutoComplete
+                        ID="ddlBranch"
+                        runat="server" />
                 </div>
                 <div class="col-md-4 col-sm-0"></div>
             </div>
@@ -25,31 +25,26 @@
                 <div class="col-md-4 col-sm-0"></div>
                 <div class="col-md-8">
                     <asp:Button CssClass="btn btn-primary"
-                                ID="btnSearch"
-                                OnClick="Search"
-                                runat="server"
-                                Text="Xem" />
-                    <a class="btn btn-primary"
-                       href="<%= GetUrl() %>"
-                       target="_blank">
-                        Thêm Mới
+                        ID="btnSearch"
+                        OnClick="Search"
+                        runat="server"
+                        Text="Xem" />
+                    <a class="btn btn-success"
+                        href="<%= GetUrl() %>"
+                        target="_blank">Thêm Mới
                     </a>
                 </div>
             </div>
             <div class="c-margin-t-30 form-group">
-                <control:Grid AllowPaging="true"
-                              AutoGenerateColumns="false"
-                              CssClass="dnnGrid"
-                              EnableViewState="true"
-                              ID="gridData"
-                              OnPageIndexChanged="OnPageIndexChanging"
-                              OnPageSizeChanged="OnPageSizeChanging"
-                              PageSize="10"
-                              runat="server"
-                              Visible="false">
+                <control:Grid
+                    AutoGenerateColumns="false"
+                    ID="gridData"
+                    OnNeedDataSource="ProcessOnNeedDataSource"
+                    runat="server"
+                    Visible="false">
                     <MasterTableView>
                         <Columns>
-                            <telerik:GridTemplateColumn HeaderText="Chức danh">
+                            <telerik:GridTemplateColumn HeaderText="Chức danh" SortExpression="TemplateName">
                                 <HeaderStyle Width="30%" />
                                 <ItemTemplate>
                                     <%#GetEditLink(
@@ -58,16 +53,16 @@
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
                             <telerik:GridBoundColumn DataField="Remark"
-                                                     HeaderText="Ghi chú">
+                                HeaderText="Ghi chú">
                                 <HeaderStyle Width="30%" />
                             </telerik:GridBoundColumn>
-                            <telerik:GridTemplateColumn HeaderText="Ngày cập nhật">
+                            <telerik:GridTemplateColumn HeaderText="Ngày cập nhật" SortExpression="DateTimeModify">
                                 <HeaderStyle Width="20%" />
                                 <ItemTemplate>
-                                    <%#FunctionBase.FormatDate(Eval(BaseTable.ModifyDateTime).ToString()) %>
+                                    <%#FunctionBase.FormatDate(Eval(BaseTable.DateTimeModify).ToString()) %>
                                 </ItemTemplate>
                             </telerik:GridTemplateColumn>
-                            <telerik:GridTemplateColumn HeaderText="Disable">
+                            <telerik:GridTemplateColumn HeaderText="Đang hoạt động" SortExpression="IsDisable">
                                 <HeaderStyle Width="20%" />
                                 <ItemTemplate>
                                     <%#FormatState(Eval(BaseTable.IsDisable).ToString()) %>
@@ -79,8 +74,8 @@
             </div>
 
             <asp:HiddenField ID="hidBranchID"
-                             runat="server"
-                             Visible="False" />
+                runat="server"
+                Visible="False" />
         </div>
     </ContentTemplate>
 </asp:UpdatePanel>

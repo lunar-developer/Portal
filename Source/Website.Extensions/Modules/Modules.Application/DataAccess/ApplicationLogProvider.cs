@@ -13,7 +13,7 @@ namespace Modules.Application.DataAccess
             if (string.IsNullOrEmpty(baseVersion))
             {
                 sql = $@"select  {ApplicationLogTable.ApplicationLogID},
-                                 {BaseTable.ModifyDateTime}
+                                 {BaseTable.DateTimeModify}
                         from dbo.{ApplicationLogTable.TableName}
                         where    {ApplicationTable.ApplicationID} = '{applicationID}'
                         and      {ApplicationLogTable.ApplicationLogID} > '1'";
@@ -25,7 +25,7 @@ namespace Modules.Application.DataAccess
                     return null;
                 }
                 sql = $@"select  {ApplicationLogTable.ApplicationLogID},
-                                 {BaseTable.ModifyDateTime}
+                                 {BaseTable.DateTimeModify}
                         from dbo.{ApplicationLogTable.TableName}
                         where    {ApplicationTable.ApplicationID} = '{applicationID}'
                         and      {ApplicationLogTable.ApplicationLogID} < '{baseVersion}'";

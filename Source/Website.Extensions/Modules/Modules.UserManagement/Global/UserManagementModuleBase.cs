@@ -3,6 +3,7 @@ using System.Web.UI.WebControls;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
+using Telerik.Web.UI;
 using Website.Library.Global;
 
 namespace Modules.UserManagement.Global
@@ -169,7 +170,101 @@ namespace Modules.UserManagement.Global
                 dropDownList.Items.Add(CreateListItem(branch, isUseBranchCode));
             }
         }
-        
+
+
+
+
+
+
+
+
+
+
+
+        #region Bind Data
+
+        protected static RadComboBoxItem CreateItem(string text, string value, string isDisable = "0")
+        {
+            RadComboBoxItem item = new RadComboBoxItem(text, value)
+            {
+                Enabled = FunctionBase.ConvertToBool(isDisable) == false
+            };
+            return item;
+        }
+
+        protected static void BindItems(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            dropDownList.ClearSelection();
+            dropDownList.ClearCheckedItems();
+            dropDownList.Items.Clear();
+
+            if (additionalItems != null)
+            {
+                dropDownList.Items.AddRange(additionalItems);
+            }
+        }
+
+
+        public void BindBranchData(RadComboBox dropDownList, params RadComboBoxItem[] additionalItems)
+        {
+            BindBranchData(dropDownList, UserInfo.UserID.ToString(), false, additionalItems);
+        }
+
+        public static void BindBranchData
+            (RadComboBox dropDownList,
+            string userID,
+            bool isUseBranchCode,
+            params RadComboBoxItem[] additionalItems)
+        {
+            BindItems(dropDownList, additionalItems);
+            foreach (BranchData branch in UserBusiness.GetUserBranch(userID))
+            {
+                if (branch.BranchID == "-1")
+                {
+                    continue;
+                }
+
+                string text = $"{branch.BranchCode} - {branch.BranchName}";
+                string value = isUseBranchCode ? branch.BranchCode : branch.BranchID;
+                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
+            }
+        }
+
+
+        public static void BindAllBranchData(RadComboBox dropDownList, bool isUseBranchCode = false, params RadComboBoxItem[] additionalItems)
+        {
+            BindAllBranchData(dropDownList, isUseBranchCode, null, additionalItems);
+        }
+
+        public static void BindAllBranchData(RadComboBox dropDownList, List<string> listExclude, params RadComboBoxItem[] additionalItems)
+        {
+            BindAllBranchData(dropDownList, false, listExclude, additionalItems);
+        }
+
+        public static void BindAllBranchData(
+            RadComboBox dropDownList, bool isUseBranchCode, List<string> listExclude, params RadComboBoxItem[] additionalItems)
+        {
+            if (listExclude == null)
+            {
+                listExclude = new List<string>();
+            }
+
+            BindItems(dropDownList, additionalItems);
+            foreach (BranchData branch in BranchBusiness.GetAllBranchInfo())
+            {
+                string value = isUseBranchCode ? branch.BranchCode : branch.BranchID;
+                if (branch.BranchID == "-1" || listExclude.Contains(value))
+                {
+                    continue;
+                }
+
+                string text = $"{branch.BranchCode} - {branch.BranchName}";
+                dropDownList.Items.Add(CreateItem(text, value, branch.IsDisable));
+            }
+        }
+
+        #endregion
+
 
         protected bool IsAdministrator()
         {
@@ -202,7 +297,7 @@ namespace Modules.UserManagement.Global
         }
 
 
-        protected static string RoleHtml = @"
+        protected static string RoleHtmlTemplate = @"
             <div class='form-group'>
                 <div class='col-sm-12'>
                     <h2 class='dnnFormSectionHead'>
@@ -228,6 +323,38 @@ namespace Modules.UserManagement.Global
                             </thead>
                             <tbody>
                                 {2}
+                            </tbody>
+                        </table>
+                    </fieldset>
+                </div>
+            </div>";
+
+        protected static string RoleHistoryHtmlTemplate = @"
+            <div class='form-group'>
+                <div class='col-sm-12'>
+                    <h2 class='dnnFormSectionHead'>
+                        <a href='#'>{0}</a>
+                    </h2>
+                    <fieldset>
+                        <table class='table c-margin-t-10'>
+                            <colgroup>
+                                <col width='10%' />
+                                <col width='10%' />
+                                <col width='10%' />
+                                <col width='25%' />
+                                <col width='45%' />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>Trước đó</th>
+                                    <th>Yêu cầu</th>
+                                    <th>Hiện hữu</th>
+                                    <th>Quyền</th>
+                                    <th>Diễn Giải</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {1}
                             </tbody>
                         </table>
                     </fieldset>
