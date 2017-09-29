@@ -51,7 +51,7 @@
     [/>]
 
 	[>NODE-MEGA]
-        <div class = "col-md-3">
+        <div class = "col-md-3 pull-right">
             <ul class = "c-menu-type-inline dropdown-menu">
 				<li>
                     <h3>[=TEXT]</h3>

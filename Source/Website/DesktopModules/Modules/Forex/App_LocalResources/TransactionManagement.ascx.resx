@@ -178,10 +178,10 @@
     <value>Mục đích mua bán</value>
   </data>
   <data name="lblTransactionDate.Help" xml:space="preserve">
-    <value>Ngày giao dịch</value>
+    <value>Ngày giao dịch có hiệu lực</value>
   </data>
   <data name="lblTransactionDate.Text" xml:space="preserve">
-    <value>Ngày giao dịch</value>
+    <value>Ngày giá trị</value>
   </data>
   <data name="lblTransactionStatus.Help" xml:space="preserve">
     <value>Trạng thái giao dịch</value>

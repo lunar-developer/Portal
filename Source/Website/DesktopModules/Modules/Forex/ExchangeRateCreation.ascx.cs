@@ -57,14 +57,14 @@ namespace DesktopModules.Modules.Forex
             if (IsSelectBoxChangeFormValue(currencyCode))
             {
                 txtRemark.Enabled = IsChangePermission;
-                CurrencyRateData currencyRateData = GetCurrencyData(currencyCode);
+                CurrencyRateData currencyRateData = CacheBase.Receive<CurrencyRateData>(currencyCode);
 
                 SetTextControl(txtBigFigure, FunctionBase.FormatCurrency(currencyRateData.Rate),false);
                 SetTextControl(txtMasterRate, FunctionBase.FormatCurrency(currencyRateData.MasterRate), false);
                 SetTextControl(txtMargin, currencyRateData.MarginMinProfit, false);
                 SetTextControl(txtLimit, currencyRateData.MarginLimit, false);
 
-                ExchangeRateGridData exchangeRateData = GetExchangeRateGridData(currencyCode);
+                ExchangeRateGridData exchangeRateData  = CacheBase.Receive<ExchangeRateGridData>(currencyCode);
 
                 chkBuyRateFT.InnerHtml =
                     CheckBoxControl(ControlCheckBoxEnum.BuyRateFT, 
@@ -149,7 +149,7 @@ namespace DesktopModules.Modules.Forex
 
         protected void UpdateExchangeRate(object sender, EventArgs e)
         {
-            ExchangeRateGridData currentData = GetExchangeRateGridData(ctExchangeCode.SelectedValue);
+            ExchangeRateGridData currentData = CacheBase.Receive<ExchangeRateGridData>(ctExchangeCode.SelectedValue);
 
             ExchangeRateGridData dataUpdate = GetFormData;
             string message;
@@ -173,7 +173,7 @@ namespace DesktopModules.Modules.Forex
             return true;
         }
         
-        private bool IsChangePermission => (IsHODealer || IsBRManager);
+        private bool IsChangePermission => IsHOAdmin;
         private void SetPermission()
         {
             btnSubmit.Enabled = !string.IsNullOrWhiteSpace(ctExchangeCode.SelectedValue) && IsChangePermission;

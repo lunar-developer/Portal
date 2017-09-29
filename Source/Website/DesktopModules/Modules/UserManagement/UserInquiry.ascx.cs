@@ -35,6 +35,7 @@ namespace DesktopModules.Modules.UserManagement
             hidBranchID.Value = ddlBranch.SelectedValue;
             hidAuthorised.Value = ddlAuthorised.SelectedValue;
             gridData.Visible = true;
+            btnExport.Visible = IsAdministrator();
             BindGrid();
         }
 
@@ -54,33 +55,27 @@ namespace DesktopModules.Modules.UserManagement
             ExportToExcel(GetData(), "Users");
         }
 
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
-        {
-            BindGrid(e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid();
-        }
-
         private void BindData()
         {
-            BindBranchData(ddlBranch, UserInfo.UserID.ToString(), false, true);
+            BindBranchData(ddlBranch, new RadComboBoxItem("Tất cả", "-2"));
         }
 
-        private void BindGrid(int pageIndex = 0)
+        private void BindGrid()
         {
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataSource = GetData();
             gridData.DataBind();
+        }
+
+        protected void ProcessOnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            gridData.DataSource = GetData();
         }
 
         private DataTable GetData()
         {
             Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserName, new SQLParameterData(hidUserName.Value, SqlDbType.VarChar) },
+                { UserTable.UserName, new SQLParameterData(hidUserName.Value) },
                 { UserTable.BranchID, new SQLParameterData(hidBranchID.Value, SqlDbType.Int) },
                 { UserTable.Authorised, new SQLParameterData(hidAuthorised.Value, SqlDbType.Int) },
                 { UserTable.UserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) }
@@ -90,7 +85,8 @@ namespace DesktopModules.Modules.UserManagement
 
         private void SetPermission()
         {
-            btnAdd.Visible = btnExport.Visible = IsAdministrator();
+            btnAdd.Visible = IsAdministrator();
+            btnExport.Visible = false;
         }
     }
 }

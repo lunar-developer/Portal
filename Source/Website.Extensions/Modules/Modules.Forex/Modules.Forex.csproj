@@ -56,14 +56,18 @@
     <Reference Include="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\ActionCacheBusiness.cs" />
     <Compile Include="Business\CurrencyRateBusiness.cs" />
     <Compile Include="Business\CurrencyRateCacheBusiness.cs" />
     <Compile Include="Business\CustomerTypeBusiness.cs" />
     <Compile Include="Business\CustomerTypeCacheBusiness.cs" />
     <Compile Include="Business\ExchangeRateBusiness.cs" />
     <Compile Include="Business\ExchangeGridCacheBusiness.cs" />
+    <Compile Include="Business\ReasonMappingCustomerTypeCacheBusiness.cs" />
+    <Compile Include="Business\ReasonMappingCustomerTypeBusiness.cs" />
     <Compile Include="Business\ReasonBusiness.cs" />
     <Compile Include="Business\ReasonCacheBusiness.cs" />
+    <Compile Include="Business\RequestTypeCacheBusiness.cs" />
     <Compile Include="Business\TransactionBusiness.cs" />
     <Compile Include="Business\ActionBusiness.cs" />
     <Compile Include="Business\WorkflowStatusCacheBusiness.cs" />
@@ -74,6 +78,7 @@
     <Compile Include="DataAccess\CurrencyRateProvider.cs" />
     <Compile Include="DataAccess\CustomerTypeProvider.cs" />
     <Compile Include="DataAccess\ExchangeRateProvider.cs" />
+    <Compile Include="DataAccess\ReasonMappingCustomerTypeProvider.cs" />
     <Compile Include="DataAccess\ReasonProvider.cs" />
     <Compile Include="DataAccess\TransactionProvider.cs" />
     <Compile Include="DataAccess\ActionProvider.cs" />
@@ -82,6 +87,7 @@
     <Compile Include="DataAccess\TransactionTypeProvider.cs" />
     <Compile Include="Database\CustomerTypeTable.cs" />
     <Compile Include="Database\ExchangeRateTable.cs" />
+    <Compile Include="Database\ReasonMappingCustomerTypeTable.cs" />
     <Compile Include="Database\ReasonTable.cs" />
     <Compile Include="Database\ActionTable.cs" />
     <Compile Include="Database\WorkflowStatusTable.cs" />
@@ -94,6 +100,7 @@
     <Compile Include="DataTransfer\ExchangeRateData.cs" />
     <Compile Include="DataTransfer\ExchangeRateGridData.cs" />
     <Compile Include="DataTransfer\ReasonData.cs" />
+    <Compile Include="DataTransfer\ReasonMappingCustomerTypeData.cs" />
     <Compile Include="DataTransfer\TransactionData.cs" />
     <Compile Include="DataTransfer\WorkflowStatusData.cs" />
     <Compile Include="DataTransfer\RequestTypeData.cs" />
@@ -105,6 +112,7 @@
     <Compile Include="Enum\ExchangeRateGridFieldEnum.cs" />
     <Compile Include="Enum\ExchangeRateStatusEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\SessionEnum.cs" />
     <Compile Include="Enum\WorkflowStatusEnum.cs" />
     <Compile Include="Enum\RequestTypeEnum.cs" />
     <Compile Include="Enum\TransactionTypeEnum.cs" />

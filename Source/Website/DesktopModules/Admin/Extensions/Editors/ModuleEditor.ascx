@@ -46,8 +46,7 @@
     <fieldset>
         <div id="definitionSelectRow" class="dnnFormItem" runat="server">
             <dnn:label id="plSelectDefinition" controlname="cboDefinitions" runat="server" />
-            <dnn:DnnComboBox id="cboDefinitions" runat="server" datatextfield="DefinitionName" datavaluefield="ModuleDefId" autopostback="True" CssClass="dnnFixedSizeComboBox" />
-            <asp:LinkButton id="cmdAddDefinition" resourcekey="cmdAddDefinition" runat="server" CssClass="dnnSecondaryAction" CausesValidation="false" />
+            <dnn:DnnComboBox id="cboDefinitions" runat="server" datatextfield="DefinitionName" datavaluefield="ModuleDefId" autopostback="True" />
         </div>
         <asp:Panel ID="pnlDefinition" runat="server" Visible="false">
             <dnn:DnnFormEditor id="definitionsEditor" runat="Server" FormMode="Short">
@@ -71,6 +70,7 @@
                         <dnn:imagecommandcolumn headerStyle-width="18px" commandname="Delete" IconKey="Delete" keyfield="ModuleControlID" />
                     </Columns>
                 </asp:datagrid>
+                <asp:LinkButton id="cmdAddDefinition" resourcekey="cmdAddDefinition" runat="server" CssClass="dnnSecondaryAction" CausesValidation="false" />
                 <asp:Hyperlink id="cmdAddControl" runat="server" CssClass="dnnSecondaryAction" resourcekey="cmdAddControl" />
             </asp:Panel>
             <div class="dnnFormItem"><asp:Label ID="lblDefinitionError" runat="server" CssClass="dnnFormMessage dnnFormError" Visible="false" ResourceKey="DuplicateName" /> </div>

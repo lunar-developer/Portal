@@ -12,7 +12,7 @@ namespace Modules.Forex.Global
     public class TransactionCreationBase: ForexModulesBase
     {
         #region Set Control
-        protected static void TransactionButtonControl(Button btnSubtmit, Button btnUpdate, Button btnReject, 
+        protected static void TransactionButtonControl(Button btnSubtmit,Button btnReject, 
             int workflowStatusID, int userID, string creationDateTime)
         {
             List<ActionData> actionListData = ActionBusiness.GetListByUser(workflowStatusID, userID);
@@ -26,12 +26,6 @@ namespace Modules.Forex.Global
                             ButtonControl(btnSubtmit, action.Text, FunctionBase.ConvertToBool(action.IsRole) && 
                                 IsValidWorkTimeRequestTransaction(workflowStatusID) && 
                                 IsValidTransactionDate(workflowStatusID, creationDateTime),
-                                bool.Parse(action.IsVisible));
-                            break;
-                        case ActionCodeEnum.Update:
-                            ButtonControl(btnUpdate, action.Text, (workflowStatusID >= WorkflowStatusEnum.Open &&
-                                workflowStatusID != WorkflowStatusEnum.HOFinishCancel) &&
-                                FunctionBase.ConvertToBool(action.IsRole), 
                                 bool.Parse(action.IsVisible));
                             break;
                         case ActionCodeEnum.Cancel:
@@ -118,9 +112,34 @@ namespace Modules.Forex.Global
 
         protected static string FormatTime(string time)
         {
-            return $"{time.Substring(0, 2)}:{time.Substring(2, 2)}";
+            if (string.IsNullOrWhiteSpace(time)) return string.Empty;
+            if (time.Length == 3) time = "0" + time;
+            return time.Length >= 4 ? $"{time.Substring(0, 2)}:{time.Substring(2, 2)}" : time;
         }
 
+        protected static bool IsDisplayControlUserInfo(int workflowStatusID,
+            string makerID, string dealerID, out string controlValue)
+        {
+            controlValue = string.Empty;
+            if (IsNewTransaction(workflowStatusID) == false &&
+                (!string.IsNullOrWhiteSpace(makerID) ||
+                    !string.IsNullOrWhiteSpace(dealerID)))
+            {
+                string markerDisplayName = GetDisplayNameByID(makerID);
+                string dealerDisplayName = GetDisplayNameByID(dealerID);
+
+                if (!string.IsNullOrWhiteSpace(markerDisplayName))
+                {
+                    controlValue += $"Maker: <b>{markerDisplayName}</b> ";
+                }
+                if (!string.IsNullOrWhiteSpace(markerDisplayName))
+                {
+                    controlValue += $" - Dealer: <b>{dealerDisplayName}</b> ";
+                }
+                return controlValue != string.Empty;
+            }
+            return false;
+        }
         #endregion
 
 
@@ -203,11 +222,10 @@ namespace Modules.Forex.Global
             return masterRate * limit / 100;
         }
 
-        protected static bool IsExceedMargin(string currencyCode, string transactionType,
+        protected static bool IsExceedMargin(string currencyCode, bool isBuy,
             string customerInvoiceAmountText, string marginText,string capitalAmountText)
         {
             if (string.IsNullOrWhiteSpace(currencyCode) || 
-                string.IsNullOrWhiteSpace(transactionType)||
                 string.IsNullOrWhiteSpace(marginText))
             {
                 return true;
@@ -220,15 +238,11 @@ namespace Modules.Forex.Global
                 double.TryParse(marginText, out double margin) &&
                 double.TryParse(capitalAmountText, out double capitalAmount))
             {
-                bool isBuy = (transactionType == TransactionTypeEnum.BuyByCash.ToString() ||
-                    transactionType == TransactionTypeEnum.BuyByFundTranfer.ToString());
-                bool isSell = (transactionType == TransactionTypeEnum.SellByCash.ToString() ||
-                    transactionType == TransactionTypeEnum.SellByFundTranfer.ToString());
                 if (isBuy && (capitalAmount - invoiceAmount >= margin))
                 {
                     return false;
                 }
-                if (isSell && (invoiceAmount - capitalAmount >= margin))
+                if (isBuy == false && (invoiceAmount - capitalAmount >= margin))
                 {
                     return false;
                 }
@@ -237,17 +251,7 @@ namespace Modules.Forex.Global
             return true;
         }
 
-        protected static bool IsExceedRequestChange(string quantityAmountText, string currentQuantity)
-        {
-            if(double.TryParse(currentQuantity, out double quantity) &&
-                double.TryParse(quantityAmountText, out double quantityAmount) &&
-                Math.Abs(quantityAmount - quantity) <= MaxAmountRequestChange &&
-                Math.Abs(quantityAmount - quantity) <= (quantity * MaxAmountRequestChangePercent/100))
-            {
-                return false;
-            }
-            return true;
-        }
+ 
         protected static bool IsDealerApprovalEditExceedLimit(string quantityAmount, string quantityProcessChange)
         {
             if (double.TryParse(quantityAmount, out double currentQuantity) &&
@@ -279,5 +283,12 @@ namespace Modules.Forex.Global
         }
         #endregion
 
+        protected static readonly string WorkTimeMessage =
+                $"Thời gian cho phép tạo giao dịch Từ thứ 2 đến thứ 6, Sáng từ: {FormatTime(BeginWorkingMorning.ToString())} - " +
+                $"{FormatTime(EndWorkingMorning.ToString())}, " +
+                $"Chiều từ: {FormatTime(BeginWorkingAfternoon.ToString())} - " +
+                $"{FormatTime(EndWorkingAfternoon.ToString())}" +
+                $", Đối với Thứ 7 bắt đầu từ {FormatTime(BeginWorkingSaturday.ToString())} - {FormatTime(EndWorkingSaturday.ToString())}"
+            ;
     }
 }

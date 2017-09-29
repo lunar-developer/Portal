@@ -206,8 +206,8 @@ namespace Website.Library.Global
                 foreach (string key in dictionary.SortKeys)
                 {
                     object item = dictionary[key];
-                    if(string.Equals(fieldInfo?.GetValue(item).ToString(), fieldValue)
-                        || string.Equals(propertyInfo?.GetValue(item).ToString(), fieldValue))
+                    if(string.Equals(fieldInfo?.GetValue(item)?.ToString(), fieldValue)
+                        || string.Equals(propertyInfo?.GetValue(item)?.ToString(), fieldValue))
                     {
                         list.Add(item as T);
                     }
@@ -229,8 +229,8 @@ namespace Website.Library.Global
                 foreach (string key in dictionary.SortKeys)
                 {
                     object item = dictionary[key];
-                    if (string.Equals(fieldInfo?.GetValue(item).ToString(), fieldValue)
-                        || string.Equals(propertyInfo?.GetValue(item).ToString(), fieldValue))
+                    if (string.Equals(fieldInfo?.GetValue(item)?.ToString(), fieldValue)
+                        || string.Equals(propertyInfo?.GetValue(item)?.ToString(), fieldValue))
                     {
                         list.Add(item);
                     }

@@ -85,58 +85,69 @@ function ValidateExchangeCreationForm()
     }
     return true;
 }
-function RequestTransactionValidate() {
-
-    var arrRequireFields = [
-        "txtBranchName", "txtMarker", "calTransactionDate", "txtQuantityTransactionAmount", "txtCustomerIDNo",
-        "txtCustomerFullname"
-    ];
-    var arrRequireRadOptions = ["ctTransactionType", "ctExchangeCode", "ctCustomerType", "ctReasonTransaction"];
-    if (validateInputArray(arrRequireFields) === false
-        || validateRadOptionArray(arrRequireRadOptions) === false) {
+function RequestTransactionValidate()
+{
+    if (validateRadOption("ctTransactionType") === false ||
+        validateRadOption("ctExchangeCode") === false)
+    {
+        return false;
+    }
+    if (validateInput(getControl("calTransactionDate")) === false)
+    {
         return false;
     }
 
-    if (validateNumber(getControl("txtQuantityTransactionAmount"), 1, 1000000000000) === false) {
+    if (validateInput(getControl("txtQuantityTransactionAmount")) === false ||
+        validateNumber(getControl("txtQuantityTransactionAmount"), 1, 1000000000000) === false) {
         return false;
     }
+    if (validateInput(getControl("txtCustomerIDNo")) === false ||
+        validateInput(getControl("txtCustomerIDNo")) === false)
+    {
+        return false;
+    }
+
+    if (validateRadOption("ctCustomerType") === false ||
+        validateRadOption("ctReasonTransaction") === false ) {
+        return false;
+    }
+
+    
 
     return true;
 }
-function UpdateCustomerInfo() {
-    var arrRequireFields = [
-        "txtBranchName", "txtMarker", "calTransactionDate", "txtQuantityTransactionAmount", "txtCustomerIDNo",
-        "txtCustomerFullname"
-    ];
-    var arrRequireRadOptions = ["ctCustomerType", "ctReasonTransaction"];
-    if (validateInputArray(arrRequireFields) === false
-        || validateRadOptionArray(arrRequireRadOptions) === false) {
-        return false;
-    }
-    return true;
-}
+
 function ExceedLimit(element)
 {
     var amount = GetMoneyByElement(element);
-    var limit = GetControlMoney("HiddenLimit");
+    var limit = GetControlMoney("HiddenLimitAmount");
     var masterRate = GetControlMoney("HiddenMasterRate");
     var transactionTypeId = GetControlNumber("HiddenTransactionTypeID");
     if (masterRate === 0 || limit === 0) return true;
-    if (((transactionTypeId === 3 || transactionTypeId === 1) && (amount < masterRate - limit)))
+    var transactionMessage = "mua/bán";
+    
+    if (transactionTypeId === 3 || transactionTypeId === 1)
     {
-        alertMessage("Giá mua nhỏ hơn biên độ NHNN qui định: " + formatDigit((masterRate - limit)), undefined, undefined, function () {
+        transactionMessage = "mua";
+    }
+    else if (transactionTypeId === 4 || transactionTypeId === 2)
+    {
+        transactionMessage = "bán";
+    }
+    var minLimit = formatDigit((masterRate - limit));
+    var maxLimit = formatDigit((masterRate + limit));
+    if ((amount < masterRate - limit) || 
+        (amount > masterRate + limit))
+    {
+        alertMessage("Giá " + transactionMessage + " vượt biên độ NHNN qui định, giá không được nhỏ hơn " +
+            minLimit + " và không được phép lớn hơn " + maxLimit,
+            undefined, undefined, function() {
             showError(element, true);
             focus(element);
         });
         return false;
     }
-    if (((transactionTypeId === 4 || transactionTypeId === 2) && (amount > masterRate + limit))) {
-        alertMessage("Giá bán vượt biên độ NHNN qui định: " + formatDigit((masterRate + limit)), undefined, undefined, function () {
-            showError(element, true);
-            focus(element);
-        });
-        return false;
-    }
+
     showError(element, false);
     return true;
 }
@@ -182,39 +193,86 @@ function InputBrokerage() {
     if (validateNumber(getControl("txtBrokerage"), 1, 1000000000000) === false) {
         return false;
     }
+    var transactionTypeId = GetControlNumber("HiddenTransactionTypeID");
+    var capitalAmount = GetControlMoney("HiddenCapitalAmount");
+    var brokerAmount = GetControlMoney("txtBrokerage");
+    if ((transactionTypeId === 3 || transactionTypeId === 1) && brokerAmount < capitalAmount) /*buy*/
+    {
+        alertMessage("Giá môi giới chiều mua chỉ được phép lớn hơn hoặc bằng (>=" +
+            capitalAmount + " )",
+            undefined, undefined, function () {
+                showError(getControl("txtBrokerage"), true);
+                focus(getControl("txtBrokerage"));
+            });
+        return false;
+    }
+    else if ((transactionTypeId === 4 || transactionTypeId === 2) && brokerAmount > capitalAmount) /*sell*/
+    {
+        alertMessage("Giá môi giới chiều bán chỉ được phép nhở hơn hoặc bằng giá vốn (<=" +
+            capitalAmount + " )",
+            undefined, undefined, function () {
+                showError(getControl("txtBrokerage"), true);
+                focus(getControl("txtBrokerage"));
+            });
+        return false;
+    }
     return true;
 }
 
 function InvalidRequestEdit()
 {
-    var quantityAmount = GetControlMoney("txtQuantityTransactionAmount");
-    var currentQuantityAmount = GetControlMoney("HiddenCurrentQuantityAmount");
-    var maxeditPercent = GetControlMoney("HiddenMaxRequestEditPercent");
-    var maxeditAmount = GetControlMoney("HiddenMaxRequestEditAmount");
-
-    if (Math.abs(quantityAmount - currentQuantityAmount) > (currentQuantityAmount * maxeditPercent/100) ||
-        Math.abs(quantityAmount - currentQuantityAmount)  > maxeditAmount) {
-        alertMessage("Số lượng điều chỉnh không được phép lớn hơn " + maxeditPercent + " %, hoặc lớn hơn " + formatDigit(maxeditAmount),
+    var currentInvoiceAmount = GetControlMoney("HiddenInvoiceAmount");
+    var invoiceAmount = GetControlMoney("txtCustomerInvoiceAmount");
+    var transactionTypeId = GetControlNumber("HiddenTransactionTypeID");
+    var transactionMessage = "mua/bán";
+    var invalidEditMessage = "";
+    var isFail = false;
+    if ((transactionTypeId === 3 || transactionTypeId === 1) && (invoiceAmount > currentInvoiceAmount))
+    {
+        isFail = true;
+        transactionMessage = "mua";
+        invalidEditMessage = "Chỉ được phép nhỏ hơn " + currentInvoiceAmount;
+    }
+    else if ((transactionTypeId === 4 || transactionTypeId === 2) && (invoiceAmount < currentInvoiceAmount)) {
+        isFail = true;
+        transactionMessage = "bán";
+        invalidEditMessage = "Chỉ được phép lớn hơn " + currentInvoiceAmount;
+    }
+    if (isFail === true) {
+        alertMessage("Giá khách hàng (" + transactionMessage + ") không hợp lệ, " + invalidEditMessage,
             undefined, undefined, function () {
-            showError(getControl("txtQuantityTransactionAmount"), true);
-            focus(getControl("txtQuantityTransactionAmount"));
+                showError(getControl("txtCustomerInvoiceAmount"), true);
+            focus(getControl("txtCustomerInvoiceAmount"));
         });
         return false;
     }
-    showError(getControl("txtQuantityTransactionAmount"), false);
+    showError(getControl("txtCustomerInvoiceAmount"), false);
     return true;
 }
-
+function ValidateCustomerInfo() {
+    var arrRequireFields = [
+        "txtBranchName", "txtMarker", "calTransactionDate", "txtQuantityTransactionAmount", "txtCustomerIDNo",
+        "txtCustomerFullname"
+    ];
+    var arrRequireRadOptions = ["ctCustomerType", "ctReasonTransaction"];
+    if (validateInputArray(arrRequireFields) === false
+        || validateRadOptionArray(arrRequireRadOptions) === false) {
+        return false;
+    }
+    return true;
+}
 function RequestEdit() {
     var arrRequireFields = [
-        "txtQuantityTransactionAmount"
+        "txtQuantityTransactionAmount","txtCustomerInvoiceAmount"
     ];
     if (validateInputArray(arrRequireFields) === false) {
         return false;
     }
-    var quantityAmountElement = getControl("txtQuantityTransactionAmount");
-    if (validateNumber(quantityAmountElement, 1, 1000000000000) === false ||
-        InvalidRequestEdit() === false) {
+    if (ValidateCustomerInfo() === false ||
+        validateNumber(getControl("txtQuantityTransactionAmount"), 1, 1000000000000) === false ||
+        validateNumber(getControl("txtCustomerInvoiceAmount"), 1, 1000000000000) === false ||
+        InvalidRequestEdit() === false ||
+        ExceedLimit(getControl("txtCustomerInvoiceAmount")) === false) {
         return false;
     }
     
@@ -236,8 +294,8 @@ function processOnSelectPostBack(sender) {
 }
 function BtnSubmition()
 {
-    var transactionTypeId = GetControlNumber("HiddenWorkflowStatus");
-    switch (transactionTypeId)
+    var workflowStatusId = GetControlNumber("HiddenWorkflowStatus");
+    switch (workflowStatusId)
     {
         case 0:
         case 5:
@@ -272,6 +330,12 @@ function BtnReloadBidManagementGridView() {
 }
 function BtnReloadExchangeRate() {
     var element = getControl("btnReloadExchangeRate");
+    if (typeof element !== "undefined" && element !== null) {
+        element.click();
+    }
+}
+function BtnExchangeRateRedirectPage() {
+    var element = getControl("btnRedirectPage");
     if (typeof element !== "undefined" && element !== null) {
         element.click();
     }

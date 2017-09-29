@@ -10,6 +10,9 @@
 
         public const string DepositPercent = "FX_DepositPercent";
 
+        public const string TransactionManagementUrl = "FX_TransactionManagementUrl";
+        public const string BidManagementUrl = "FX_BidManagementUrl";
+        public const string TransactionCreationUrl = "FX_TransactionCreationUrl";
         public const string TransactionCreationControlKey = "TransactionCreationControlKey";
         public const string ExchangeRateCreationControlKey = "ExchangeRateCreationControlKey";
         public const string HistoryControlKey = "transactionHistory";

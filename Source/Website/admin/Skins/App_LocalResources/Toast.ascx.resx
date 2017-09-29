@@ -121,6 +121,7 @@
     <value>See All Messages</value>
   </data>
   <data name="SeeAllNotification.Text" xml:space="preserve">
-    <value>See All Notifications</value>
+    <value>Xem Hộp Thư</value>
+    <comment>See All Notifications</comment>
   </data>
 </root>

@@ -1,5 +1,4 @@
 <%@ Control Language="C#" AutoEventWireup="false" Inherits="DotNetNuke.UI.Skins.Controls.Toast" CodeFile="Toast.ascx.cs" %>
-<%@ Import Namespace="Website.Library.Global" %>
 <script type="text/javascript">
     $(document).ready(function () {
 

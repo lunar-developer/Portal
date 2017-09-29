@@ -24,8 +24,8 @@ namespace Website.Library.Global
     public static class FunctionBase
     {
         private static readonly ILog Logger;
-        private const string GrantImage = "/images/grant.gif";
-        private const string ErrorImage = "/images/red-error_16px.gif";
+        public static readonly string IconSuccess = "<i class=\"fa fa-check icon-success\"></i>";
+        public static readonly string IconFailure = "<i class=\"fa fa-close icon-danger\"></i>";
 
 
         static FunctionBase()
@@ -155,9 +155,8 @@ namespace Website.Library.Global
 
         public static string FormatState(string status, bool expected = true)
         {
-            const string img = @"<img src=""{0}""/>";
             bool result = ConvertToBool(status);
-            return result == expected ? string.Format(img, GrantImage) : string.Format(img, ErrorImage);
+            return result == expected ? IconSuccess : IconFailure;
         }
         #endregion
 
@@ -196,6 +195,12 @@ namespace Website.Library.Global
         public static string ReadFile(string filePath)
         {
             return File.Exists(filePath) ? File.ReadAllText(filePath) : string.Empty;
+        }
+
+        public static string GetRoleName(string roleID)
+        {
+            RoleInfo roleInfo = RoleController.Instance.GetRoleById(0, int.Parse(roleID));
+            return roleInfo == null ? string.Empty : $"{roleInfo.RoleName} - {roleInfo.Description}";
         }
 
         public static UserInfo GetUserByUserID(int userID)
@@ -521,11 +526,210 @@ namespace Website.Library.Global
                 Body = body,
                 From = fromUser.Email,
                 SenderUserID = fromUser.UserID,
-                NotificationTypeID = 1
+                NotificationTypeID = 6
             };
             NotificationsController.Instance.SendNotification(
                 notification, PortalSettings.Current.PortalId, null, new List<UserInfo> { toUser });
         }
+        #endregion
+
+        #region Reserve
+
+        //public static string DocTienBangChu(string amount, string strTail)
+        //{
+        //    string[] ChuSo = new string[10] { " không", " một", " hai", " ba", " bốn", " năm", " sáu", " bảy", " tám", " chín" };
+        //    string[] Tien = new string[6] { "", " nghìn", " triệu", " tỷ", " nghìn tỷ", " triệu tỷ" };
+
+        //    amount = amount.Replace(",", "");
+        //    if (amount.Contains("."))
+        //        amount = amount.Remove(amount.IndexOf('.'));
+
+        //    long SoTien;
+        //    if (long.TryParse(amount, out SoTien) == false)
+        //    {
+        //        return amount;
+        //    }
+
+        //    int lan, i;
+        //    long so;
+        //    string KetQua = "", tmp = "";
+        //    int[] ViTri = new int[6];
+        //    if (SoTien < 0) return "So tien am !";
+        //    if (SoTien == 0) return "Khong dong !";
+        //    if (SoTien > 0)
+        //    {
+        //        so = SoTien;
+        //    }
+        //    else
+        //    {
+        //        so = -SoTien;
+        //    }
+        //    //Ki?m tra s? quá l?n
+        //    if (SoTien > 8999999999999999)
+        //    {
+        //        SoTien = 0;
+        //        return "";
+        //    }
+        //    ViTri[5] = (int)(so / 1000000000000000);
+        //    so = so - long.Parse(ViTri[5].ToString()) * 1000000000000000;
+        //    ViTri[4] = (int)(so / 1000000000000);
+        //    so = so - long.Parse(ViTri[4].ToString()) * +1000000000000;
+        //    ViTri[3] = (int)(so / 1000000000);
+        //    so = so - long.Parse(ViTri[3].ToString()) * 1000000000;
+        //    ViTri[2] = (int)(so / 1000000);
+        //    ViTri[1] = (int)((so % 1000000) / 1000);
+        //    ViTri[0] = (int)(so % 1000);
+        //    if (ViTri[5] > 0)
+        //    {
+        //        lan = 5;
+        //    }
+        //    else if (ViTri[4] > 0)
+        //    {
+        //        lan = 4;
+        //    }
+        //    else if (ViTri[3] > 0)
+        //    {
+        //        lan = 3;
+        //    }
+        //    else if (ViTri[2] > 0)
+        //    {
+        //        lan = 2;
+        //    }
+        //    else if (ViTri[1] > 0)
+        //    {
+        //        lan = 1;
+        //    }
+        //    else
+        //    {
+        //        lan = 0;
+        //    }
+        //    for (i = lan; i >= 0; i--)
+        //    {
+        //        tmp = DocSo3ChuSo(ViTri[i]);
+        //        KetQua += tmp;
+        //        if (ViTri[i] != 0) KetQua += Tien[i];
+        //        if ((i > 0) && (!string.IsNullOrEmpty(tmp))) KetQua += ",";//&& (!string.IsNullOrEmpty(tmp))
+        //    }
+        //    if (KetQua.Substring(KetQua.Length - 1, 1) == ",") KetQua = KetQua.Substring(0, KetQua.Length - 1);
+        //    KetQua = KetQua.Trim() + strTail;
+        //    return KetQua.Substring(0, 1).ToUpper() + KetQua.Substring(1);
+        //}
+
+        //public static string DocSo3ChuSo(int baso)
+        //{
+        //    string[] ChuSo = new string[10] { " không", " một", " hai", " ba", " bốn", " năm", " sáu", " bảy", " tám", " chín" };
+        //    string[] Tien = new string[6] { "", " nghìn", " triệu", " tỷ", " nghìn tỷ", " triệu tỷ" };
+
+        //    int tram, chuc, donvi;
+        //    string KetQua = "";
+        //    tram = (int)(baso / 100);
+        //    chuc = (int)((baso % 100) / 10);
+        //    donvi = baso % 10;
+        //    if ((tram == 0) && (chuc == 0) && (donvi == 0)) return "";
+        //    if (tram != 0)
+        //    {
+        //        KetQua += ChuSo[tram] + " trăm"; //tram
+        //        if ((chuc == 0) && (donvi != 0)) KetQua += " linh";
+        //    }
+        //    if ((chuc != 0) && (chuc != 1))
+        //    {
+        //        KetQua += ChuSo[chuc] + " mươi"; //muoi
+        //        if ((chuc == 0) && (donvi != 0)) KetQua = KetQua + " linh";
+        //    }
+        //    if (chuc == 1) KetQua += " mười"; //mu?i
+        //    switch (donvi)
+        //    {
+        //        case 1:
+        //            if ((chuc != 0) && (chuc != 1))
+        //            {
+        //                KetQua += " một"; //m?t
+        //            }
+        //            else
+        //            {
+        //                KetQua += ChuSo[donvi];
+        //            }
+        //            break;
+        //        case 5:
+        //            if (chuc == 0)
+        //            {
+        //                KetQua += ChuSo[donvi];
+        //            }
+        //            else
+        //            {
+        //                KetQua += " lăm"; //lam
+        //            }
+        //            break;
+        //        default:
+        //            if (donvi != 0)
+        //            {
+        //                KetQua += ChuSo[donvi];
+        //            }
+        //            break;
+        //    }
+        //    return KetQua;
+        //}
+
+        //public static string RemoveDiacriticsExt(string stIn, PatternType pattern)
+        //{
+        //    string PATTERN_IDENTITY = @"[^a-zA-Z0-9.]";
+        //    string PATTERN_PASSPORT = @"[^a-zA-Z0-9]";
+        //    string PATTERN_EMBOSSNAME = @"[^a-zA-Z0-9 ]";
+        //    string PATTERN_FULLNAME = @"[^a-zA-Z0-9\-_ ]";
+        //    string PATTERN_ADDRESS = @"[^a-zA-Z0-9\\\-/,._ ]";
+        //    string PATTERN_PHONE = @"[^0-9]";
+        //    string PATTERN_NPHONE = @"[^0-9,]";
+        //    string PATTERN_EMAIL = @"[^a-zA-Z0-9@._\-]";
+
+        //    stIn = stIn.Trim();
+
+        //    string strFormD = stIn.Normalize(NormalizationForm.FormD);
+        //    StringBuilder sb = new StringBuilder();
+        //    for (int ich = 0; ich < strFormD.Length; ich++)
+        //    {
+        //        UnicodeCategory uc = CharUnicodeInfo.GetUnicodeCategory(strFormD[ich]);
+        //        if (uc != UnicodeCategory.NonSpacingMark)
+        //        {
+        //            sb.Append(strFormD[ich]);
+        //        }
+        //    }
+        //    Regex regex = new Regex(@"\p{IsCombiningDiacriticalMarks}+");
+        //    string strFormC = (sb.ToString().Normalize(NormalizationForm.FormC));
+        //    string str = regex.Replace(strFormC, String.Empty).Replace('\u0111', 'd').Replace('\u0110', 'D');
+
+        //    string result = string.Empty;
+        //    switch (pattern)
+        //    {
+        //        case PatternType.EmbossName:
+        //            result = Regex.Replace(Regex.Replace(str, PATTERN_EMBOSSNAME, string.Empty), "[ ]{2,}", " ");
+        //            break;
+        //        case PatternType.TextAndNumber:
+        //            result = Regex.Replace(str, PATTERN_PASSPORT, string.Empty);
+        //            break;
+        //        case PatternType.Identity:
+        //            result = Regex.Replace(str, PATTERN_IDENTITY, string.Empty);
+        //            break;
+        //        case PatternType.Name:
+        //            result = Regex.Replace(Regex.Replace(str, PATTERN_FULLNAME, string.Empty), "[ ]{2,}", " ");
+        //            break;
+        //        case PatternType.Address:
+        //            result = Regex.Replace(Regex.Replace(str, PATTERN_ADDRESS, string.Empty), "[ ]{2,}", " ");
+        //            break;
+        //        case PatternType.Number:
+        //            result = Regex.Replace(str, PATTERN_PHONE, string.Empty);
+        //            break;
+        //        case PatternType.NPhone:
+        //            result = Regex.Replace(str, PATTERN_NPHONE, string.Empty);
+        //            break;
+        //        case PatternType.Email:
+        //            result = Regex.Replace(str, PATTERN_EMAIL, string.Empty);
+        //            break;
+        //        case PatternType.All:
+        //            result = str;
+        //            break;
+        //    }
+        //    return result.ToUpper();
+        //}
+
         #endregion
     }
 }

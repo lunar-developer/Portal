@@ -48,13 +48,6 @@
                                     <HeaderStyle Width="15%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                 </control:GridTemplateColumn>
-                                <control:GridBoundColumn DataField="BigFigure"
-                                                         Visible="True" AllowFiltering="False"
-                                                         SortExpression="BigFigure"
-                                                         HeaderText="BigFigure">
-                                    <HeaderStyle Width="20%" HorizontalAlign="Left" VerticalAlign="Middle" />
-                                    <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
-                                </control:GridBoundColumn>
                                 <control:GridTemplateColumn DataField="BuyRateFT" Visible="True" AllowFiltering="False"
                                                          SortExpression="BuyRateFT" 
                                                          ColumnGroupName="FundTransferGroup"
@@ -67,7 +60,7 @@
                                             <%#Eval("BuyRateFT").ToString() %>
                                         </asp:LinkButton>
                                     </ItemTemplate>
-                                    <HeaderStyle Width="15%" HorizontalAlign="Left" VerticalAlign="Middle" />
+                                    <HeaderStyle Width="20%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                 </control:GridTemplateColumn>
                                 <control:GridTemplateColumn DataField="SellRateFT" Visible="True" AllowFiltering="False"
@@ -82,7 +75,7 @@
                                             <%#Eval("SellRateFT").ToString() %>
                                         </asp:LinkButton>
                                     </ItemTemplate>
-                                    <HeaderStyle Width="15%" HorizontalAlign="Left" VerticalAlign="Middle" />
+                                    <HeaderStyle Width="20%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                 </control:GridTemplateColumn>
                                 <control:GridTemplateColumn DataField="BuyRateCash" Visible="True" AllowFiltering="False"
@@ -97,7 +90,7 @@
                                             <%#Eval("BuyRateCash").ToString() %>
                                         </asp:LinkButton>
                                     </ItemTemplate>
-                                    <HeaderStyle Width="15%" HorizontalAlign="Left" VerticalAlign="Middle" />
+                                    <HeaderStyle Width="20%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                 </control:GridTemplateColumn>
                                 <control:GridTemplateColumn DataField="SellRateCash" Visible="True" AllowFiltering="False"
@@ -112,7 +105,7 @@
                                             <%#Eval("SellRateCash").ToString() %>
                                         </asp:LinkButton>
                                     </ItemTemplate>
-                                    <HeaderStyle Width="15%" HorizontalAlign="Left" VerticalAlign="Middle" />
+                                    <HeaderStyle Width="20%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                     <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                 </control:GridTemplateColumn>
                             </Columns>
@@ -123,6 +116,9 @@
         </div>
         <asp:Button CssClass="btn btn-white invisible" runat="server" 
                     ID="btnReloadExchangeRate" OnClick="ReloadExchangeRate"
+                    Text="Tải lại dữ liệu" />
+        <asp:Button CssClass="btn btn-white invisible" runat="server" 
+                    ID="btnRedirectPage" OnClick="RedirectPage"
                     Text="Tải lại dữ liệu" />
     </ContentTemplate>
 </asp:UpdatePanel>

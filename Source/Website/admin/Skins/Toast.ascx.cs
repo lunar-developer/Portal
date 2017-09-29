@@ -17,7 +17,7 @@ using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework.JavaScriptLibraries;
 using DotNetNuke.Services.Localization;
 using DotNetNuke.Web.Client.ClientResourceManagement;
-
+using Website.Library.Global;
 #endregion
 
 namespace DotNetNuke.UI.Skins.Controls
@@ -35,7 +35,7 @@ namespace DotNetNuke.UI.Skins.Controls
 
         public string GetNotificationLink()
         {
-            return GetMessageLink() + "?view=notifications&action=notifications";
+            return FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_InboxUrl"));
         }
 
         public string GetMessageLink()

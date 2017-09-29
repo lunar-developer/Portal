@@ -18,7 +18,5 @@
         public const string LogAction = "LogAction";
         public const string LogDetail = "LogDetail";
         public const string Remark = "Remark";
-        public const string ModifyUserID = "ModifyUserID";
-        public const string ModifyDateTime = "ModifyDateTime";
     }
 }

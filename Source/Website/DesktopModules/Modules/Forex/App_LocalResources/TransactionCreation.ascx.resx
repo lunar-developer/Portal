@@ -139,7 +139,13 @@
     <value>Big Figure</value>
   </data>
   <data name="lblBigFigure.Text" xml:space="preserve">
-    <value>Giá ngoại tệ</value>
+    <value>Giá (tham khảo)</value>
+  </data>
+  <data name="lblBigFigureBuy.Text" xml:space="preserve">
+    <value>Giá mua (tham khảo)</value>
+  </data>
+  <data name="lblBigFigureSell.Text" xml:space="preserve">
+    <value>Giá bán (tham khảo)</value>
   </data>
   <data name="lblBranchName.Help" xml:space="preserve">
     <value>Tên trung tâm kinh doanh</value>
@@ -158,6 +164,24 @@
   </data>
   <data name="lblCapitalAmount.Text" xml:space="preserve">
     <value>Hội sở chào giá</value>
+  </data>
+  <data name="lblControlInfo.Help" xml:space="preserve">
+    <value>Thông tin người xử lí: Tên Marker, Tên Dealer</value>
+  </data>
+  <data name="lblControlInfo.Text" xml:space="preserve">
+    <value>Thông tin người xử lí</value>
+  </data>
+  <data name="lblCreation.Help" xml:space="preserve">
+    <value>Họ tên người tạo giao dịch</value>
+  </data>
+  <data name="lblCreation.Text" xml:space="preserve">
+    <value>Họ tên người tạo</value>
+  </data>
+  <data name="lblCurrentStatus.SubText" xml:space="preserve">
+    <value>Trạng thái hiện tại (Thể hiện từng bước theo qui trình)</value>
+  </data>
+  <data name="lblCurrentStatus.Text" xml:space="preserve">
+    <value>Trạng thái hiện tại</value>
   </data>
   <data name="lblCustomerFullname.Help" xml:space="preserve">
     <value>Họ và tên khách hàng</value>
@@ -219,12 +243,6 @@
   <data name="lblMargin.Text" xml:space="preserve">
     <value>Biên độ lời tối thiểu</value>
   </data>
-  <data name="lblMarker.Help" xml:space="preserve">
-    <value>Họ tên người tạo giao dịch</value>
-  </data>
-  <data name="lblMarker.Text" xml:space="preserve">
-    <value>Họ tên người tạo</value>
-  </data>
   <data name="lblMasterRate.Help" xml:space="preserve">
     <value>Tỷ giá trung tâm do ngân hàng nhà nước qui định</value>
   </data>
@@ -268,10 +286,10 @@
     <value>Ghi chú</value>
   </data>
   <data name="lblTransactionDate.Help" xml:space="preserve">
-    <value>Ngày giao dịch</value>
+    <value>Ngày giao dịch có hiệu lực</value>
   </data>
   <data name="lblTransactionDate.Text" xml:space="preserve">
-    <value>Ngày giao dịch</value>
+    <value>Ngày giá trị</value>
   </data>
   <data name="lblTransactionType.Help" xml:space="preserve">
     <value>Loại Giao dịch</value>

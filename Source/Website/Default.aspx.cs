@@ -818,47 +818,31 @@ namespace DotNetNuke.Framework
                 : string.Empty;
 
             string scriptBody = $@"
-                <div style='overflow: hidden'>
+                <div style='width: 750px; overflow: hidden'>
                     <div class='form-group'>
 	                    <div class='dnnFormMessage dnnFormWarning'>
 		                    <span>
-                                Tài khoản của bạn vừa được đăng nhập ở một nơi khác. Vui lòng kiểm tra lại thông tin bên dưới.<br>
+                                Tài khoản của bạn vừa được đăng nhập ở một nơi khác. Vui lòng kiểm tra lại thông tin bên dưới. 
                                 Nếu thông tin bên dưới không phải của bạn, vui lòng thay đổi mật khẩu ngay.
                             </span>
 	                    </div>
                     </div>
                     <div class='form-horizontal'>
 	                    <div class='form-group'>
-		                    <div class='col-sm-2 control-label'>
+		                    <div class='col-sm-3 control-label'>
 			                    <div class='dnnLabel'>    
 				                    <label>
-				                    <span>IP</span>   
+				                    <span>Địa chỉ IP</span>   
 			                    </label>
 			                    </div>
 		                    </div>
-		                    <div class='col-sm-4 control-value'>                
-			                    <div class=''>
+                            <div class='col-sm-3 control-value'>                
+			                    <div>
 				                    <label>
 					                    <span>{ipAddress}</span>   
 				                    </label>
 			                    </div>
 		                    </div>
-                            <div class='col-sm-2 control-label'>  
-			                    <div class='dnnLabel'>    
-				                    <label>
-					                    <span>PC Name</span>   
-				                    </label>
-			                    </div>
-		                    </div>
-		                    <div class='col-sm-4'>
-			                    <div class='control-value'>    
-				                    <label>
-					                    <span>{computerName}</span>   
-				                    </label>
-			                    </div>
-		                    </div>
-	                    </div>
-	                    <div class='form-group'>
 		                    <div class='col-sm-2 control-label'>        
 			                    <div class='dnnLabel'>    
 				                    <label>
@@ -870,6 +854,22 @@ namespace DotNetNuke.Framework
 			                    <div class='control-value'>    
 				                    <label>
 					                    <span>{browser}</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+	                    </div>
+	                    <div class='form-group'>
+                            <div class='col-sm-3 control-label'>  
+			                    <div class='dnnLabel'>    
+				                    <label>
+					                    <span>Tên máy tính</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-3'>
+			                    <div class='control-value'>    
+				                    <label>
+					                    <span>{computerName}</span>   
 				                    </label>
 			                    </div>
 		                    </div>
@@ -892,7 +892,8 @@ namespace DotNetNuke.Framework
                 </div>
             ";
 
-            ScriptManager.RegisterStartupScript(Page, GetType(), "Warning", $"alertMessage(\"{scriptBody.Replace("\r\n", "")}\");", true);
+            ScriptManager.RegisterStartupScript(
+                Page, GetType(), "Warning", $"alertMessage(\"{scriptBody.Replace("\r\n", "")}\");", true);
             HttpContext.Current.Cache.Remove(Session.SessionID);
         }
     }

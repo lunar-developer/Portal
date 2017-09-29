@@ -257,6 +257,7 @@ namespace Website.Library.Global
         protected void ShowAlertDialog(string message, string title = null, bool isUseResource = false,
             string script = "")
         {
+            message = FunctionBase.Minimize(message);
             RegisterScript(GetAlertScript(message, title, isUseResource, script));
         }
 

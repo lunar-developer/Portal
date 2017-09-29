@@ -14,8 +14,10 @@ using Modules.UserManagement.DataAccess;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
+using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
+using Website.Library.Extension;
 using Website.Library.Global;
 using ConfigEnum = Website.Library.Enum.ConfigEnum;
 using FolderEnum = Modules.UserManagement.Enum.FolderEnum;
@@ -96,7 +98,7 @@ namespace Modules.UserManagement.Business
                 return 0;
             }
 
-            SendNotification(TemplateEnum.AccountRegister, userInfo);
+            SendEmailNotification(TemplateEnum.AccountRegister, userInfo);
             return UpdateProfile(dictionary, out message);
         }
 
@@ -167,19 +169,50 @@ namespace Modules.UserManagement.Business
                     { UserTable.LogAction, new SQLParameterData("CẬP NHẬT MẬT KHẨU", SqlDbType.NVarChar) },
                     { UserTable.LogDetail, new SQLParameterData(string.Empty, SqlDbType.NVarChar) },
                     { UserTable.Remark, new SQLParameterData(string.Empty, SqlDbType.NVarChar) },
-                    { UserTable.ModifyUserID, new SQLParameterData(actionUser, SqlDbType.Int) },
+                    { BaseTable.UserIDModify, new SQLParameterData(actionUser, SqlDbType.Int) },
                     {
-                        UserTable.ModifyDateTime,
+                        BaseTable.DateTimeModify,
                         new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                     }
                 };
                 InsertUserLog(dictionary);
-                SendNotification(TemplateEnum.PasswordUpdate, userInfo);
+                SendEmailNotification(TemplateEnum.PasswordUpdate, userInfo);
             }
 
             updateStatus = result ? PasswordUpdateStatus.Success : PasswordUpdateStatus.PasswordResetFailed;
             return result;
         }
+
+        public static bool UpdateAccountStatus(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            bool result = new UserProvider().UpdateAccountStatus(parameterDictionary);
+            string authoriseFlag = parameterDictionary[UserTable.Authorised].ParameterValue.ToString();
+            string userID = parameterDictionary[BaseTable.UserID].ParameterValue.ToString();
+            string userName = parameterDictionary[BaseTable.UserName].ParameterValue.ToString();
+            if (result)
+            {
+                switch (authoriseFlag)
+                {
+                    case UserAuthoriseEnum.Locked:
+                        int.TryParse(userID, out int id);
+                        UserInfo userInfo = UserController.GetUserById(0, id);
+                        SendEmailNotification(TemplateEnum.AccountUnlock, userInfo);
+                        break;
+
+                    case UserAuthoriseEnum.Disabled:
+                        DataCache.ClearUserCache(0, userName);
+                        CacheBase.Remove<UserData>(userID);
+                        break;
+
+                    default:
+                        DataCache.ClearUserCache(0, userName);
+                        CacheBase.Reload<UserData>(userID);
+                        break;
+                }
+            }
+            return true;
+        }
+
 
         public static bool ConfirmBranch(Dictionary<string, SQLParameterData> parameterDictionary)
         {
@@ -197,22 +230,32 @@ namespace Modules.UserManagement.Business
             return new UserProvider().InsertUserLog(dictionary);
         }
 
-        private static void SendNotification(string template, UserInfo userInfo)
+        public static void SendEmailNotification(
+            string template,
+            UserInfo userInfo,
+            InsensitiveDictionary<string> parameters = null)
         {
-            if (DictTemplate.ContainsKey(template) == false)
+            if (userInfo == null
+                || DictTemplate.ContainsKey(template) == false)
             {
                 return;
             }
 
             string subject = GetEmailSubject(template);
-            string body = GetEmailBody(template, userInfo);
-            MailBase.SendEmail(userInfo.Email, subject, body, null);
+            string body = GetEmailBody(template, userInfo, parameters);
+            MailBase.SendEmail(userInfo.Email, subject, body);
         }
 
         private static string GetEmailSubject(string template)
         {
             switch (template)
             {
+                case TemplateEnum.AccountUnlock:
+                    return "MỞ KHÓA TÀI KHOẢN";
+
+                case TemplateEnum.UserRequest:
+                    return "THÔNG TIN YÊU CẦU";
+
                 case TemplateEnum.PasswordUpdate:
                     return "THÔNG TIN MẬT KHẨU";
 
@@ -221,20 +264,29 @@ namespace Modules.UserManagement.Business
             }
         }
 
-        private static string GetEmailBody(string template, UserInfo userInfo)
+        private static string GetEmailBody(
+            string template,
+            UserInfo userInfo,
+            InsensitiveDictionary<string> parameters = null)
         {
             string body = DictTemplate[template];
             Dictionary<string, string> dictionary;
             switch (template)
             {
-                case TemplateEnum.PasswordUpdate:
+                case TemplateEnum.AccountUnlock:
                     dictionary = new Dictionary<string, string>
                     {
-                        { "@SiteName", PortalSettings.Current.PortalName },
                         { "@DisplayName", userInfo.DisplayName },
-                        { "@UserName", userInfo.Username },
-                        { "@Password", userInfo.Membership.Password },
                         { "@Link", FunctionBase.GetConfiguration(ConfigEnum.SiteUrl) }
+                    };
+                    break;
+
+                case TemplateEnum.UserRequest:
+                    string link = parameters?.GetValue("Link") ?? "javascript:;";
+                    dictionary = new Dictionary<string, string>
+                    {
+                        { "@DisplayName", userInfo.DisplayName },
+                        { "@Link", link }
                     };
                     break;
 

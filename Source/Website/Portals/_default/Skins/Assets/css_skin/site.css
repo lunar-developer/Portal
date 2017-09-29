@@ -36,6 +36,16 @@ label {
     min-height: inherit;
 }
 
+/* Menu */
+.c-menu-visible
+{
+    display: block !important;
+}
+.c-menu-hover .c-link, .c-menu-hover > a
+{
+    color: #5893dd !important
+}
+
 /* HTML Module */
 
 .c-popup {
@@ -674,3 +684,28 @@ footer {
 /*****************************/
 /*** End Quick Search Menu ***/
 /*****************************/
+
+
+.notification-icon
+{
+    position: relative;
+    top: -10px;
+    right: 0;
+    margin-left: 5px;
+}
+.c-layout-header .c-navbar .c-mega-menu
+{
+    left: 0;       
+}
+@media (max-width: 991px)
+{
+    .c-layout-header .c-navbar .c-menu-type-mega .row
+    {
+        margin-left: -30px;
+    }
+    .c-layout-header .c-navbar .c-menu-type-mega .row div.pull-right
+    {
+        float: none !important;
+        padding: 0;
+    }
+}

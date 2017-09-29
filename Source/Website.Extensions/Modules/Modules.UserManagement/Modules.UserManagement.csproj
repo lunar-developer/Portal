@@ -50,7 +50,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Business\RegionCacheBusiness.cs" />
     <Compile Include="Business\BranchManagerCacheBusiness.cs" />
+    <Compile Include="Business\RegionBusiness.cs" />
+    <Compile Include="Business\RoleExtensionBusiness.cs" />
+    <Compile Include="Business\RoleEntensionCacheBusiness.cs" />
     <Compile Include="Business\RoleTemplateBusiness.cs" />
     <Compile Include="Business\RoleGroupBusiness.cs" />
     <Compile Include="Business\BranchBusiness.cs" />
@@ -58,11 +62,15 @@
     <Compile Include="Business\BranchCacheBusiness.cs" />
     <Compile Include="Business\UserBusiness.cs" />
     <Compile Include="Business\UserRequestBusiness.cs" />
+    <Compile Include="DataAccess\RegionProvider.cs" />
+    <Compile Include="DataAccess\RoleExtensionProvider.cs" />
     <Compile Include="DataAccess\RoleTemplateProvider.cs" />
     <Compile Include="DataAccess\RoleGroupProvider.cs" />
     <Compile Include="DataAccess\BranchProvider.cs" />
     <Compile Include="DataAccess\UserProvider.cs" />
     <Compile Include="DataAccess\UserRequestProvider.cs" />
+    <Compile Include="Database\RegionTable.cs" />
+    <Compile Include="Database\RoleExtensionTable.cs" />
     <Compile Include="Database\RoleTemplateTable.cs" />
     <Compile Include="Database\RoleGroupTable.cs" />
     <Compile Include="Database\BranchTable.cs" />
@@ -70,6 +78,8 @@
     <Compile Include="Database\UserTable.cs" />
     <Compile Include="DataTransfer\BranchData.cs" />
     <Compile Include="DataTransfer\BranchManagerData.cs" />
+    <Compile Include="DataTransfer\RegionData.cs" />
+    <Compile Include="DataTransfer\RoleExtensionData.cs" />
     <Compile Include="DataTransfer\UserData.cs" />
     <Compile Include="DataTransfer\UserRequestData.cs" />
     <Compile Include="Enum\ConfigEnum.cs" />
@@ -77,7 +87,9 @@
     <Compile Include="Enum\RequestStatusEnum.cs" />
     <Compile Include="Enum\RequestTypeEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
+    <Compile Include="Enum\RoleScopeEnum.cs" />
     <Compile Include="Enum\TemplateEnum.cs" />
+    <Compile Include="Enum\UserAuthoriseEnum.cs" />
     <Compile Include="Global\UserManagementModuleBase.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

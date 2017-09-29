@@ -170,12 +170,12 @@
                                             id="btnApply">
                                             <i class="fa fa-gear"></i>Apply
                                         </a>
-                                        <a class="btn btn-primary"
+                                        <a class="btn btn-success"
                                             href="javascript:;"
                                             id="btnRestore">
                                             <i class="fa fa-recycle"></i>Restore
                                         </a>
-                                        <a class="btn btn-primary"
+                                        <a class="btn btn-default"
                                             href="javascript:;"
                                             id="btnCollapse"
                                             onclick="collapseAllPanels('#DivRoleContainer')">
@@ -245,12 +245,12 @@
                         OnClientClick="return validate();"
                         runat="server"
                         Text="Cập Nhật" />
-                    <asp:Button CssClass="btn btn-primary"
+                    <asp:Button CssClass="btn btn-success"
                         ID="btnApprove"
                         OnClick="ProcessRequest"
                         runat="server"
                         Text="Phê Duyệt" />
-                    <asp:Button CssClass="btn btn-default"
+                    <asp:Button CssClass="btn btn-danger"
                         ID="btnDecline"
                         OnClick="ProcessRequest"
                         runat="server"

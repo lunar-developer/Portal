@@ -7,6 +7,7 @@ using Modules.Forex.Database;
 using Modules.Forex.DataTransfer;
 using Modules.Forex.Enum;
 using Modules.Forex.Global;
+using Telerik.Web.UI;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
@@ -22,49 +23,55 @@ namespace DesktopModules.Modules.Forex
         }
         protected override void OnLoad(EventArgs e)
         {
-            if(IsPostBack)
+            try
             {
-                return;
-            }
-            HiddenTransactionID.Value = Request.QueryString[TransactionTable.ID] ?? string.Empty;
-            if (!string.IsNullOrWhiteSpace(CurrentUserData?.BranchID))
-            {
-                SetPermission();
-                BindData();
-                if (WorkflowStatusID == WorkflowStatusEnum.Reject ||
-                    WorkflowStatusID == WorkflowStatusEnum.HOFinishCancel)
+                if (IsPostBack)
                 {
-                    ShowMessage("Giao dịch đã bị từ chối hoặc hủy, không thể thực hiện thêm thao tác trên giao dịch này được!",
-                        ModuleMessage.ModuleMessageType.YellowWarning);
+                    return;
                 }
-                else if (IsValidWorkTimeRequestTransaction(WorkflowStatusID) == false)
+                HiddenTransactionID.Value = Request.QueryString[TransactionTable.ID] ?? string.Empty;
+                if (!string.IsNullOrWhiteSpace(CurrentUserData?.BranchID))
                 {
-                    ShowMessage(
-                        $"Thời gian cho phép tạo giao dịch: đối với từ thứ 2 đến thứ 6 {FormatTime(BeginWorkingMorning.ToString())} - " +
-                        $"{FormatTime(EndWorkingMorning.ToString())}, " +
-                        $"Thứ 7 bắt đầu từ {FormatTime(BeginWorkingSaturday.ToString())} - {FormatTime(EndWorkingSaturday.ToString())}",
-                        ModuleMessage.ModuleMessageType.YellowWarning);
+                    SetPermission();
+                    BindData();
+                    if (WorkflowStatusID == WorkflowStatusEnum.Reject ||
+                        WorkflowStatusID == WorkflowStatusEnum.HOFinishCancel)
+                    {
+                        ShowMessage("Giao dịch đã bị từ chối hoặc hủy, không thể thực hiện thêm thao tác khác!",
+                            ModuleMessage.ModuleMessageType.YellowWarning);
+                    }
+                    else if (IsValidWorkTimeRequestTransaction(WorkflowStatusID) == false)
+                    {
+                        ShowMessage(WorkTimeMessage,ModuleMessage.ModuleMessageType.YellowWarning);
+                    }
+                    else
+                    {
+                        string transactionTypeID = Request.QueryString[TransactionTable.TransactionTypeID];
+                        string currencyCode = Request.QueryString[TransactionTable.CurrencyCode];
+                        if (!string.IsNullOrWhiteSpace(transactionTypeID) &&
+                            !string.IsNullOrWhiteSpace(currencyCode) &&
+                            IsNewTransaction(WorkflowStatusID))
+                        {
+                            BindTransactionType(transactionTypeID);
+                            currencyCode = currencyCode.Replace("_", "/");
+                            BindCurrencyCode(currencyCode);
+                            RateInfoChange(currencyCode, transactionTypeID);
+                        }
+                    }
                 }
                 else
                 {
-                    string transactionTypeID = Request.QueryString[TransactionTable.TransactionTypeID];
-                    string currencyCode = Request.QueryString[TransactionTable.CurrencyCode];
-                    if (!string.IsNullOrWhiteSpace(transactionTypeID) &&
-                        !string.IsNullOrWhiteSpace(currencyCode) &&
-                        IsNewTransaction(WorkflowStatusID))
-                    {
-                        BindTransactionType(transactionTypeID);
-                        currencyCode = currencyCode.Replace("_", "/");
-                        BindCurrencyCode(currencyCode);
-                        RateInfoChange(currencyCode,transactionTypeID);
-                    }
+                    ShowMessage("User đăng nhập chưa được cấu hình đơn vị trực thuộc, vui lòng liên hệ người quản trị",
+                        ModuleMessage.ModuleMessageType.YellowWarning);
+                    DisableControl();
                 }
             }
-            else
+            finally
             {
-                ShowMessage("User đăng nhập chưa được cấu hình đơn vị trực thuộc, vui lòng liên hệ người quản trị",
-                    ModuleMessage.ModuleMessageType.YellowWarning);
-                DisableControl();
+                if (IsRedirectAndShowNotification == false)
+                {
+                    ResetSessionMessage();
+                }
             }
         }
         private void BindData()
@@ -73,49 +80,58 @@ namespace DesktopModules.Modules.Forex
             CustomerInfoFrame();
             BidFrame();
             CustomerInvoiceAmountFrame();
-            //Hidden Control
+            #region Param Control
             HiddenAcceptToChangeStatusArr.Value = TargetStatusJsonObject;
             HiddenMaxDealerApprovalEdit.Value = $"{MaxAmountDealerApprovalEdit}";
             HiddenMaxDealerApprovalCancel.Value = $"{MaxAmountDealerApprovalCancel}";
             HiddenMaxRequestEditPercent.Value = $"{MaxAmountRequestChangePercent}";
             HiddenMaxRequestEditAmount.Value = $"{MaxAmountRequestChange}";
+            #endregion
         }
-        #region Draw Page Control
+        #region Panel Control
         private void TransactionInfoFrame()
         {
             TransactionInfo.Visible = true;
             //Bind Auto Select Box
             BindTransactionType(CurrentTransactionData?.TransactionTypeID);
             BindCurrencyCode(CurrentTransactionData?.CurrencyCode);
-            //Creation Info
-            SetTextControl(txtBranchName, GetBranchName(CurrentTransactionData?.BranchID), false);
-            SetTextControl(txtMarker, GetCreationUserByID(CurrentTransactionData?.CreationUserID), false);
-
-            //Amount
-            QuantityFrameBindData();
-
-            //Calander: Value Date
-            SetDatePicker(calTransactionDate, GetTransactionDate(CurrentTransactionData?.TransactionDate), IsNewTransaction(WorkflowStatusID));
-
-            //Reference Info
-            ReferenceLimitField(CurrentTransactionData?.Rate, CurrentTransactionData?.Margin,
-                CurrentTransactionData?.Limit, CurrentTransactionData?.MasterRate, CurrentTransactionData?.ExchangeRate);
-
-        }
-
-        private void BindTransactionType(string transactionTypeID)
-        {
-            BindTransactionType(ctTransactionType, transactionTypeID, IsNewTransaction(WorkflowStatusID));
-            HiddenTransactionTypeID.Value = transactionTypeID;
-        }
-
-        private void BindCurrencyCode(string currencyCode)
-        {
-            BindCurrency(ctExchangeCode, currencyCode, IsNewTransaction(WorkflowStatusID));
-            HiddenCurrencyCode.Value = CurrentTransactionData?.CurrencyCode;
-        }
-        private void QuantityFrameBindData()
-        {
+            #region  Creation Info
+            
+            if (IsNewTransaction(WorkflowStatusID))
+            {
+                txtBranchName.InnerHtml = $"{UserBranchName}";
+                txtCreationUser.InnerHtml = $"{CurrentUserData.DisplayName}";
+                HiddenCreationBranchID.Value = CurrentUserData.BranchID;
+                HiddenCreationUserID.Value = CurrentUserData.UserID;
+                HiddenMarkerID.Value = CurrentUserData.UserID;
+            }
+            else
+            {
+                txtBranchName.InnerHtml = $"{GetBranchName(CurrentTransactionData?.BranchID)}";
+                txtCreationUser.InnerHtml = $"{GetDisplayNameByID(CurrentTransactionData?.CreationUserID)}";
+            }
+            #endregion
+            #region Current Status
+            if (IsNewTransaction(WorkflowStatusID) == false)
+            {
+                if (!string.IsNullOrWhiteSpace(CurrentTransactionData?.TransactionStatus))
+                {
+                    CurrentStatusPannel.Visible = true;
+                    txtCurrentStatus.InnerHtml = $"<b>{CurrentTransactionData?.TransactionStatus}</b>";
+                }
+                
+            }
+            #endregion
+            #region Control User Info
+            string controlUserValue;
+            if (IsDisplayControlUserInfo(WorkflowStatusID, CurrentTransactionData?.MarkerUserID,
+                CurrentTransactionData?.DealerUserID, out controlUserValue))
+            {
+                UserControlPannel.Visible = true;
+                txtControlInfo.InnerHtml = controlUserValue;
+            }
+            #endregion
+            #region Quantity 
             if (!string.IsNullOrWhiteSpace(CurrentTransactionData?.QuantityTransactionAmount))
             {
                 QuantityFrame.Visible = true;
@@ -125,26 +141,74 @@ namespace DesktopModules.Modules.Forex
 
                 HiddenCurrentQuantityAmount.Value = CurrentTransactionData?.Quantity;
             }
+            #endregion
+
+            //Calander: Value Date
+            SetDatePicker(calTransactionDate, GetTransactionDate(CurrentTransactionData?.TransactionDate),
+                IsNewTransaction(WorkflowStatusID));
+
+            #region Reference Info
+
+            if (WorkflowStatusID != WorkflowStatusEnum.Open &&
+                CurrentTransactionData != null)
+            {
+                double rate;
+                double transactionRate;
+                string referenceSourcePrice = "0";
+                if (double.TryParse(CurrentTransactionData.ExchangeRate, out transactionRate) &&
+                    double.TryParse(CurrentTransactionData.Rate, out rate))
+                {
+                    referenceSourcePrice = FunctionBase.FormatCurrency($"{rate + transactionRate}");
+                }
+                else
+                {
+                    referenceSourcePrice = FunctionBase.FormatCurrency(CurrentTransactionData.Rate);
+                }
+                ReferenceLimitField(CurrentTransactionData.Rate, CurrentTransactionData.Margin,
+                    CurrentTransactionData.Limit, CurrentTransactionData.MasterRate, referenceSourcePrice);
+            }
+            
+            #endregion
+        }
+        private void BindTransactionType(string transactionTypeID)
+        {
+            BindTransactionType(ctTransactionType, transactionTypeID, IsNewTransaction(WorkflowStatusID));
+            HiddenTransactionTypeID.Value = transactionTypeID;
+        }
+        private void BindCurrencyCode(string currencyCode)
+        {
+            BindCurrency(ctExchangeCode, currencyCode, IsNewTransaction(WorkflowStatusID));
+            HiddenCurrencyCode.Value = CurrentTransactionData?.CurrencyCode;
         }
         private void CustomerInfoFrame()
         {
             CustomerInfo.Visible = CurrentTransactionData != null;
             //Bind select box
-            BindCustomerType(ctCustomerType, CurrentTransactionData?.CustomerTypeID, btnUpdateCustomerInfo.Enabled);
-            BindReason(ctReasonTransaction, CurrentTransactionData?.ReasonCode, btnUpdateCustomerInfo.Enabled);
+            BindCustomerType(ctCustomerType, CurrentTransactionData?.CustomerTypeID, 
+                IsNewTransaction(WorkflowStatusID) || IsCanRequestEditOrCancel(WorkflowStatusID));
+            BindReason(ctReasonTransaction, CurrentTransactionData?.CustomerTypeID, CurrentTransactionData?.ReasonCode, 
+                IsNewTransaction(WorkflowStatusID) || 
+                IsCanRequestEditOrCancel(WorkflowStatusID));
             // Customer Info
-            SetTextControl(txtCustomerIDNo, CurrentTransactionData?.CustomerIDNo, btnUpdateCustomerInfo.Enabled);
-            SetTextControl(txtCustomerFullname, CurrentTransactionData?.CustomerFullName, btnUpdateCustomerInfo.Enabled);
+            SetTextControl(txtCustomerIDNo, CurrentTransactionData?.CustomerIDNo, 
+                IsNewTransaction(WorkflowStatusID) || IsCanRequestEditOrCancel(WorkflowStatusID));
+            SetTextControl(txtCustomerFullname, CurrentTransactionData?.CustomerFullName, 
+                IsNewTransaction(WorkflowStatusID) || IsCanRequestEditOrCancel(WorkflowStatusID));
             
         }
+
         private void BidFrame()
         {
             if (WorkflowStatusID >= WorkflowStatusEnum.HOReceiveRequest &&
                 WorkflowStatusID != WorkflowStatusEnum.Timeout)
             {
                 PannelBid.Visible = true;
-                SetTextControl(txtCapitalAmount, CurrentTransactionData?.CapitalAmount, 
+                #region Capital Amount / Source Price
+                SetTextControl(txtCapitalAmount, WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest ?
+                        HiddenreferenceSourcePrice.Value : CurrentTransactionData?.CapitalAmount, 
                     WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest);
+                #endregion
+                #region Remain Time
                 string dealtime = CurrentTransactionData?.DealTime;
                 if (WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest &&
                     string.IsNullOrWhiteSpace(dealtime))
@@ -153,21 +217,37 @@ namespace DesktopModules.Modules.Forex
                         GetExchangerateData(ctExchangeCode.SelectedValue, ctTransactionType.SelectedValue);
                     dealtime = exchangeRateData.DealTime;
                 }
-                
-                SetTextControl(txtRemainTime, 
-                    GetRemainTime(WorkflowStatusID,CurrentTransactionData?.LastBidDateTime, dealtime),
+
+                SetTextControl(txtRemainTime,
+                    GetRemainTime(WorkflowStatusID, CurrentTransactionData?.LastBidDateTime, dealtime),
                     WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest);
                 lblRemainTime.Text = IsCheckDealTime(WorkflowStatusID)
                     ? GetResource("lblRemainTime.Text")
                     : GetResource("lblDealTime.Text");
-                //
-                ctrlBrokerage.Visible = WorkflowStatusID >= WorkflowStatusEnum.HOReceiveBrokerage; 
-                SetTextControl(txtBrokerage, CurrentTransactionData?.BrokerageAmount, WorkflowStatusID == WorkflowStatusEnum.HOReceiveBrokerage);
-                //
-                DepositAmountField();
+                #endregion
 
-                //Hidden
-                HiddenCapitalAmount.Value = CurrentTransactionData?.CapitalAmount;
+                #region Broker Amount
+                ctrlBrokerage.Visible = WorkflowStatusID >= WorkflowStatusEnum.HOReceiveBrokerage;
+                SetTextControl(txtBrokerage,
+                    WorkflowStatusID == WorkflowStatusEnum.HOReceiveBrokerage ? HiddenCapitalAmount.Value :
+                    CurrentTransactionData?.BrokerageAmount,
+                    WorkflowStatusID == WorkflowStatusEnum.HOReceiveBrokerage);
+                #endregion
+
+                #region Deposit Amount
+                int percentDeposit = GetDepositPercent(CurrentTransactionData?.CurrencyCode,
+                    CurrentTransactionData?.TransactionDate);
+                //
+                if (WorkflowStatusID >= WorkflowStatusEnum.HOReceiveRequest &&
+                    percentDeposit > 0)
+                {
+                    ctrlDepositAmount.Visible = true;
+                    ctrlDepositAmount.Visible = true;
+                    SetTextControl(txtDepositAmount, GetDepositAmountValue(percentDeposit, CurrentTransactionData?.QuantityTransactionAmount,
+                            CurrentTransactionData?.Rate),
+                        WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest);
+                }
+                #endregion
             }
             else
             {
@@ -191,85 +271,14 @@ namespace DesktopModules.Modules.Forex
             }
             
         }
-        private void DepositAmountField()
-        {
-            int percentDeposit = GetDepositPercent(CurrentTransactionData?.CurrencyCode,
-                CurrentTransactionData?.TransactionDate);
-            //
-            if (WorkflowStatusID >= WorkflowStatusEnum.HOReceiveRequest &&
-                percentDeposit > 0)
-            {
-                ctrlDepositAmount.Visible = true;
-                ctrlDepositAmount.Visible = true;
-                SetTextControl(txtDepositAmount, GetDepositAmountValue(percentDeposit, CurrentTransactionData?.QuantityTransactionAmount,
-                        CurrentTransactionData?.Rate),
-                    WorkflowStatusID == WorkflowStatusEnum.HOReceiveRequest);
-            }
-        }
-
-        private void ReferenceLimitField(string rate, string margin, string limit, string masterRate, string exchageRate)
-        {
-            if (string.IsNullOrWhiteSpace(rate) || rate.Equals("0"))
-            {
-                ReferenceRateInfoFrame.Visible = false;
-            }
-            else
-            {
-                ReferenceRateInfoFrame.Visible = true;
-                SetTextControl(txtBigFigure, FunctionBase.FormatCurrency(rate), false);
-                txtReferenceRate.InnerHtml = exchageRate;
-            }
-
-            if (string.IsNullOrWhiteSpace(masterRate) ||
-                string.IsNullOrWhiteSpace(limit) ||
-                masterRate.Equals("0") ||
-                limit.Equals("0"))
-            {
-                MasterRateInfoFrame.Visible = false;
-                HiddenMasterRate.Value = "0";
-                HiddenLimit.Value = "0";
-            }
-            else
-            {
-                
-                MasterRateInfoFrame.Visible = true;
-                double limitAmout = GetLimit(masterRate, limit);
-                SetTextControl(txtMasterRate, FunctionBase.FormatCurrency(masterRate), false);
-                SetTextControl(txtLimitRate, $"+/-{limitAmout}", false);
-                SetTextControl(txtLimit, $"(+/-{limit}%)", false);
-                HiddenMasterRate.Value = masterRate;
-                HiddenLimit.Value = $"{limitAmout}";
-            }
-
-            if (string.IsNullOrWhiteSpace(margin) ||
-                margin.Equals("0"))
-            {
-                MarginInfoFrame.Visible = false;
-            }
-            else
-            {
-                
-                MarginInfoFrame.Visible = true;
-                SetTextControl(txtMargin, $"+/-{margin}", false);
-            }
-            
-        }
-
-        private void ToggleMainFrameInfo(bool isVisble)
-        {
-            CustomerInfo.Visible = isVisble;
-            QuantityFrame.Visible = isVisble;
-        }
-        
-        
         #endregion
+
         #region Permission
 
         private void DisableControl()
         {
             btnSubmit.Enabled = false;
             btnCancel.Enabled = false;
-            btnUpdateCustomerInfo.Enabled = false;
         }
 
         private void AutoSetRequestID()
@@ -313,164 +322,169 @@ namespace DesktopModules.Modules.Forex
 
         }
 
-        private void SetPermission()
+        private void ReloadTransactionData()
         {
-            
-            string workflowStatus = string.Empty;
             if (!string.IsNullOrWhiteSpace(TransactionID))
             {
                 CurrentTransactionData = TransactionBusiness.GetTransactionByID(TransactionID);
-                workflowStatus = CurrentTransactionData.TransactionStatusID;
-
-                AutoSetRequestID();
+                if (CurrentTransactionData != null)
+                {
+                    HiddenWorkflowStatus.Value = CurrentTransactionData.TransactionStatusID ?? string.Empty;
+                    if (IsNewTransaction(WorkflowStatusID) == false)
+                    {
+                        //Load Control User
+                        HiddenCreationBranchID.Value = CurrentTransactionData?.BranchID;
+                        HiddenCreationUserID.Value = CurrentTransactionData?.CreationUserID;
+                        HiddenMarkerID.Value = CurrentTransactionData?.MarkerUserID;
+                        HiddenDealerID.Value = CurrentTransactionData?.DealerUserID;
+                        
+                    }
+                    //Capital Amount 
+                    HiddenCapitalAmount.Value = CurrentTransactionData?.CapitalAmount;
+                }
             }
+        }
 
-            HiddenWorkflowStatus.Value = workflowStatus;
-
-            TransactionButtonControl(btnSubmit, btnUpdateCustomerInfo, btnCancel, WorkflowStatusID, UserInfo.UserID,
+        private void SetButtonPermission()
+        {
+            TransactionButtonControl(btnSubmit, btnCancel, WorkflowStatusID, UserInfo.UserID,
                 CurrentTransactionData?.CreationDateTime);
 
             btnRequestAgain.Enabled = IsAcceptRole(WorkflowStatusID) &&
-               (WorkflowStatusID == WorkflowStatusEnum.HOBid ||
+            (WorkflowStatusID == WorkflowStatusEnum.HOBid ||
                 WorkflowStatusID == WorkflowStatusEnum.BRReceive ||
                 WorkflowStatusID == WorkflowStatusEnum.BRRquestException);
 
             RegisterConfirmDialog(btnCancel, "Bạn có chắc muốn thực hiện thao tác từ chối/hủy?");
-            RegisterConfirmDialog(btnUpdateCustomerInfo, "Bạn có chắc muốn thực hiện cập nhật thông tin khách hàng?");
         }
-        #region Get Page Value
-        private TransactionData CurrentTransactionData { get; set; }
-        private string WorkflowStatus => HiddenWorkflowStatus.Value;
-
-        private int WorkflowStatusID => ParseWorkflowStatus(WorkflowStatus);
-        private string TransactionID => HiddenTransactionID.Value;
-        private string RequestTypeID => HiddenRequestTypeID.Value;
-        #endregion
-
-        #endregion
-        #region Control
-        protected void UpdateCustomerInfo(object sender, EventArgs e)
+        private void SetPermission()
         {
-            Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
+
+            ReloadTransactionData();
+            AutoSetRequestID();
+            SetButtonPermission();
+
+        }
+        #region Process Function
+        private void ReferenceLimitField(string rate, string margin, string limit, string masterRate,
+            string referenceSourcePrice, string sourcePriceStatus = null)
+        {
+            if (string.IsNullOrWhiteSpace(rate) || rate.Equals("0"))
             {
-                { TransactionTable.CustomerIDNo, new SQLParameterData(txtCustomerIDNo.Text, SqlDbType.VarChar) },
-                { TransactionTable.CustomerFullName, new SQLParameterData(txtCustomerFullname.Text, SqlDbType.NVarChar) },
-                { TransactionTable.CustomerTypeID, new SQLParameterData(ctCustomerType.SelectedValue, SqlDbType.Int) },
-                { TransactionTable.ReasonCode, new SQLParameterData(ctReasonTransaction.SelectedValue, SqlDbType.Int) },
-                { TransactionTable.Remark, new SQLParameterData(txtRemark.Text.Trim(), SqlDbType.NVarChar) },
-                { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
-            };
-            string message;
-            if (TransactionBusiness.UpdateCustomer(TransactionID, parameterDictionary, out message))
-            {
-                ShowMessage("Cập nhật thông tin khách hàng thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
+                ReferenceRateInfoFrame.Visible = false;
             }
             else
             {
-                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-            }
-        }
-        protected void RejectTransaction(object sender, EventArgs e)
-        {
-            if (IsCanRequestEditOrCancel(WorkflowStatusID))
-            {
-                Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
-                {
-                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
-                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
-                    { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.BRRequestCancel, SqlDbType.Int)},
-                    { "ActionTransaction", new SQLParameterData("Yêu cầu hủy giao dịch",SqlDbType.NVarChar)},
-                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
-                };
-                string message;
-                if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message))
-                {
-                    SetPermission();
-                    BindData();
-                    ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
+                ReferenceRateInfoFrame.Visible = true;
+                HiddenBigFigure.Value = rate;
+                HiddenreferenceSourcePrice.Value = referenceSourcePrice;
+                referenceSourcePrice = string.IsNullOrWhiteSpace(sourcePriceStatus) ? referenceSourcePrice :
+                    ExchangeRateFormat(referenceSourcePrice, sourcePriceStatus);
+                txtReferenceRate.InnerHtml = referenceSourcePrice;
 
-                }
-                else
-                {
-                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-                }
+            }
+
+            if (string.IsNullOrWhiteSpace(masterRate) ||
+                string.IsNullOrWhiteSpace(limit) ||
+                masterRate.Equals("0") ||
+                limit.Equals("0"))
+            {
+                MasterRateInfoFrame.Visible = false;
+                HiddenMasterRate.Value = "0";
+                HiddenLimitPercent.Value = "0";
             }
             else
             {
-                Dictionary<string, SQLParameterData> rejectTransactionData = new Dictionary<string, SQLParameterData>
+
+                MasterRateInfoFrame.Visible = true;
+                double limitAmout = GetLimit(masterRate, limit);
+                HiddenMasterRate.Value = masterRate;
+                HiddenLimitPercent.Value = limit;
+                double masterRateAmount;
+                if (double.TryParse(masterRate, out masterRateAmount))
                 {
-                    { "IsReject", new SQLParameterData("True", SqlDbType.Bit) },
-                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
-                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
-                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
-                };
-                string message;
-                if (TransactionBusiness.UpdateTransaction(TransactionID, rejectTransactionData, out message))
-                {
-                    ShowMessage("Từ chối thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
-                    SetPermission();
+                    string minAmount = $"{masterRateAmount - limitAmout}";
+                    string maxAmount = $"{masterRateAmount + limitAmout}";
+                    txtTransactionLimit.InnerHtml =
+                        $"Từ: <b>{FunctionBase.FormatCurrency(minAmount)}</b> đến: <b>{FunctionBase.FormatCurrency(maxAmount)}</b>";
                 }
-                else
-                {
-                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-                }
+
+                HiddenLimitAmount.Value = $"{limitAmout}";
             }
-            
-        }
-        protected void SubmitForm(object sender, EventArgs e)
-        {
-            string message;
-            if (IsNewTransaction(WorkflowStatusID))
+            double marginNum;
+            if (string.IsNullOrWhiteSpace(margin) ||
+                margin.Equals("0") ||
+                double.TryParse(margin, out marginNum) == false)
             {
-                RequestTransaction();
-            }
-            else if (WorkflowStatusID == WorkflowStatusEnum.BRReceive && 
-                IsExceedLimit(txtCustomerInvoiceAmount.Text, HiddenLimit.Value, HiddenMasterRate.Value,out message))
-            {
-                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-            }
-            else if (IsCanRequestEditOrCancel(WorkflowStatusID))
-            {
-                RequestEditTransaction();
+                MarginInfoFrame.Visible = false;
             }
             else
             {
-                
-                if (TransactionBusiness.UpdateTransaction(TransactionID, GetAcceptTransactionData, out message))
-                {
-                    SetPermission();
-                    BindData();
-                    ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
 
+                MarginInfoFrame.Visible = true;
+                HiddenMargin.Value = margin;
+                double capitalAmount;
+
+                if (WorkflowStatusID >= WorkflowStatusEnum.HOBid &&
+                    HiddenCapitalAmount.Value != "" &&
+                    double.TryParse(HiddenCapitalAmount.Value, out capitalAmount))
+                {
+                    string marginAmount = "";
+                    if (IsBuyTransaction)
+                    {
+                        marginAmount = $">={(capitalAmount + marginNum)}";
+                    }
+                    else if (IsSellTransaction)
+                    {
+                        marginAmount = $"<={(capitalAmount - marginNum)}"; ;
+                    }
+                    else
+                    {
+                        marginAmount = $"+/-{margin}";
+                    }
+                    txtMargin.InnerHtml = marginAmount;
                 }
                 else
                 {
-                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
+                    txtMargin.InnerHtml = $"+/-{margin}";
                 }
+
             }
 
-            
+        }
+        private void ToggleMainFrameInfo(bool isVisble)
+        {
+            CustomerInfo.Visible = isVisble;
+            QuantityFrame.Visible = isVisble;
         }
         private void RateInfoChange(string currencyCode, string transactionType)
         {
             if (!string.IsNullOrWhiteSpace(currencyCode) &&
                 !string.IsNullOrWhiteSpace(transactionType))
             {
-                
+
                 ExchangeRateData exchangeRateData =
                     GetExchangerateData(currencyCode, transactionType);
                 if (FunctionBase.ConvertToBool(exchangeRateData.IsDisable) == false)
                 {
 
                     ToggleMainFrameInfo(true);
-
-                    CurrencyRateData currencyRateData = GetCurrencyData(currencyCode);
+                    CurrencyRateData currencyRateData = CacheBase.Receive<CurrencyRateData>(currencyCode);
+                    double rate;
+                    double transactionRate;
+                    string referrnceSourcePrice = "0";
+                    if (double.TryParse(exchangeRateData.Rate, out transactionRate) &&
+                        double.TryParse(currencyRateData.Rate, out rate))
+                    {
+                        referrnceSourcePrice = FunctionBase.FormatCurrency($"{rate + transactionRate}");
+                    }
+                    else
+                    {
+                        referrnceSourcePrice = FunctionBase.FormatCurrency(currencyRateData.Rate);
+                    }
                     ReferenceLimitField(currencyRateData.Rate, currencyRateData.MarginMinProfit,
-                        currencyRateData.MarginLimit, currencyRateData?.MasterRate,
-                        ExchangeRateFormat(exchangeRateData.Rate, exchangeRateData.RateStatus));
+                        currencyRateData.MarginLimit, currencyRateData?.MasterRate, referrnceSourcePrice,
+                        exchangeRateData.RateStatus);
 
                 }
                 else
@@ -486,6 +500,182 @@ namespace DesktopModules.Modules.Forex
                 ToggleMainFrameInfo(false);
             }
         }
+        private void FormInit()
+        {
+            calTransactionDate.MaxDate = DateTime.Now.AddDays(365);
+            calTransactionDate.MinDate = DateTime.Now;
+
+            calTransactionDate.Attributes.Add("placeholder", GetResource("lblTransactionDate.Help"));
+            ctTransactionType.Attributes.Add("placeholder", GetResource("lblTransactionType.Help"));
+            txtQuantityTransactionAmount.Attributes.Add("placeholder", GetResource("lblQuantityTransactionAmount.Help"));
+            txtCustomerIDNo.Attributes.Add("placeholder", GetResource("lblCustomerIDNo.Help"));
+            txtCustomerFullname.Attributes.Add("placeholder", GetResource("lblCustomerFullname.Help"));
+            ctCustomerType.Attributes.Add("placeholder", GetResource("lblCustomerType.Help"));
+            ctReasonTransaction.Attributes.Add("placeholder", GetResource("lblReasonTransaction.Help"));
+            txtRemark.Attributes.Add("placeholder", GetResource("lblRemark.Help"));
+            txtCapitalAmount.Attributes.Add("placeholder", GetResource("lblCapitalAmount.Help"));
+            txtDepositAmount.Attributes.Add("placeholder", GetResource("lblDepositAmount.Help"));
+            txtRemainTime.Attributes.Add("placeholder", GetResource("lblRemainTime.Help"));
+            txtCustomerInvoiceAmount.Attributes.Add("placeholder", GetResource("lblCustomerInvoiceAmount.Help"));
+        }
+        #endregion
+        #region Get Page Value
+        private TransactionData CurrentTransactionData { get; set; }
+        private string WorkflowStatus => HiddenWorkflowStatus.Value;
+
+        private int WorkflowStatusID => ParseWorkflowStatus(WorkflowStatus);
+        private string TransactionID => HiddenTransactionID.Value;
+        private string RequestTypeID => HiddenRequestTypeID.Value;
+        private bool IsBuyTransaction => HiddenTransactionTypeID.Value != "" &&
+        (HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.BuyByFundTranfer.ToString()) ||
+            HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.BuyByCash.ToString()));
+        private bool IsSellTransaction => HiddenTransactionTypeID.Value != "" &&
+        (HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.SellByFundTranfer.ToString()) ||
+            HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.SellByCash.ToString()));
+        #endregion
+
+        #endregion
+        
+        #region Page Control
+
+        protected void RejectTransaction(object sender, EventArgs e)
+        {
+            string message;
+            ModuleMessage.ModuleMessageType messageType;
+            #region Notification body
+            string body = string.Empty;
+            if (HiddenCurrencyCode.Value != "") body += $"Cặp tiền tệ {HiddenCurrencyCode.Value}";
+            if (HiddenCurrentQuantityAmount.Value != "")
+                body += $"|Số lượng {HiddenCurrentQuantityAmount.Value}";
+            if (HiddenCapitalAmount.Value != "")
+                body += $"|Giá chào {HiddenCapitalAmount.Value}";
+            if (txtCustomerInvoiceAmount.Text != "")
+                body += $"|Giá khách hàng {txtCustomerInvoiceAmount.Text}";
+            if (txtRemark.Text != "") body += $" | Nội dung '{txtRemark.Text}'";
+            #endregion
+            if (IsCanRequestEditOrCancel(WorkflowStatusID))
+            {
+                Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
+                {
+                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
+                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
+                    { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.BRRequestCancel, SqlDbType.Int)},
+                    { "ActionTransaction", new SQLParameterData("Yêu cầu hủy giao dịch",SqlDbType.NVarChar)},
+                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+                };
+                
+                if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message, out messageType))
+                {
+                    SetPermission();
+                    BindData();
+                    message = "Yêu cầu duyệt thao tác hủy hồ sơ thành công";
+                    ShowMessage($"{message}.", messageType);
+                    #region SendNotification
+                    SendNotificationMessage("Yêu cầu duyệt hủy hồ sơ", body, TransactionID, WorkflowStatus,
+                        HiddenCreationBranchID.Value, HiddenMarkerID.Value, HiddenDealerID.Value, WorkflowStatusEnum.BRRequestCancel.ToString());
+                    #endregion
+                    Finish(TransactionID, WorkflowStatusID, messageType, message);
+                }
+                else
+                {
+                    ShowMessage($"{message}", messageType);
+                }
+            }
+            else
+            {
+                Dictionary<string, SQLParameterData> rejectTransactionData = new Dictionary<string, SQLParameterData>
+                {
+                    { "IsReject", new SQLParameterData("True", SqlDbType.Bit) },
+                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
+                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
+                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+                };
+                if (TransactionBusiness.UpdateTransaction(TransactionID, rejectTransactionData, out message, out messageType))
+                {
+                    message = "Từ chối thành công.";
+                    ShowMessage(message, messageType);
+                    SetPermission();
+                    #region SendNotification
+                    SendNotificationMessage("Từ chối yêu cầu", body, TransactionID, WorkflowStatus,
+                        HiddenCreationBranchID.Value, HiddenMarkerID.Value, HiddenDealerID.Value, WorkflowStatusEnum.Reject.ToString());
+                    #endregion
+                    Finish(TransactionID, WorkflowStatusID, messageType, message);
+                }
+                else
+                {
+                    ShowMessage($"{message}", messageType);
+                }
+            }
+        }
+        protected void SubmitForm(object sender, EventArgs e)
+        {
+            string message;
+            ModuleMessage.ModuleMessageType messageType = ModuleMessage.ModuleMessageType.GreenSuccess;
+            if (IsNewTransaction(WorkflowStatusID))
+            {
+                RequestTransaction();
+            }
+            else if (WorkflowStatusID == WorkflowStatusEnum.BRReceive && 
+                IsExceedLimit(txtCustomerInvoiceAmount.Text, HiddenLimitPercent.Value, HiddenMasterRate.Value,out message))
+            {
+                messageType = ModuleMessage.ModuleMessageType.YellowWarning;
+                ShowMessage($"{message}", messageType);
+            }
+            else if (IsCanRequestEditOrCancel(WorkflowStatusID))
+            {
+                RequestEditTransaction();
+            }
+            else
+            {
+                
+                if (TransactionBusiness.UpdateTransaction(TransactionID, GetAcceptTransactionData, out message, out messageType))
+                {
+                    messageType = ModuleMessage.ModuleMessageType.GreenSuccess;
+                    ShowMessage($"{message}.", messageType);
+                    SetPermission();
+                    BindData();
+                    #region SendNotification
+                    SendNotificationMessage(string.Empty, GetNotificationBodyByParam(GetAcceptTransactionData),TransactionID,WorkflowStatus,
+                        HiddenCreationBranchID.Value, HiddenMarkerID.Value, HiddenDealerID.Value);
+                    #endregion
+                    Finish(TransactionID, WorkflowStatusID, messageType, message);
+                }
+                else
+                {
+                    ShowMessage($"{message}", messageType);
+                }
+            }
+
+        }
+
+        protected void UpdateTimeout(object sender, EventArgs e)
+        {
+            Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
+            {
+                { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.Timeout, SqlDbType.Int) },
+                { "ActionTransaction", new SQLParameterData("Yêu cầu hết thời gian qui định", SqlDbType.NVarChar) },
+                { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
+                { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+            };
+            string message;
+            ModuleMessage.ModuleMessageType messageType;
+            if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message, out messageType))
+            {
+                SetPermission();
+                BindData();
+                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.YellowWarning);
+                Session[SessionEnum.MessageType] = messageType;
+                Session[SessionEnum.Message] = message;
+            }
+            else
+            {
+                ShowMessage($"{message}", messageType);
+            }
+        }
+        
         protected void TransactionTypeChange(object sender, EventArgs e)
         {
             HiddenTransactionTypeID.Value = ctTransactionType.SelectedValue;
@@ -495,6 +685,10 @@ namespace DesktopModules.Modules.Forex
         {
             HiddenCurrencyCode.Value = ctExchangeCode.SelectedValue;
             RateInfoChange(ctExchangeCode.SelectedValue, ctTransactionType.SelectedValue);
+        }
+        protected void CustomerTypeChange(object sender, RadComboBoxSelectedIndexChangedEventArgs e)
+        {
+            BindReason(ctReasonTransaction, ctCustomerType.SelectedValue);
         }
         #endregion
         #region Submit Button Process
@@ -581,21 +775,32 @@ namespace DesktopModules.Modules.Forex
                 int excStatus = TransactionBusiness.RequestTransaction(parameterDictionary, out message);
                 if (excStatus > 0)
                 {
+                    string body =
+                        $"Cặp tiền tệ {ctExchangeCode.SelectedValue}, Số lượng {txtQuantityTransactionAmount.Text}";
+                    if (txtRemark.Text != "") body += $" | Nội dung '{txtRemark.Text}'";
+                    SendNotificationMessage($"{UserBranchName}-Yêu cầu giá", body, excStatus.ToString(), WorkflowStatusEnum.Open.ToString());
+                    Finish(excStatus.ToString(), WorkflowStatusEnum.Open,
+                        ModuleMessage.ModuleMessageType.GreenSuccess, "Yêu cầu giá thành công.",
+                        ctExchangeCode.SelectedValue, txtQuantityTransactionAmount.Text,true);
+                    //
                     ShowMessage("Yêu cầu giá thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
                     HiddenTransactionID.Value = excStatus.ToString();
                     SetPermission();
-                    TransactionInfoFrame();
-                    CustomerInfoFrame();
+                    //TransactionInfoFrame();
+                    //CustomerInfoFrame();
+                }
+                else if (excStatus == 0)
+                {
+                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.YellowWarning);
                 }
                 else
                 {
-                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
+                    ShowMessage("Lỗi xảy ra trong quá trình thực hiện yêu cầu giá", ModuleMessage.ModuleMessageType.RedError);
                 }
             }
             else
             {
-                ShowMessage("Thời gian cho phép tạo giao dịch: đối với từ thứ 2 đến thứ 6 8:00 - 16:30, Thứ 7 bắt đầu từ 8:00 - 11:30",
-                    ModuleMessage.ModuleMessageType.YellowWarning);
+                ShowMessage(WorkTimeMessage,ModuleMessage.ModuleMessageType.YellowWarning);
             }
             
         }
@@ -603,41 +808,91 @@ namespace DesktopModules.Modules.Forex
         private void RequestEditTransaction()
         {
             double quantity;
-            if (double.TryParse(txtQuantityTransactionAmount?.Text?.Replace(",", ""), out quantity) &&
-                IsExceedRequestChange(txtQuantityTransactionAmount?.Text?.Replace(",", ""), HiddenCurrentQuantityAmount.Value) == false)
+            double currentQuantityAmount;
+            double invoiceAmount;
+            double currentInvoiceAmount;
+            string message;
+            string actionTransactionMessage = "Yêu cầu điều chỉnh thông tin";
+            
+            if (double.TryParse(txtCustomerInvoiceAmount?.Text?.Replace(",", ""), out invoiceAmount) == false ||
+                double.TryParse(HiddenInvoiceAmount.Value, out currentInvoiceAmount) == false)
             {
-                Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
-                {
-                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
-                    { TransactionTable.QuantityTransactionAmount, new SQLParameterData(quantity, SqlDbType.Float) },
-                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
-                    { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.BRRequestEdit, SqlDbType.Int)},
-                    { "ActionTransaction", new SQLParameterData("Yêu cầu điều chỉnh số lượng từ " +
-                        $"{FunctionBase.FormatCurrency(HiddenCurrentQuantityAmount.Value)} " +
-                        $"sang {FunctionBase.FormatCurrency(txtQuantityTransactionAmount?.Text)}",SqlDbType.NVarChar)},
-                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
-                };
-                string message;
-                if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message))
-                {
-                    SetPermission();
-                    BindData();
-                    ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
-
-                }
-                else
-                {
-                    ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-                }
+                message = $"Giá khách hàng '{txtCustomerInvoiceAmount?.Text}' không hợp lệ";
+            }
+            else if((HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.BuyByFundTranfer.ToString()) ||
+                HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.BuyByCash.ToString())) && (invoiceAmount > currentInvoiceAmount))
+            {
+                message = $"Điều chỉnh giá khách hàng chiều mua '{FunctionBase.FormatCurrency(txtCustomerInvoiceAmount?.Text)}'" +
+                    " không được phép lớn hơn giá hiện tại " +
+                    $"'{FunctionBase.FormatCurrency(HiddenCurrentQuantityAmount.Value)}'";
+            }
+            else if ((HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.SellByFundTranfer.ToString()) ||
+                HiddenTransactionTypeID.Value.Equals(TransactionTypeEnum.SellByCash.ToString())) && (invoiceAmount < currentInvoiceAmount))
+            {
+                message = $"Điều chỉnh giá khách hàng chiều bán '{FunctionBase.FormatCurrency(txtCustomerInvoiceAmount?.Text)}' " +
+                    "không được phép nhỏ hơn giá hiện tại " +
+                    $"'{FunctionBase.FormatCurrency(HiddenCurrentQuantityAmount.Value)}'";
+            }
+            else if (double.TryParse(txtQuantityTransactionAmount?.Text?.Replace(",", ""), out quantity) == false ||
+                double.TryParse(HiddenCurrentQuantityAmount.Value, out currentQuantityAmount) == false)
+            {
+                message = $"Số lượng nhập vào không hợp lệ '{txtQuantityTransactionAmount?.Text}'";
             }
             else
             {
-                ShowMessage($"Yêu cầu thay đổi số lượng {txtQuantityTransactionAmount?.Text} không hợp lệ, " +
-                    $"số lượng không được phép lớn hơn {MaxAmountRequestChangePercent}% hoặc lớn hơn {MaxAmountRequestChange}", 
-                    ModuleMessage.ModuleMessageType.YellowWarning);
+                if (currentQuantityAmount > quantity || currentQuantityAmount < quantity)
+                {
+                    actionTransactionMessage +=
+                        $",số lượng từ {FunctionBase.FormatCurrency(HiddenCurrentQuantityAmount.Value)} " +
+                        $"sang  {FunctionBase.FormatCurrency(txtQuantityTransactionAmount?.Text)}";
+                }
+                if (invoiceAmount > currentInvoiceAmount || invoiceAmount < currentInvoiceAmount)
+                {
+                    actionTransactionMessage +=
+                        $",giá khách hàng từ {FunctionBase.FormatCurrency(HiddenInvoiceAmount.Value)} " +
+                        $"sang  {FunctionBase.FormatCurrency(txtCustomerInvoiceAmount?.Text)}";
+                }
+                Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
+                {
+                    { TransactionTable.CustomerIDNo, new SQLParameterData(txtCustomerIDNo.Text, SqlDbType.VarChar) },
+                    { TransactionTable.CustomerFullName, new SQLParameterData(txtCustomerFullname.Text, SqlDbType.NVarChar) },
+                    { TransactionTable.CustomerTypeID, new SQLParameterData(ctCustomerType.SelectedValue, SqlDbType.Int) },
+                    { TransactionTable.ReasonCode, new SQLParameterData(ctReasonTransaction.SelectedValue, SqlDbType.Int) },
+                    { TransactionTable.Remark, new SQLParameterData(txtRemark.Text ?? string.Empty, SqlDbType.NVarChar) },
+                    { TransactionTable.QuantityTransactionAmount, new SQLParameterData(quantity, SqlDbType.Float) },
+                    { TransactionTable.CustomerInvoiceAmount, new SQLParameterData(invoiceAmount, SqlDbType.Float) },
+                    { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
+                    { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.BRRequestEdit, SqlDbType.Int)},
+                    { "ActionTransaction", new SQLParameterData(actionTransactionMessage,SqlDbType.NVarChar)},
+                    { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                    { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+                };
+                ModuleMessage.ModuleMessageType messageType;
+                if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message, out messageType))
+                {
+                    SetPermission();
+                    BindData();
+                    message += $".{actionTransactionMessage}";
+                    ShowMessage($"{message}.", messageType);
+
+                    #region SendNotification
+
+                    string body = string.Empty;
+                    if (HiddenCurrencyCode.Value != "") body += $"Cặp tiền tệ {HiddenCurrencyCode.Value}";
+                    body += $"|{actionTransactionMessage}";
+                    if (txtRemark.Text != "") body += $" | Nội dung '{txtRemark.Text}'";
+                    SendNotificationMessage("Yêu cầu duyệt điều chỉnh hồ sơ", body, TransactionID, WorkflowStatus,
+                        HiddenCreationBranchID.Value, HiddenMarkerID.Value, HiddenDealerID.Value);
+                    #endregion
+                    Finish(TransactionID, WorkflowStatusID,messageType, message);
+                }
+                else
+                {
+                    message += $".{actionTransactionMessage}";
+                    ShowMessage($"{message}", messageType);
+                }
             }
-            
+
         }
 
         private Dictionary<string, SQLParameterData> GetAcceptTransactionData
@@ -657,18 +912,20 @@ namespace DesktopModules.Modules.Forex
                         acceptData.Add(TransactionTable.QuantityTransactionAmount, new SQLParameterData(txtQuantityTransactionAmount?.Text?.Replace(",", ""), SqlDbType.Float));
                         break;
                     case WorkflowStatusEnum.HOReceiveRequest:
-                        acceptData.Add(TransactionTable.CapitalAmount, new SQLParameterData(txtCapitalAmount.Text, SqlDbType.Float));
+                        acceptData.Add(TransactionTable.CapitalAmount, new SQLParameterData(txtCapitalAmount?.Text?.Replace(",", ""),
+                            SqlDbType.Float));
                         acceptData.Add(TransactionTable.DealTime, new SQLParameterData(txtRemainTime.Text, SqlDbType.Int));
                         if (FindControl("txtDepositAmount") != null)
                         {
-                            acceptData.Add(TransactionTable.DepositAmount, new SQLParameterData(txtDepositAmount?.Text.Replace(",", ""), SqlDbType.Float));
+                            acceptData.Add(TransactionTable.DepositAmount, new SQLParameterData(txtDepositAmount?.Text.Replace(",", ""),
+                                SqlDbType.Float));
                         }
                         break;
                     case WorkflowStatusEnum.BRReceive:
                         acceptData.Add(TransactionTable.CustomerInvoiceAmount, new SQLParameterData(txtCustomerInvoiceAmount.Text, SqlDbType.Float));
-                        if (IsExceedMargin(HiddenCurrencyCode.Value, HiddenTransactionTypeID.Value,
+                        if (IsExceedMargin(HiddenCurrencyCode.Value, IsBuyTransaction,
                             txtCustomerInvoiceAmount.Text,
-                            txtMargin.Text, HiddenCapitalAmount.Value))
+                            HiddenMargin.Value, HiddenCapitalAmount.Value))
                         {
                             acceptData.Add("TargetStatus", new SQLParameterData(WorkflowStatusEnum.BRRquestException, SqlDbType.Int));
                             acceptData.Add("ActionTransaction", new SQLParameterData("Trình ngoại ngoại lệ, giá khách hàng dưới biên độ lời tối thiểu",
@@ -676,7 +933,7 @@ namespace DesktopModules.Modules.Forex
                         }
                         break;
                     case WorkflowStatusEnum.HOReceiveBrokerage:
-                        acceptData.Add(TransactionTable.BrokerageAmount, new SQLParameterData(txtBrokerage.Text, SqlDbType.Float));
+                        acceptData.Add(TransactionTable.BrokerageAmount, new SQLParameterData(txtBrokerage?.Text.Replace(",", ""), SqlDbType.Float));
                         break;
                     case WorkflowStatusEnum.BRApprovalCancel:
                         if (IsDealerApprovalCancelExceedLimit(CurrentTransactionData?.QuantityTransactionAmount))
@@ -700,48 +957,7 @@ namespace DesktopModules.Modules.Forex
         }
 
         #endregion
-        private void FormInit()
-        {
-            calTransactionDate.MaxDate = DateTime.Now.AddDays(365);
-            calTransactionDate.MinDate = DateTime.Now;
 
-            calTransactionDate.Attributes.Add("placeholder", GetResource("lblTransactionDate.Help"));
-            ctTransactionType.Attributes.Add("placeholder", GetResource("lblTransactionType.Help"));
-            txtQuantityTransactionAmount.Attributes.Add("placeholder", GetResource("lblQuantityTransactionAmount.Help"));
-            txtCustomerIDNo.Attributes.Add("placeholder", GetResource("lblCustomerIDNo.Help"));
-            txtCustomerFullname.Attributes.Add("placeholder", GetResource("lblCustomerFullname.Help"));
-            ctCustomerType.Attributes.Add("placeholder", GetResource("lblCustomerType.Help"));
-            ctReasonTransaction.Attributes.Add("placeholder", GetResource("lblReasonTransaction.Help"));
-            txtRemark.Attributes.Add("placeholder", GetResource("lblRemark.Help"));
-            txtCapitalAmount.Attributes.Add("placeholder", GetResource("lblCapitalAmount.Help"));
-            txtDepositAmount.Attributes.Add("placeholder", GetResource("lblDepositAmount.Help"));
-            txtRemainTime.Attributes.Add("placeholder", GetResource("lblRemainTime.Help"));
-            txtCustomerInvoiceAmount.Attributes.Add("placeholder", GetResource("lblCustomerInvoiceAmount.Help"));
-        }
-
-        protected void UpdateTimeout(object sender, EventArgs e)
-        {
-            Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
-            {
-                { "TargetStatus", new SQLParameterData(WorkflowStatusEnum.Timeout, SqlDbType.Int) },
-                { "ActionTransaction", new SQLParameterData("Yêu cầu hết thời gian qui định", SqlDbType.NVarChar) },
-                { "WorkflowStatusID", new SQLParameterData(WorkflowStatusID, SqlDbType.Int) },
-                { TransactionTable.ModifiedUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                { TransactionTable.ModifiedDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
-            };
-            string message;
-            if (TransactionBusiness.UpdateTransaction(TransactionID, parameterDictionary, out message))
-            {
-                SetPermission();
-                BindData();
-                ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
-
-            }
-            else
-            {
-                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-            }
-        }
     }
 
 }

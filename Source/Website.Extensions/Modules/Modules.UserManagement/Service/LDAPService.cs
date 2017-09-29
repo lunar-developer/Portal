@@ -37,7 +37,19 @@ namespace Modules.UserManagement.Service
                                 CacheBase.Reload<UserData>(userInfo.UserID.ToString());
                             }
 
-                            status = UserLoginStatus.LOGIN_SUCCESS;
+                            // Identify User Status
+                            if (userInfo.Membership.LockedOut)
+                            {
+                                status = UserLoginStatus.LOGIN_USERLOCKEDOUT;
+                            }
+                            else if (userInfo.Membership.Approved == false)
+                            {
+                                status = UserLoginStatus.LOGIN_USERNOTAPPROVED;
+                            }
+                            else
+                            {
+                                status = UserLoginStatus.LOGIN_SUCCESS;
+                            }
                         }
                         return userInfo;
 

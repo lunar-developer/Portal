@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using DotNetNuke.Common.Utilities;
+using DotNetNuke.Entities.Users;
 using Modules.UserManagement.DataAccess;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
 using Modules.UserManagement.Global;
 using Website.Library.DataTransfer;
+using Website.Library.Extension;
 using Website.Library.Global;
 
 namespace Modules.UserManagement.Business
@@ -22,9 +24,19 @@ namespace Modules.UserManagement.Business
                 string branchID = parameterDictionary[UserRequestTable.BranchID].ParameterValue.ToString();
                 UserData userManager = BranchBusiness.GetUserManager(branchID);
 
+                // Send Notification
                 string url = $"{UserManagementModuleBase.UserRequestUrl}/{UserRequestTable.UserRequestID}/{result}";
-                string body = $"Bạn có một phiếu yêu cầu cần xử lý. Click vào <a href='{url}'>đây</a> để xem chi tiết.";
+                string body = $@"Bạn có một phiếu yêu cầu cần xử lý. Click vào <a class=""c-edit-link c-theme-color"" href=""{url}"">đây</a> để xem chi tiết.";
                 SendNotification("Thông báo", body, fromUserID, userManager.UserName);
+
+
+                // Send Email Notification
+                InsensitiveDictionary<string> parameters = new InsensitiveDictionary<string>
+                {
+                    { "Link", url }
+                };
+                UserInfo userInfo = UserController.GetUserByName(userManager.UserName);
+                UserBusiness.SendEmailNotification(TemplateEnum.UserRequest, userInfo, parameters);
             }
             return result;
         }

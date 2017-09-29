@@ -69,6 +69,16 @@ namespace Modules.UserManagement.DataAccess
             return int.Parse(result) > 0;
         }
 
+        public bool UpdateAccountStatus(Dictionary<string, SQLParameterData> parameterDictionary)
+        {
+            foreach (KeyValuePair<string, SQLParameterData> pair in parameterDictionary)
+            {
+                Connector.AddParameter(pair.Key, pair.Value.ParameterType, pair.Value.ParameterValue);
+            }
+            Connector.ExecuteProcedure("dbo.UM_SP_UpdateAccountStatus", out string result);
+            return result == "1";
+        }
+
         public bool InsertUserLog(Dictionary<string, SQLParameterData> dictionary)
         {
             foreach (KeyValuePair<string, SQLParameterData> pair in dictionary)

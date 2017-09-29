@@ -26,6 +26,8 @@
         public const string BrokerageAmount = "BrokerageAmount";
         public const string DealTime = "DealTime";
         public const string BranchID = "BranchID";
+        public const string MarkerUserID = "MarkerUserID";
+        public const string DealerUserID = "DealerUserID";
         public const string CreationUserID = "CreationUserID";
         public const string CreationDateTime = "CreationDateTime";
         public const string ModifiedUserID = "ModifiedUserID";
@@ -34,6 +36,7 @@
         public const string EditStatusID = "EditStatusID";
         public const string CancelStatusID = "CancelStatusID";
         public const string Remark = "Remark";
+        public const string IsImport = "IsImport";
 
     }
 }

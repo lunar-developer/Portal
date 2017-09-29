@@ -28,12 +28,31 @@ namespace DesktopModules.Modules.Forex
                 {
                     return;
                 }
+
+                TransactionIDLastest.Value  = Request.QueryString[TransactionTable.ID] ?? "0";
+                string message;
+                if (IsSessionCallPopup)
+                {
+                    return;
+                }
+                if (IsNotificationSuccessMessage(out message))
+                {
+                    ModuleMessage.ModuleMessageType messageType = GetMessageType();
+                    ShowMessage($"{message}",
+                        messageType);
+                }
                 BindData();
                 ReloadTime.Value = GetReloadHOInboxTime.ToString();
             }
             finally
             {
                 SetPermission();
+                if (IsSessionCallPopup == false 
+                    && IsRedirectAndShowNotification == false)
+                {
+                    ResetRedirectAndShowNotification();
+                }
+                ResetSessionCallPopup();
             }
             
         }
@@ -44,18 +63,32 @@ namespace DesktopModules.Modules.Forex
             GirdView.LocalResourceFile = LocalResourceFile;
             SetGirdTitle();
             GridBind();
-            BindBranch(ctBranch,IsHOViewer || IsHODealer || IsHOManager ? null : CurrentUserBranchData?.BranchID,
-                IsHOViewer || IsHODealer || IsHOManager);
-            BindCustomerType(ctCustomerType);
-            BindTransactionType(ctTransactionType);
-            BindReason(ctReasonTransaction);
-            BindCurrency(ctExchangeCode);
-            BindWorkflowStatus(ctTransactionStatus);
+            BindBranch(ctBranch,IsHOViewer || IsHODealer || IsHOManager || IsHOAdmin ? null : CurrentUserBranchData?.BranchID,
+                IsHOViewer || IsHODealer || IsHOManager || IsHOAdmin,true);
+            BindCustomerType(ctCustomerType,null,true,true);
+            BindTransactionType(ctTransactionType, null, true, true);
+            BindCurrency(ctExchangeCode, null, true, true);
+            BindWorkflowStatus(ctTransactionStatus, null, true, true);
+
+            calCreateFromDate.SelectedDate = DateTime.Now;
+            calCreateToDate.SelectedDate = DateTime.Now;
+            calTransactionToDate.SelectedDate = DateTime.Now.AddMonths(1);
         }
 
         
 
         #region Grid Control
+        private const string NotificationHtml = @"<span class=""badge badge-notify"">{0}</span>";
+        protected string IsNewItemFormat(string value,string transactionID, string workflowStatus)
+        {
+            int statusID;
+            if (TransactionIDLastest.Value.Equals(transactionID) && int.TryParse(workflowStatus, out statusID) &&
+                statusID >= WorkflowStatusEnum.BRAsk && statusID < WorkflowStatusEnum.HOFinishTransaction)
+            {
+                return string.Format(NotificationHtml,value);
+            }
+            return value;
+        }
         private void SetGirdTitle()
         {
             GridTitle.InnerHtml = IsFindData ? "Danh sách tìm kiếm" : "Danh sách chờ xử lí";
@@ -78,6 +111,8 @@ namespace DesktopModules.Modules.Forex
             string num = item?["NumRecord"].Text;
 
             string customerName = item?["CustomerName"].Text;
+            
+
             LinkButton buttonAccept = item?["ActionColumn"].Controls[5] as LinkButton;
             LinkButton buttonReject = item?["ActionColumn"].Controls[7] as LinkButton;
             if (buttonAccept != null)
@@ -123,6 +158,9 @@ namespace DesktopModules.Modules.Forex
             }
             string transactionID = item.GetDataKeyValue("ID").ToString();
             string workflowStatusID = e.CommandArgument?.ToString();
+            string makerID = item?["MarkerUserID"].Text;
+            string dealerID = item?["DealerUserID"].Text;
+            string branchID = item?["BranchID"].Text;
             Dictionary<string, SQLParameterData> parameterDatas;
 
             switch (e.CommandName)
@@ -131,21 +169,21 @@ namespace DesktopModules.Modules.Forex
                     parameterDatas = !string.IsNullOrWhiteSpace(workflowStatusID) && 
                         workflowStatusID.Equals(WorkflowStatusEnum.HOFinishTransaction.ToString()) ? GetRequestCancelTransactionData : 
                         GetRejectTransactionData;
-                    ProcessTransaction(transactionID, workflowStatusID, parameterDatas);
+                    ProcessTransaction(transactionID, workflowStatusID, parameterDatas, branchID, makerID, dealerID);
                     break;
                 case CommandTypeEnum.Accept:
                     if (IsAcceptToChangeStatus(workflowStatusID))
                     {
                         parameterDatas = GetAcceptTransactionData;
-                        ProcessTransaction(transactionID, workflowStatusID, parameterDatas);
+                        ProcessTransaction(transactionID, workflowStatusID, parameterDatas, branchID, makerID, dealerID);
                     }
                     else
                     {
-                        ViewTransactionDetail(transactionID);
+                        GetPopupTransactionDeatil(transactionID);
                     }
                     break;
                 case CommandTypeEnum.ViewEdit:
-                    ViewTransactionDetail(transactionID);
+                    GetPopupTransactionDeatil(transactionID);
                     break;
                 case CommandTypeEnum.History:
                     string script = EditUrl(ConfigurationEnum.HistoryControlKey, 
@@ -161,27 +199,26 @@ namespace DesktopModules.Modules.Forex
             
         }
         #endregion
-        private void ViewTransactionDetail(string transactionID)
-        {
-            string script = EditUrl(ConfigurationEnum.TransactionManagementControlKey, 
-                600, 600, true,true, "BtnReloadTransactionManagementGridView", TransactionTable.ID, transactionID);
-            RegisterScript(script);
-        }
-        private void ProcessTransaction(string key, string workflowStatusID, Dictionary<string, SQLParameterData> parameterDatas)
+
+        private void ProcessTransaction(string key, string workflowStatusID, Dictionary<string, SQLParameterData> parameterDatas,
+            string branchID = null, string markerID = null, string dealerID = null)
         {
             string message;
+            ModuleMessage.ModuleMessageType messageType;
             parameterDatas.Add("WorkflowStatusID", new SQLParameterData(workflowStatusID, SqlDbType.Int));
-            if (TransactionBusiness.UpdateTransaction(key, parameterDatas, out message))
+            if (TransactionBusiness.UpdateTransaction(key, parameterDatas, out message, out messageType))
             {
-                SetPermission();
-                GridBind();
-                ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
-
+                string targetStatus = string.Empty;
+                if (parameterDatas.ContainsKey("IsReject") &&
+                    parameterDatas["IsReject"].ParameterValue.Equals("True"))
+                {
+                    targetStatus = WorkflowStatusEnum.Reject.ToString();
+                }
+                SendNotificationMessage(string.Empty,string.Empty, workflowStatusID,branchID,markerID,dealerID, targetStatus);
             }
-            else
-            {
-                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
-            }
+            ShowMessage($"{message}.", messageType);
+            Finish(key, ParseWorkflowStatus(workflowStatusID), messageType, message, null, null, true,
+                $"{TransactionManagementUrl}/{TransactionTable.ID}/{key}");
         }
         protected void FindData(object sender, EventArgs e)
         {
@@ -211,7 +248,16 @@ namespace DesktopModules.Modules.Forex
         }
         protected void ReloadGirdData(object sender, EventArgs e)
         {
-            GridBind();
+            if (IsRedirectAndShowNotification)
+            {
+                string url = $"{TransactionManagementUrl}/{TransactionTable.ID}/{GetSessionTransactionID}";
+                string script = GetWindowOpenScript(url, null, false);
+                RegisterScript(script);
+            }
+            else
+            {
+                GridBind();
+            }
         }
         private Dictionary<string, SQLParameterData> GetFindParamData
         {
@@ -226,7 +272,7 @@ namespace DesktopModules.Modules.Forex
                     { TransactionTable.CustomerTypeID, new SQLParameterData(ctCustomerType.SelectedValue, SqlDbType.Int) },
                     { TransactionTable.TransactionTypeID, new SQLParameterData(ctTransactionType.SelectedValue, SqlDbType.Int) },
                     { TransactionTable.ReasonCode, new SQLParameterData(ctReasonTransaction.SelectedValue, SqlDbType.Int) },
-                    { TransactionTable.CurrencyCode, new SQLParameterData(ctExchangeCode.SelectedValue, SqlDbType.Int) },
+                    { TransactionTable.CurrencyCode, new SQLParameterData(ctExchangeCode.SelectedValue, SqlDbType.VarChar) },
                     { TransactionTable.TransactionStatusID, new SQLParameterData(ctTransactionStatus.SelectedValue, SqlDbType.Int) }
                 };
 
@@ -282,30 +328,37 @@ namespace DesktopModules.Modules.Forex
         {
             btnInbox.Enabled = IsBRMaker || IsBRManager || IsHODealer || IsHOManager;
             btnInbox.Visible = IsBRMaker || IsBRManager || IsHODealer || IsHOManager;
-            btnFind.Enabled = IsBRViewer || IsBRMaker || IsBRManager || IsHOViewer || IsHODealer || IsHOManager;
-            btnExportExcel.Enabled = IsBRViewer || IsBRMaker || IsBRManager || IsHOViewer || IsHODealer || IsHOManager;
+            btnFind.Enabled = true;
+            btnExportExcel.Enabled = true;
         }
 
         private void FormInit()
         {
             calCreateFromDate.MaxDate = DateTime.Now;
             calCreateFromDate.MinDate = DateTime.Now.AddMonths(-1);
+            
 
             calCreateToDate.MaxDate = DateTime.Now;
             calCreateToDate.MinDate = DateTime.Now.AddMonths(-1);
+            
 
             calTransactionFromDate.MaxDate = DateTime.Now.AddDays(365);
             calTransactionFromDate.MinDate = DateTime.Now.AddMonths(-1);
+            calTransactionFromDate.SelectedDate = DateTime.Now;
 
             calTransactionToDate.MaxDate = DateTime.Now.AddDays(365);
             calTransactionToDate.MinDate = DateTime.Now.AddMonths(-1);
+            
 
         }
 
         private bool IsFindData => !string.IsNullOrWhiteSpace(IsFindDataHidden.Value) && IsFindDataHidden.Value == "1";
 
 
-        
+        protected void CustomerTypeChange(object sender, RadComboBoxSelectedIndexChangedEventArgs e)
+        {
+            BindReason(ctReasonTransaction,ctCustomerType.SelectedValue, null, true, true);
+        }
     }
     
 }

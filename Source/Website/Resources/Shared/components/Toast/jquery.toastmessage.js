@@ -1,24 +1,27 @@
-(function ($) {
+﻿(function ($)
+{
     var settings = {
-        inEffect: { opacity: 'show' },	// in effect
+        inEffect: { opacity: "show" },	// in effect
         inEffectDuration: 600,				// in effect duration in miliseconds
         stayTime: 3000,				// time in miliseconds before the item has to disappear
-        text: '',					// content of the item. Might be a string or a jQuery object. Be aware that any jQuery object which is acting as a message will be deleted when the toast is fading away.
+        text: "",					// content of the item. Might be a string or a jQuery object. Be aware that any jQuery object which is acting as a message will be deleted when the toast is fading away.
         sticky: false,				// should the toast item sticky or not?
-        type: 'notice', 			// notice, warning, error, success
-        position: 'top-right',        // top-left, top-center, top-right, middle-left, middle-center, middle-right ... Position of the toast container holding different toast. Position can be set only once at the very first call, changing the position after the first call does nothing
-        closeText: '',                 // text which will be shown as close button, set to '' when you want to introduce an image via css
+        type: "notice", 			// notice, warning, error, success
+        position: "top-right",        // top-left, top-center, top-right, middle-left, middle-center, middle-right ... Position of the toast container holding different toast. Position can be set only once at the very first call, changing the position after the first call does nothing
+        closeText: "",                 // text which will be shown as close button, set to '' when you want to introduce an image via css
         close: null                // callback function when the toastmessage is closed
     };
 
-    var htmlSubstring = function (s, n) {
+    var htmlSubstring = function (s, n)
+    {
         var m, r = /<([^>\s]*)[^>]*>/g,
-			stack = [],
-			lasti = 0,
-			result = '';
+            stack = [],
+            lasti = 0,
+            result = "";
 
         //for each tag, while we don't have enough characters
-        while ((m = r.exec(s)) && n) {
+        while ((m = r.exec(s)) && n)
+        {
             //get the text substring between the last tag and this one
             var temp = s.substring(lasti, m.index).substr(0, n);
             //append to the result and count the number of characters added
@@ -26,12 +29,15 @@
             n -= temp.length;
             lasti = r.lastIndex;
 
-            if (n) {
+            if (n)
+            {
                 result += m[0];
-                if (m[1].indexOf('/') === 0) {
+                if (m[1].indexOf("/") === 0)
+                {
                     //if this is a closing tag, than pop the stack (does not account for bad html)
                     stack.pop();
-                } else if (m[1].lastIndexOf('/') !== m[1].length - 1) {
+                } else if (m[1].lastIndexOf("/") !== m[1].length - 1)
+                {
                     //if this is not a self closing tag than push it in the stack
                     stack.push(m[1]);
                 }
@@ -42,65 +48,86 @@
         result += s.substr(lasti, n);
 
         //fix the unclosed tags
-        while (stack.length) {
-            result += '</' + stack.pop() + '>';
+        while (stack.length)
+        {
+            result += "</" + stack.pop() + ">";
         }
 
         return result;
     };
 
     var methods = {
-        init: function (options) {
-            if (options) {
+        init: function (options)
+        {
+            if (options)
+            {
                 $.extend(settings, options);
             }
         },
 
-        showAllToasts: function (msgOptions) {
+        showAllToasts: function (msgOptions)
+        {
             var messages = msgOptions.messages;
             var seeMoreText = msgOptions.seeMoreText;
             var seeMoreLink = msgOptions.seeMoreLink;
 
             if (!messages || !messages.length) return null;
 
-            if ($('.toast-container').length) {
-                $('.toast-container').remove();
+            if ($(".toast-container").length)
+            {
+                $(".toast-container").remove();
             }
 
             var localSettings = {};
             $.extend(localSettings, settings);
 
             // declare variables
-            var toastWrapAll, toastItemOuter, toastItemInner, toastItemClose, toastItemImage;
+            var toastWrapAll, toastItemOuter, toastItemInner, toastItemClose;
 
-            var allToasts = $('<ul></ul>');
+
+
+            var allToasts = $("<ul></ul>");
             var length = messages.length;
-            for (var i = 0; i < length; i++) {
+            var maximumItems = 2;
+            for (var i = 0; i < length && i < maximumItems; i++) 
+            {
                 var singleMsg = messages[i];
-                var singleToast = $('<li></li>').addClass('toast-message');
-                var subject = singleMsg.subject ? singleMsg.subject : '';
-                var body = singleMsg.body ? singleMsg.body : '';
+                var singleToast = $("<li></li>").addClass("toast-message");
+                var subject = singleMsg.subject ? singleMsg.subject : "";
+                var body = singleMsg.body ? singleMsg.body : "";
                 var regex = /(<([^>]+)>)/ig;
                 var stripedBody = body.replace(regex, "");
 
-                subject = subject.length > 40 ? subject.substring(0, 40) + '...' : subject;
-                body = stripedBody.length > 75 ? htmlSubstring(body, 75) + '...' : body;
-                singleToast.append('<a href="' + seeMoreLink + '" >' + subject + '</a>');
-                singleToast.append('<p>' + body + '</p>');
+
+                subject = subject.length > 40 ? subject.substring(0, 40) + "..." : subject;
+                body = stripedBody.length > 75 ? htmlSubstring(body, 75) + "..." : body;
+
+                var subjectContainer = $("<div class='toast-title'></div>");
+                subjectContainer.append(subject);
+
+                var bodyContainer = $("<div class='toast-body'></div>");
+                bodyContainer.append(body);
+
+                singleToast.append(subjectContainer);
+                singleToast.append(bodyContainer);
                 allToasts.append(singleToast);
             }
 
-            var seeMoreContent = $('<li></li>').addClass('toast-lastChild');
-            seeMoreContent.append('<a href="' + seeMoreLink + '" class="seeMoreLink" >' + seeMoreText + '</a>');
+            var closeButton = $("<input type='button' class='btn btn-default' value='Đóng'/>")
+                .click(function() { $(".toast-close").click(); });
+            var seeMoreContent = $("<li></li>").addClass("toast-lastChild");
+            seeMoreContent.append("<a href='" + seeMoreLink + "' class='btn btn-primary'>" + seeMoreText + "</a>");
+            seeMoreContent.append(closeButton);
             allToasts.append(seeMoreContent);
 
-            toastWrapAll = $('<div></div>').addClass('toast-container').addClass('toast-position-' + localSettings.position).appendTo('body');
+            toastWrapAll = $("<div></div>").addClass("toast-container").addClass("toast-position-" + localSettings.position).appendTo("body");
             var originalPos = null, top = 20, right = 80;
             // get the position from cookie
-            var cookieId = 'nebula-toast-position';
+            var cookieId = "nebula-toast-position";
             var cookieValue = dnn.dom.getCookie(cookieId);
-            if (cookieValue) {
-                var splitCookieValue = cookieValue.split('|');               
+            if (cookieValue)
+            {
+                var splitCookieValue = cookieValue.split("|");
                 top = parseInt(splitCookieValue[0], 10);
                 right = parseInt(splitCookieValue[1], 10);
                 toastWrapAll.css({
@@ -110,8 +137,10 @@
             }
 
 
-            var mouseMove = function (e) {
-                if (originalPos !== null) {
+            var mouseMove = function (e)
+            {
+                if (originalPos !== null)
+                {
                     var x = e.pageX;
                     var y = e.pageY;
 
@@ -130,55 +159,72 @@
                 }
             };
 
-            toastWrapAll.bind('mousedown', function (e) {
+            toastWrapAll.bind("mousedown", function (e)
+            {
                 var x = e.pageX;
                 var y = e.pageY;
                 originalPos = {
                     x: x,
                     y: y
                 };
-                $(document).bind('mousemove', mouseMove);
+                $(document).bind("mousemove", mouseMove);
 
-            }).bind('mouseup', function (e) {
+            }).bind("mouseup", function ()
+            {
                 originalPos = null;
-                $(document).unbind('mousemove', mouseMove);
+                $(document).unbind("mousemove", mouseMove);
 
-                var cValue = top + '|' + right;
+                var cValue = top + "|" + right;
                 dnn.dom.setCookie(cookieId, cValue, 20 * 365); // never expire - set 20 years...
             });
 
-            toastItemOuter = $('<div></div>').addClass('toast-item-wrapper');
-            toastItemInner = $('<div></div>').hide().addClass('toast-item toast-type-' + localSettings.type).appendTo(toastWrapAll).append(allToasts).animate(localSettings.inEffect, localSettings.inEffectDuration).wrap(toastItemOuter);
-            toastItemClose = $('<div></div>').addClass('toast-item-close').prependTo(toastItemInner).html(localSettings.closeText).click(function () { $().dnnToastMessage('removeToast', toastItemInner, localSettings) });
+            toastItemOuter = $("<div></div>").addClass("toast-item-wrapper");
+            toastItemInner = $("<div></div>").hide().addClass("toast-item toast-type-" + localSettings.type).appendTo(toastWrapAll).append(allToasts).animate(localSettings.inEffect, localSettings.inEffectDuration).wrap(toastItemOuter);
 
-            if (navigator.userAgent.match(/MSIE 6/i)) {
+            toastItemClose = $("<div></div>")
+                .addClass("toast-close")
+                .append("<i class='fa fa-close'></i>")
+                .prependTo(toastItemInner)
+                .click(function () { $().dnnToastMessage("removeToast", toastItemInner, localSettings) });
+
+            if (navigator.userAgent.match(/MSIE 6/i))
+            {
                 toastWrapAll.css({ top: document.documentElement.scrollTop });
             }
 
             return toastItemInner;
         },
 
-        removeToast: function (obj, options) {
-            obj.animate({ opacity: '0' }, 600, function () {
-                obj.parent().animate({ height: '0px' }, 300, function () {
+        removeToast: function (obj, options)
+        {
+            obj.animate({ opacity: "0" }, 600, function ()
+            {
+                obj.parent().animate({ height: "0px" }, 300, function ()
+                {
                     obj.parent().remove();
                 });
             });
             // callback
-            if (options && options.close !== null) {
+            if (options && options.close !== null)
+            {
                 options.close();
             }
         }
     };
 
-    $.fn.dnnToastMessage = function (method) {
+    $.fn.dnnToastMessage = function (method)
+    {
 
         // Method calling logic
-        if (methods[method]) {
+        if (methods[method])
+        {
             return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-        } else if (typeof method === 'object' || !method) {
+        } else if (typeof method === "object" || !method)
+        {
             return methods.init.apply(this, arguments);
-        } else {
+        } else
+        {
+            return "";
         }
     };
 

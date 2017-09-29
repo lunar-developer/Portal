@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI.WebControls;
 using DotNetNuke.Security.Roles;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.UserManagement.Business;
@@ -30,14 +29,11 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            ListItem item = new ListItem("Vui lòng chọn Nhóm Quyền", string.Empty);
-            item.Attributes.Add("disabled", "disabled");
-            ddlRoleGroup.Items.Add(item);
             foreach (RoleGroupInfo roleGroupInfo in RoleController.GetRoleGroups(PortalId))
             {
                 string text = $"{roleGroupInfo.RoleGroupName} - {roleGroupInfo.Description}";
                 string value = roleGroupInfo.RoleGroupID.ToString();
-                ddlRoleGroup.Items.Add(new ListItem(text, value));
+                ddlRoleGroup.Items.Add(new RadComboBoxItem(text, value));
             }
 
             btnUpdate.Visible = btnRefresh.Visible = false;
@@ -88,10 +84,10 @@ namespace DesktopModules.Modules.UserManagement
             Dictionary<string, SQLParameterData> parametedDictionary = new Dictionary<string, SQLParameterData>
             {
                 { RoleGroupTable.RoleGroupID, new SQLParameterData(ddlRoleGroup.SelectedValue, SqlDbType.Int) },
-                { "ListBranchID", new SQLParameterData(string.Join(",", list), SqlDbType.VarChar) },
-                { BaseTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { "ListBranchID", new SQLParameterData(string.Join(",", list)) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    BaseTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 },
             };

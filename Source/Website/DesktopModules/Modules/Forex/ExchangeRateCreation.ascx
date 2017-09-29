@@ -51,6 +51,7 @@
                                             </div>
                                             <div class="col-md-8">
                                                 <control:AutoComplete 
+                                                                  EmptyMessage="Cặp tỷ giá"
                                                                   ID = "ctExchangeCode" AutoPostBack="True"
                                                                   runat = "server" OnSelectedIndexChanged="ExChangeCodeChange">
                                                 </control:AutoComplete>

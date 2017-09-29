@@ -43,7 +43,8 @@ namespace Website.Library.Business
                 "bootstrap.min.js",
                 "jquery-ui.js",
                 "jquery-control.js",
-                "jquery.cookie.js"
+                "jquery.cookie.js",
+                "jquery.menu-aim.js"
             });
             Bundles.Add(scriptBundle);
         }

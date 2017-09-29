@@ -5,24 +5,52 @@ using System.Net.Mail;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using DotNetNuke.Services.Mail;
+using Website.Library.Business;
 using Website.Library.Enum;
 
 namespace Website.Library.Global
 {
     public static class MailBase
     {
-        private static readonly string EmailAddress = FunctionBase.GetConfiguration(ConfigEnum.EmailAddress);
-        private static readonly string EmailEnvelope = FunctionBase.GetConfiguration(ConfigEnum.ImageEmailEnvelope);
-        private static readonly string Logo = FunctionBase.GetConfiguration(ConfigEnum.ImageLogo);
+        private static readonly string EmailAddress;
+        private static readonly string EmailTemplate;
+        private static readonly string EmailEnvelope;
+        private static readonly string Logo;
 
-        public static void SendEmail(string toAddress, string subject, string body,
-            List<Attachment> listAttachments, bool isUseTemplate = true)
+        static MailBase()
+        {
+            // Folder
+            string assetsFolder =
+                FunctionBase.GetConfiguration(ConfigEnum.SiteFolder) +
+                FunctionBase.GetConfiguration(ConfigEnum.SiteAssetsFolder);
+            string imageFolder = $"{assetsFolder}images/";
+            string templateFolder = $"{assetsFolder}templates/";
+
+            // Read Settings
+            EmailAddress = FunctionBase.GetConfiguration(ConfigEnum.EmailAddress);
+            EmailTemplate = File.ReadAllText($"{templateFolder}EmailTemplate.html");
+            EmailEnvelope = ImageBusiness.GetImageFromFile($"{imageFolder}envelope.png");
+            Logo = ImageBusiness.GetImageFromFile($"{imageFolder}logo.png");
+        }
+
+
+        public static void SendEmail(
+            string toAddress,
+            string subject,
+            string body,
+            List<Attachment> listAttachments = null,
+            bool isUseTemplate = true)
         {
             SendEmail(EmailAddress, toAddress, subject, body, listAttachments, isUseTemplate);
         }
 
-        public static void SendEmail(string fromAddress, string toAddress, string subject, string body,
-            List<Attachment> listAttachments, bool isUseTemplate = true)
+        public static void SendEmail(
+            string fromAddress,
+            string toAddress,
+            string subject,
+            string body,
+            List<Attachment> listAttachments = null,
+            bool isUseTemplate = true)
         {
             if (isUseTemplate)
             {
@@ -34,7 +62,10 @@ namespace Website.Library.Global
                 Attachment logo = CreateAttachment(Logo, "Logo");
                 listAttachments.Add(emailEnvelope);
                 listAttachments.Add(logo);
-                body = body.Replace("@Envelope", emailEnvelope.ContentId).Replace("@Logo", logo.ContentId);
+                body = EmailTemplate
+                    .Replace("@Envelope", emailEnvelope.ContentId)
+                    .Replace("@Logo", logo.ContentId)
+                    .Replace("@Content", body);
             }
             Task.Run(() => Mail.SendEmail(fromAddress, fromAddress, toAddress, subject, body, listAttachments));
         }

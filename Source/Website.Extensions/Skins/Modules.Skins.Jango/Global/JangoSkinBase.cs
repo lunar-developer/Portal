@@ -9,6 +9,7 @@ using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Permissions;
+using DotNetNuke.Services.Social.Notifications;
 using Telerik.Web.UI;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
@@ -110,15 +111,33 @@ namespace Modules.Skins.Jango.Global
         {
             if (Request.IsAuthenticated)
             {
+                int portalID = PortalSettings.PortalId;
                 UserInfo userInfo = UserController.Instance.GetCurrentUserInfo();
                 List<string> listUrl = new List<string>();
+                int unreadNotifications = NotificationsController.Instance.CountNotifications(userInfo.UserID, portalID);
+                string iconNotification = unreadNotifications > 0
+                    ? @"<i class=""fa fa-exclamation icon-danger notification-icon""></i>"
+                    : string.Empty;
+
+
+                // INBOX URL
+                string inboxUrl =
+                    $"{FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_InboxUrl"))}";
+                listUrl.Add($@"
+                    <li>
+                        <a href=""{inboxUrl}"">
+				            Hộp thư Cá Nhân
+                            <span class=""badge c-bg-red-2 c-margin-l-5 c-margin-t--5"">{unreadNotifications}</span>
+			            </a>
+                    </li>");
+
 
                 // PROFILE URL
                 string profileUrl =
                     $"{FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_EditUrl"))}/UserID/{userInfo.UserID}";
                 listUrl.Add($@"
                     <li>
-                        <a href='{profileUrl}'>
+                        <a href=""{profileUrl}"">
 				            Thông tin Tài khoản
 			            </a>
                     </li>");
@@ -128,7 +147,7 @@ namespace Modules.Skins.Jango.Global
                 string requestUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("UM_ManageRequestUrl"));
                 listUrl.Add($@"
                     <li>
-                        <a href='{requestUrl}'>
+                        <a href=""{requestUrl}"">
 				            Thông tin Phiếu yêu cầu
 			            </a>
                     </li>");
@@ -141,28 +160,31 @@ namespace Modules.Skins.Jango.Global
                     string contactInfoUrl = FunctionBase.GetTabUrl(FunctionBase.GetConfiguration("EM_UpdateContactInfoUrl"));
                     listUrl.Add($@"
                         <li>
-                            <a href='{contactInfoUrl}'>
+                            <a href=""{contactInfoUrl}"">
 				                Thông tin Liên lạc
 			                </a>
                         </li>");
                 }
 
+
                 // LOG OFF URL
                 string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
                 listUrl.Add($@"
                     <li>
-                        <a href='{logoffUrl}'>
+                        <a href=""{logoffUrl}"">
 				            <i class=""fa fa-sign-out""></i> Thoát
 			            </a>
                     </li>");
 
 
                 return $@"
-                    <li class=' c-menu-type-classic'>
-                        <a class='c-link dropdown-toggle' href='javascript:;'>
-                            <i class=""fa fa-user""></i>&nbsp;{userInfo.DisplayName}<span class='c-arrow c-toggler'></span>
+                    <li class=""c-menu-type-classic"">
+                        <a class=""c-link dropdown-toggle"" href=""javascript:;"">
+                            <i class=""fa fa-user""></i>
+                            &nbsp;{userInfo.DisplayName}{iconNotification}
+                            <span class=""c-arrow c-toggler""></span>
                         </a>
-                        <ul class='c-menu-type-classic c-pull-right dropdown-menu'>
+                        <ul class=""c-menu-type-classic c-pull-right dropdown-menu"">
                             {string.Join("", listUrl)}
                         </ul>
                     </li>";

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
+using System.Web.Management;
+using DotNetNuke.UI.Skins.Controls;
 using Modules.Forex.DataAccess;
 using Modules.Forex.DataTransfer;
 using Website.Library.DataTransfer;
@@ -37,29 +39,56 @@ namespace Modules.Forex.Business
             if (!int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int idResult))
             {
                 message += " . Status ID is not valid.";
-                return -1;
             }
-
+            if (idResult < 0)
+            {
+                throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
+            }
             return idResult;
         }
         public static bool RemoveItem(string key,out string message)
         {
             DataTable dtResult = new TransactionProvider().RemoveItem(key);
             message = dtResult?.Rows[0][1]?.ToString();
-            return dtResult?.Rows[0][0]?.ToString() == "1";
+            if (int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int statusID) == false || statusID < 0)
+            {
+                throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
+            }
+            return statusID == 1;
         }
 
-        public static bool UpdateCustomer(string key, Dictionary<string, SQLParameterData> conditionDictionary, out string message)
+        public static bool UpdateCustomer(string key, Dictionary<string, SQLParameterData> conditionDictionary, 
+            out string message, out ModuleMessage.ModuleMessageType messageType)
         {
             DataTable dtResult = new TransactionProvider().UpdateItem("dbo.FX_UpdateCustomerInfomation", key, conditionDictionary);
             message = dtResult?.Rows[0][1]?.ToString();
-            return dtResult?.Rows[0][0]?.ToString() == "1";
+            if (int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int statusID)  || statusID >= 0)
+            {
+                messageType = statusID == 1
+                    ? ModuleMessage.ModuleMessageType.GreenSuccess
+                    : ModuleMessage.ModuleMessageType.YellowWarning;
+                return statusID == 1;
+                
+            }
+            messageType = ModuleMessage.ModuleMessageType.RedError;
+            message = "Lỗi xảy ra trong quá trình cập nhật thông tin khách hàng, vui lòng liên hệ người quản trị";
+            throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
         }
-        public static bool UpdateTransaction(string key, Dictionary<string, SQLParameterData> conditionDictionary, out string message)
+        public static bool UpdateTransaction(string key, Dictionary<string, SQLParameterData> conditionDictionary, 
+            out string message, out ModuleMessage.ModuleMessageType messageType)
         {
             DataTable dtResult = new TransactionProvider().UpdateItem("dbo.FX_ChangeTransactionStatus", key, conditionDictionary);
             message = dtResult?.Rows[0][1]?.ToString();
-            return dtResult?.Rows[0][0]?.ToString() == "1";
+            if (int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int statusID) && statusID >= 0)
+            {
+                messageType = statusID == 1
+                    ? ModuleMessage.ModuleMessageType.GreenSuccess
+                    : ModuleMessage.ModuleMessageType.YellowWarning;
+                return statusID == 1;
+            }
+            messageType = ModuleMessage.ModuleMessageType.RedError;
+            message = "Lỗi xảy ra trong quá trình xử lí, vui lòng liên hệ người quản trị";
+            throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
         }
 
        

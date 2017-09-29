@@ -1516,37 +1516,37 @@
     <value>You are using an unverified account. Please verify your account by clicking on the link contained in the verification email that has been sent to you.</value>
   </data>
   <data name="DayAgo.Text" xml:space="preserve">
-    <value>{0} day ago</value>
+    <value>{0} ngày trước</value>
   </data>
   <data name="DaysAgo.Text" xml:space="preserve">
-    <value>{0} days ago</value>
+    <value>{0} ngày trước</value>
   </data>
   <data name="HourAgo.Text" xml:space="preserve">
-    <value>{0} hour ago</value>
+    <value>{0} giờ trước</value>
   </data>
   <data name="HoursAgo.Text" xml:space="preserve">
-    <value>{0} hours ago</value>
+    <value>{0} giờ trước</value>
   </data>
   <data name="MinuteAgo.Text" xml:space="preserve">
-    <value>{0} minute ago</value>
+    <value>{0} phút trước</value>
   </data>
   <data name="MinutesAgo.Text" xml:space="preserve">
-    <value>{0} minutes ago</value>
+    <value>{0} phút trước</value>
   </data>
   <data name="MonthAgo.Text" xml:space="preserve">
-    <value>{0} month ago</value>
+    <value>{0} tháng trước</value>
   </data>
   <data name="MonthsAgo.Text" xml:space="preserve">
-    <value>{0} months ago</value>
+    <value>{0} tháng trước</value>
   </data>
   <data name="SecondsAgo.Text" xml:space="preserve">
-    <value> {0} seconds ago</value>
+    <value> {0} giây trước</value>
   </data>
   <data name="WeekAgo.Text" xml:space="preserve">
-    <value>{0} week ago</value>
+    <value>{0} tuần trước</value>
   </data>
   <data name="WeeksAgo.Text" xml:space="preserve">
-    <value>{0} weeks ago</value>
+    <value>{0} tuần trước</value>
   </data>
   <data name="DuplicateDisplayName.Text" xml:space="preserve">
     <value>The Display Name is already in use.</value>
@@ -1946,7 +1946,7 @@ the modified URL.</value>
     <value>Data Type</value>
   </data>
   <data name="NoRecords.Text" xml:space="preserve">
-    <value>No records to display</value>
+    <value>Không tìm thấy dữ liệu liên quan</value>
   </data>
   <data name="System.Text" xml:space="preserve">
     <value>System</value>

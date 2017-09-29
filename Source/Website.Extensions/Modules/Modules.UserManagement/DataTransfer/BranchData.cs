@@ -9,9 +9,9 @@ namespace Modules.UserManagement.DataTransfer
         public string BranchCode { get; set; }
         public string BranchName { get; set; }
         public string LDAPCommonName { get; set; }
+        public string RegionID { get; set; }
+        public string IsHeadOffice { get; set; }
         public string IsLogical { get; set; }
         public string IsDisable { get; set; }
-        public string ModifyDateTime { get; set; }
-        public string ModifyUserID { get; set; }
     }
 }

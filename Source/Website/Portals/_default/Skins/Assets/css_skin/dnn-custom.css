@@ -94,29 +94,29 @@ body > form > .rcbSlide {
     -ms-border-radius: 0.25rem !important;
     border-radius: 0.25rem !important;
     color: #fff !important;
-    padding: 0.9375rem !important;
+    padding: 10px 20px !important;
     max-width: 100%;
-    text-indent: 40px;
+    /*text-indent: 40px;*/
 }
 
 .dnnFormSuccess {
-    background-color: #a2cb3c !important;
-    background-image: url("../images/success.png") !important;
+    background-color: #5cb85c !important;
+    /*background-image: url("../images/success.png") !important;*/
 }
 
 .dnnFormInfo {
-    background-color: #8ab9d6 !important;
-    background-image: url("../images/info.png") !important;
+    background-color: #5e9cd1 !important;
+    /*background-image: url("../images/info.png") !important;*/
 }
 
 .dnnFormWarning {
-    background-color: #9C9B17 !important;
-    background-image: url("../images/warning.png") !important;
+    background-color: #f0ad4e !important;
+    /*background-image: url("../images/warning.png") !important;*/
 }
 
 .dnnFormValidationSummary {
-    background-color: #f28675 !important;
-    background-image: url("../images/error.png") !important;
+    background-color: #d9534f !important;
+    /*background-image: url("../images/error.png") !important;*/
 }
 
 .dnnPanelLoading {
@@ -1219,4 +1219,76 @@ ul#ControlBar_Module_ModulePosition li {
 .dnnFormPopup .ui-dialog-buttonpane button.btn-default
 {
     border: 1px solid #e1e6ee;
+}
+
+div.dnnFixedSizeComboBox
+{
+    width: 400px !important;
+}
+
+
+/* TOAST MESSAGE */
+.toast-item
+{
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: none;
+    border-radius: 0;
+    border: 0;
+    padding: 5px;
+    min-width: 350px;
+}
+.toast-item > ul
+{
+    border: 0;
+    padding: 0 15px 15px 15px;
+    background: #fff;
+}
+.toast-message
+{
+    padding: 0 !important;
+    border: 0 !important;
+}
+.toast-title
+{
+    color: #3f444a;
+    border-bottom: 1px solid #ddd;
+    cursor: move;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 15px 0 18px 0;
+    position: relative;
+}
+.toast-body
+{
+    background: #fff none repeat scroll 0 0;
+    border: 0 none;
+    overflow: auto;
+    padding: 10px 10px 18px 10px;
+    position: relative;
+    line-height: 30px;
+    text-align: justify;
+    border-bottom: 1px solid #ddd;
+    color: #3f444a;
+}
+.toast-item > ul > li.toast-lastChild
+{
+    border: 0;
+    text-align: left;
+    padding: 10px 0;
+}
+.toast-close
+{
+    height: 22px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    width: 22px;
+    font-size: 22px;
+    color: #828b96;
+    cursor: pointer;
+
+}
+.toast-close:hover
+{
+    color: #e12330 !important
 }

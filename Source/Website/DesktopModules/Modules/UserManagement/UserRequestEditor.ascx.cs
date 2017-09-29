@@ -25,6 +25,7 @@ namespace DesktopModules.Modules.UserManagement
     {
         private List<int> ListUserRoleID = new List<int>();
         private List<string> ListRequestRoleID = new List<string>();
+        private List<string> ListOldRoleID = new List<string>();
 
 
         protected override void OnLoad(EventArgs e)
@@ -136,6 +137,13 @@ namespace DesktopModules.Modules.UserManagement
 
                 foreach (UserData userData in UserBusiness.GetUsersInBranch(int.Parse(ddlBranch.SelectedValue)))
                 {
+                    if (UserInfo.IsSuperUser == false
+                        && userData.UserID != UserInfo.UserID.ToString()
+                        && IsAdministrator(userData.UserID))
+                    {
+                        continue;
+                    }
+
                     string text = $"{userData.DisplayName} ({userData.UserName})";
                     ddlUser.Items.Add(new RadComboBoxItem(text, userData.UserID));
                 }
@@ -212,6 +220,8 @@ namespace DesktopModules.Modules.UserManagement
 
 
             // BIND ROLE GROUPS & ROLES
+            BranchData branchData = CacheBase.Receive<BranchData>(ddlBranch.SelectedValue);
+            bool isHeadOffice = FunctionBase.ConvertToBool(branchData.IsHeadOffice);
             bool isProcess = hidRequestStatus.Value != RequestStatusEnum.New;
             bool isEnable = (IsAdministrator() || IsOwner(ddlUser.SelectedValue)) && isProcess == false;
             StringBuilder html = new StringBuilder();
@@ -224,16 +234,17 @@ namespace DesktopModules.Modules.UserManagement
             {
                 string roleGroupID = row[RoleGroupTable.RoleGroupID].ToString();
                 string roleGroupName = row[RoleGroupTable.RoleGroupName].ToString();
-                html.Append(RenderRole(int.Parse(roleGroupID), roleGroupName, isEnable, listUserRoles, isProcess));
+                html.Append(RenderRole(
+                    int.Parse(roleGroupID), roleGroupName, isHeadOffice, isEnable, listUserRoles, isProcess));
             }
 
             // Role Group System
-            html.Append(RenderRole(-1, "System - Hệ Thống", false, listUserRoles, isProcess));
+            html.Append(RenderRole(-1, "System - Hệ Thống", isHeadOffice, false, listUserRoles, isProcess));
 
             // Role Group Other
             if (listUserRoles.Count > 0)
             {
-                html.Append(RenderOtherRoles(-2, "Other - Khác", isEnable, listUserRoles, isProcess));
+                html.Append(RenderOtherRoles(-2, "Other - Khác", isHeadOffice, isEnable, listUserRoles, isProcess));
             }
             hidListUserRoles.Value = hidUserRequestID.Value == "0"
                 ? string.Join(",", ListUserRoleID)
@@ -249,7 +260,11 @@ namespace DesktopModules.Modules.UserManagement
             }
         }
 
-        private string RenderRole(int roleGroupID, string roleGroupName, bool isEnable,
+        private string RenderRole(
+            int roleGroupID,
+            string roleGroupName,
+            bool isHeadOffice,
+            bool isEnable,
             ICollection<string> listUserRoles, bool isProcess)
         {
             string checkBoxGroup = "&nbsp;";
@@ -270,7 +285,7 @@ namespace DesktopModules.Modules.UserManagement
             }
             else if (isProcess)
             {
-                checkBoxGroup = "Yêu Cầu";
+                checkBoxGroup = string.Empty;
             }
 
             int i = -1;
@@ -279,11 +294,12 @@ namespace DesktopModules.Modules.UserManagement
             foreach (RoleInfo role in roleController.GetRolesByGroup(0, roleGroupID))
             {
                 i++;
+                string roleID = role.RoleID.ToString();
                 string elementID = $"Role{role.RoleID}";
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
                 bool isHasRole = listUserRoles.Contains(role.RoleName);
-                string grantImage = isHasRole
-                    ? $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />"
+                string currentPermission = isHasRole
+                    ? FunctionBase.IconSuccess
                     : string.Empty;
                 if (isHasRole)
                 {
@@ -292,11 +308,19 @@ namespace DesktopModules.Modules.UserManagement
                 }
 
 
+                // User Permission at that request time
+                string oldPermission = ListOldRoleID.Contains(roleID)
+                    ? FunctionBase.IconSuccess
+                    : string.Empty;
+
+
+                // Request Permission
+                bool isAllowEdit = IsRoleInScope(role.RoleID.ToString(), isHeadOffice);
                 bool isChecked = hidUserRequestID.Value == "0"
                     ? isHasRole
-                    : ListRequestRoleID.Contains(role.RoleID.ToString());
+                    : ListRequestRoleID.Contains(roleID);
                 string checkBoxControl = "&nbsp;";
-                if (isEnable)
+                if (isEnable && isAllowEdit)
                 {
                     checkBoxControl = $@"
                         <div class='c-checkbox text-center has-info'>
@@ -319,7 +343,7 @@ namespace DesktopModules.Modules.UserManagement
                 {
                     if (roleGroupID != -1 && ListRequestRoleID.Contains(role.RoleID.ToString()))
                     {
-                        checkBoxControl = $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />";
+                        checkBoxControl = FunctionBase.IconSuccess;
                     }
                 }
                 else if (isHasRole && roleGroupID == -1) // Role Group System
@@ -331,13 +355,18 @@ namespace DesktopModules.Modules.UserManagement
                 }
 
 
-                content.Append($@"
+                if (isProcess)
+                {
+                    content.Append($@"
                     <tr class='{cssRow}'>
-                        <td class='text-center'>
+                        <td>
+                            {oldPermission}
+                        </td>
+                        <td>
                             {checkBoxControl}
                         </td>
                         <td>
-                            {grantImage}
+                            {currentPermission}
                         </td>
                         <td>
                             <label for='{elementID}'>{role.RoleName}</label>
@@ -346,11 +375,36 @@ namespace DesktopModules.Modules.UserManagement
                             <label for='{elementID}'>{role.Description}</label>
                         </td>
                     </tr>");
+                }
+                else
+                {
+                    content.Append($@"
+                    <tr class='{cssRow}'>
+                        <td class='text-center'>
+                            {checkBoxControl}
+                        </td>
+                        <td>
+                            {currentPermission}
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.RoleName}</label>
+                        </td>
+                        <td>
+                            <label for='{elementID}'>{role.Description}</label>
+                        </td>
+                    </tr>");
+                }
             }
-            return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
+            return isProcess
+                ? string.Format(RoleHistoryHtmlTemplate, roleGroupName, content)
+                : string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
-        private string RenderOtherRoles(int roleGroupID, string roleGroupName, bool isEnable,
+        private string RenderOtherRoles(
+            int roleGroupID,
+            string roleGroupName,
+            bool isHeadOffice,
+            bool isEnable,
             IEnumerable<string> listUserRoles, bool isProcess)
         {
             string checkBoxGroup = "&nbsp;";
@@ -384,11 +438,13 @@ namespace DesktopModules.Modules.UserManagement
                 RoleInfo role = roleController.GetRoleByName(PortalId, roleName);
                 string elementID = $"Role{role.RoleID}";
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
-                string grantImage = $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />";
-                bool isChecked = hidUserRequestID.Value == "0" || ListRequestRoleID.Contains(role.RoleID.ToString());
+                string grantImage = FunctionBase.IconSuccess;
 
+
+                bool isAllowEdit = IsRoleInScope(role.RoleID.ToString(), isHeadOffice);
+                bool isChecked = hidUserRequestID.Value == "0" || ListRequestRoleID.Contains(role.RoleID.ToString());
                 string checkBoxControl = "&nbsp;";
-                if (isEnable)
+                if (isEnable && isAllowEdit)
                 {
                     checkBoxControl = $@"
                         <div class='c-checkbox text-center has-info'>
@@ -411,7 +467,7 @@ namespace DesktopModules.Modules.UserManagement
                 {
                     if (ListRequestRoleID.Contains(role.RoleID.ToString()))
                     {
-                        checkBoxControl = $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />";
+                        checkBoxControl = FunctionBase.IconSuccess;
                     }
                 }
 
@@ -436,22 +492,20 @@ namespace DesktopModules.Modules.UserManagement
 
         private void LoadRoleTemplate(DataTable dtRoleTemplates)
         {
+            ClearSelection(ddlTemplate);
             ddlTemplate.Items.Clear();
             foreach (DataRow row in dtRoleTemplates.Rows)
             {
                 string text = row[RoleTemplateTable.TemplateName].ToString();
                 string value = row["Roles"].ToString();
-                RadComboBoxItem item = new RadComboBoxItem(text, value)
-                {
-                    Enabled = FunctionBase.ConvertToBool(row[BaseTable.IsDisable].ToString())
-                };
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
                 ddlTemplate.Items.Add(item);
             }
         }
 
         protected void UpdateRequest(object sender, EventArgs e)
         {
-            // Validate
+            // Validate Data
             string roles = Request["Roles"];
             string newBranchID = ddlNewBranch.SelectedValue;
             if (ddlRequestType.SelectedValue == RequestTypeEnum.UpdateRoles)
@@ -464,6 +518,12 @@ namespace DesktopModules.Modules.UserManagement
                 if (roles == hidListUserRoles.Value)
                 {
                     ShowAlertDialog("Thông tin phân quyền không có sự thay đổi.");
+                    return;
+                }
+                string message;
+                if (IsInvalidUserRoles(roles.Split(','), out message))
+                {
+                    ShowAlertDialog(message);
                     return;
                 }
                 newBranchID = "0";
@@ -490,6 +550,8 @@ namespace DesktopModules.Modules.UserManagement
 
         private void InsertRequest(string roles, string newBranchID)
         {
+            int userID = int.Parse(ddlUser.SelectedValue);
+            string currentPermission = string.Join(",", GetUserPermission(userID));
             Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
             {
                 { UserRequestTable.UserID, new SQLParameterData(ddlUser.SelectedValue, SqlDbType.Int) },
@@ -499,6 +561,7 @@ namespace DesktopModules.Modules.UserManagement
                     UserRequestTable.RequestTypeID,
                     new SQLParameterData(ddlRequestType.SelectedValue, SqlDbType.TinyInt)
                 },
+                { UserRequestTable.CurrentPermission, new SQLParameterData(currentPermission) },
                 { UserRequestTable.RequestPermission, new SQLParameterData(roles) },
                 {
                     UserRequestTable.RequestReason,
@@ -540,10 +603,13 @@ namespace DesktopModules.Modules.UserManagement
 
         private void UpdateRequest(string roles, string newBranchID)
         {
+            int userID = int.Parse(ddlUser.SelectedValue);
+            string currentPermission = string.Join(",", GetUserPermission(userID));
             Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
             {
                 { UserRequestTable.UserRequestID, new SQLParameterData(hidUserRequestID.Value, SqlDbType.Int) },
                 { UserRequestTable.NewBranchID, new SQLParameterData(newBranchID, SqlDbType.Int) },
+                { UserRequestTable.CurrentPermission, new SQLParameterData(currentPermission) },
                 { UserRequestTable.RequestPermission, new SQLParameterData(roles) },
                 {
                     UserRequestTable.RequestReason,
@@ -673,6 +739,7 @@ namespace DesktopModules.Modules.UserManagement
 
             LoadUsers(userRequest.UserID);
             ddlUser.SelectedValue = userRequest.UserID;
+            ListOldRoleID = userRequest.CurrentPermission.Split(',').ToList();
             ListRequestRoleID = userRequest.RequestPermission.Split(',').ToList();
             switch (ddlRequestType.SelectedValue)
             {

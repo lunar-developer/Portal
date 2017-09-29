@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Text;
+using System.Web.Management;
 using Modules.Forex.Database;
 using Modules.Forex.DataTransfer;
 using Modules.Forex.Enum;
@@ -309,7 +310,12 @@ namespace Modules.Forex.DataAccess
                 "Upload dữ liệu thành công");
             Connector.ExecuteSql(executeScript, out DataTable dtResult);
             message = dtResult?.Rows[0][1]?.ToString();
-            return dtResult?.Rows[0][0]?.ToString() == "1";
+            if (int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int statusID) == false || statusID < 1)
+            {
+                message = "lỗi xảy ra trong quá trình xử lí dữ liệu, vui lòng liên hệ người quản trị";
+                throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
+            }
+            return statusID == 1;
         }
         public DataTable GetDataUpload()
         {
@@ -328,7 +334,12 @@ namespace Modules.Forex.DataAccess
             Connector.AddParameter(ExchangeRateTable.ModifiedDateTime,SqlDbType.BigInt, modifiedDataTime);
             Connector.ExecuteProcedure("FX_UploadExchangeRate", out DataTable dtResult);
             message = dtResult?.Rows[0][1]?.ToString();
-            return dtResult?.Rows[0][0]?.ToString() == "1";
+            if (int.TryParse(dtResult?.Rows[0][0]?.ToString(), out int statusID) == false || statusID < 1)
+            {
+                message = "lỗi xảy ra trong quá trình xử lí dữ liệu, vui lòng liên hệ người quản trị";
+                throw new SqlExecutionException(dtResult?.Rows[0][1]?.ToString());
+            }
+            return statusID == 1;
         }
     }
 }

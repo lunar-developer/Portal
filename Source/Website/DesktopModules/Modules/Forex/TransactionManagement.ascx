@@ -4,6 +4,7 @@
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="control" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4" %>
 <%@ Register TagPrefix="dnn" Namespace="DotNetNuke.Web.UI.WebControls" Assembly="DotNetNuke.Web.Deprecated" %>
+<%@ Register TagPrefix="dnn" TagName="Toast" Src="~/admin/Skins/Toast.ascx" %>
 <link rel="stylesheet" type="text/css" href="/DesktopModules/Modules/Forex/Asset/css/formStyle.css">
 <asp:UpdatePanel ID = "updatePanel"
                  runat = "server">
@@ -23,7 +24,7 @@
                         <control:Label ID="lblBranchName" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete 
+                        <control:AutoComplete EmptyMessage="Trung tâm kinh doanh"
                             ID = "ctBranch" 
                             runat = "server">
                         </control:AutoComplete>
@@ -34,8 +35,10 @@
                         <control:Label ID="lblCustomerType" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete
+                        <control:AutoComplete EmptyMessage="Loại khách hàng"
                             ID = "ctCustomerType"
+                            AutoPostBack="True"
+                            OnSelectedIndexChanged="CustomerTypeChange"
                             runat = "server">
                         </control:AutoComplete>
                     </div>
@@ -47,7 +50,7 @@
                     </div>
                     <div class="col-md-4">
                         <dnn:DnnDatePicker Culture-DateTimeFormat-ShortDatePattern="dd/MM/yyyy"
-                                           EnableTyping="False"
+                                           EnableTyping="False" 
                                            ID="calTransactionFromDate" 
                                            runat="server"
                                            Width="160px" />
@@ -86,7 +89,7 @@
                         <control:Label ID="lblTransactionType" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete 
+                        <control:AutoComplete EmptyMessage="Loại giao dịch"
                             ID = "ctTransactionType"
                             runat = "server">
                         </control:AutoComplete>
@@ -97,7 +100,7 @@
                         <control:Label ID="lblReasonTransaction" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete
+                        <control:AutoComplete EmptyMessage="Mục địch mua bán"
                             ID = "ctReasonTransaction"
                             runat = "server">
                         </control:AutoComplete>
@@ -108,7 +111,7 @@
                         <control:Label ID="lblExchangeCode" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete
+                        <control:AutoComplete EmptyMessage="Cặp ngoại tệ"
                             ID = "ctExchangeCode"
                             runat = "server">
                         </control:AutoComplete>
@@ -119,7 +122,7 @@
                         <control:Label ID="lblTransactionStatus" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <control:AutoComplete 
+                        <control:AutoComplete EmptyMessage="Trạng thái giao dịch"
                             ID = "ctTransactionStatus"
                             runat = "server">
                         </control:AutoComplete>
@@ -135,7 +138,7 @@
                 <asp:Button CssClass="btn btn-success"
                             ID="btnInbox" runat="server" OnClick="FindProcessData"
                             Text="Danh Sách chờ xử lí" />
-                <asp:Button CssClass="btn btn-white" runat="server"
+                <asp:Button CssClass="btn btn-default" runat="server"
                             ID="btnExportExcel" OnClick="ExportReport"
                             Text="Xuất báo cáo" />
                 <asp:Button CssClass="btn btn-white invisible" runat="server" 
@@ -153,6 +156,7 @@
                         </h2>
                         <fieldset>
                             <control:Grid  ID="GirdView" runat="server" AutoGenerateColumns="False" AllowFilteringByColumn="False"
+                                           AllowPaging="True"
                                            OnNeedDataSource="GridOnNeedDataSource" 
                                            OnItemCommand="GridOnItemCommand"
                                            OnItemDataBound="GridOnDataBound"
@@ -160,17 +164,36 @@
                                            Width="100%">
                                 <MasterTableView DataKeyNames="ID">
                                     <Columns>
-                                        <control:GridBoundColumn DataField="NUM" HeaderText="#" UniqueName="NumRecord"
+                                        <control:GridTemplateColumn DataField="NUM" HeaderText="#" UniqueName="NumRecord"
                                                                  Visible="True" AllowFiltering="False">
+                                            <ItemTemplate>
+                                                <%#IsNewItemFormat(Eval("NUM").ToString(),Eval("ID").ToString(),Eval("TransactionStatusID").ToString()) %>
+                                            </ItemTemplate>
                                             <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
                                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
-                                        </control:GridBoundColumn>
-                                        <control:GridBoundColumn DataField="ID" HeaderText="ID" 
+                                        </control:GridTemplateColumn>
+                                        <control:GridBoundColumn DataField="ID" HeaderText="ID" UniqueName="TransactionID"
                                                                  Visible="False" AllowFiltering="False">
                                             <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
                                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
                                         </control:GridBoundColumn>
-                                        <control:GridBoundColumn DataField="TransactionStatusID" HeaderText="TransactionStatusID" 
+                                        <control:GridBoundColumn DataField="MarkerUserID" HeaderText="ID" UniqueName="MarkerUserID"
+                                                                 Visible="False" AllowFiltering="False">
+                                            <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                        </control:GridBoundColumn>
+                                        <control:GridBoundColumn DataField="DealerUserID" HeaderText="DealerUserID" UniqueName="DealerUserID"
+                                                                 Visible="False" AllowFiltering="False">
+                                            <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                        </control:GridBoundColumn>
+                                        <control:GridBoundColumn DataField="BranchID" HeaderText="BranchID" UniqueName="BranchID"
+                                                                 Visible="False" AllowFiltering="False">
+                                            <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                        </control:GridBoundColumn>
+                                        <control:GridBoundColumn DataField="TransactionStatusID" UniqueName="StatusID"
+                                                                 HeaderText="TransactionStatusID" 
                                                                  Visible="False" AllowFiltering="False">
                                             <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
                                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
@@ -254,7 +277,7 @@
                                             <ItemTemplate>
                                                 <div class="row">
                                                     <div class="col-sm-3">
-                                                        <asp:LinkButton CssClass="btn btn-icon btn-icon-color-success" runat="server" 
+                                                        <asp:LinkButton CssClass="btn btn-icon btn-icon-color-default" runat="server" 
                                                             ToolTip="Xem lịch sử" 
                                                             Visible='<%#IsCommandVisible("History",Eval("TransactionStatusID").ToString(),Eval("CreationDateTime").ToString()) %>'
                                                             CommandName="History"
@@ -306,8 +329,11 @@
         </div>
     <asp:HiddenField runat="server" ID="IsFindDataHidden" Value="0"/>
     <asp:HiddenField runat="server" ID="ReloadTime" Value="0"/>
+    <asp:HiddenField runat="server" ID="TransactionIDLastest" Value="0"/>
     </ContentTemplate>
 </asp:UpdatePanel>
+<dnn:Toast ID="Toast"
+           runat="server" />
 <script type="text/javascript" src="/DesktopModules/Modules/Forex/Asset/script/forex.js"></script>
 <script type ="text/javascript">
     
@@ -317,6 +343,12 @@
         $(".dnnPanels").dnnPanels({
             defaultState: "open"
         });
+        //var currentUrl = window.location.href.split("?")[0];
+        //if (typeof currentUrl !== "undefined" && currentUrl !== null)
+        //{
+        //    window.history.pushState("object or string", "Title", currentUrl);
+        //}
+        
         var isFind = GetControlNumber("IsFindDataHidden");
         var reloadTime = GetControlNumber("ReloadTime");
         if (isFind === 0 && reloadTime > 0)

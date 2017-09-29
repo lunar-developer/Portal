@@ -38,7 +38,7 @@ namespace DesktopModules.Modules.Forex
         {
             SetTextControl(txtTransactionType, CurrentTransactionData?.TransactionType, false);
             SetTextControl(txtBranchName, GetBranchName(CurrentTransactionData?.BranchID), false);
-            SetTextControl(txtMarker, GetCreationUserByID(CurrentTransactionData?.CreationUserID), false);
+            SetTextControl(txtMarker, GetDisplayNameByID(CurrentTransactionData?.CreationUserID), false);
             SetTextControl(txtQuantityTransactionAmount,
                 GetQuantityTransactionAmount,false);
             SetTextControl(txtExchangeCode, CurrentTransactionData?.CurrencyCode, false);

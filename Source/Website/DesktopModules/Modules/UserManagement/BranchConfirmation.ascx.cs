@@ -1,13 +1,12 @@
 ﻿using System;
-using Modules.UserManagement.Business;
-using Modules.UserManagement.Global;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.UI.Skins.Controls;
+using Modules.UserManagement.Business;
 using Modules.UserManagement.Database;
 using Modules.UserManagement.DataTransfer;
+using Modules.UserManagement.Global;
 using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
@@ -34,9 +33,7 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            ListItem item = new ListItem("Chưa chọn", string.Empty);
-            item.Attributes.Add("disabled", "disabled");
-            BindAllBranchData(ddlBranch, false, false, new List<string> { "-1" }, item);
+            BindAllBranchData(ddlBranch);
         }
 
         protected void ProcessOnBranchChanged(object sender, EventArgs eventArgs)

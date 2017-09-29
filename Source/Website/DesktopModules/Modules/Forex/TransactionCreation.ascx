@@ -21,17 +21,23 @@
                         <control:Label ID="lblBranchName" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label" runat="server"
-                                     ReadOnly="True" ID="txtBranchName" />
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtBranchName"></span>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-4 control-label">
-                        <control:Label ID="lblMarker" runat="server" />
+                        <control:Label ID="lblCreation" runat="server" />
                     </div>
                     <div class="col-md-8">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label" runat="server"
-                                     ReadOnly="True"      ID="txtMarker" />
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtCreationUser"></span>
+                    </div>
+                </div>
+                <div class="form-group" runat="server" ID="CurrentStatusPannel" Visible="False">
+                    <div class="col-md-4 control-label">
+                        <control:Label ID="lblCurrentStatus" runat="server" />
+                    </div>
+                    <div class="col-md-8">
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtCurrentStatus"></span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -40,6 +46,7 @@
                     </div>
                     <div class="col-md-8">
                         <control:AutoComplete  OnSelectedIndexChanged="TransactionTypeChange"
+                                              EmptyMessage="Loại giao dịch"
                                               ID = "ctTransactionType" OnClientSelectedIndexChanged="processOnSelectPostBack"
                                               runat = "server">
                         </control:AutoComplete>
@@ -51,6 +58,7 @@
                     </div>
                     <div class="col-md-8">
                         <control:AutoComplete  OnSelectedIndexChanged="ExChangeCodeChange"
+                                              EmptyMessage="Cặp tỷ giá"
                                               ID = "ctExchangeCode" OnClientSelectedIndexChanged="processOnSelectPostBack"
                                               runat = "server">
                         </control:AutoComplete>
@@ -70,58 +78,44 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="form-group" runat="server" ID="ReferenceRateInfoFrame">
+                <div class="form-group" runat="server" Visible="False" ID="UserControlPannel">
+                    <div class="col-md-4 control-label">
+                        <control:Label ID="lblControlInfo" runat="server" />
+                    </div>
+                    <div class="col-md-8">
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtControlInfo"></span>
+                    </div>
+                </div>
+                <div class="form-group" runat="server" ID="ReferenceRateInfoFrame" Visible="False">
                     <div class="col-md-4 control-label">
                         <control:Label ID="lblBigFigure"
                                        runat="server" 
                                        IsRequire="False" />
                     </div>
-                    <div class="col-md-3">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label-nonevalue"
-                                     ID="txtBigFigure" ReadOnly="True"
-                                     runat="server" />
+                    <div class="col-md-4">
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtReferenceRate"></span>
                     </div>
-                    <div class="col-md-3 control-label">
-                        <control:Label ID="lblReferenceRate" 
-                                       runat="server" 
-                                       IsRequire="False" />
-                    </div>
-                    <div class="col-md-2">
-                        <span class="form-control c-theme exchange-label" runat="server" ID="txtReferenceRate"></span>
-                    </div>
+                    <div class="col-md-4"></div>
                 </div>
                 <div class="form-group" runat="server" ID="MasterRateInfoFrame" Visible="False">
                     <div class="col-md-4 control-label">
-                        <control:Label ID="lblMasterRate"
+                        <control:Label ID="lblLimit"
                                        runat="server" 
                                        IsRequire="False" />
                     </div>
-                    <div class="col-md-3">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label-nonevalue"
-                                     ID="txtMasterRate" ReadOnly="True"
-                                     runat="server" />
+                    <div class="col-md-4">
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtTransactionLimit"></span>
                     </div>
-                    <div class="col-md-2">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label-nonevalue"
-                                     ID="txtLimit" ReadOnly="True"
-                                     runat="server" />
-                    </div>
-                    <div class="col-md-3">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label-nonevalue"
-                                     ID="txtLimitRate" ReadOnly="True"
-                                     runat="server" />
-                    </div>
+                    <div class="col-md-4"></div>
                 </div>
-                <div class="form-group" runat="server" ID="MarginInfoFrame">
+                <div class="form-group" runat="server" ID="MarginInfoFrame" Visible="False">
                     <div class="col-md-4 control-label">
                         <control:Label ID="lblMargin"
                                        runat="server" 
                                        IsRequire="False" />
                     </div>
                     <div class="col-md-4">
-                        <asp:TextBox CssClass="form-control c-theme exchange-label-nonevalue"
-                                     ID="txtMargin" ReadOnly="True"
-                                     runat="server" />
+                        <span class="form-control c-theme exchange-label-system" runat="server" ID="txtMargin"></span>
                     </div>
                     <div class="col-md-4"></div>
                                 
@@ -184,8 +178,9 @@
                                     <control:Label ID="lblCustomerType" runat="server" />
                                 </div>
                                 <div class="col-md-8">
-                                    <control:AutoComplete
+                                    <control:AutoComplete EmptyMessage="Loại khách hàng"
                                                   ID = "ctCustomerType"
+                                                  AutoPostBack="True" OnSelectedIndexChanged="CustomerTypeChange"
                                                   runat = "server">
                                     </control:AutoComplete>
                                 </div>
@@ -195,7 +190,7 @@
                                     <control:Label ID="lblReasonTransaction" runat="server" />
                                 </div>
                                 <div class="col-md-8">
-                                    <control:AutoComplete
+                                    <control:AutoComplete EmptyMessage="Mục đích giao dịch"
                                                   ID = "ctReasonTransaction"
                                                   runat = "server">
                                     </control:AutoComplete>
@@ -293,10 +288,6 @@
                                 ID="btnSubmit" OnClick="SubmitForm" Enabled="False" Visible="False"
                                 OnClientClick="return BtnSubmition();" runat="server"
                                 Text="Yêu cầu giá" />
-                    <asp:Button CssClass="btn btn-success" Visible="False" Enabled="False"
-                                ID="btnUpdateCustomerInfo" OnClick="UpdateCustomerInfo"
-                                OnClientClick="return UpdateCustomerInfo();" runat="server"
-                                Text="Cập nhật thông tin" />
                     <asp:Button CssClass="btn btn-danger" Visible="False" Enabled="False"
                                 ID="btnCancel" OnClick="RejectTransaction"
                                 runat="server"
@@ -309,12 +300,16 @@
             </div>
         </div>
         <asp:HiddenField runat="server" ID="HiddenAcceptToChangeStatusArr" Value=""/>
-        <asp:HiddenField runat="server" ID="HiddenWorkflowStatus" Value=""/>
+        <asp:HiddenField runat="server" ID="HiddenWorkflowStatus" Value="0"/>
         <asp:HiddenField runat="server" ID="HiddenTransactionID" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenCurrencyCode" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenRequestTypeID" Value="1"/>
+        <asp:HiddenField runat="server" ID="HiddenBigFigure" Value="0"/>
+        <asp:HiddenField runat="server" ID="HiddenreferenceSourcePrice" Value="0"/>
         <asp:HiddenField runat="server" ID="HiddenMasterRate" Value="0"/>
-        <asp:HiddenField runat="server" ID="HiddenLimit" Value="0"/>        
+        <asp:HiddenField runat="server" ID="HiddenLimitPercent" Value="0"/>
+        <asp:HiddenField runat="server" ID="HiddenLimitAmount" Value="0"/>  
+        <asp:HiddenField runat="server" ID="HiddenMargin" Value="0"/> 
         <asp:HiddenField runat="server" ID="HiddenTransactionTypeID" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenCapitalAmount" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenInvoiceAmount" Value=""/>    
@@ -323,6 +318,10 @@
         <asp:HiddenField runat="server" ID="HiddenMaxDealerApprovalCancel" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenMaxRequestEditPercent" Value=""/>
         <asp:HiddenField runat="server" ID="HiddenMaxRequestEditAmount" Value=""/>
+        <asp:HiddenField runat="server" ID="HiddenCreationBranchID" Value=""/>
+        <asp:HiddenField runat="server" ID="HiddenCreationUserID" Value=""/>
+        <asp:HiddenField runat="server" ID="HiddenMarkerID" Value=""/>
+        <asp:HiddenField runat="server" ID="HiddenDealerID" Value=""/>
     </ContentTemplate>
 </asp:UpdatePanel>
 
@@ -334,13 +333,22 @@
         $(".dnnPanels").dnnPanels({
             defaultState: "open"
         });
+        //var currentTransactionId = GetControlNumber("HiddenTransactionID");
         var workflowStatusId = GetControlNumber("HiddenWorkflowStatus");
         var transactionType = GetControlNumber("HiddenTransactionTypeID");
         var capitalAmount = GetControlMoney("HiddenCapitalAmount");
         var invoiceAmount = GetControlMoney("HiddenInvoiceAmount");
-        var margin = GetControlNumber("txtMargin");
+        var margin = GetControlNumber("HiddenMargin");
         if (workflowStatusId >= 1)
         {
+            //var currentUrl = window.location.href.split("?")[0];
+            //if (typeof currentUrl !== "undefined" && currentUrl !== null &&
+            //    typeof currentTransactionId !== "undefined" && currentTransactionId !== null)
+            //{
+            //    currentUrl += "?ID=" + currentTransactionId;
+            //    window.history.pushState("object or string", "Title", currentUrl);
+            //}
+
             var opts = {
                 message: "Bạn có chắc thực hiện thao tác này?",
                 isUseRuntimeMessage: true,
@@ -369,6 +377,20 @@
                                 return "Lợi nhuận của đơn vị âm, bạn có muốn tiếp tục? ";
                             }
                             return "Bạn có chắc muốn thực hiện thao tác cung cấp giá môi giới?";
+                        case 13:
+                            var quantityAmount = GetControlMoney("txtQuantityTransactionAmount");
+                            var currentQuantityAmount = GetControlMoney("HiddenCurrentQuantityAmount");
+                            var maxeditPercent = GetControlMoney("HiddenMaxRequestEditPercent");
+                            var maxeditAmount = GetControlMoney("HiddenMaxRequestEditAmount");
+
+                            if (Math.abs(quantityAmount - currentQuantityAmount) > (currentQuantityAmount * maxeditPercent / 100) ||
+                                Math.abs(quantityAmount - currentQuantityAmount) > maxeditAmount)
+                            {
+                                return "Số lượng điều chỉnh lớn hơn " + maxeditPercent + " %, hoặc lớn hơn " +
+                                    formatDigit(maxeditAmount) +
+                                    ", Bạn có muốn tiếp tục thực hiện thao tác điều chỉnh không?";
+                            }
+                            return "Bạn có chắc muốn thực hiện thao tác yêu cầu điều chỉnh?";
                         case 14:
                             var maxedit = GetControlMoney("HiddenMaxDealerApprovalEdit");
                             if (invoiceAmount > maxedit) {
@@ -404,10 +426,10 @@
         {
             txtRemainTime = txtRemainTime - 1;
             element.value = txtRemainTime;
-            //$(element).
             if (txtRemainTime === 0)
             {
-                alertMessage("Hết thời gian chào giá, vui lòng thực hiện lại thao tác yêu cầu giá", undefined, undefined, function ()
+                alertMessage("Hết thời gian chào giá, vui lòng thực hiện lại thao tác yêu cầu giá",
+                    undefined, undefined, function ()
                 {
                     setTransactionTimeout();
                 });

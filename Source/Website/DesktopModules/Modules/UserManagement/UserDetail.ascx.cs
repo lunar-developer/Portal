@@ -11,7 +11,10 @@ using System.Text;
 using System.Web.UI.WebControls;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
+using Modules.UserManagement.DataTransfer;
+using Modules.UserManagement.Enum;
 using Telerik.Web.UI;
+using Website.Library.Database;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
 using Website.Library.Global;
@@ -49,14 +52,9 @@ namespace DesktopModules.Modules.UserManagement
         #endregion
 
         #region GRID EVENTS
-        protected void OnPageIndexChanging(object sender, GridPageChangedEventArgs e)
+        protected void ProcessOnNeedDataSource(object sender, GridNeedDataSourceEventArgs e)
         {
-            BindGrid(null, e.NewPageIndex);
-        }
-
-        protected void OnPageSizeChanging(object sender, GridPageSizeChangedEventArgs e)
-        {
-            BindGrid(null);
+            gridData.DataSource = GetLogData();
         }
         #endregion
 
@@ -124,14 +122,22 @@ namespace DesktopModules.Modules.UserManagement
 
         protected void UpdateRole(object sender, EventArgs e)
         {
+            string listRoles = Request["Roles"];
+            string message;
+            if (IsInvalidUserRoles(listRoles.Split(','), out message))
+            {
+                ShowAlertDialog(message);
+                return;
+            }
+
             Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
                 { UserTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
-                { "Roles", new SQLParameterData(Request.Params["Roles"], SqlDbType.VarChar) },
+                { "Roles", new SQLParameterData(listRoles) },
                 { UserTable.Remark, new SQLParameterData(txtRoleRemark.Text.Trim(), SqlDbType.NVarChar) },
-                { UserTable.ModifyUserID, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
                 {
-                    UserTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };
@@ -171,6 +177,38 @@ namespace DesktopModules.Modules.UserManagement
             {
                 message = GetSharedResource(status.ToString());
                 ShowMessage(message);
+            }
+        }
+
+        protected void UpdateAccountStatus(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            if (button == null)
+            {
+                return;
+            }
+
+            string action = button.CommandName;
+            string authorised = button.CommandArgument;
+            Dictionary<string, SQLParameterData> parameterDictionary = new Dictionary<string, SQLParameterData>
+            {
+                { BaseTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
+                { BaseTable.UserName, new SQLParameterData(txtUserName.Text.Trim()) },
+                { UserTable.Authorised, new SQLParameterData(authorised, SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { BaseTable.DateTimeModify, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) },
+                { BaseTable.Remark, new SQLParameterData(txtRemark.Text.Trim(), SqlDbType.NVarChar) }
+            };
+
+            bool result = UserBusiness.UpdateAccountStatus(parameterDictionary);
+            if (result)
+            {
+                ShowMessage($"<b>{action}</b> tài khoản thành công.", ModuleMessage.ModuleMessageType.GreenSuccess);
+                LoadUser(hidUserID.Value);
+            }
+            else
+            {
+                ShowMessage($"<b>{action}</b> tài khoản thất bại.", ModuleMessage.ModuleMessageType.RedError);
             }
         }
         #endregion
@@ -221,22 +259,28 @@ namespace DesktopModules.Modules.UserManagement
             bool isAdministrator = IsAdministrator();
             bool isRoleEdit = isAdministrator || isOwner;
             bool isAccountNormal = hidIsAccountLDAP.Value == "0";
+            string accountStatus = hidAuthorise.Value;
+            bool isEnable = accountStatus == UserAuthoriseEnum.Enabled;
 
             txtUserName.Enabled = isEditMode == false;
             ddlBranch.Enabled = isEditMode == false || IsSuperAdministrator();
             DivProfileRemark.Visible = isAdministrator && isOwner == false;
             btnSaveProfile.Text = isEditMode ? "Cập Nhật" : "Đồng Ý";
-            btnSaveProfile.Visible = isRoleEdit;
+            btnSaveProfile.Visible = isRoleEdit && isEnable;
+
+            btnEnable.Visible = isEditMode && isAdministrator && accountStatus == UserAuthoriseEnum.Disabled;
+            btnDisable.Visible = isEditMode && isAdministrator && accountStatus == UserAuthoriseEnum.Enabled;
+            btnUnlock.Visible = isEditMode && isAdministrator && accountStatus == UserAuthoriseEnum.Locked;
 
             DivTabRole.Visible = DivTabRoleContent.Visible = isEditMode;
             DivRoleTemplate.Visible = isAdministrator;
             DivRoleRemark.Visible = isAdministrator;
-            btnUpdateRole.Visible = isAdministrator;
-            btnRequest.Visible = isRoleEdit;
+            btnUpdateRole.Visible = isAdministrator && isEnable;
+            btnRequest.Visible = isRoleEdit && isEnable;
 
-            DivTabPassword.Visible = DivTabPasswordContent.Visible = isEditMode && isAccountNormal;
+            DivTabPassword.Visible = DivTabPasswordContent.Visible = isEditMode && isAccountNormal && isEnable;
             DivOldPassword.Visible = isOwner;
-            btnUpdatePassword.Visible = isRoleEdit && isAccountNormal;
+            btnUpdatePassword.Visible = isRoleEdit && isAccountNormal && isEnable;
 
             DivTabHistory.Visible = DivTabHistoryContent.Visible = isEditMode;
         }
@@ -250,6 +294,8 @@ namespace DesktopModules.Modules.UserManagement
 
 
             // BIND ROLE GROUPS & ROLES
+            BranchData branchData = CacheBase.Receive<BranchData>(ddlBranch.SelectedValue);
+            bool isHeadOffice = FunctionBase.ConvertToBool(branchData.IsHeadOffice);
             bool isEnable = IsAdministrator();
             StringBuilder html = new StringBuilder();
             UserInfo user = UserController.Instance.GetUserById(PortalId, int.Parse(hidUserID.Value));
@@ -261,16 +307,16 @@ namespace DesktopModules.Modules.UserManagement
             {
                 string roleGroupID = row[RoleGroupTable.RoleGroupID].ToString();
                 string roleGroupName = row[RoleGroupTable.RoleGroupName].ToString();
-                html.Append(RenderRole(int.Parse(roleGroupID), roleGroupName, isEnable, listUserRoles));
+                html.Append(RenderRole(int.Parse(roleGroupID), roleGroupName, isHeadOffice, isEnable, listUserRoles));
             }
 
             // Role Group System
-            html.Append(RenderRole(-1, "System - Hệ Thống", IsSuperAdministrator(), listUserRoles));
+            html.Append(RenderRole(-1, "System - Hệ Thống", isHeadOffice, IsSuperAdministrator(), listUserRoles));
 
             // Role Group Other
             if (listUserRoles.Count > 0)
             {
-                html.Append(RenderOtherRoles(-2, "Other - Khác", isEnable, listUserRoles));
+                html.Append(RenderOtherRoles(-2, "Other - Khác", isHeadOffice, isEnable, listUserRoles));
             }
             hidListUserRoles.Value = string.Join(",", ListUserRoles);
             DivRoles.InnerHtml = html.ToString();
@@ -282,16 +328,22 @@ namespace DesktopModules.Modules.UserManagement
 
         private void LoadRoleTemplate(DataTable dtRoleTemplates)
         {
+            ClearSelection(ddlTemplate);
             ddlTemplate.Items.Clear();
             foreach (DataRow row in dtRoleTemplates.Rows)
             {
                 string text = row[RoleTemplateTable.TemplateName].ToString();
                 string value = row["Roles"].ToString();
-                ddlTemplate.Items.Add(new ListItem(text, value));
+                RadComboBoxItem item = new RadComboBoxItem(text, value);
+                ddlTemplate.Items.Add(item);
             }
         }
 
-        private string RenderRole(int roleGroupID, string roleGroupName, bool isEnable,
+        private string RenderRole(
+            int roleGroupID,
+            string roleGroupName,
+            bool isHeadOffice,
+            bool isEnable,
             ICollection<string> listUserRoles)
         {
             string checkBoxGroup = "&nbsp;";
@@ -321,7 +373,7 @@ namespace DesktopModules.Modules.UserManagement
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
                 bool isHasRole = IsInRole(role.RoleName, int.Parse(hidUserID.Value));
                 string grantImage = isHasRole
-                    ? $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />"
+                    ? FunctionBase.IconSuccess
                     : string.Empty;
                 if (isHasRole)
                 {
@@ -329,8 +381,10 @@ namespace DesktopModules.Modules.UserManagement
                     ListUserRoles.Add(role.RoleID);
                 }
 
+
+                bool isAllowEdit = IsRoleInScope(role.RoleID.ToString(), isHeadOffice);
                 string checkBoxControl = "&nbsp;";
-                if (isEnable)
+                if (isEnable && isAllowEdit)
                 {
                     checkBoxControl = $@"
                         <div class='c-checkbox text-center has-info'>
@@ -357,6 +411,7 @@ namespace DesktopModules.Modules.UserManagement
                                 value='{role.RoleID}'/>";
                 }
 
+
                 content.Append($@"
                     <tr class='{cssRow}'>
                         <td class='text-center'>
@@ -376,7 +431,11 @@ namespace DesktopModules.Modules.UserManagement
             return string.Format(RoleHtmlTemplate, roleGroupName, checkBoxGroup, content);
         }
 
-        private string RenderOtherRoles(int roleGroupID, string roleGroupName, bool isEnable,
+        private string RenderOtherRoles(
+            int roleGroupID,
+            string roleGroupName,
+            bool isHeadOffice,
+            bool isEnable,
             IEnumerable<string> listUserRoles)
         {
             string checkBoxGroup = "&nbsp;";
@@ -406,10 +465,12 @@ namespace DesktopModules.Modules.UserManagement
                 RoleInfo role = roleController.GetRoleByName(PortalId, roleName);
                 string elementID = $"Role{role.RoleID}";
                 string cssRow = i % 2 == 0 ? "even-row" : "odd-row";
-                string grantImage = $"<img src='{FunctionBase.GetAbsoluteUrl("/images/grant.gif")}' />";
+                string grantImage = FunctionBase.IconSuccess;
 
+                // Check Edit Permission
+                bool isAllowEdit = IsRoleInScope(role.RoleID.ToString(), isHeadOffice);
                 string checkBoxControl = "&nbsp;";
-                if (isEnable)
+                if (isEnable && isAllowEdit)
                 {
                     checkBoxControl = $@"
                         <div class='c-checkbox text-center has-info'>
@@ -455,14 +516,11 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            ListItem item = new ListItem("Chưa chọn", "-2");
-            item.Attributes.Add("disabled", "disabled");
-            BindBranchData(ddlBranch, new List<string> { "-1" }, item);
+            BindBranchData(ddlBranch);
         }
 
-        private void BindGrid(DataTable dtUserLog, int pageIndex = 0)
+        private void BindGrid(DataTable dtUserLog)
         {
-            gridData.CurrentPageIndex = pageIndex;
             gridData.DataSource = dtUserLog ?? GetLogData();
             gridData.DataBind();
         }
@@ -489,6 +547,7 @@ namespace DesktopModules.Modules.UserManagement
 
             hidUserID.Value = "0";
             hidIsAccountLDAP.Value = "0";
+            hidAuthorise.Value = "1";
             hidListUserRoles.Value = string.Empty;
 
             txtRemark.Text = string.Empty;
@@ -500,8 +559,13 @@ namespace DesktopModules.Modules.UserManagement
 
         private void SetData(DataRow data)
         {
+            bool isAccountLDAP = FunctionBase.ConvertToBool(data[UserTable.IsAccountLDAP].ToString());
+            hidIsAccountLDAP.Value = isAccountLDAP ? "1" : "0";
+            hidUserID.Value = data[UserTable.UserID].ToString();
+            hidAuthorise.Value = data[UserTable.Authorised].ToString();
+
             txtUserName.Text = data[UserTable.UserName].ToString().Trim();
-            txtUserID.Text = data[UserTable.UserID].ToString();
+            txtUserID.Text = hidUserID.Value;
             txtDisplayName.Text = data[UserTable.DisplayName].ToString().Trim();
             ddlGender.SelectedValue = data[UserTable.Gender].ToString();
             txtMobile.Text = data[UserTable.Mobile].ToString().Trim();
@@ -510,32 +574,28 @@ namespace DesktopModules.Modules.UserManagement
             ddlTitle.SelectedValue = data[UserTable.Title].ToString();
             ddlBranch.SelectedValue = data[UserTable.BranchID].ToString();
             txtLineManager.Text = BranchBusiness.GetManagerName(ddlBranch.SelectedValue);
-            txtAuthorised.Text = data[UserTable.Authorised].ToString();
+            txtAuthorised.Text = FormatAuthorise(hidAuthorise.Value);
             DateTime date = DateTime.Parse(data[UserTable.LastLoginDate].ToString());
             txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
-
-            bool isAccountLDAP = FunctionBase.ConvertToBool(data[UserTable.IsAccountLDAP].ToString());
-            hidIsAccountLDAP.Value = isAccountLDAP ? "1" : "0";
-            hidUserID.Value = txtUserID.Text;
         }
 
         private Dictionary<string, SQLParameterData> GetData()
         {
             Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserName, new SQLParameterData(txtUserName.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.UserName, new SQLParameterData(txtUserName.Text.Trim()) },
                 { UserTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
                 { UserTable.DisplayName, new SQLParameterData(txtDisplayName.Text.Trim(), SqlDbType.NVarChar) },
-                { UserTable.Gender, new SQLParameterData(ddlGender.SelectedValue, SqlDbType.VarChar) },
-                { UserTable.Mobile, new SQLParameterData(txtMobile.Text.Trim(), SqlDbType.VarChar) },
-                { UserTable.PhoneExtension, new SQLParameterData(txtPhoneExtension.Text.Trim(), SqlDbType.VarChar) },
-                { UserTable.StaffID, new SQLParameterData(txtStaffID.Text.Trim(), SqlDbType.VarChar) },
+                { UserTable.Gender, new SQLParameterData(ddlGender.SelectedValue) },
+                { UserTable.Mobile, new SQLParameterData(txtMobile.Text.Trim()) },
+                { UserTable.PhoneExtension, new SQLParameterData(txtPhoneExtension.Text.Trim()) },
+                { UserTable.StaffID, new SQLParameterData(txtStaffID.Text.Trim()) },
                 { UserTable.Title, new SQLParameterData(ddlTitle.SelectedValue, SqlDbType.NVarChar) },
                 { UserTable.BranchID, new SQLParameterData(ddlBranch.SelectedValue, SqlDbType.Int) },
                 { UserTable.Remark, new SQLParameterData(txtRemark.Text.Trim(), SqlDbType.NVarChar) },
-                { UserTable.ModifyUserID, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
                 {
-                    UserTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 }
             };

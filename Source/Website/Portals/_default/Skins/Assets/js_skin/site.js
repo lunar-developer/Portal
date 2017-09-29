@@ -258,6 +258,29 @@ function renderMenu()
     {
         $("body").removeClass("c-layout-quick-search-shown");
     });
+
+
+    var isMobileMenu = $(".c-hor-nav-toggler").is(":visible");
+    if(isMobileMenu === false)
+    {
+        $("ul.c-theme-nav").menuAim({
+            submenuDirection: "below",
+            submenuSelector: "> .dropdown-menu"
+        });
+        $("ul.c-menu-type-classic").menuAim({
+            submenuDirection: "left",
+            submenuSelector: "ul.dropdown-menu"
+        });
+
+        // Bootstrap's dropdown menus immediately close on document click.
+        // Don't let this event close the menu if a submenu is being clicked.
+        // This event propagation control doesn't belong in the menu-aim plugin
+        // itself because the plugin is agnostic to bootstrap.
+        $(".dropdown-menu li").click(function (e)
+        {
+            e.stopPropagation();
+        });
+    }
 }
 
 function ProcessOnGlobalSearchMenuChange(combobox)

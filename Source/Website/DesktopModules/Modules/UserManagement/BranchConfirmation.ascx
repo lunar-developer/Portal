@@ -2,11 +2,11 @@
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 
 <asp:UpdatePanel ID="updatePanel"
-                 runat="server">
+    runat="server">
     <ContentTemplate>
         <div class="form-group">
             <asp:PlaceHolder ID="phMessage"
-                             runat="server" />
+                runat="server" />
         </div>
         <div class="form-horizontal">
             <div class="col-sm-12 c-font-18 c-font-bold c-margin-b-20 form-group">
@@ -23,7 +23,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblUserName"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblDisplayName"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -40,23 +40,23 @@
                             <label class="dnnLabel">Chi nhánh</label>
                         </div>
                         <div class="col-sm-9">
-                            <control:Combobox autocomplete="off"
-                                              AutoPostBack="true"
-                                              CssClass="form-control c-theme"
-                                              ID="ddlBranch"
-                                              OnSelectedIndexChanged="ProcessOnBranchChanged"
-                                              placeholder="Chi nhánh"
-                                              runat="server" />
+                            <control:AutoComplete
+                                autocomplete="off"
+                                AutoPostBack="true"
+                                ID="ddlBranch"
+                                OnSelectedIndexChanged="ProcessOnBranchChanged"
+                                EmptyMessage="Chi nhánh"
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
                             <asp:Button CssClass="btn btn-primary"
-                                        ID="btnAccept"
-                                        OnClick="Confirm"
-                                        runat="server"
-                                        Text="Đồng ý" />
+                                ID="btnAccept"
+                                OnClick="Confirm"
+                                runat="server"
+                                Text="Đồng ý" />
                         </div>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblManagerName"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -80,7 +80,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblManagerEmail"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -89,7 +89,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblManagerMobile"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -98,7 +98,7 @@
                         </div>
                         <div class="col-sm-9 control-value">
                             <asp:Label ID="lblManagerPhoneExtension"
-                                       runat="server" />
+                                runat="server" />
                         </div>
                     </div>
                 </div>
@@ -108,19 +108,25 @@
 </asp:UpdatePanel>
 
 <script type="text/javascript">
-    addPageLoaded(function()
+    addPageLoaded(function ()
     {
-        var element = getControl("ddlBranch");
-        var message = "Bạn đang làm việc tại Chi Nhánh:<br><b>" + element.options[element.selectedIndex].text + "</b>";
         registerConfirm({
             jquery: "#" + getClientID("btnAccept"),
             onBeforeOpen: onUserSubmit,
-            message: message
+            isUseRuntimeMessage: true,
+            getRunTimeMessage: getBranchName
         });
     }, true);
 
     function onUserSubmit()
     {
-        return validateOption(getControl("ddlBranch"));
+        return validateRadOption("ddlBranch");
+    }
+
+    function getBranchName()
+    {
+        var element = getRadCombobox("ddlBranch");
+        var text = element.get_inputDomElement().value;
+        return "Bạn đang làm việc tại Chi Nhánh:<br><b>" + text + "</b>";
     }
 </script>

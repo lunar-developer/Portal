@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using Modules.Forex.Database;
-using Modules.Forex.DataTransfer;
 using Modules.Forex.Enum;
 using Website.Library.DataTransfer;
 using Website.Library.Enum;
@@ -84,15 +83,18 @@ namespace Modules.Forex.Global
         {
             get
             {
-                Dictionary<string, SQLParameterData> processParam = new Dictionary<string, SQLParameterData>();
-                List<int> condition = new List<int>();
-                if (IsBRManager)
+                Dictionary<string, SQLParameterData> processParam = new Dictionary<string, SQLParameterData>
                 {
-                    condition.Add(WorkflowStatusEnum.BRRquestException);
-                    condition.Add(WorkflowStatusEnum.HOInputBrokerage);
-                    condition.Add(WorkflowStatusEnum.BRRequestEdit);
-                    condition.Add(WorkflowStatusEnum.BRRequestCancel);
-                }
+                    {
+                        TransactionTable.BranchID, new SQLParameterData(CurrentUserBranchData?.BranchID,
+                            SqlDbType.Int)
+                    },
+                    {
+                        "UserID", new SQLParameterData(UserInfo.UserID,
+                            SqlDbType.Int)
+                    }
+                };
+                List<int> condition = new List<int>();
                 if (IsBRMaker)
                 {
                     condition.Add(WorkflowStatusEnum.HOBid);
@@ -101,6 +103,17 @@ namespace Modules.Forex.Global
                     condition.Add(WorkflowStatusEnum.BRApprovalException);
                     condition.Add(WorkflowStatusEnum.BRApprovalTransaction);
                     condition.Add(WorkflowStatusEnum.HOFinishTransaction);
+                }
+                if (IsBRManager)
+                {
+                    condition.Add(WorkflowStatusEnum.BRRquestException);
+                    condition.Add(WorkflowStatusEnum.HOInputBrokerage);
+                    condition.Add(WorkflowStatusEnum.BRRequestEdit);
+                    condition.Add(WorkflowStatusEnum.BRRequestCancel);
+                    if (processParam.ContainsKey("UserID"))
+                    {
+                        processParam.Remove("UserID");
+                    }
                 }
                 if (IsHODealer)
                 {
@@ -117,6 +130,10 @@ namespace Modules.Forex.Global
                 {
                     condition.Add(WorkflowStatusEnum.HORequestEditException);
                     condition.Add(WorkflowStatusEnum.HORequestCancelException);
+                    if (processParam.ContainsKey("UserID"))
+                    {
+                        processParam.Remove("UserID");
+                    }
                 }
 
                 if (condition.Count == 0)
@@ -127,6 +144,13 @@ namespace Modules.Forex.Global
 
                 }
 
+                if (IsHODealer || IsHOManager || IsHOViewer || IsHOAdmin)
+                {
+                    if (processParam.ContainsKey(TransactionTable.BranchID))
+                    {
+                        processParam.Remove(TransactionTable.BranchID);
+                    }
+                }
 
                 processParam.Add("Condition",
                     new SQLParameterData(string.Join(";", condition),
@@ -225,6 +249,53 @@ namespace Modules.Forex.Global
                 return -1;
             }
         }
-        
+        protected bool IsNotificationSuccessMessage(out string message)
+        {
+            if (IsNotificationMessage)
+            {
+                if (Session[SessionEnum.Message] != null)
+                {
+                    message = Session[SessionEnum.Message].ToString();
+
+                }
+                else if (Session[SessionEnum.CurrencyCode] != null &&
+                        Session[SessionEnum.QuantityAmount] != null)
+                {
+                    string currencyCode = Session[SessionEnum.CurrencyCode].ToString();
+                    string quantityAmount = FunctionBase.FormatCurrency(Session[SessionEnum.QuantityAmount].ToString());
+                    message = $"Yêu cầu giá ({currencyCode}) với số lượng {quantityAmount} thành công.";
+                    
+                    Session.Remove(SessionEnum.CurrencyCode);
+                    Session.Remove(SessionEnum.QuantityAmount);
+                    
+                }
+                else
+                {
+                    message = "Yêu cầu xử lí thành công.";
+                }
+
+                RemoveNotificationMessage();
+                ResetSessionTransactionID();
+                ResetSessionMessage();
+                RemoveRedirectPage();
+
+                return true;
+            }
+            message = string.Empty;
+            return false;
+        }
+        protected void GetPopupTransactionDeatil(string transactionID, string closeUrl = "BtnReloadTransactionManagementGridView")
+        {
+            Session[SessionEnum.TransactionID] = transactionID;
+            Session[SessionEnum.IsRedirect] = "1";
+            Session[SessionEnum.IsNotificationMessage] = "1";
+            if (string.IsNullOrWhiteSpace(closeUrl) && (IsHODealer || IsHOManager || IsHOAdmin))
+            {
+                closeUrl = "BtnReloadBidManagementGridView";
+            }
+            string url = EditUrl(TransactionCreationUrl, 600, 600, true,
+                new Dictionary<string, string> { { TransactionTable.ID, transactionID } }, closeUrl);
+            RegisterScript(url);
+        }
     }
 }

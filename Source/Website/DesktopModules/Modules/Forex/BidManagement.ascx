@@ -3,6 +3,7 @@
 <%@ Import Namespace="Website.Library.Global" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="control" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI, Version=2013.2.717.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4" %>
+<%@ Register TagPrefix="dnn" TagName="Toast" Src="~/admin/Skins/Toast.ascx" %>
 <link rel="stylesheet" type="text/css" href="/DesktopModules/Modules/Forex/Asset/css/formStyle.css">
 <asp:UpdatePanel ID = "updatePanel"
                  runat = "server">
@@ -147,12 +148,30 @@
                                        Width="100%">
                             <MasterTableView DataKeyNames="ID">
                                 <Columns>
-                                    <control:GridBoundColumn DataField="NUM" HeaderText="#" UniqueName="NumRecord"
+                                    <control:GridTemplateColumn DataField="NUM" HeaderText="#" UniqueName="NumRecord"
                                                              Visible="True" AllowFiltering="False">
+                                        <ItemTemplate>
+                                            <%#IsNewItemFormat(Eval("NUM").ToString(),Eval("ID").ToString(),Eval("TransactionStatusID").ToString()) %>
+                                        </ItemTemplate>
+                                        <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                    </control:GridTemplateColumn>
+                                    <control:GridBoundColumn DataField="ID" HeaderText="ID" 
+                                                             Visible="False" AllowFiltering="False">
                                         <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
                                         <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
                                     </control:GridBoundColumn>
-                                    <control:GridBoundColumn DataField="ID" HeaderText="ID" 
+                                    <control:GridBoundColumn DataField="MarkerUserID" HeaderText="ID" UniqueName="MarkerUserID"
+                                                             Visible="False" AllowFiltering="False">
+                                        <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                    </control:GridBoundColumn>
+                                    <control:GridBoundColumn DataField="DealerUserID" HeaderText="DealerUserID" UniqueName="DealerUserID"
+                                                             Visible="False" AllowFiltering="False">
+                                        <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
+                                        <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
+                                    </control:GridBoundColumn>
+                                    <control:GridBoundColumn DataField="BranchID" HeaderText="BranchID" UniqueName="BranchID"
                                                              Visible="False" AllowFiltering="False">
                                         <HeaderStyle Width="3%" HorizontalAlign="Center" VerticalAlign="Middle" />
                                         <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle"></ItemStyle>
@@ -233,7 +252,7 @@
                                         <ItemTemplate>
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <asp:LinkButton CssClass="btn btn-icon btn-icon-color-success" 
+                                                    <asp:LinkButton CssClass="btn btn-icon btn-icon-color-default" 
                                                                     ToolTip="Xem lại hoặc điều chỉnh thông tin"
                                                                     Visible='<%#IsCommandVisible("ViewEdit",Eval("TransactionStatusID").ToString(),Eval("CreationDateTime").ToString()) %>'
                                                                     CommandName="ViewEdit" 
@@ -275,8 +294,11 @@
         </div>
         </div>
     <asp:HiddenField runat="server" ID="ReloadTime" Value="0"/>
+    <asp:HiddenField runat="server" ID="TransactionIDLastest" Value="0"/>
     </ContentTemplate>
 </asp:UpdatePanel>
+<dnn:Toast ID="Toast"
+           runat="server" />
 <script type="text/javascript" src="/DesktopModules/Modules/Forex/Asset/script/forex.js"></script>
 <script type ="text/javascript">
     

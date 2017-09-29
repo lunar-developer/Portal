@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI.WebControls;
 using DotNetNuke.Security.Roles;
 using DotNetNuke.UI.Skins.Controls;
 using Modules.UserManagement.Business;
@@ -28,10 +27,7 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            ListItem item = new ListItem("Vui lòng chọn Chi Nhánh", string.Empty);
-            item.Attributes.Add("disabled", "disabled");
-            List<string> listExclude = new List<string> { "-1" };
-            BindAllBranchData(ddlBranch, false, false, listExclude, item);
+            BindAllBranchData(ddlBranch);
 
             btnUpdate.Visible = btnRefresh.Visible = false;
             RegisterConfirmDialog(btnUpdate, "Bạn có chắc muốn cập nhật thay đổi?");
@@ -76,10 +72,10 @@ namespace DesktopModules.Modules.UserManagement
             Dictionary<string, SQLParameterData> parametedDictionary = new Dictionary<string, SQLParameterData>
             {
                 { BranchTable.BranchID, new SQLParameterData(ddlBranch.SelectedValue, SqlDbType.Int) },
-                { "ListRoleGroupID", new SQLParameterData(string.Join(",", list), SqlDbType.VarChar) },
-                { BaseTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { "ListRoleGroupID", new SQLParameterData(string.Join(",", list)) },
+                { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
                 {
-                    BaseTable.ModifyDateTime,
+                    BaseTable.DateTimeModify,
                     new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt)
                 },
             };

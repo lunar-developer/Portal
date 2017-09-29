@@ -3,10 +3,9 @@
     public static class ConfigEnum
     {
         public static string EmailAddress = "EmailAddress";
-        public static string ImageEmailEnvelope = "ImageEmailEnvelope";
-        public static string ImageLogo = "ImageLogo";
         public static string SiteUrl = "SiteUrl";
         public static string SiteFolder = "SiteFolder";
+        public static string SiteAssetsFolder = "SiteAssetsFolder";
 
         public static string BasicAuthenticationUserName = "BasicAuthenticationUserName";
         public static string BasicAuthenticationPassword = "BasicAuthenticationPassword";

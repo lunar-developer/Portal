@@ -12,11 +12,14 @@
     border-left: none;
     border-right: none;
     border-color: #8AB9D6;
-    border-bottom: 2px solid #8AB9D6;
+    border-bottom: 1px solid #8AB9D6;
     background-color: #fff !important;
 }
-.exchange-label-nonevalue
-{
+.exchange-label-system {
+    border: none;
+    background-color: #fff !important;
+}
+.exchange-label-nonevalue {
     border-top: none;
     border-left: none;
     border-right: none;
@@ -32,6 +35,15 @@
 {
     color: #fff !important;
 }
+.btn-icon-color-default {
+    color: #99a5b9 !important;
+                        }
+.btn-icon-color-default:focus, .btn-icon-color-default:hover, .btn-icon-color-default:active {
+    color: #8998b5 !important;
+                                                                                             }
+.btn-icon-color-default.disabled, .btn-icon-color-default.disabled:focus, .btn-icon-color-default.disabled:hover {
+    color: #99a5b9 !important;
+}
 .btn-icon-color-danger {
     color: #e7505a !important;
                        }
@@ -40,7 +52,7 @@
                                                                                           }
 .btn-icon-color-danger.disabled, .btn-icon-color-danger.disabled:focus, .btn-icon-color-danger.disabled:hover {
     color: #e7505a !important;
-                                                                                                              }
+}
 .btn-icon-color-primary {
     color: #5e9cd1 !important;
                         }
@@ -85,5 +97,8 @@
 }
 .c-margin-l-40 {
     margin-left: 40px !important;
+}
+.badge-notify {
+    background: #5dc09c;
 }
 

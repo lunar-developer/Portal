@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.UI.WebControls;
+using DotNetNuke.Entities.Users;
+using DotNetNuke.Security.Roles;
 using Modules.UserManagement.Business;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
@@ -21,6 +24,8 @@ namespace Modules.UserManagement.Global
 
         public static readonly string LDAPEmail = FunctionBase.GetConfiguration(ConfigEnum.LDAPEmail);
 
+
+        #region Deprecated 
         protected void BindBranchData(DropDownList dropDownList)
         {
             BindBranchData(dropDownList, UserInfo.UserID.ToString());
@@ -170,7 +175,7 @@ namespace Modules.UserManagement.Global
                 dropDownList.Items.Add(CreateListItem(branch, isUseBranchCode));
             }
         }
-
+        #endregion
 
 
 
@@ -266,9 +271,25 @@ namespace Modules.UserManagement.Global
         #endregion
 
 
+        public static List<string> GetUserPermission(int userID)
+        {
+            UserInfo userInfo = UserController.Instance.GetUserById(0, userID);
+            if (userInfo == null || userInfo.UserID == -1)
+            {
+                return new List<string>();
+            }
+            IList<UserRoleInfo> listRoleInfo = RoleController.Instance.GetUserRoles(userInfo, true);
+            return listRoleInfo.Select(item => item.RoleID.ToString()).ToList();
+        }
+
         protected bool IsAdministrator()
         {
-            return IsInRole(RoleEnum.Administrator) || IsSuperAdministrator();
+            return IsInRole(RoleEnum.Administrator);
+        }
+
+        protected bool IsAdministrator(string userID)
+        {
+            return IsInRole(RoleEnum.Administrator, int.Parse(userID));
         }
 
         protected bool IsSuperAdministrator()
@@ -281,6 +302,61 @@ namespace Modules.UserManagement.Global
             return userID == UserInfo.UserID.ToString();
         }
 
+        protected static bool IsRoleInScope(string roleID, bool isHeadOffice)
+        {
+            RoleExtensionData roleData = CacheBase.Receive<RoleExtensionData>(roleID);
+            if (roleData == null
+                || FunctionBase.ConvertToBool(roleData.IsDisable))
+            {
+                return true;
+            }
+
+            switch (roleData.RoleScope)
+            {
+                case RoleScopeEnum.HeadOffice:
+                    return isHeadOffice;
+
+                case RoleScopeEnum.BranchOffice:
+                    return isHeadOffice == false;
+
+                default:
+                    return true;
+            }
+        }
+
+        protected static bool IsInvalidUserRoles(string[] listRoles, out string message)
+        {
+            message = string.Empty;
+            foreach (string roleID in listRoles)
+            {
+                RoleExtensionData roleData = CacheBase.Receive<RoleExtensionData>(roleID);
+                if (roleData == null
+                    || FunctionBase.ConvertToBool(roleData.IsDisable))
+                {
+                    continue;
+                }
+
+                List<string> listExcludeRoleID = roleData.ListExcludeRoleID.Split(';').ToList();
+                foreach (string remainRoleID in listRoles)
+                {
+                    if (roleID == remainRoleID
+                        || listExcludeRoleID.Contains(remainRoleID) == false)
+                    {
+                        continue;
+                    }
+
+                    message = $@"
+                        <p>
+                            <b>{FunctionBase.GetRoleName(roleID)}</b> không được phép cấp cùng với:</br>
+                            <b>{FunctionBase.GetRoleName(remainRoleID)}</b>.
+                        </p>";
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static string FormatBranchCode(string branchCode)
         {
             return BranchBusiness.GetBranchNameByBranchCode(branchCode);
@@ -289,6 +365,21 @@ namespace Modules.UserManagement.Global
         public static string FormatBranchID(string branchID)
         {
             return BranchBusiness.GetBranchName(branchID);
+        }
+
+        public static string FormatAuthorise(string authorisedFlag)
+        {
+            switch (authorisedFlag)
+            {
+                case UserAuthoriseEnum.Disabled:
+                    return "ĐÃ KHOÁ";
+
+                case UserAuthoriseEnum.Enabled:
+                    return "ĐANG HOẠT ĐỘNG";
+
+                default:
+                    return "ĐANG TẠM KHOÁ";
+            }
         }
 
         public static bool IsLDAPEmail(string value)

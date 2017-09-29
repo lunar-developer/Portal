@@ -1242,6 +1242,9 @@ Sincerely,
     <data name="//Management//Users//RoleGroupSetting.String" xml:space="preserve">
         <value>Cấu hình Nhóm Quyền</value>
     </data>
+    <data name="//Management//Users//RoleSetting.String" xml:space="preserve">
+        <value>Cấu Hình Phân Quyền</value>
+    </data>
     <data name="//Management//Users//ContactInformation.String" xml:space="preserve">
         <value>Thông Tin Liên Lạc</value>
     </data>
@@ -1276,6 +1279,10 @@ Sincerely,
         <value>Danh Mục Báo Cáo</value>
     </data>
   
+    
+    <data name="//PersonalInbox.String" xml:space="preserve">
+        <value>Hộp Thư Cá Nhân</value>
+    </data>
 
 
   <data name="//Host//ConfigurationManager.String" xml:space="preserve">
@@ -1431,9 +1438,7 @@ Sincerely,
   <data name="//ActivityFeed//Friends.String" xml:space="preserve">
     <value>Friends</value>
   </data>
-  <data name="//ActivityFeed//Messages.String" xml:space="preserve">
-    <value>Messages</value>
-  </data>
+  
   <data name="//ActivityFeed//MyProfile.String" xml:space="preserve">
     <value>My Profile</value>
   </data>

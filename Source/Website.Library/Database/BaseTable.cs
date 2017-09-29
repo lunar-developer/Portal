@@ -9,6 +9,7 @@
         public const string DateFrom = "DateFrom";
         public const string DateTo = "DateTo";
         public const string Remark = "Remark";
+        public const string Description = "Description";
         public const string IsDisable = "IsDisable";
         public const string UserIDCreate = "UserIDCreate";
         public const string UserIDModify = "UserIDModify";

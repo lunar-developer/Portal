@@ -19,12 +19,30 @@ namespace DesktopModules.Modules.Forex
     {
         protected override void OnLoad(EventArgs e)
         {
-            if (IsPostBack)
+            try
             {
-                return;
+                if (IsPostBack)
+                {
+                    return;
+                }
+                TransactionIDLastest.Value = Request.QueryString[TransactionTable.ID] ?? "0";
+                string message;
+                if (IsNotificationSuccessMessage(out message))
+                {
+                    ModuleMessage.ModuleMessageType messageType = GetMessageType();
+                    ShowMessage($"{message}",
+                        messageType);
+                }
+                GridBind();
+                ReloadTime.Value = GetReloadHOInboxTime.ToString();
             }
-            GridBind();
-            ReloadTime.Value = GetReloadHOInboxTime.ToString();
+            finally
+            {
+                if (IsRedirectAndShowNotification == false)
+                {
+                    ResetRedirectAndShowNotification();
+                }
+            }
         }
         #region Grid Data
         private void GridBind()
@@ -136,23 +154,26 @@ namespace DesktopModules.Modules.Forex
             }
             string transactionID = item.GetDataKeyValue("ID").ToString();
             string workflowStatusID = e.CommandArgument?.ToString();
+            string makerID = item?["MarkerUserID"].Text;
+            string dealerID = item?["DealerUserID"].Text;
+            string branchID = item?["BranchID"].Text;
             switch (e.CommandName)
             {
                 case CommandTypeEnum.Reject:
-                    ProcessTransaction(transactionID, workflowStatusID, GetRejectTransactionData);
+                    ProcessTransaction(transactionID, workflowStatusID, GetRejectTransactionData,branchID,makerID,dealerID);
                     break;
                 case CommandTypeEnum.Accept:
                     if (IsAcceptToChangeStatus(workflowStatusID))
                     {
-                        ProcessTransaction(transactionID, workflowStatusID, GetAcceptTransactionData);
+                        ProcessTransaction(transactionID, workflowStatusID, GetAcceptTransactionData, branchID, makerID, dealerID);
                     }
                     else
                     {
-                        ViewTransactionDetail(transactionID);
+                        GetPopupTransactionDeatil(transactionID, "BtnReloadBidManagementGridView");
                     }
                     break;
                 case CommandTypeEnum.ViewEdit:
-                    ViewTransactionDetail(transactionID);
+                    GetPopupTransactionDeatil(transactionID, "BtnReloadBidManagementGridView");
                     break;
                 default:
                     ShowMessage("Thao tác không hợp lệ",
@@ -163,35 +184,43 @@ namespace DesktopModules.Modules.Forex
 
         }
         #endregion
-        private void ViewTransactionDetail(string transactionID)
-        {
-            string script = EditUrl(ConfigurationEnum.BidManagementControlKey,
-                600, 600, true,true,"BtnReloadBidManagementGridView", TransactionTable.ID, transactionID);
-            RegisterScript(script);
-        }
 
-        private void ProcessTransaction(string key, string workflowStatusID, Dictionary<string, SQLParameterData> parameterDatas)
+        private void ProcessTransaction(string key, string workflowStatusID, Dictionary<string, SQLParameterData> parameterDatas,
+            string branchID = null, string markerID = null, string dealerID = null)
         {
             string message;
+            ModuleMessage.ModuleMessageType messageType;
             parameterDatas.Add("WorkflowStatusID", new SQLParameterData(workflowStatusID, SqlDbType.Int));
-            if (TransactionBusiness.UpdateTransaction(key, parameterDatas, out message))
+            if (TransactionBusiness.UpdateTransaction(key, parameterDatas, out message, out messageType))
             {
-                BidExchangeBindData();
-                if (workflowStatusID == WorkflowStatusEnum.BRApprovalTransaction.ToString() ||
-                    workflowStatusID == WorkflowStatusEnum.HOApprovalCancelException.ToString() ||
-                    workflowStatusID == WorkflowStatusEnum.HOApprovalCancel.ToString())
-                {
-                    BindTrasactionDailyReport();
-                }
                 ShowMessage($"{message}.", ModuleMessage.ModuleMessageType.GreenSuccess);
-
+                string targetStatus = string.Empty;
+                if (parameterDatas.ContainsKey("IsReject") &&
+                    parameterDatas["IsReject"].ParameterValue.Equals("True"))
+                {
+                    targetStatus = WorkflowStatusEnum.Reject.ToString();
+                }
+                SendNotificationMessage(string.Empty, string.Empty, workflowStatusID, branchID, markerID, dealerID,
+                    targetStatus);
             }
             else
             {
-                ShowMessage($"{message}", ModuleMessage.ModuleMessageType.RedError);
+                ShowMessage($"{message}", messageType);
             }
+            Finish(key, ParseWorkflowStatus(workflowStatusID), messageType, message, null, null, true,
+                $"{BidManagementUrl}/{TransactionTable.ID}/{key}");
         }
-       
+        private const string NotificationHtml = @"<span class=""badge badge-notify"">{0}</span>";
+        protected string IsNewItemFormat(string value, string transactionID, string workflowStatus)
+        {
+            int statusID;
+            if (TransactionIDLastest.Value.Equals(transactionID) && int.TryParse(workflowStatus, out statusID) &&
+                statusID >= WorkflowStatusEnum.BRAsk && statusID < WorkflowStatusEnum.HOFinishTransaction)
+            {
+                return string.Format(NotificationHtml, value);
+            }
+            return value;
+        }
         private static string EditExchangeRateUrl(string exchangeCode)
         {
             return $"<a href='#'>{exchangeCode}</a>";
@@ -214,8 +243,18 @@ namespace DesktopModules.Modules.Forex
 
         protected void ReloadInbox(object sender, EventArgs e)
         {
-            BidExchangeBindData();
-            BindTrasactionDailyReport();
+            if (IsRedirectAndShowNotification)
+            {
+                string url = $"{BidManagementUrl}/{TransactionTable.ID}/{GetSessionTransactionID}";
+                string script = GetWindowOpenScript(url, null, false);
+                RegisterScript(script);
+            }
+            else
+            {
+                BidExchangeBindData();
+                BindTrasactionDailyReport();
+            }
+            
         }
     }
     

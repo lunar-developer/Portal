@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using DotNetNuke.UI.Skins.Controls;
-using Modules.Forex.Business;
 using Modules.Forex.Database;
 using Modules.Forex.DataTransfer;
 using Modules.Forex.Enum;
@@ -16,11 +14,21 @@ namespace DesktopModules.Modules.Forex
     {
         protected override void OnLoad(EventArgs e)
         {
-            if (IsPostBack)
+            try
             {
-                return;
+                if (IsPostBack)
+                {
+                    return;
+                }
+                GridBind();
             }
-            GridBind();
+            finally
+            {
+                if (IsRedirectPage)
+                {
+                    ResetSessionCallPopup();
+                }
+            }
         }
 
         private void GridBind()
@@ -60,12 +68,10 @@ namespace DesktopModules.Modules.Forex
                 DataRow dr = dtResult.NewRow();
                 dr["#"] = count;
                 dr[ExchangeRateGridFieldEnum.CurrencyCode] = rate.CurrencyCode;
-                dr[ExchangeRateGridFieldEnum.BigFigure] = string.IsNullOrWhiteSpace(currencyRateData?.Rate) ? string.Empty :
-                                                            FunctionBase.FormatCurrency(currencyRateData.Rate);
-                dr[ExchangeRateGridFieldEnum.BuyRateFT] = ExchangeRateFormat(rate.BuyRateFT, rate.BuyRateFTStatus, rate.IsDisableBuyFT);
-                dr[ExchangeRateGridFieldEnum.SellRateFT] = ExchangeRateFormat(rate.SellRateFT, rate.SellRateFTStatus, rate.IsDisableSellFT);
-                dr[ExchangeRateGridFieldEnum.BuyRateCash] = ExchangeRateFormat(rate.BuyRateCash, rate.BuyRateCashStatus, rate.IsDisableBuyCash);
-                dr[ExchangeRateGridFieldEnum.SellRateCash] = ExchangeRateFormat(rate.SellRateCash, rate.SellRateCashStatus, rate.IsDisableSellCash);
+                dr[ExchangeRateGridFieldEnum.BuyRateFT] = GetAskFigure(currencyRateData?.Rate,rate.BuyRateFT, rate.BuyRateFTStatus, rate.IsDisableBuyFT);
+                dr[ExchangeRateGridFieldEnum.SellRateFT] = GetAskFigure(currencyRateData?.Rate,rate.SellRateFT, rate.SellRateFTStatus, rate.IsDisableSellFT);
+                dr[ExchangeRateGridFieldEnum.BuyRateCash] = GetAskFigure(currencyRateData?.Rate, rate.BuyRateCash, rate.BuyRateCashStatus, rate.IsDisableBuyCash);
+                dr[ExchangeRateGridFieldEnum.SellRateCash] = GetAskFigure(currencyRateData?.Rate, rate.SellRateCash, rate.SellRateCashStatus, rate.IsDisableSellCash);
                 dtResult.Rows.Add(dr);
                 dtResult.AcceptChanges();
             }
@@ -75,8 +81,9 @@ namespace DesktopModules.Modules.Forex
         private void TransactionCreation(string currencyCode,string transactiontypeID)
         {
             if (!string.IsNullOrWhiteSpace(currencyCode)) currencyCode = currencyCode.Replace("/", "_");
+            SetSessionCallPopup();
             string script = EditUrl(ConfigurationEnum.TransactionCreationControlKey,
-                600, 600, false, true, null, 
+                600, 600, true, true, null, 
                 TransactionTable.CurrencyCode, currencyCode, TransactionTable.TransactionTypeID, transactiontypeID);
             RegisterScript(script);
         }
@@ -123,6 +130,16 @@ namespace DesktopModules.Modules.Forex
         protected void ReloadExchangeRate(object sender, EventArgs e)
         {
             GridBind();
+        }
+
+        protected void RedirectPage(object sender, EventArgs e)
+        {
+            if (IsRedirectPage)
+            {
+                string url = $"{TransactionManagementUrl}/{TransactionTable.ID}/{GetSessionTransactionID}";
+                string script = GetWindowOpenScript(url, null, false);
+                RegisterScript(script);
+            }
         }
     }
     

@@ -28,6 +28,8 @@
         public string DealTime;
         public string BranchID;
         public string BranchName;
+        public string MarkerUserID;
+        public string DealerUserID;
         public string CreationUserID;
         public string CreationDateTime;
         public string ModifiedUserID;
@@ -36,6 +38,8 @@
         public string TransactionStatusID;
         public string EditStatusID;
         public string CancelStatusID;
+        public string TransactionStatus;
         public string Remark;
+        public string IsImport;
     }
 }

@@ -9,5 +9,6 @@
         public const string HODealer = "FX_HO_Dealer";
         public const string HOManager = "FX_HO_Manager";
         public const string HOViewer = "FX_HO_Viewer";
+        public const string HOAdmin = "FX_HO_Admin";
     }
 }

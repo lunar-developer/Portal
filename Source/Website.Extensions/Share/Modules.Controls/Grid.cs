@@ -103,6 +103,14 @@ namespace Modules.Controls
                     column.HeaderText = header;
                 }
             }
+            foreach (GridColumnGroup columnGroup in MasterTableView.ColumnGroups)
+            {
+                string header = Localization.GetString(columnGroup.HeaderText + ".Header", LocalResourceFile);
+                if (string.IsNullOrWhiteSpace(header) == false)
+                {
+                    columnGroup.HeaderText = header;
+                }
+            }
             MasterTableView.FilterExpression = string.Empty;
             MasterTableView.SortExpressions.Clear();
         }

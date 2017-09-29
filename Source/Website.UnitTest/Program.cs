@@ -27,6 +27,8 @@ namespace Website.UnitTest
         {
             try
             {
+                string dat = CryptographyBase.Hash("d7c0e8efa0614a64bdab28be23015fd5");
+                return;
                 //var r = new Regex(@"
                 //(?<=[A-Z])(?=[A-Z][a-z]) |
                 // (?<=[^A-Z])(?=[A-Z]) |
