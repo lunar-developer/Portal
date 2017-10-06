@@ -168,18 +168,18 @@
                                         <a class="btn btn-primary"
                                             href="javascript:;"
                                             id="btnApply">
-                                            <i class="fa fa-gear"></i>Apply
+                                            <i class="fa fa-gear"></i>Áp Dụng
                                         </a>
                                         <a class="btn btn-success"
                                             href="javascript:;"
                                             id="btnRestore">
-                                            <i class="fa fa-recycle"></i>Restore
+                                            <i class="fa fa-recycle"></i>Phục Hồi
                                         </a>
                                         <a class="btn btn-default"
                                             href="javascript:;"
                                             id="btnCollapse"
                                             onclick="collapseAllPanels('#DivRoleContainer')">
-                                            <i class="fa fa-compress"></i>Collapse
+                                            <i class="fa fa-compress"></i>Thu Gọn
                                         </a>
                                     </div>
                                     <div class="col-sm-3"></div>
@@ -281,10 +281,17 @@
     {
         $(".dnnPanels").dnnPanels({ defaultState: "open" });
 
-        confirmMessage("#btnApply", "Bạn muốn Apply Quyền theo Chức danh?", undefined, undefined, undefined,
+        confirmMessage("#btnApply", "Bạn muốn <b>ÁP DỤNG</b> Quyền theo Chức danh?", undefined, undefined, undefined,
             applyTemplate);
-        confirmMessage("#btnRestore", "Bạn muốn Restore Quyền hiện tại của User?", undefined, undefined, undefined,
+        confirmMessage("#btnRestore", "Bạn muốn <b>PHỤC HỒI</b> Quyền hiện tại của User?", undefined, undefined, undefined,
             resetToDefault);
+
+        var jButton = getJQueryControl("btnApprove");
+        registerConfirm({
+            jquery: jButton,
+            message: "Bạn có chắc muốn <b>" + jButton.val() + "</b> yêu cầu?",
+            onBeforeOpen: validateDataChange
+        });
     }, true);
 
     function toggleGroup(element, groupId)
@@ -347,6 +354,44 @@
             return false;
         }
 
+        return true;
+    }
+
+    function validateDataChange()
+    {
+        var requestType = getRadCombobox("ddlRequestType").get_value();
+        var newValue, oldValue;
+        var isRequireUpdate;
+        switch (requestType)
+        {
+            // Update Permission
+            case "1":
+                var array = new Array();
+                $("input[type='checkbox'][name='Roles']:checked, input[type='hidden'][name='Roles']").each(function ()
+                {
+                    array.push(this.value);
+                });
+
+                newValue = array.join();
+                oldValue = getControl("hidListUserRoles").value;
+                isRequireUpdate = newValue !== oldValue;
+                break;
+
+            // Update Branch
+            default:
+                var combobox = getRadCombobox("ddlNewBranch");
+                newValue = combobox.get_value();
+                oldValue = combobox._clientState.value;
+                isRequireUpdate = newValue !== oldValue;
+                break;
+        }
+
+        
+        if (isRequireUpdate)
+        {
+            alertMessage("Vui lòng <b>CẬP NHẬT</b> các thay đổi trước khi tiếp tục.");
+            return false;
+        }
         return true;
     }
 </script>

@@ -154,34 +154,34 @@
     <value>File type {1} is not valid in this context. Valid File Types Include: {0}</value>
   </data>
   <data name="PasswordStrengthFair.Text" xml:space="preserve">
-    <value>fair</value>
+    <value>Trung bình</value>
   </data>
   <data name="PasswordStrengthMinLength.Text" xml:space="preserve">
     <value>-character minimum</value>
   </data>
   <data name="PasswordStrengthStrong.Text" xml:space="preserve">
-    <value>strong</value>
+    <value>Mạnh</value>
   </data>
   <data name="PasswordStrengthWeak.Text" xml:space="preserve">
-    <value>weak</value>
+    <value>Yếu</value>
   </data>
   <data name="CriteriaValidationExpression.Text" xml:space="preserve">
     <value>Validation Expression: {0}</value>
   </data>
   <data name="CriteriaAtLeastNSpecialChars.Text" xml:space="preserve">
-    <value>At least {0} non-alphanumeric characters</value>
+    <value>Tối thiểu {0} kí tự đặt biệt.</value>
   </data>
   <data name="CriteriaAtLeastNChars.Text" xml:space="preserve">
-    <value>At least {0} characters</value>
+    <value>Tối thiểu {0} kí tự.</value>
   </data>
   <data name="PasswordRulesHeadText.Text" xml:space="preserve">
-    <value>Password Policy:</value>
+    <value>Chính sách Mật khẩu:</value>
   </data>
   <data name="PasswordRulesBodyText.Text" xml:space="preserve">
     <value>Contains at least {0} characters, 1 uppercase letter, 1 number and {1}.</value>
   </data>
   <data name="ConfirmPasswordUnmatched.Text" xml:space="preserve">
-    <value>Password does not match</value>
+    <value>Xác nhận Mật khẩu không chính xác.</value>
   </data>
   <data name="FileUpload.Title.Text" xml:space="preserve">
     <value>Upload Files</value>

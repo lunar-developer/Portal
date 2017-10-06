@@ -96,6 +96,7 @@ body > form > .rcbSlide {
     color: #fff !important;
     padding: 10px 20px !important;
     max-width: 100%;
+    line-height: 30px;
     /*text-indent: 40px;*/
 }
 
@@ -117,6 +118,14 @@ body > form > .rcbSlide {
 .dnnFormValidationSummary {
     background-color: #d9534f !important;
     /*background-image: url("../images/error.png") !important;*/
+}
+
+.dnnFormMessage a.c-theme-color
+{
+    color: #fff !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: underline;
 }
 
 .dnnPanelLoading {
@@ -1291,4 +1300,20 @@ div.dnnFixedSizeComboBox
 .toast-close:hover
 {
     color: #e12330 !important
+}
+
+.dnnGrid .rgBatchChanged
+{
+    background-image: url('../images/cell-highlight.png');
+    background-position: 0 0;
+    background-repeat: no-repeat;
+}
+
+.password-strength-container .password-strength-tooltip-content h2
+{
+    font-size: 16px;
+}
+.password-strength-container
+{
+    width: 60%;
 }

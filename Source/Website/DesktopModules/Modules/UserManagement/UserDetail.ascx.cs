@@ -8,9 +8,14 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Web.UI;
 using System.Web.UI.WebControls;
+using DotNetNuke.Common.Utilities;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Security.Membership;
+using DotNetNuke.Web.Client;
+using DotNetNuke.Web.Client.ClientResourceManagement;
+using DotNetNuke.Web.UI.WebControls;
 using Modules.UserManagement.DataTransfer;
 using Modules.UserManagement.Enum;
 using Telerik.Web.UI;
@@ -27,8 +32,53 @@ namespace DesktopModules.Modules.UserManagement
 
 
         #region PAGE EVENTS
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+
+            var options = new DnnPaswordStrengthOptions();
+            var optionsAsJsonString = Json.Serialize(options);
+            var script =
+                $"dnn.initializePasswordStrength(\'.password-strength\', {optionsAsJsonString});{Environment.NewLine}";
+
+            if (ScriptManager.GetCurrent(Page) != null)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "PasswordStrength", script, true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(GetType(), "PasswordStrength", script, true);
+            }
+
+            var confirmPasswordOptions = new DnnConfirmPasswordOptions()
+            {
+                FirstElementSelector = ".password-strength",
+                SecondElementSelector = ".password-confirm",
+                ContainerSelector = ".dnnPasswordReset",
+                UnmatchedCssClass = "unmatched",
+                MatchedCssClass = "matched"
+            };
+
+            optionsAsJsonString = Json.Serialize(confirmPasswordOptions);
+            script = $"dnn.initializePasswordComparer({optionsAsJsonString});{Environment.NewLine}";
+
+            if (ScriptManager.GetCurrent(Page) != null)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "ConfirmPassword", script, true);
+            }
+            else
+            {
+                Page.ClientScript.RegisterStartupScript(GetType(), "ConfirmPassword", script, true);
+            }
+        }
+
         protected override void OnLoad(EventArgs e)
         {
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/dnn.jquery.tooltip.js");
+            ClientResourceManager.RegisterScript(Page, "~/Resources/Shared/scripts/dnn.PasswordStrength.js");
+            ClientResourceManager.RegisterScript(Page, "~/DesktopModules/Admin/Security/Scripts/dnn.PasswordComparer.js");
+            ClientResourceManager.RegisterStyleSheet(Page, "~/Resources/Shared/stylesheets/dnn.PasswordStrength.css", FileOrder.Css.ResourceCss);
+
             if (IsPostBack)
             {
                 return;
@@ -87,8 +137,8 @@ namespace DesktopModules.Modules.UserManagement
                 if (email.EndsWith(LDAPEmail))
                 {
                     ShowMessage(
-                        @"Nếu bạn là <b>nhân viên của VietBank</b> vui lòng liên hệ phòng nhân sự để được tạo tài khoản.
-                        Chức năng Thêm mới chỉ áp dụng cho <b>Cộng tác viên</b>.");
+                        @"Chức năng này dùng để khai báo cho Cộng tác viên. 
+                        Nhân viên của VietBank cần khai báo đơn vị trực thuộc, và đăng nhập bằng <b>Tên và Mật khẩu</b> đăng nhập máy tính.");
                     txtUserName.Focus();
                     return;
                 }
@@ -130,9 +180,12 @@ namespace DesktopModules.Modules.UserManagement
                 return;
             }
 
+            int userID = int.Parse(hidUserID.Value);
+            string previouseRoles = string.Join(",", GetUserPermission(userID));
             Dictionary<string, SQLParameterData> dictionary = new Dictionary<string, SQLParameterData>
             {
-                { UserTable.UserID, new SQLParameterData(hidUserID.Value, SqlDbType.Int) },
+                { UserTable.UserID, new SQLParameterData(userID, SqlDbType.Int) },
+                { "PreviousRoles", new SQLParameterData(previouseRoles) },
                 { "Roles", new SQLParameterData(listRoles) },
                 { UserTable.Remark, new SQLParameterData(txtRoleRemark.Text.Trim(), SqlDbType.NVarChar) },
                 { BaseTable.UserIDModify, new SQLParameterData(UserInfo.UserID.ToString(), SqlDbType.Int) },
@@ -222,7 +275,7 @@ namespace DesktopModules.Modules.UserManagement
                 return;
             }
 
-            hidUserID.Value = "0";
+            ResetData();
             SetPermission();
             ShowMessage("<b>Nhắc nhở</b>: Chức năng <b>Thêm mới Tài khoản</b> chỉ áp dụng cho <b>Cộng tác viên</b>.");
         }
@@ -516,7 +569,8 @@ namespace DesktopModules.Modules.UserManagement
 
         private void BindData()
         {
-            BindBranchData(ddlBranch);
+            DivPasswordInfo.InnerHtml = GetSharedResource("PasswordInfo.Text");
+            BindBranchData(ddlBranch);            
         }
 
         private void BindGrid(DataTable dtUserLog)
@@ -540,7 +594,7 @@ namespace DesktopModules.Modules.UserManagement
             txtPhoneExtension.Text = string.Empty;
             txtStaffID.Text = string.Empty;
             ddlTitle.SelectedIndex = -1;
-            ddlBranch.SelectedIndex = -1;
+            ddlBranch.SelectedIndex = 0;
             txtLineManager.Text = string.Empty;
             txtAuthorised.Text = string.Empty;
             txtLastLoginDate.Text = string.Empty;
@@ -576,7 +630,7 @@ namespace DesktopModules.Modules.UserManagement
             txtLineManager.Text = BranchBusiness.GetManagerName(ddlBranch.SelectedValue);
             txtAuthorised.Text = FormatAuthorise(hidAuthorise.Value);
             DateTime date = DateTime.Parse(data[UserTable.LastLoginDate].ToString());
-            txtLastLoginDate.Text = date.ToString(PatternEnum.DateTimeDisplay);
+            txtLastLoginDate.Text = date.ToLocalTime().ToString(PatternEnum.DateTimeDisplay);
         }
 
         private Dictionary<string, SQLParameterData> GetData()
@@ -619,9 +673,11 @@ namespace DesktopModules.Modules.UserManagement
 
             string url = $"{UserRequestUrl}/{UserRequestTable.UserRequestID}/{requestID}";
             return $@"
-                <a href='{url}' target ='_blank'>
-                    <i class='fa fa-eye'></i>
-                </a>";
+                <div class='col-sm-12 text-center'>
+                    <a href='{url}' target ='_blank'>
+                        <i class='fa fa-link icon-primary'></i>
+                    </a>
+                </div>";
         }
     }
 }

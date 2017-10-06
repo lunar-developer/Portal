@@ -7,7 +7,6 @@
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
-
 <asp:UpdatePanel ID="updatePanel"
     runat="server">
     <ContentTemplate>
@@ -210,11 +209,13 @@
                                 ID="btnSaveProfile"
                                 OnClick="SaveProfile"
                                 OnClientClick="return processUpdateProfile();"
+                                CausesValidation="False"
                                 runat="server"
                                 Text="Cập Nhật" />
                             <asp:Button CssClass="btn btn-success"
                                 ID="btnEnable"
                                 OnClick="UpdateAccountStatus"
+                                CausesValidation="False"
                                 runat="server"
                                 CommandArgument="1"
                                 CommandName="Kích Hoạt"
@@ -222,6 +223,7 @@
                             <asp:Button CssClass="btn btn-danger"
                                 ID="btnDisable"
                                 OnClick="UpdateAccountStatus"
+                                CausesValidation="False"
                                 runat="server"
                                 CommandArgument="0"
                                 CommandName="Vô Hiệu"
@@ -229,6 +231,7 @@
                             <asp:Button CssClass="btn btn-success"
                                 ID="btnUnlock"
                                 OnClick="UpdateAccountStatus"
+                                CausesValidation="False"
                                 runat="server"
                                 CommandArgument="2"
                                 CommandName="Mở Khóa"
@@ -268,18 +271,18 @@
                                     <a class="btn btn-primary"
                                         href="javascript:;"
                                         id="btnApply">
-                                        <i class="fa fa-gear"></i>Apply
+                                        <i class="fa fa-gear"></i>Áp dụng
                                     </a>
                                     <a class="btn btn-success"
                                         href="javascript:;"
                                         id="btnRestore">
-                                        <i class="fa fa-recycle"></i>Restore
+                                        <i class="fa fa-recycle"></i>Phục hồi
                                     </a>
                                     <a class="btn btn-default"
                                         href="javascript:;"
                                         id="btnCollapse"
                                         onclick="collapseAllPanels()">
-                                        <i class="fa fa-compress"></i>Collapse
+                                        <i class="fa fa-compress"></i>Thu Gọn
                                     </a>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -318,10 +321,12 @@
                                     OnClick="UpdateRole"
                                     OnClientClick="return processUpdateRole();"
                                     runat="server"
+                                    CausesValidation="False"
                                     Text="Cập Nhật" />
                                 <asp:LinkButton class="btn btn-success"
                                     ID="btnRequest"
                                     OnClick="CreateNewRequest"
+                                    CausesValidation="False"
                                     runat="server">
                                     Yêu cầu thêm quyền
                                 </asp:LinkButton>
@@ -336,57 +341,76 @@
                     id="TabPasswordInfo">
 
                     <div id="DivTabPasswordContent"
-                        runat="server">
+                        runat="server" class="dnnPasswordReset">
                         <div class="form-group">
-                            <div class="col-sm-6">
-                                <div class="form-group"
-                                    id="DivOldPassword"
-                                    runat="server">
-                                    <div class="col-sm-4 control-label">
-                                        <control:Label ID="lblOldPassword"
-                                            IsRequire="True"
-                                            runat="server" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <asp:TextBox autocomplete="off"
-                                            CssClass="form-control c-theme"
-                                            ID="txtOldPassword"
-                                            runat="server"
-                                            TextMode="Password" />
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">
-                                        <control:Label ID="lblNewPassword"
-                                            IsRequire="True"
-                                            runat="server" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <asp:TextBox autocomplete="off"
-                                            CssClass="form-control c-theme"
-                                            ID="txtNewPassword"
-                                            runat="server"
-                                            TextMode="Password" />
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-sm-4 control-label">
-                                        <control:Label ID="lblConfirmPassword"
-                                            IsRequire="True"
-                                            runat="server" />
-                                    </div>
-                                    <div class="col-sm-8">
-                                        <asp:TextBox autocomplete="off"
-                                            CssClass="form-control c-theme"
-                                            ID="txtConfirmPassword"
-                                            runat="server"
-                                            TextMode="Password" />
-                                    </div>
-                                </div>
+                            <div class="col-sm-12">
+                                <div class="dnnFormMessage dnnFormInfo" id="DivPasswordInfo" runat="server"></div>
                             </div>
-                            <div class="col-sm-6"></div>
+                        </div>
+                        <div class="dnnPasswordResetContent">
+                            <div class="form-group">
+                                <div class="col-sm-6">
+                                    <div class="form-group"
+                                        id="DivOldPassword"
+                                        runat="server">
+                                        <div class="col-sm-4 control-label">
+                                            <control:Label ID="lblOldPassword"
+                                                IsRequire="True"
+                                                runat="server" />
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="password-strength-container">
+                                                <asp:TextBox autocomplete="off"
+                                                    CssClass="form-control c-theme"
+                                                    ID="txtOldPassword"
+                                                    runat="server"
+                                                    TextMode="Password" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group c-margin-b-10">
+                                        <div class="col-sm-4 control-label">
+                                            <control:Label ID="lblNewPassword"
+                                                IsRequire="True"
+                                                runat="server" />
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <asp:Panel ID="passwordContainer" runat="server" CssClass="password-strength-container">
+                                                <asp:TextBox autocomplete="off"
+                                                    CssClass="form-control c-theme password-strength"
+                                                    ID="txtNewPassword"
+                                                    runat="server"
+                                                    TextMode="Password" />
+                                            </asp:Panel>
+                                            <asp:RegularExpressionValidator ID="valPassword" CssClass="dnnFormMessage dnnFormError dnnRequired"
+                                                runat="server" resourcekey="Password.Required"
+                                                Display="Dynamic" ControlToValidate="txtNewPassword" ValidationExpression="[\w\W]{7,}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-4 control-label">
+                                            <control:Label ID="lblConfirmPassword"
+                                                IsRequire="True"
+                                                runat="server" />
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <div class="password-strength-container">
+                                                <asp:TextBox autocomplete="off"
+                                                    CssClass="form-control c-theme password-confirm"
+                                                    ID="txtConfirmPassword"
+                                                    runat="server"
+                                                    TextMode="Password" />
+                                                <asp:RequiredFieldValidator ID="valConfirmPassword"
+                                                    CssClass="dnnFormMessage dnnFormError dnnRequired"
+                                                    runat="server" resourcekey="Confirm.Required"
+                                                    Display="Dynamic" ControlToValidate="txtConfirmPassword" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6"></div>
+                            </div>
                         </div>
 
                         <hr class="c-margin-t-40 separator" />
@@ -398,6 +422,7 @@
                                     <asp:Button CssClass="btn btn-primary"
                                         ID="btnUpdatePassword"
                                         OnClick="UpdatePassword"
+                                        CausesValidation="True"
                                         OnClientClick="return processUpdatePassword();"
                                         runat="server"
                                         Text="Cập Nhật" />
@@ -424,7 +449,8 @@
                             runat="server">
                             <MasterTableView>
                                 <Columns>
-                                    <dnn:DnnGridTemplateColumn HeaderText="ViewDetail">
+                                    <dnn:DnnGridTemplateColumn>
+                                        <HeaderStyle Width="5%"></HeaderStyle>
                                         <ItemTemplate>
                                             <%#RenderLogDetail(Eval(UserRequestTable.UserRequestID).ToString()) %>
                                         </ItemTemplate>
@@ -439,7 +465,7 @@
                                     </dnn:DnnGridBoundColumn>
                                     <telerik:GridTemplateColumn DataField="UserIDModify" SortExpression="UserIDModify"
                                         HeaderText="Người Cập Nhật">
-                                        <HeaderStyle Width="25%" />
+                                        <HeaderStyle Width="20%" />
                                         <ItemTemplate>
                                             <%#FunctionBase.FormatUserID(Eval(BaseTable.UserIDModify).ToString()) %>
                                         </ItemTemplate>
@@ -480,25 +506,25 @@
 
 
 <script type="text/javascript">
-    addPageLoaded(function()
+    addPageLoaded(function ()
     {
         $(".dnnTabs").dnnTabs();
         $(".dnnPanels").dnnPanels({
             defaultState: "open"
         });
 
-        confirmMessage("#btnApply", "Bạn muốn Apply Quyền theo Chức danh?", undefined, undefined, undefined,
+        confirmMessage("#btnApply", "Bạn muốn <b>ÁP DỤNG</b> Quyền theo Chức danh?", undefined, undefined, undefined,
             applyTemplate);
-        confirmMessage("#btnRestore", "Bạn muốn Restore Quyền hiện tại của User?", undefined, undefined, undefined,
+        confirmMessage("#btnRestore", "Bạn muốn <b>PHỤC HỒI</b> Quyền hiện tại của Người dùng?", undefined, undefined, undefined,
             resetToDefault);
 
         $("#" + getClientID("btnEnable") + ", #" + getClientID("btnDisable") + ", #" + getClientID("btnUnlock"))
-            .each(function()
+            .each(function ()
             {
                 var element = this;
                 registerConfirm({
                     jquery: element,
-                    onBeforeOpen: function()
+                    onBeforeOpen: function ()
                     {
                         return validateInput(getControl("txtRemark"));
                     },
@@ -583,8 +609,8 @@
 
     function applyTemplate()
     {
-        var element = getControl("ddlTemplate");
-        if (validateOption(element) === false)
+        var element = getRadCombobox("ddlTemplate");
+        if (validateRadAutocomplete(element) === false)
         {
             return;
         }
@@ -593,7 +619,7 @@
         $("input[name='Roles']").attr("checked", false);
 
         // Apply Template
-        var array = element.value.split(',');
+        var array = element.get_value().split(',');
         for (var i = 0; i < array.length; i++)
         {
             $("#Role" + array[i]).attr("checked", true);

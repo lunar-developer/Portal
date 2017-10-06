@@ -250,6 +250,7 @@ function hideLoading()
 
 function renderMenu()
 {
+    // Search Menu
     $(".c-search-toggler").on("click", function ()
     {
         $("body").toggleClass("c-layout-quick-search-shown");
@@ -260,8 +261,17 @@ function renderMenu()
     });
 
 
+    // Process On SignOut Click
+    registerConfirm({
+        jquery: "#GlobalSignOutLink",
+        message: "Bạn có chắc muốn <b>THOÁT</b> ứng dụng?"
+    });
+
+
+    // Hover Delay Menu
     var isMobileMenu = $(".c-hor-nav-toggler").is(":visible");
-    if(isMobileMenu === false)
+    if (isMobileMenu === false  // Mobile Only
+        && $("ul.c-theme-nav").length > 0)    // Avoid Popup
     {
         $("ul.c-theme-nav").menuAim({
             submenuDirection: "below",
@@ -808,4 +818,26 @@ function bindOptions(combobox, options)
         }
     }
     combobox.commitChanges();
+}
+
+function removeUnicode(value)
+{
+    return value
+        .replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a")
+        .replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A")
+        .replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e")
+        .replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E")
+        .replace(/ì|í|ị|ỉ|ĩ/g, "i")
+        .replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I")
+        .replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o")
+        .replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O")
+        .replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u")
+        .replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U")
+        .replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y")
+        .replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .replace(/!|@|%|\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\:|\;|\"|\$|\&|\#|\[|\]|~|$|_/g, "")
+        .replace(/-+-/g, "")
+        .replace(/^\-+|\-+$/g, "");
 }

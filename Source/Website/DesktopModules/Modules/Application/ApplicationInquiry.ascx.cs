@@ -75,7 +75,7 @@ namespace DesktopModules.Modules.Application
             ?? (ListFieldDate = new Dictionary<string, string>
             {
                 { string.Empty, "Chưa chọn" },
-                { ApplicationTable.CreateDateTime, "Ngày tạo" },
+                { ApplicationTable.DateTimeCreate, "Ngày tạo" },
                 { ApplicationTable.ExportDate, "Ngày chạy Batch" }
             });
 

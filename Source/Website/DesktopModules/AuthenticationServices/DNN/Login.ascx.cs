@@ -70,11 +70,7 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
         /// <summary>
         /// Gets whether the Captcha control is used to validate the login
         /// </summary>
-        protected bool UseCaptcha
-        {
-            get { return AuthenticationConfig.GetConfig(PortalId).UseCaptcha; }
-        }
-
+        protected bool UseCaptcha => AuthenticationConfig.GetConfig(PortalId).UseCaptcha;
         #endregion
 
         #region Public Properties
@@ -83,11 +79,7 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
         /// Check if the Auth System is Enabled (for the Portal)
         /// </summary>
         /// <remarks></remarks>
-        public override bool Enabled
-        {
-            get { return AuthenticationConfig.GetConfig(PortalId).Enabled; }
-        }
-
+        public override bool Enabled => AuthenticationConfig.GetConfig(PortalId).Enabled;
         #endregion
 
         #region Event Handlers
@@ -364,14 +356,11 @@ namespace DotNetNuke.Modules.Admin.Authentication.DNN
                     if (string.IsNullOrEmpty(previousSessionID) == false
                         && previousSessionID != Session.SessionID)
                     {
-                        List<string> computerName =
-                            Dns.GetHostEntry(Request.ServerVariables["REMOTE_HOST"]).HostName.Split('.').ToList();
                         Dictionary<string, string> loginInfoDictionary = new Dictionary<string, string>
                         {
-                            { "IPAddress", IPAddress },
-                            { "Browser", Request.Browser.Browser },
-                            { "DateTime", FunctionBase.FormatDate(DateTime.Now.ToString(PatternEnum.DateTime)) },
-                            { "ComputerName",  computerName.First() }
+                            { "IPAddress", Request.UserHostAddress },
+                            { "Browser", Request.UserAgent },
+                            { "DateTime", FunctionBase.FormatDate(DateTime.Now.ToString(PatternEnum.DateTime)) }
                         };
                         HttpContext.Current.Cache.Insert(previousSessionID,
                             loginInfoDictionary,

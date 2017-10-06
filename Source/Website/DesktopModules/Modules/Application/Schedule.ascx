@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="false" CodeFile="Schedule.ascx.cs" Inherits="DesktopModules.Modules.Application.Schedule" %>
 <%@ Import Namespace="Modules.Application.Database" %>
 <%@ Import Namespace="Website.Library.Global" %>
+<%@ Import Namespace="Website.Library.Database" %>
 <%@ Register TagPrefix="control" Namespace="Modules.Controls" Assembly="Modules.Controls" %>
 <%@ Register TagPrefix="Telerik" Namespace="Telerik.Web.UI" Assembly="Telerik.Web.UI" %>
 
@@ -57,12 +58,12 @@
                             Width="100%">
                             <MasterTableView>
                                 <Columns>
-                                    <Telerik:GridTemplateColumn DataField='<%=ScheduleLogTable.CreateDateTime%>'
+                                    <Telerik:GridTemplateColumn DataField='<%=ScheduleLogTable.DateTimeCreate%>'
                                         HeaderText="Ngày xử lý">
                                         <HeaderStyle Width="25%" HorizontalAlign="Left" VerticalAlign="Middle" />
                                         <ItemStyle HorizontalAlign="Left" VerticalAlign="Middle"></ItemStyle>
                                         <ItemTemplate>
-                                            <%#FunctionBase.FormatDate(Eval("CreateDateTime").ToString())%>
+                                            <%#FunctionBase.FormatDate(Eval(BaseTable.DateTimeCreate).ToString())%>
                                         </ItemTemplate>
                                     </Telerik:GridTemplateColumn>
                                     <Telerik:GridTemplateColumn DataField='<%=ScheduleLogTable.IsSuccess%>'

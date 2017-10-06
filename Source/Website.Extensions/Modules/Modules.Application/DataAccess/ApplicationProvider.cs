@@ -116,7 +116,7 @@ namespace Modules.Application.DataAccess
                     insert into dbo.{ApplicationProcessTable.TableName} (
                         {ApplicationTable.ApplicationID}, {ApplicationTable.ProcessID}, {ApplicationTable.PhaseID},
                         {ApplicationProcessTable.PreviousPhaseID}, {ApplicationProcessTable.Remark},
-                        {ApplicationTable.ProcessUserID}, {ApplicationTable.ProcessDateTime})
+                        {ApplicationTable.UserIDProcess}, {ApplicationTable.DateTimeProcess})
                     select
                         {ApplicationTable.ApplicationID}, {ApplicationTable.ProcessID}, {ApplicationTable.PhaseID},
                         0, '',
@@ -133,7 +133,7 @@ namespace Modules.Application.DataAccess
                 begin catch
                     rollback transaction
 
-                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                     select 
                         Error_Number(), 
                         Error_Message(), 
@@ -251,7 +251,7 @@ namespace Modules.Application.DataAccess
                 begin catch
                     rollback transaction
 
-                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                     select Error_Number(), Error_Message(), 'ApplicationProvider.InsertApplication', @{BaseTable.DateTimeModify}
 
                     select -1
@@ -286,12 +286,12 @@ namespace Modules.Application.DataAccess
                 begin catch
                     rollback transaction
                     
-                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                    insert into dbo.SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                     select 
                         Error_Number(), 
                         Error_Message(), 
                         'ApplicationProvider.AutoAssign - ' + @Step,
-                        @{ApplicationTable.ModifyDateTime}
+                        @{ApplicationTable.DateTimeModify}
 
                     insert into dbo.{ScheduleLogTable.TableName}
 			        (
@@ -299,10 +299,10 @@ namespace Modules.Application.DataAccess
                         {ScheduleLogTable.LogDate},
                         {ScheduleLogTable.LogMessage},
                         {ScheduleLogTable.IsSuccess},
-                        {ScheduleLogTable.CreateDateTime}
+                        {ScheduleLogTable.DateTimeCreate}
                     )
 		            values
-			            ('AUTO_ASSIGN', @CurrentDate, N'Có lỗi khi xử lý.', 0, @{ApplicationTable.ModifyDateTime})
+			            ('AUTO_ASSIGN', @CurrentDate, N'Có lỗi khi xử lý.', 0, @{ApplicationTable.DateTimeModify})
 
                     select -1
                 end catch
@@ -318,8 +318,8 @@ namespace Modules.Application.DataAccess
 			        {ApplicationTable.ApplicationStatus} = {{{index++}}},
 			        {ApplicationTable.CurrentUserID} = {{{index++}}},
 			        {ApplicationTable.ApplicationRemark} = '',
-			        {ApplicationTable.ModifyUserID} = @{ApplicationTable.ModifyUserID},
-			        {ApplicationTable.ModifyDateTime} = @{ApplicationTable.ModifyDateTime}
+			        {ApplicationTable.UserIDModify} = @{ApplicationTable.UserIDModify},
+			        {ApplicationTable.DateTimeModify} = @{ApplicationTable.DateTimeModify}
 		        where
 			        {ApplicationTable.ApplicationID} in ({{{index++}}})
 		        and {ApplicationTable.PhaseID} = {{{index}}}
@@ -335,8 +335,8 @@ namespace Modules.Application.DataAccess
                     {ApplicationTable.PhaseID},
                     {ApplicationProcessTable.PreviousPhaseID},
                     {ApplicationProcessTable.Remark},
-                    {ApplicationTable.ProcessUserID},
-                    {ApplicationTable.ProcessDateTime}
+                    {ApplicationTable.UserIDProcess},
+                    {ApplicationTable.DateTimeProcess}
                 )
 		        select
 			        {ApplicationTable.ApplicationID},
@@ -344,8 +344,8 @@ namespace Modules.Application.DataAccess
                     {ApplicationTable.PhaseID},
                     {{{index++}}},
                     @{ApplicationProcessTable.Remark} + N'{{{index++}}}',
-                    @{ApplicationTable.ModifyUserID},
-                    @{ApplicationTable.ModifyDateTime}
+                    @{ApplicationTable.UserIDModify},
+                    @{ApplicationTable.DateTimeModify}
                 from
                     dbo.{ApplicationTable.TableName} with(nolock)
                 where
@@ -363,8 +363,8 @@ namespace Modules.Application.DataAccess
                     {ApplicationLogTable.Remark},
                     {ApplicationLogTable.IsHasLogDetail},
                     {ApplicationLogTable.IsSensitiveInfo},
-                    {ApplicationTable.ModifyUserID},
-                    {ApplicationTable.ModifyDateTime}
+                    {ApplicationTable.UserIDModify},
+                    {ApplicationTable.DateTimeModify}
                 )
 		        select
                     {ApplicationTable.ApplicationID},
@@ -372,8 +372,8 @@ namespace Modules.Application.DataAccess
                     @{ApplicationLogTable.Remark} + N'{{{index++}}}',
                     0,
                     0,
-                    @{ApplicationTable.ModifyUserID},
-                    @{ApplicationTable.ModifyDateTime}
+                    @{ApplicationTable.UserIDModify},
+                    @{ApplicationTable.DateTimeModify}
                 from
                     dbo.{ApplicationTable.TableName} with(nolock)
                 where
@@ -389,7 +389,7 @@ namespace Modules.Application.DataAccess
                     {ScheduleLogTable.LogDate},
                     {ScheduleLogTable.LogMessage},
                     {ScheduleLogTable.IsSuccess},
-                    {ScheduleLogTable.CreateDateTime}
+                    {ScheduleLogTable.DateTimeCreate}
                 )
 		        values
 			    (
@@ -397,7 +397,7 @@ namespace Modules.Application.DataAccess
                     @CurrentDate,
                     N'{{0}}',
                     1,
-                    @{ApplicationTable.ModifyDateTime}
+                    @{ApplicationTable.DateTimeModify}
                 )
             ";
 
@@ -538,9 +538,9 @@ namespace Modules.Application.DataAccess
                 updateScript, insertProcessScript, insertLogScript, insertScheduleLog);
 
             Connector.AddParameter("CurrentDate", SqlDbType.Int, DateTime.Now.ToString(PatternEnum.Date));
-            Connector.AddParameter(ApplicationTable.ModifyUserID, SqlDbType.Int, processUserID);
+            Connector.AddParameter(ApplicationTable.UserIDModify, SqlDbType.Int, processUserID);
             Connector.AddParameter(
-                ApplicationTable.ModifyDateTime, SqlDbType.BigInt, DateTime.Now.ToString(PatternEnum.DateTime));
+                ApplicationTable.DateTimeModify, SqlDbType.BigInt, DateTime.Now.ToString(PatternEnum.DateTime));
             Connector.ExecuteSql(script, out string result);
             return result == "1";
         }

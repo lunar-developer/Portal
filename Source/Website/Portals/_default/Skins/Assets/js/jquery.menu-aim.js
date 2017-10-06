@@ -23,7 +23,7 @@
                 rowSelector: "> li",
                 submenuSelector: "*",
                 submenuDirection: "right",
-                tolerance: 75,  // bigger = more forgivey when entering submenu
+                tolerance: 20,  // bigger = more forgivey when entering submenu
                 enter: $.noop,
                 exit: $.noop,
                 activate: $.noop,
@@ -31,8 +31,8 @@
                 exitMenu: $.noop
             }, opts);
 
-        var mouseLocsTracked = 3; // number of past mouse locations to track
-        var delay = 300; // ms delay when user appears to be entering submenu
+        var mouseLocsTracked = 5; // number of past mouse locations to track
+        var delay = 500; // ms delay when user appears to be entering submenu
 
 
         var activateSubmenu = function(row)

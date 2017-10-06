@@ -169,7 +169,7 @@
     <value>You cannot login to the site from this IP address.</value>
   </data>
   <data name="LoginFailed.Text" xml:space="preserve">
-    <value>Đăng nhập thất bại. Lưu ý: &lt;b&gt;Mật Khẩu&lt;/b&gt; có phân biệt giữa chữ hoa và chữ thường.</value>
+      <value>Đăng nhập thất bại. Tên đăng nhập hoặc Mật khẩu không chính xác. &lt;br&gt;Lưu ý: &lt;b&gt;Mật Khẩu&lt;/b&gt; có phân biệt giữa chữ hoa và chữ thường.</value>
   </data>
   <data name="PasswordExpired.Text" xml:space="preserve">
     <value>Your password expired on {0}.  Please update your password before continuing.</value>
@@ -219,14 +219,14 @@
   <data name="UserLockedOut.Text" xml:space="preserve">
     <value>
             Tài khoản này đang tạm khóa do đăng nhập sai nhiều lần liên tiếp. 
-            Vui lòng đăng nhập lại sau {0} phút hoặc liên hệ cấp quản lý để được hỗ trợ mở khoá nhanh.
+            Vui lòng đăng nhập lại sau {0} phút hoặc liên hệ cấp quản lý để được hỗ trợ.
         </value>
   </data>
   <data name="UsernameError.Text" xml:space="preserve">
     <value>User name does not exist.</value>
   </data>
   <data name="UserNotAuthorized.Text" xml:space="preserve">
-    <value>Tài khoản đã bị khoá do không còn nhu cầu xử dụng.</value>
+    <value>Tài khoản này đã bị khoá. Vui lòng liên hệ cấp quản lý để được hỗ trợ.</value>
   </data>
   <data name="AssociationFailed.Text" xml:space="preserve">
     <value>Error associating identity with user. Remember that user names and passwords are case-sensitive.</value>

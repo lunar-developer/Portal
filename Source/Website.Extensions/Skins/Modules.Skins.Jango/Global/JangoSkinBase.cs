@@ -171,7 +171,7 @@ namespace Modules.Skins.Jango.Global
                 string logoffUrl = $"{FunctionBase.GetConfiguration(ConfigEnum.SiteUrl)}logoff";
                 listUrl.Add($@"
                     <li>
-                        <a href=""{logoffUrl}"">
+                        <a id=""GlobalSignOutLink"" href=""{logoffUrl}"">
 				            <i class=""fa fa-sign-out""></i> Thoát
 			            </a>
                     </li>");

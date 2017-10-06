@@ -279,7 +279,7 @@
                                 runat="server"
                                 Text="Cập nhật" />
 
-                            <asp:Button CssClass="btn btn-primary"
+                            <asp:Button CssClass="btn btn-success"
                                 ID="btnApprove"
                                 OnClick="ProcessDocument"
                                 OnClientClick="return onBeforeProcess(arguments[1], this)"
@@ -293,14 +293,14 @@
                                 OnClientClick="return onBeforeProcess(arguments[1], this)"
                                 runat="server"
                                 Text="Rút hồ sơ" />
-                            <asp:Button CssClass="btn btn-primary"
+                            <asp:Button CssClass="btn btn-danger"
                                 ID="btnClose"
                                 OnClick="ProcessDocument"
                                 CommandName="Close"
                                 OnClientClick="return onBeforeProcess(arguments[1], this)"
                                 runat="server"
                                 Text="Đóng hồ sơ" />
-                            <asp:Button CssClass="btn btn-primary"
+                            <asp:Button CssClass="btn btn-danger"
                                 ID="btnReturn"
                                 OnClick="ProcessDocument"
                                 CommandName="Return"

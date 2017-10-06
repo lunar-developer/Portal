@@ -182,8 +182,8 @@ namespace DesktopModules.Modules.Application
                 { "NextUserID", new SQLParameterData(nextUserID, SqlDbType.Int) },
                 { "Remark", new SQLParameterData(ctrlRemark.Text.Trim(), SqlDbType.NVarChar) },
                 { "IsSensitiveInfo", new SQLParameterData(isSensitiveInfo ? 1 : 0, SqlDbType.TinyInt) },
-                { ApplicationTable.ModifyUserID, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
-                { ApplicationTable.ModifyDateTime, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
+                { ApplicationTable.UserIDModify, new SQLParameterData(UserInfo.UserID, SqlDbType.Int) },
+                { ApplicationTable.DateTimeModify, new SQLParameterData(DateTime.Now.ToString(PatternEnum.DateTime), SqlDbType.BigInt) }
             };
 
             string action = ctrlRoute.SelectedItem.Text;
@@ -217,7 +217,7 @@ namespace DesktopModules.Modules.Application
             fieldDictionary.Add(ApplicationTable.ApplicationRemark, string.Empty);
             fieldDictionary.Add(ApplicationTable.CurrentUserID, UserInfo.UserID.ToString());
             fieldDictionary.Add(ApplicationTable.PreviousUserID, "0");
-            fieldDictionary.Add(ApplicationTable.CreateDateTime, fieldDictionary[ApplicationTable.ModifyDateTime]);
+            fieldDictionary.Add(ApplicationTable.DateTimeCreate, fieldDictionary[ApplicationTable.DateTimeModify]);
             fieldDictionary.Add(ApplicationTable.ExportDate, "0");
         }
 
@@ -229,8 +229,8 @@ namespace DesktopModules.Modules.Application
 
                 { ApplicationTable.ApplicationTypeID, SectionApplicationInfo.ControlApplicationTypeID.SelectedValue },
                 { ApplicationTable.Priority, SectionApplicationInfo.ControlPriority.SelectedValue },
-                { ApplicationTable.ModifyUserID, UserInfo.UserID.ToString() },
-                { ApplicationTable.ModifyDateTime, DateTime.Now.ToString(PatternEnum.DateTime) },
+                { ApplicationTable.UserIDModify, UserInfo.UserID.ToString() },
+                { ApplicationTable.DateTimeModify, DateTime.Now.ToString(PatternEnum.DateTime) },
 
                 #endregion
 

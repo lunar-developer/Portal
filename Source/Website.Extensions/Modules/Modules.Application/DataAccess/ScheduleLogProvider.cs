@@ -11,7 +11,7 @@ namespace Modules.Application.DataAccess
         private readonly string QueryScript = $@"
             SELECT * FROM dbo.{ScheduleLogTable.TableName} with(nolock)
             Where {ScheduleLogTable.ScheduleCode} = @{ScheduleLogTable.ScheduleCode}
-            Order by {ScheduleLogTable.CreateDateTime} desc";
+            Order by {ScheduleLogTable.DateTimeCreate} desc";
 
         public List<ScheduleLogData> GetList(string scheduleCode)
         {

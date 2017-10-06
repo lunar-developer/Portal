@@ -12,8 +12,8 @@
         public const string Priority = "Priority";
 
         public const string ApplicationStatus = "ApplicationStatus";
-        public const string ModifyUserID = "ModifyUserID";
-        public const string ModifyDateTime = "ModifyDateTime";
+        public const string UserIDModify = "UserIDModify";
+        public const string DateTimeModify = "DateTimeModify";
         public const string ApplicationRemark = "ApplicationRemark";
 
 
@@ -200,10 +200,10 @@
         public const string RouteID = "RouteID";
         public const string CurrentUserID = "CurrentUserID";
         public const string PreviousUserID = "PreviousUserID";
-        public const string CreateDateTime = "CreateDateTime";
+        public const string DateTimeCreate = "DateTimeCreate";
         public const string ExportDate = "ExportDate";
-        public const string ProcessUserID = "ProcessUserID";
-        public const string ProcessDateTime = "ProcessDateTime";
+        public const string UserIDProcess = "UserIDProcess";
+        public const string DateTimeProcess = "DateTimeProcess";
 
         // Other Info (Route)
         public const string ActionCode = "ActionCode";

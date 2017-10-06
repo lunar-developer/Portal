@@ -5,6 +5,6 @@
         public string LogDate { get; set; }
         public string LogMessage { get; set; }
         public string IsSuccess { get; set; }
-        public string CreateDateTime { get; set; }
+        public string DateTimeCreate { get; set; }
     }
 }

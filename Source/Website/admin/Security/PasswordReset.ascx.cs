@@ -39,7 +39,7 @@ using DotNetNuke.UI.Skins.Controls;
 using DotNetNuke.Web.Client;
 using DotNetNuke.Web.Client.ClientResourceManagement;
 using DotNetNuke.Web.UI.WebControls;
-
+using Website.Library.Global;
 #endregion
 
 namespace DotNetNuke.Modules.Admin.Security
@@ -72,6 +72,7 @@ namespace DotNetNuke.Modules.Admin.Security
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            DivPasswordInfo.InnerHtml = DesktopModuleBase.GetSharedResource("PasswordInfo.Text");
             _ipAddress = Request.UserHostAddress;
 
 			JavaScript.RequestRegistration(CommonJs.DnnPlugins);

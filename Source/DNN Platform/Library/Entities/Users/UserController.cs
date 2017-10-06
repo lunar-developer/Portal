@@ -688,7 +688,7 @@ namespace DotNetNuke.Entities.Users
                 if (passwordChanged)
                 {
                     //Update User
-                    user.Membership.UpdatePassword = false;
+                    //user.Membership.UpdatePassword = false;       // Allow caller can specify UpdatePassword or not
                     UpdateUser(user.PortalID, user);
                 }
             }

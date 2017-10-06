@@ -8915,28 +8915,53 @@ Type.registerNamespace("Telerik.Web.UI");
                 d = d.nextSibling;
             }
         },
-        _highlight: function(g, d) {
+        _highlight: function (g, d) 
+        {
             var e = this,
-                h = function(i) {
+                h = function (i) 
+                {
                     return b.STRING_EM_START + i + b.STRING_EM_END;
                 },
                 f = false;
-            a(d).contents().each(function() {
-                if (this.nodeType != 1) {
-                    var j = a(this).text();
-                    if (g.test(j)) {
-                        var i = j.replace(g, h);
+            a(d).contents().each(function () 
+            {
+                if (this.nodeType != 1) 
+                {
+                    var originalText = a(this).text();
+                    var asciiText = removeUnicode(originalText);
+                    var isFound = false;
+                    var i;
+                    if (g.test(originalText))
+                    {
+                        i = originalText.replace(g, h);
+                        isFound = true;
+                    }
+                    else if (g.test(asciiText))
+                    {
+                        var index = asciiText.search(g);
+                        var highlightText = originalText.substr(index, g.source.length);
+                        i = originalText.substring(0, index) + h(highlightText) + originalText.substring(index + g.source.length);
+                        isFound = true; 
+                    }
+
+                    if (isFound)
+                    {
                         i = c.RadComboBox.htmlEncode(i);
                         i = i.replace(b.REGEX_EM_START_HTML_ENCODED, b.STRING_EM_START).replace(b.REGEX_EM_END_HTML_ENCODED, b.STRING_EM_END);
-                        if (!a(this).siblings()) {
+                        if (!a(this).siblings())
+                        {
                             parent.innerHTML = i;
-                        } else {
+                        } else
+                        {
                             a(this).replaceWith(i);
                         }
                         f = true;
                     }
-                } else {
-                    if (e._highlight(g, this)) {
+                }
+                else 
+                {
+                    if (e._highlight(g, this)) 
+                    {
                         f = true;
                     }
                 }

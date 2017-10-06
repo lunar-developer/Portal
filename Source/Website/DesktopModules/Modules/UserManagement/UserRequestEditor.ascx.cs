@@ -51,8 +51,7 @@ namespace DesktopModules.Modules.UserManagement
             // Set Default State
             btnApprove.CommandArgument = RequestStatusEnum.Approve;
             btnDecline.CommandArgument = RequestStatusEnum.Decline;
-            btnCancel.CommandArgument = RequestStatusEnum.Cancel;
-            RegisterConfirmDialog(btnApprove, $"Bạn có chắc muốn <b>{btnApprove.Text}</b> yêu cầu?");
+            btnCancel.CommandArgument = RequestStatusEnum.Cancel;            
             RegisterConfirmDialog(btnDecline, $"Bạn có chắc muốn <b>{btnDecline.Text}</b> yêu cầu?");
             RegisterConfirmDialog(btnCancel, $"Bạn có chắc muốn <b>{btnCancel.Text}</b> yêu cầu?");
 

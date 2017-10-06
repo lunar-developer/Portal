@@ -7,6 +7,6 @@
         public const string LogDate = "LogDate";
         public const string LogMessage = "LogMessage";
         public const string IsSuccess = "IsSuccess";
-        public const string CreateDateTime = "CreateDateTime";
+        public const string DateTimeCreate = "DateTimeCreate";
     }
 }

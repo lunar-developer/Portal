@@ -38,7 +38,6 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Entities.Tabs;
 using DotNetNuke.Entities.Users;
 using DotNetNuke.Framework.JavaScriptLibraries;
-using DotNetNuke.Instrumentation;
 using DotNetNuke.Security.Permissions;
 using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Services.FileSystem;
@@ -73,7 +72,7 @@ namespace DotNetNuke.Framework
     /// -----------------------------------------------------------------------------
     public partial class DefaultPage : CDefault, IClientAPICallbackEventHandler
     {
-    	private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (DefaultPage));
+    	//private static readonly ILog Logger = LoggerSource.Instance.GetLogger(typeof (DefaultPage));
 
         private static readonly Regex HeaderTextRegex = new Regex("<meta([^>])+name=('|\")robots('|\")",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled);
@@ -137,14 +136,7 @@ namespace DotNetNuke.Framework
             }
         }
 
-        public string CurrentSkinPath
-        {
-            get
-            {
-                return ((PortalSettings)HttpContext.Current.Items["PortalSettings"]).ActiveTab.SkinPath;
-            }
-        }
-        
+        public string CurrentSkinPath => ((PortalSettings)HttpContext.Current.Items["PortalSettings"]).ActiveTab.SkinPath;
         #endregion
 
         #region IClientAPICallbackEventHandler Members
@@ -156,7 +148,8 @@ namespace DotNetNuke.Framework
             {
                 if (DNNClientAPI.IsPersonalizationKeyRegistered(dict["namingcontainer"] + ClientAPI.CUSTOM_COLUMN_DELIMITER + dict["key"]) == false)
                 {
-                    throw new Exception(string.Format("This personalization key has not been enabled ({0}:{1}).  Make sure you enable it with DNNClientAPI.EnableClientPersonalization", dict["namingcontainer"], dict["key"]));
+                    throw new Exception(
+                        $"This personalization key has not been enabled ({dict["namingcontainer"]}:{dict["key"]}).  Make sure you enable it with DNNClientAPI.EnableClientPersonalization");
                 }
                 switch ((DNNClientAPI.PageCallBackType)Enum.Parse(typeof(DNNClientAPI.PageCallBackType), dict["type"]))
                 {
@@ -297,10 +290,8 @@ namespace DotNetNuke.Framework
                         case ".mvc":
                             var segments = slaveModule.ModuleControl.ControlSrc.Replace(".mvc", "").Split('/');
 
-                            control.LocalResourceFile = String.Format("~/DesktopModules/MVC/{0}/{1}/{2}.resx",
-                                slaveModule.DesktopModule.FolderName,
-                                Localization.LocalResourceDirectory,
-                                segments[0]);
+                            control.LocalResourceFile =
+                                $"~/DesktopModules/MVC/{slaveModule.DesktopModule.FolderName}/{Localization.LocalResourceDirectory}/{segments[0]}.resx";
                             break;
                         default:
                             control.LocalResourceFile = string.Concat(
@@ -356,7 +347,7 @@ namespace DotNetNuke.Framework
 
             //META Refresh
             // Only autorefresh the page if we are in VIEW-mode and if we aren't displaying some module's subcontrol.
-            if (PortalSettings.ActiveTab.RefreshInterval > 0 && this.PortalSettings.UserMode == PortalSettings.Mode.View && Request.QueryString["ctl"] == null)
+            if (PortalSettings.ActiveTab.RefreshInterval > 0 && PortalSettings.UserMode == PortalSettings.Mode.View && Request.QueryString["ctl"] == null)
             {
                 MetaRefresh.Content = PortalSettings.ActiveTab.RefreshInterval.ToString();
                 MetaRefresh.Visible = true;
@@ -367,48 +358,26 @@ namespace DotNetNuke.Framework
             }
 
             //META description
-            if (!string.IsNullOrEmpty(PortalSettings.ActiveTab.Description))
-            {
-                Description = PortalSettings.ActiveTab.Description;
-            }
-            else
-            {
-                Description = PortalSettings.Description;
-            }
+            Description = !string.IsNullOrEmpty(PortalSettings.ActiveTab.Description)
+                ? PortalSettings.ActiveTab.Description
+                : PortalSettings.Description;
 
             //META keywords
-            if (!string.IsNullOrEmpty(PortalSettings.ActiveTab.KeyWords))
-            {
-                KeyWords = PortalSettings.ActiveTab.KeyWords;
-            }
-            else
-            {
-                KeyWords = PortalSettings.KeyWords;
-            }
+            KeyWords = !string.IsNullOrEmpty(PortalSettings.ActiveTab.KeyWords)
+                ? PortalSettings.ActiveTab.KeyWords
+                : PortalSettings.KeyWords;
             if (Host.DisplayCopyright)
             {
                 KeyWords += ",DotNetNuke,DNN";
             }
 
             //META copyright
-            if (!string.IsNullOrEmpty(PortalSettings.FooterText))
-            {
-                Copyright = PortalSettings.FooterText.Replace("[year]", DateTime.Now.Year.ToString());
-            }
-            else
-            {
-                Copyright = string.Concat("Copyright (c) ", DateTime.Now.Year, " by ", PortalSettings.PortalName);
-            }
+            Copyright = !string.IsNullOrEmpty(PortalSettings.FooterText)
+                ? PortalSettings.FooterText.Replace("[year]", DateTime.Now.Year.ToString())
+                : string.Concat("Copyright (c) ", DateTime.Now.Year, " by ", PortalSettings.PortalName);
 
             //META generator
-            if (Host.DisplayCopyright)
-            {
-                Generator = "DotNetNuke ";
-            }
-            else
-            {
-                Generator = "";
-            }
+            Generator = Host.DisplayCopyright ? "DotNetNuke " : "";
 
             //META Robots - hide it inside popups and if PageHeadText of current tab already contains a robots meta tag
             if (!UrlUtils.InPopUp() &&
@@ -416,7 +385,7 @@ namespace DotNetNuke.Framework
                   HeaderTextRegex.IsMatch(PortalSettings.PageHeadText)))
             {
                 MetaRobots.Visible = true;
-                var allowIndex = true;
+                bool allowIndex;
                 if ((PortalSettings.ActiveTab.TabSettings.ContainsKey("AllowIndex") &&
                      bool.TryParse(PortalSettings.ActiveTab.TabSettings["AllowIndex"].ToString(), out allowIndex) &&
                      !allowIndex)
@@ -435,8 +404,8 @@ namespace DotNetNuke.Framework
             //NonProduction Label Injection
             if (NonProductionVersion() && Host.DisplayBetaNotice && !UrlUtils.InPopUp())
             {
-                string versionString = string.Format(" ({0} Version: {1})", DotNetNukeContext.Current.Application.Status,
-                                                     DotNetNukeContext.Current.Application.Version);
+                string versionString =
+                    $" ({DotNetNukeContext.Current.Application.Status} Version: {DotNetNukeContext.Current.Application.Version})";
                 Title += versionString;
             }
 
@@ -454,7 +423,6 @@ namespace DotNetNuke.Framework
         /// when no configuration if found, the doctype for versions prior to 4.4 is used to maintain backwards compatibility with existing skins.
         /// Adds xmlns and lang parameters when appropiate.
         /// </summary>
-        /// <param name="Skin">The currently loading skin</param>
         /// <remarks></remarks>
         /// -----------------------------------------------------------------------------
         private void SetSkinDoctype()
@@ -626,14 +594,10 @@ namespace DotNetNuke.Framework
                 }
                 else
                 {
-                    if (PortalSettings.HomeTabId > 0)
-                    {
-                        Response.Redirect(Globals.NavigateURL(PortalSettings.HomeTabId), true);
-                    }
-                    else
-                    {
-                        Response.Redirect(Globals.GetPortalDomainName(PortalSettings.PortalAlias.HTTPAlias, Request, true), true);
-                    }
+                    Response.Redirect(
+                        PortalSettings.HomeTabId > 0
+                            ? Globals.NavigateURL(PortalSettings.HomeTabId)
+                            : Globals.GetPortalDomainName(PortalSettings.PortalAlias.HTTPAlias, Request, true), true);
                 }
             }
             //Manage canonical urls
@@ -667,7 +631,7 @@ namespace DotNetNuke.Framework
             {
                 var userInfo = HttpContext.Current.Items["UserInfo"] as UserInfo;
                 //only show message to default users
-                if ((userInfo.Username.ToLower() == "admin") || (userInfo.Username.ToLower() == "host"))
+                if (userInfo != null && (userInfo.Username.ToLower() == "admin" || userInfo.Username.ToLower() == "host"))
                 {
                     var messageText = RenderDefaultsWarning();
                     var messageTitle = Localization.GetString("InsecureDefaults.Title", Localization.GlobalResourceFile);
@@ -763,9 +727,8 @@ namespace DotNetNuke.Framework
 	        if (!string.IsNullOrEmpty(CanonicalLinkUrl))
 	        {
 				//Add Canonical <link> using the primary alias
-				var canonicalLink = new HtmlLink();
-				canonicalLink.Href = CanonicalLinkUrl;
-				canonicalLink.Attributes.Add("rel", "canonical");
+	            var canonicalLink = new HtmlLink { Href = CanonicalLinkUrl };
+	            canonicalLink.Attributes.Add("rel", "canonical");
 
 				// Add the HtmlLink to the Head section of the page.
 				Page.Header.Controls.Add(canonicalLink);
@@ -781,7 +744,7 @@ namespace DotNetNuke.Framework
 				var bodyClass = Body.Attributes["class"];
 				if (!string.IsNullOrEmpty(bodyClass))
 				{
-                    Body.Attributes["class"] = string.Format("{0} {1}", bodyClass, editClass);
+                    Body.Attributes["class"] = $"{bodyClass} {editClass}";
 				}
 				else
 				{
@@ -806,9 +769,6 @@ namespace DotNetNuke.Framework
 
             string ipAddress = loginInfoDictionary.ContainsKey("IPAddress")
                 ? loginInfoDictionary["IPAddress"]
-                : string.Empty;
-            string computerName = loginInfoDictionary.ContainsKey("ComputerName")
-                ? loginInfoDictionary["ComputerName"]
                 : string.Empty;
             string browser = loginInfoDictionary.ContainsKey("Browser")
                 ? loginInfoDictionary["Browser"]
@@ -843,36 +803,6 @@ namespace DotNetNuke.Framework
 				                    </label>
 			                    </div>
 		                    </div>
-		                    <div class='col-sm-2 control-label'>        
-			                    <div class='dnnLabel'>    
-				                    <label>
-					                    <span>Trình duyệt</span>   
-				                    </label>
-			                    </div>
-		                    </div>
-		                    <div class='col-sm-4'>
-			                    <div class='control-value'>    
-				                    <label>
-					                    <span>{browser}</span>   
-				                    </label>
-			                    </div>
-		                    </div>
-	                    </div>
-	                    <div class='form-group'>
-                            <div class='col-sm-3 control-label'>  
-			                    <div class='dnnLabel'>    
-				                    <label>
-					                    <span>Tên máy tính</span>   
-				                    </label>
-			                    </div>
-		                    </div>
-		                    <div class='col-sm-3'>
-			                    <div class='control-value'>    
-				                    <label>
-					                    <span>{computerName}</span>   
-				                    </label>
-			                    </div>
-		                    </div>
                             <div class='col-sm-2 control-label'>
 			                    <div class='dnnLabel'>    
 				                    <label>
@@ -885,6 +815,22 @@ namespace DotNetNuke.Framework
 				                    <label>
 					                    <span>{loginDateTime}</span>
                                     </label>
+			                    </div>
+		                    </div>
+	                    </div>
+	                    <div class='form-group'>
+                            <div class='col-sm-3 control-label'>        
+			                    <div class='dnnLabel'>    
+				                    <label>
+					                    <span>Trình duyệt</span>   
+				                    </label>
+			                    </div>
+		                    </div>
+		                    <div class='col-sm-9'>
+			                    <div class='control-value'>    
+				                    <label>
+					                    <span>{browser}</span>   
+				                    </label>
 			                    </div>
 		                    </div>
 	                    </div>

@@ -451,9 +451,9 @@ namespace Modules.Application.Business
             fieldDictionary.Add(ApplicationTable.PhaseID, PhaseEnum.WaitForInput);
             fieldDictionary.Add(ApplicationTable.CurrentUserID, "0");
             fieldDictionary.Add(ApplicationTable.PreviousUserID, "0");
-            fieldDictionary.Add(ApplicationTable.CreateDateTime, createDateTime);
-            fieldDictionary.Add(ApplicationTable.ModifyUserID, "0");
-            fieldDictionary.Add(ApplicationTable.ModifyDateTime, "0");
+            fieldDictionary.Add(ApplicationTable.DateTimeCreate, createDateTime);
+            fieldDictionary.Add(ApplicationTable.UserIDModify, "0");
+            fieldDictionary.Add(ApplicationTable.DateTimeModify, "0");
             fieldDictionary.Add(ApplicationTable.ProposeLimit, row[ApplicationTable.CreditLimit].ToString());
             fieldDictionary.Add(ApplicationTable.CreditLimit, row[ApplicationTable.CreditLimit].ToString());
             fieldDictionary.Add(ApplicationTable.Priority, row[ApplicationTable.Priority].ToString());

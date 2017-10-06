@@ -145,7 +145,7 @@
     <value>None Specified</value>
   </data>
   <data name="cmdCancel.Text" xml:space="preserve">
-    <value>Cancel</value>
+    <value>Hủy</value>
   </data>
   <data name="cmdDelete.Text" xml:space="preserve">
     <value>Delete</value>
@@ -310,7 +310,8 @@
     <value>This user registration has been rejected.  Please contact an Administrator for more information.</value>
   </data>
   <data name="UserNameExists.Text" xml:space="preserve">
-    <value>A user already exists for the user name specified.  Please register again using a different user name.</value>
+    <!--<value>A user already exists for the user name specified.  Please register again using a different user name.</value>-->
+      <value>Tên đăng nhập đã được sử dụng.</value>
   </data>
   <data name="RegError.Text" xml:space="preserve">
     <value>An unexpected error occurred during registration.  Please contact the Administrator for futher information.</value>
@@ -868,7 +869,8 @@
     <value>Are you sure you want to delete these items?</value>
   </data>
   <data name="PasswordMismatch.Text" xml:space="preserve">
-    <value>The passwords do not match.</value>
+    <!--<value>The passwords do not match.</value>-->
+    <value>Mật Khẩu không khớp nhau.</value>
   </data>
   <data name="OnLine.Text" xml:space="preserve">
     <value>Online</value>
@@ -984,6 +986,9 @@
   <data name="PasswordChanged.Text" xml:space="preserve">
     <value>The password has been changed.</value>
   </data>
+    <data name="PasswordInfo.Text" xml:space="preserve">
+        <value>&lt;b&gt;Lưu ý&lt;/b&gt;: Mật khẩu hợp lệ phải có độ dài tối thiểu 7 kí tự, trong đó có sử dụng 1 ký tự đặc biệt và không được phép sử dụng lại mật khẩu đã sử dụng trong quá khứ.</value>
+    </data>
   <data name="PasswordInvalid.Text" xml:space="preserve">
     <value>You must enter a valid password.  Please check with the Site Administrator if you do not know the password requirements.</value>
   </data>
@@ -994,25 +999,32 @@
     <value>You must provide your current password in order to change the password.</value>
   </data>
   <data name="PasswordNotDifferent.Text" xml:space="preserve">
-    <value>The new password is the same as the old password.  Please enter a different password.</value>
+    <!--<value>The new password is the same as the old password.  Please enter a different password.</value>-->
+    <value>Mật khẩu mới bị trùng với mật khẩu cũ. Vui lòng sử dụng một mật khẩu khác.</value>
   </data>
   <data name="PasswordResetFailed.Text" xml:space="preserve">
-    <value>Your new password was not accepted for security reasons.  Please enter a password that you haven't used before and is long and complex enough to meet the site's password complexity requirements.</value>
+    <!--<value>Your new password was not accepted for security reasons.  Please enter a password that you haven't used before and is long and complex enough to meet the site's password complexity requirements.</value>-->
+      <value>Mật khẩu mới không hợp lệ. Vui lòng không sử dụng lại mật khẩu đã dùng trước đây và mật khẩu mới phải có độ phức tạp thỏa điều kiện yêu cầu.</value>
   </data>
   <data name="PasswordInadequate.Text" xml:space="preserve">
-    <value>Your new password was not accepted for security reasons. Please enter a password that is long and complex enough to meet the site's password complexity requirements.</value>
+    <!--<value>Your new password was not accepted for security reasons. Please enter a password that is long and complex enough to meet the site's password complexity requirements.</value>-->
+    <value>Mật khẩu mới không hợp lệ. Vui lòng sử dụng mật khẩu có độ phức tạp thỏa điều kiện yêu cầu.</value>
   </data>
   <data name="PasswordBanned.Text" xml:space="preserve">
-    <value>Your new password was not accepted as it was banned or it was the same as your user name.</value>
+    <!--<value>Your new password was not accepted as it was banned or it was the same as your user name.</value>-->
+    <value>Mật khẩu mới không hợp lệ. Mật khẩu của bạn nằm trong danh sách bị cấm hoặc đang trùng với Tên đăng nhập</value>
   </data>
   <data name="PasswordResetFailed_UserUndefined.Text" xml:space="preserve">
-    <value>Your new password was not accepted for security reasons. Please choose a password which does not match a previously used password and ensure the user name is correct.</value>
+    <!--<value>Your new password was not accepted for security reasons. Please choose a password which does not match a previously used password and ensure the user name is correct.</value>-->
+    <value>Mật khẩu mới không hợp lệ. Vui lòng không sử dụng lại mật khẩu đã dùng trước đây và đảm bảo Tên đăng nhập chính xác.</value>
   </data>
   <data name="PasswordResetFailed_ResetLinkExpired.Text" xml:space="preserve">
-    <value>Your new password was not accepted for security reasons. The password reset link has expired and is no longer valid.</value>
+    <!--<value>Your new password was not accepted for security reasons. The password reset link has expired and is no longer valid.</value>-->
+    <value>Link đặt lại mật khẩu đã hết hạn và không còn hiệu lực.</value>
   </data>
   <data name="PasswordResetFailed_PasswordInHistory.Text" xml:space="preserve">
-    <value>Your new password was not accepted for security reasons. Please choose a password that hasn't been used before.</value>
+    <!--<value>Your new password was not accepted for security reasons. Please choose a password that hasn't been used before.</value>-->
+    <value>Mật khẩu mới không hợp lệ. Vui lòng không sử dụng lại mật khẩu đã dùng trước đây.</value>
   </data>
   <data name="PasswordResetFailed_WrongAnswer.Text" xml:space="preserve">
     <value>Your new password was not accepted for security reasons. Please ensure the correct user name and answer were entered.</value>
@@ -1045,10 +1057,12 @@
     <value>&lt;strong&gt;*Note:&lt;/strong&gt; Membership to this website is verified. Once your account information has been submitted, you will receive an email containing a link that you can use to verify your account.</value>
   </data>
   <data name="Captcha.Help" xml:space="preserve">
-    <value>Enter the security code.</value>
+    <!--<value>Enter the security code.</value>-->
+    <value>Nhập Mã kiểm tra</value>
   </data>
   <data name="Captcha.Text" xml:space="preserve">
-    <value>Security Code</value>
+    <!--<value>Security Code</value>-->
+    <value>Mã kiểm tra</value>
   </data>
   <data name="Password.Text" xml:space="preserve">
     <value>Password:</value>
@@ -1057,10 +1071,12 @@
     <value>Username:</value>
   </data>
   <data name="CaptchaText.Text" xml:space="preserve">
-    <value>Enter the code shown above in the box below.</value>
+    <!--<value>Enter the code shown above in the box below.</value>-->
+      <value>Vui lòng nhập mã kiểm tra ở trên vào ô bên dưới.</value>
   </data>
   <data name="InvalidCaptcha.Text" xml:space="preserve">
-    <value>Incorrect Security Code</value>
+    <!--<value>Incorrect Security Code</value>-->
+    <value>Mã kiểm tra không chính xác.</value>
   </data>
   <data name="CaptchaAlt.Text" xml:space="preserve">
     <value>CAPTCHA image</value>

@@ -91,7 +91,7 @@ namespace Modules.VSaleKit.DataAccess
             end try
             begin catch
                 rollback transaction
-                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                 values(Error_Number(), Error_Message(), 'ApplicationFormProvider.AttachFiles', dbo.SYS_FN_GetCurrentDateTime())
                 select -1
             end catch
@@ -150,7 +150,7 @@ namespace Modules.VSaleKit.DataAccess
             end try
             begin catch
                 rollback transaction
-                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, CreateDateTime)
+                insert into SYS_Exception(ErrorCode, ErrorMessage, StackTrace, DateTimeCreate)
                 values(Error_Number(), Error_Message(), 'ApplicationFormProvider.SortFiles', dbo.SYS_FN_GetCurrentDateTime())
                 select -1
             end catch

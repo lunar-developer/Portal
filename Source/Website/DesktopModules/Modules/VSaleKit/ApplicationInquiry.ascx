@@ -73,7 +73,7 @@
                         OnClick="Search"
                         runat="server"
                         Text="Tìm Kiếm" />
-                    <asp:Button CssClass="btn btn-default"
+                    <asp:Button CssClass="btn btn-success"
                         ID="btnAdd"
                         OnClick="AddApplication"
                         runat="server"

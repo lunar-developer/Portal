@@ -84,10 +84,11 @@ namespace Modules.UserManagement.Business
                 Username = dictionary[UserTable.UserName].ParameterValue.ToString(),
                 Email = dictionary[UserTable.UserName].ParameterValue.ToString(),
                 DisplayName = dictionary[UserTable.DisplayName].ParameterValue.ToString(),
-                PortalID = 0,
+                PortalID = 0,                
                 Membership =
                 {
-                    Password = UserController.GeneratePassword(),
+                    Password = UserController.GeneratePassword(),                    
+                    UpdatePassword = true,
                     Approved = true
                 }
             };
@@ -158,6 +159,13 @@ namespace Modules.UserManagement.Business
             if (string.IsNullOrWhiteSpace(oldPassword) && FunctionBase.IsInRole(RoleEnum.Administrator))
             {
                 oldPassword = UserController.ResetPassword(userInfo, string.Empty);
+                userInfo.Membership.UpdatePassword = true;
+                userInfo.PasswordResetToken = Guid.NewGuid();
+                userInfo.PasswordResetExpiration = DateTime.Now.AddDays(7);
+            }
+            else
+            {
+                userInfo.Membership.UpdatePassword = false;
             }
 
             bool result = UserController.ChangePassword(userInfo, oldPassword, newPassword);

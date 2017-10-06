@@ -106,7 +106,7 @@ namespace DesktopModules.Modules.UserManagement
         {
             txtRoleName.Text = string.Empty;
             txtDescription.Text = string.Empty;
-            ddlRoleGroup.SelectedIndex = 0;
+            ddlRoleScope.SelectedIndex = 0;
             chkIsDisable.Checked = false;
             ListAllRole.Items.Clear();
             ListExcludeRole.Items.Clear();
